@@ -62,7 +62,7 @@ C header files/libraries/etc. for building C module
 |[lpack](http://www.tecgraf.puc-rio.br/~lhf/ftp/lua/#lpack)|29 Jun 2007 19:27:20|Lua library for packing and unpacking binary data.|
 |[VStruct](http://www.funkyhorror.net/toxicfrog/projects/vstruct/)|1.0.2|Provides functions for manipulating binary data.|
 |[LuaBitOps](http://bitop.luajit.org/)|1.0.1| Lua BitOp is a C extension module for Lua 5.1 which adds bitwise operations on numbers.|
-|[LuaXML](http://www.viremo.de/LuaXML/)|1.3|A module that maps between Lua and XML without much ado.|
+|[LuaXML](http://viremo.eludi.net/LuaXML/)|1.3|A module that maps between Lua and XML without much ado.|
 |[Lanes](http://luaforge.net/projects/lanes/)|2.0.4|Provides the possibility to run multiple Lua states in parallel.|
 |[MetaLua](http://metalua.luaforge.net/)|0.5-rc1|A complete macro system with full compatibility with Lua 5.1 sources and bytecode: clean, elegant semantics and syntax, amazing expressive power, good performances, near-universal portability.|
 |[LuaGL](http://luagl.wikidot.com/)|1.3|Provides access to all of the OpenGL functionality from Lua 5.x .|
