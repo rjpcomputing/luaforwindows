@@ -277,4 +277,5 @@ C header files/libraries/etc. for building C module
 **5.1.4-47** 18/March/2015 - 33rd release
   * Updated stdlib to release 28.
   * Updated Penlight to 1.3.2.
+  * Updated SubLua to 1.8.10.
   * **WARNING**: Moved all downloads and code hosting to GitHub. Older releases will not function when Google Code is shut down. Make sure to upgrade.
