@@ -1,0 +1,1527 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../luadoc.css" type="text/css" />
+	<!--meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/-->
+</head>
+
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+
+
+<h1>LuaDoc</h1>
+<ul>
+	
+	<li><a href="../index.html">Index</a></li>
+	
+</ul>
+
+
+<!-- Module list -->
+
+<h1>Modules</h1>
+<ul>
+
+	<li><strong>SubLua</strong></li>
+	
+</ul>
+
+
+
+<!-- File list -->
+
+
+
+
+
+
+</div><!-- id="navigation" -->
+
+<div id="content">
+
+<h1>Module <code>SubLua</code></h1>
+
+<p>Lua binding to SubCpp - a C++ Subversion library.</p>
+
+<p><b>Author:</b>
+<table class="authors_list">
+
+	<tr><td class="name"><a href="mailto:rjpcomputing@gmail.com">Ryan P.</a></td></tr>
+
+</table>
+</p>
+
+
+
+<p><small><b>Release:</b> 1.00 <04/21/2010></small></p>
+
+
+
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua.ReleaseWorkingCopyLock">SubLua.ReleaseWorkingCopyLock</a>&nbsp;()</td>
+	<td class="summary">Release the lock on the working copy Does nothing and is unnecessary in svn versions 1.6 and below </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Add">SubLua:Add</a>&nbsp;(path, options)</td>
+	<td class="summary">Schedule a working copy path for addition to the repository.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Cat">SubLua:Cat</a>&nbsp;(path, options)</td>
+	<td class="summary">Output the content of specified files or URLs.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Checkout">SubLua:Checkout</a>&nbsp;(url, path, options)</td>
+	<td class="summary">Checks out a working copy from a url to a path.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Cleanup">SubLua:Cleanup</a>&nbsp;(path)</td>
+	<td class="summary">Recursively cleans up a local directory, finishing any incomplete operations, removing lockfiles, etc.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Commit">SubLua:Commit</a>&nbsp;(path, message, options)</td>
+	<td class="summary">Commit files or directories into repository </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Copy">SubLua:Copy</a>&nbsp;(srcPath, srcRevision, destPath)</td>
+	<td class="summary">Copies one path to another </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Delete">SubLua:Delete</a>&nbsp;(path, options)</td>
+	<td class="summary">Remove files and directories from version control.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Diff">SubLua:Diff</a>&nbsp;(tmpPath, path, revision1, revision2, options)</td>
+	<td class="summary">Display the differences between two revisions or paths.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Export">SubLua:Export</a>&nbsp;(srcPath, destPath, options)</td>
+	<td class="summary">Create an unversioned copy of a tree.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Get">SubLua:Get</a>&nbsp;(path, destPath, options)</td>
+	<td class="summary">Retrieves the contents for a specific <tt>revision<tt> of a <tt>path<tt> and saves it to the destination file <tt>dstPath<tt>.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Import">SubLua:Import</a>&nbsp;(path, url, message, options)</td>
+	<td class="summary">Commit an unversioned file or tree into the repository.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Info">SubLua:Info</a>&nbsp;(path, infoReceiverCallback, options)</td>
+	<td class="summary">Return information about pathOrUrl </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Lock">SubLua:Lock</a>&nbsp;(path, options)</td>
+	<td class="summary">Locks files and directories.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:MkDir">SubLua:MkDir</a>&nbsp;(path, message)</td>
+	<td class="summary">Create a new directory under version control.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:PropGet">SubLua:PropGet</a>&nbsp;(propertyName, path, options)</td>
+	<td class="summary">Gets the value of a property on files, dirs, or revisions.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:PropSet">SubLua:PropSet</a>&nbsp;(propName, propValue, path, options)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Revert">SubLua:Revert</a>&nbsp;(path, options)</td>
+	<td class="summary">Revert files and directories from version control.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Unlock">SubLua:Unlock</a>&nbsp;(path, options)</td>
+	<td class="summary">Unlocks files and directories.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Update">SubLua:Update</a>&nbsp;(path, options)</td>
+	<td class="summary">Updates the file or directory.</td>
+	</tr>
+
+</table>
+
+
+
+
+<h2>Tables</h2>
+<table class="table_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#Enums">Enums</a></td>
+	<td class="summary">The Subverison enums.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#Options">Options</a></td>
+	<td class="summary">The Options class.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#SvnInfo">SvnInfo</a></td>
+	<td class="summary">The SvnInfo class.</td>
+	</tr>
+
+</table>
+
+
+
+<br/>
+<br/>
+
+
+
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="SubLua.ReleaseWorkingCopyLock"></a><strong>SubLua.ReleaseWorkingCopyLock</strong>&nbsp;()</dt>
+<dd>
+Release the lock on the working copy Does nothing and is unnecessary in svn versions 1.6 and below
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Add"></a><strong>SubLua:Add</strong>&nbsp;(path, options)</dt>
+<dd>
+Schedule a working copy path for addition to the repository. Adds a file to the repository.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  path: {string} The path to add to the working copy. Path's parent must be under revision control already.
+	</li>
+	
+	<li>
+	  options: {table} [OPT] Options table. Possible Options: depth, force, no_ignore, add_parents
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/SubLua.html#Options">
+		Options
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Cat"></a><strong>SubLua:Cat</strong>&nbsp;(path, options)</dt>
+<dd>
+Output the content of specified files or URLs.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  path: {string} The path or URL to output.
+	</li>
+	
+	<li>
+	  options: {table} [OPT] Options table. Possible Options: peg, revision
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+{string} String of the contents of `@path`.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Checkout"></a><strong>SubLua:Checkout</strong>&nbsp;(url, path, options)</dt>
+<dd>
+Checks out a working copy from a url to a path.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  url: {string} The URL to check out.
+	</li>
+	
+	<li>
+	  path: {string} The local path to check out to.
+	</li>
+	
+	<li>
+	  options: {table} [OPT] Options table. Possible Options: peg, revision, depth, ignore_externals, force
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+Revision of the checkout.
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/SubLua.html#Options">
+		Options
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Cleanup"></a><strong>SubLua:Cleanup</strong>&nbsp;(path)</dt>
+<dd>
+Recursively cleans up a local directory, finishing any incomplete operations, removing lockfiles, etc.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  path: {string} Path to a local directory.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Commit"></a><strong>SubLua:Commit</strong>&nbsp;(path, message, options)</dt>
+<dd>
+Commit files or directories into repository
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  path: {string}/{table} The path(s) to commit.
+	</li>
+	
+	<li>
+	  message: {string} The commit message.
+	</li>
+	
+	<li>
+	  options: {table} [OPT] Options table. Possible Options: depth, keep_locks, keep_changelists
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/SubLua.html#Options">
+		Options
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Copy"></a><strong>SubLua:Copy</strong>&nbsp;(srcPath, srcRevision, destPath)</dt>
+<dd>
+Copies one path to another
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  srcPath: {string} The source path to copy from.
+	</li>
+	
+	<li>
+	  srcRevision: {string} The source revision to copy from.
+	</li>
+	
+	<li>
+	  destPath: {string} The destination path to copy to.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Delete"></a><strong>SubLua:Delete</strong>&nbsp;(path, options)</dt>
+<dd>
+Remove files and directories from version control.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  path: {string}/{table} The path(s) or URL(s) to remove. If it is a local path(s) then the paths are scheduled for deletion upon the next commit. If it is a URL(s) then they are deleted immediatly.
+	</li>
+	
+	<li>
+	  options: {table} [OPT] Options table. Possible Options: force, keep_local
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/SubLua.html#Options">
+		Options
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Diff"></a><strong>SubLua:Diff</strong>&nbsp;(tmpPath, path, revision1, revision2, options)</dt>
+<dd>
+Display the differences between two revisions or paths.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  tmpPath: {string} The first path to diff.
+	</li>
+	
+	<li>
+	  path: {string} The second path to diff.
+	</li>
+	
+	<li>
+	  revision1: {string}/{number} [OPT] The revision of the first file to diff.
+	</li>
+	
+	<li>
+	  revision2: {string}/{number} [OPT] The revision of the second file to diff.
+	</li>
+	
+	<li>
+	  options: {table} [OPT] Options table. Possible Options: depth, notice_ancestry, no_diff_deleted
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/SubLua.html#Options">
+		Options
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Export"></a><strong>SubLua:Export</strong>&nbsp;(srcPath, destPath, options)</dt>
+<dd>
+Create an unversioned copy of a tree.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  srcPath: {string} The source path or URL to export from.
+	</li>
+	
+	<li>
+	  destPath: {string} The destination path to export to.
+	</li>
+	
+	<li>
+	  options: {table} [OPT] Options table. Possible Options: peg, revision, force, ignore_externals, depth, native_eol
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+Revision of the Export.
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/SubLua.html#Options">
+		Options
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Get"></a><strong>SubLua:Get</strong>&nbsp;(path, destPath, options)</dt>
+<dd>
+Retrieves the contents for a specific <tt>revision<tt> of a <tt>path<tt> and saves it to the destination file <tt>dstPath<tt>.  If <tt><destPathtt> is empty (""), then this path will be constructed from the temporary directory on this system and the filename in <tt><pathtt>. <tt><destPathtt> will still have the file extension from <tt><pathtt> and uniqueness of the temporary filename will be ensured.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  path: {string} path or url
+	</li>
+	
+	<li>
+	  destPath: {string} destination path
+	</li>
+	
+	<li>
+	  options: {table} [OPT] Options table. Possible Options: peg, revision
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+{string} the destPath or the temp file path if <tt><destPathtt> was an empty string
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/SubLua.html#Options">
+		Options
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Import"></a><strong>SubLua:Import</strong>&nbsp;(path, url, message, options)</dt>
+<dd>
+Commit an unversioned file or tree into the repository. Parent directories are created as necessary in the repository.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  path: {string} The path to add to the working copy. Path's parent must be under revision control already.
+	</li>
+	
+	<li>
+	  url: {string} The URL to check out.
+	</li>
+	
+	<li>
+	  message: {string} [OPT] The commit message.
+	</li>
+	
+	<li>
+	  options: {table} [OPT] Options table. Possible Options: depth, no_ignore, auto_props
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/SubLua.html#Options">
+		Options
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Info"></a><strong>SubLua:Info</strong>&nbsp;(path, infoReceiverCallback, options)</dt>
+<dd>
+Return information about pathOrUrl
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  path: {string}/{table} The path or URL to get the specified information from.
+	</li>
+	
+	<li>
+	  infoReceiverCallback: {function} [OPT] Called everytime a file is found during receiving information. For each invocation it passes <tt>path<tt> with the information present in <tt>info<tt>. Return true from the InfoReceiver() to have the function contiue, if you return false it will stop the operation and throw an error.<br > The prototype for the callback is <br ><br > function SubLua:MyInfoReceiver( path, info )<br > &nbsp &nbsp &nbsp &nbsp print( path, info )<br > &nbsp &nbsp &nbsp &nbsp return true<br > end
+	</li>
+	
+	<li>
+	  options: {table} [OPT] Options table. Possible Options: peg, revision, depth
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/SubLua.html#Options">
+		Options
+	</a>
+	
+	<li><a href="../modules/SubLua.html#SvnInfo">
+		SvnInfo
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Lock"></a><strong>SubLua:Lock</strong>&nbsp;(path, options)</dt>
+<dd>
+Locks files and directories.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  path: {string}/{table} The path(s) or URL(s) to revert.
+	</li>
+	
+	<li>
+	  options: {table} [OPT] Options table. Possible Options: force
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/SubLua.html#Options">
+		Options
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:MkDir"></a><strong>SubLua:MkDir</strong>&nbsp;(path, message)</dt>
+<dd>
+Create a new directory under version control.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  path: {string}/{table} The path(s) or URL(s) to output. If it is a local path then the directory is created and scheduled for addition upon the next commit. If it is a URL then the commit is immediate.
+	</li>
+	
+	<li>
+	  message: {string} [OPT] Log message as a string.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:PropGet"></a><strong>SubLua:PropGet</strong>&nbsp;(propertyName, path, options)</dt>
+<dd>
+Gets the value of a property on files, dirs, or revisions.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  propertyName: {string} The property to get from <i>path<i>.
+	</li>
+	
+	<li>
+	  path: {string}/{table} The path or URL to get the specified property from.
+	</li>
+	
+	<li>
+	  options: {table} [OPT] Options table. Possible Options: revision, depth
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+{table} Table of properties. The list will contain tables where the keys are the path, and the values are a property table. In the property table there are keys of property names to their value, both as strings.
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/SubLua.html#Options">
+		Options
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:PropSet"></a><strong>SubLua:PropSet</strong>&nbsp;(propName, propValue, path, options)</dt>
+<dd>
+
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  propName: {string} The property name to set.
+	</li>
+	
+	<li>
+	  propValue: {string} The value of the property to set
+	</li>
+	
+	<li>
+	  path: {string} Path where property to be set
+	</li>
+	
+	<li>
+	  options: {table} Options table. Possible Options: depth
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/SubLua.html#Options">
+		Options
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Revert"></a><strong>SubLua:Revert</strong>&nbsp;(path, options)</dt>
+<dd>
+Revert files and directories from version control.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  path: {string}/{table} The path(s) or URL(s) to revert.
+	</li>
+	
+	<li>
+	  options: {table} [OPT] Options table. Possible Options: depth
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/SubLua.html#Options">
+		Options
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Unlock"></a><strong>SubLua:Unlock</strong>&nbsp;(path, options)</dt>
+<dd>
+Unlocks files and directories.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  path: {string}/{table} The path(s) or URL(s) to revert.
+	</li>
+	
+	<li>
+	  options: {table} [OPT] Options table. Possible Options: force
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/SubLua.html#Options">
+		Options
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="SubLua:Update"></a><strong>SubLua:Update</strong>&nbsp;(path, options)</dt>
+<dd>
+Updates the file or directory.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  path: {string} The path or URL to output.
+	</li>
+	
+	<li>
+	  options: {table} [OPT] Options table. Possible Options: revision, depth, set_depth, ignore_externals, force
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+Revision of the checkout.
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/SubLua.html#Options">
+		Options
+	</a>
+	
+</ul>
+
+</dd>
+
+
+</dl>
+
+
+
+
+<h2><a name="tables"></a>Tables</h2>
+<dl class="table">
+
+<dt><a name="Enums"></a><strong>Enums</strong></dt>
+<dd>The Subverison enums. These are part of the SubLua object returned after calling new().
+
+
+<em>Fields</em>
+<ul>
+	
+	<li>
+	  wc.notify.action.add: Adding a path to revision control.
+	</li>
+	
+	<li>
+	  wc.notify.action.copy: Copying a versioned path.
+	</li>
+	
+	<li>
+	  wc.notify.action.delete: Deleting a versioned path.
+	</li>
+	
+	<li>
+	  wc.notify.action.restore: Restoring a missing path from the pristine text-base.
+	</li>
+	
+	<li>
+	  wc.notify.action.revert: Reverting a modified path.
+	</li>
+	
+	<li>
+	  wc.notify.action.failed_revert: A revert operation has failed.
+	</li>
+	
+	<li>
+	  wc.notify.action.resolved: Resolving a conflict.
+	</li>
+	
+	<li>
+	  wc.notify.action.skip: Skipping a path.
+	</li>
+	
+	<li>
+	  wc.notify.action.update_delete: Got a delete in an update.
+	</li>
+	
+	<li>
+	  wc.notify.action.update_add: Got an add in an update.
+	</li>
+	
+	<li>
+	  wc.notify.action.update_update: Got any other action in an update.
+	</li>
+	
+	<li>
+	  wc.notify.action.update_completed: The last notification in an update (including updates of externals).
+	</li>
+	
+	<li>
+	  wc.notify.action.update_external: Updating an external module.
+	</li>
+	
+	<li>
+	  wc.notify.action.status_completed: The last notification in a status (including status on externals).
+	</li>
+	
+	<li>
+	  wc.notify.action.status_external: Running status on an external module.
+	</li>
+	
+	<li>
+	  wc.notify.action.commit_modified: Committing a modification.
+	</li>
+	
+	<li>
+	  wc.notify.action.commit_added: Committing an addition.
+	</li>
+	
+	<li>
+	  wc.notify.action.commit_deleted: Committing a deletion.
+	</li>
+	
+	<li>
+	  wc.notify.action.commit_replaced: Committing a replacement.
+	</li>
+	
+	<li>
+	  wc.notify.action.commit_postfix_txdelta: Transmitting post-fix text-delta data for a file.
+	</li>
+	
+	<li>
+	  wc.notify.action.blame_revision: Processed a single revision's blame.
+	</li>
+	
+	<li>
+	  wc.notify.action.locked: Locking a path. New in 1.2.
+	</li>
+	
+	<li>
+	  wc.notify.action.unlocked: Unlocking a path. New in 1.2.
+	</li>
+	
+	<li>
+	  wc.notify.action.failed_lock: Failed to lock a path. New in 1.2.
+	</li>
+	
+	<li>
+	  wc.notify.action.failed_unlock: Failed to unlock a path. New in 1.2.
+	</li>
+	
+	<li>
+	  wc.notify.action.exists: Tried adding a path that already exists. New in 1.5.
+	</li>
+	
+	<li>
+	  wc.notify.action.changelist_set: Changelist name set. New in 1.5.
+	</li>
+	
+	<li>
+	  wc.notify.action.changelist_clear: Changelist name cleared. New in 1.5.
+	</li>
+	
+	<li>
+	  wc.notify.action.changelist_moved: Warn user that a path has moved from one changelist to another. New in 1.5. Deprecated: As of 1.7, separate clear and set notifications are sent.
+	</li>
+	
+	<li>
+	  wc.notify.action.merge_begin: A merge operation (to path) has begun. See svn_-- @field wc.notify.action.merge_range. New in 1.5.
+	</li>
+	
+	<li>
+	  wc.notify.action.foreign_merge_begin: A merge operation (to path) from a foreign repository has begun. See -- @field wc.notify.action.merge_range. New in 1.5.
+	</li>
+	
+	<li>
+	  wc.notify.action.update_replace: Replace notification. New in 1.5.
+	</li>
+	
+	<li>
+	  wc.notify.action.property_added: Property added. New in 1.6.
+	</li>
+	
+	<li>
+	  wc.notify.action.property_modified: Property updated. New in 1.6.
+	</li>
+	
+	<li>
+	  wc.notify.action.property_deleted: Property deleted. New in 1.6.
+	</li>
+	
+	<li>
+	  wc.notify.action.property_deleted_nonexistentNonexistent: property deleted. New in 1.6.
+	</li>
+	
+	<li>
+	  wc.notify.action.revprop_set: Revprop set. New in 1.6.
+	</li>
+	
+	<li>
+	  wc.notify.action.revprop_deleted: Revprop deleted. New in 1.6.
+	</li>
+	
+	<li>
+	  wc.notify.action.merge_completed: The last notification in a merge. New in 1.6.
+	</li>
+	
+	<li>
+	  wc.notify.action.tree_conflict: The path is a tree-conflict victim of the intended action (*not* a persistent tree-conflict from an earlier operation, but *this* operation caused the tree-conflict). New in 1.6.
+	</li>
+	
+	<li>
+	  wc.notify.action.failed_external: The path is a subdirectory referenced in an externals definition which is unable to be operated on. New in 1.6.
+	</li>
+	
+	<li>
+	  wc.notify.action.update_started: Starting an update operation. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.update_skip_obstruction: An update tried to add a file or directory at a path where a separate working copy was found. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.update_skip_working_only: An explicit update tried to update a file or directory that doesn't live in the repository and can't be brought in. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.update_skip_access_denied: An update tried to update a file or directory to which access could not be obtained. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.update_external_removed: An update operation removed an external working copy. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.update_shadowed_add: A node below an existing node was added during update. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.update_shadowed_update: A node below an exising node was updated during update. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.update_shadowed_delete: A node below an existing node was deleted during update. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.merge_record_info: The mergeinfo on path was updated. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.upgraded_path: An working copy directory was upgraded to the latest format. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.merge_record_info_begin: Mergeinfo describing a merge was recorded. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.merge_elide_info: Mergeinfo was removed due to elision. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.patch: A file in the working copy was patched. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.patch_applied_hunk: A hunk from a patch was applied. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.patch_rejected_hunk: A hunk from a patch was rejected. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.patch_hunk_already_applied: A hunk from a patch was found to already be applied. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.commit_copied: Committing a non-overwriting copy (path is the target of the copy, not the source). New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.commit_copied_replaced: Committing an overwriting (replace) copy (path is the target of the copy, not the source). New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.url_redirect: The server has instructed the client to follow a URL redirection. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.path_nonexistent: The operation was attempted on a path which doesn't exist. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.exclude: Removing a path by excluding it. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.failed_conflict: Operation failed because the node remains in conflict. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.failed_missing: Operation failed because an added node is missing. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.failed_out_of_date: Operation failed because a node is out of date. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.failed_no_parent: Operation failed because an added parent is not selected.  New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.failed_locked: Operation failed because a node is locked by another user and/or working copy. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.failed_forbidden_by_server: Operation failed because the operation was forbidden by the server. New in 1.7.
+	</li>
+	
+	<li>
+	  wc.notify.action.skip_conflicted: The operation skipped the path because it was conflicted. New in 1.7.
+	</li>
+	
+</ul>
+
+
+</dd>
+
+
+<dt><a name="Options"></a><strong>Options</strong></dt>
+<dd>The Options class.
+
+
+<em>Fields</em>
+<ul>
+	
+	<li>
+	  revision: the revision you want to update to; defaults to "HEAD".
+	</li>
+	
+	<li>
+	  peg: the peg revision you want to update using; defaults to "HEAD".
+	</li>
+	
+	<li>
+	  depth: limit operation by depth ARG ('empty', 'files', 'immediates', or 'infinity'); defaults to unknown.
+	</li>
+	
+	<li>
+	  force: force operation to run; defaults to false.
+	</li>
+	
+	<li>
+	  ignore_externals: set to ignore the externals; defaults to false.
+	</li>
+	
+	<li>
+	  ignore_keywords: set to ignore the keyword substitution; defaults to false.
+	</li>
+	
+	<li>
+	  no_ignore: set to disregard default and svn:ignore property ignores; defaults to false.
+	</li>
+	
+	<li>
+	  native_eol: use a different EOL marker than the standard system marker for files with the svn:eol-style property set to 'native'. ARG may be one of 'LF', 'CR', 'CRLF'; defaults to NULL (no change).
+	</li>
+	
+	<li>
+	  set_depth: set new working copy depth to <tt>depth</tt>. If <tt>depth</tt> is not specified then this does nothing; defaults to false.
+	</li>
+	
+	<li>
+	  parents: If true, create any non-existent parent directories also; defaults to false.
+	</li>
+	
+	<li>
+	  add_parents: If true, recurse up path's directory and look for a versioned directory. If found, add all intermediate paths between it and path; defaults to false.
+	</li>
+	
+	<li>
+	  keep_changelists: After the commit completes successfully, remove changelist associations from the targets, unless keep_changelists is true; defaults to false.
+	</li>
+	
+	<li>
+	  keep_locks: Unlock paths in the repository, unless keep_locks is true; defaults to false.
+	</li>
+	
+	<li>
+	  auto_props: Enable automatic properties; defaults to true.
+	</li>
+	
+	<li>
+	  ignore_unknown_node_types: Ignore files of which the node type is unknown, such as device files and pipes.; defaults to false.
+	</li>
+	
+	<li>
+	  keep_local: if true then the paths will not be removed from the working copy, only scheduled for removal from the repository. Once the scheduled deletion is committed, they will appear as unversioned paths in the working copy; defaults to false.
+	</li>
+	
+	<li>
+	  no_diff_deleting: Do not print differences for deleted files; defaults to false.
+	</li>
+	
+	<li>
+	  notice_ancestry: Notice ancestry when calculating differences; defaults to false.
+	</li>
+	
+</ul>
+
+
+</dd>
+
+
+<dt><a name="SvnInfo"></a><strong>SvnInfo</strong></dt>
+<dd>The SvnInfo class.
+
+
+<em>Fields</em>
+<ul>
+	
+	<li>
+	  isValid: Is it valid?
+	</li>
+	
+	<li>
+	  url: The url
+	</li>
+	
+	<li>
+	  revision: The revision
+	</li>
+	
+	<li>
+	  kind: The kind
+	</li>
+	
+	<li>
+	  rootUrl: The root URL
+	</li>
+	
+	<li>
+	  uuid: The uuid
+	</li>
+	
+	<li>
+	  lastChangedRevision: Last changed revision
+	</li>
+	
+	<li>
+	  lastChangedDate: Last changed date
+	</li>
+	
+	<li>
+	  lastChangedAuthor: Last changed author
+	</li>
+	
+	<li>
+	  lock: Lock
+	</li>
+	
+	<li>
+	  hasWCInfo: Has working copy info?
+	</li>
+	
+	<li>
+	  schedule: The schedule
+	</li>
+	
+	<li>
+	  copyFromUrl: Copy from URL
+	</li>
+	
+	<li>
+	  copyFromRev: Copy from revision
+	</li>
+	
+	<li>
+	  textTime: Time in text
+	</li>
+	
+	<li>
+	  propTime: Properties time
+	</li>
+	
+	<li>
+	  checksum: The checksum
+	</li>
+	
+	<li>
+	  conflictOld: Conflict old
+	</li>
+	
+	<li>
+	  conflictNew: Conflict new
+	</li>
+	
+	<li>
+	  conflictWrk: Conflict working
+	</li>
+	
+	<li>
+	  propRejectFile: Prop reject file
+	</li>
+	
+	<li>
+	  changelist: The changelist
+	</li>
+	
+	<li>
+	  depth: Depth
+	</li>
+	
+	<li>
+	  workingSize: Working size
+	</li>
+	
+	<li>
+	  size: Size
+	</li>
+	
+	<li>
+	  size64: Size64
+	</li>
+	
+	<li>
+	  workingSize64: Working Size64
+	</li>
+	
+	<li>
+	  treeConflict: the TreeConflict
+	</li>
+	
+</ul>
+
+
+</dd>
+
+
+</dl>
+
+
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->	
+</body>
+</html>

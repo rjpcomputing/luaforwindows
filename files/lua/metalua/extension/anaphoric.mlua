@@ -1,0 +1,54 @@
+--------------------------------------------------------------------------------
+--
+-- Anaphoric macros.
+--
+-- This extension turns 'it' into a special variable, that's bound to
+-- an often used value:
+--
+-- * in an 'if' statement, 'it' is bound, in a block, to the condition
+--   that triggered the block's execution:
+--   > if 1234 then y=it end; assert (y == 1234)
+--
+-- * in a while loop, it's bound to the test:
+--   > while file:read "*a" do table.insert (lines, it) end
+--
+-- 'it' is bound the the most closely surrounding structure. If you wanted to
+-- use its content at a deeper position in the AST, you would have to save it
+-- in a temporary variable. But what you should really do in such a case is
+-- avoiding to use anaphoric macros: they're fine for one-liner, but they
+-- reduce readability for bigger functions.
+--------------------------------------------------------------------------------
+
+-- TODO: 'and' operator could, and maybe should, be anaphoric as well
+-- TODO: anaphoric functions would be cool for recursive functions, but
+--       recursive calls are always in an 'if' statement, so the pronoun
+--       used for functions must not be the same as for 'if'.
+
+require 'freevars'
+
+local function anaphoric_if(ast)
+   local it_found = false
+   for i=2, #ast do 
+      if freevars.block(ast[i])['it'] then
+         it_found = true
+         break
+      end
+   end
+   if it_found then
+      local cond = ast[1]
+      ast[1] = +{it}
+      return +{stat: do local it = -{cond}; -{ast} end }
+   end
+end
+
+local function anaphoric_while(ast)
+   local it_found = false
+   if freevars.block(ast[2])['it'] then
+      local cond = ast[1]
+      ast[1] = +{it}
+      return +{stat: do local it = -{cond}; -{ast} end }
+   end
+end
+
+mlp.stat:get'if'.transformers:add(anaphoric_if)
+mlp.stat:get'while'.transformers:add(anaphoric_while)

@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Expression Parser</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																																													<li><a href="../../index.html", title="">Home</a></li>
+																																																													<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																																													<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																																													<li><a href="../index.html", title="Class Library">Library</a>
+																																																														<div class="outside"><div class="inside"><ul>
+																																																															<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																																																</li>
+																																																																<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																																																	</li>
+																																																																	<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																																																		</li>
+																																																																		<li><a href="../overview.html#object", title="Objects">object</a>
+																																																																			</li>
+																																																																			<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																																																				</li>
+																																																																				<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																																																					</li>
+																																																																				</ul></div></div>
+																																																																			</li>
+																																																																			<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																																																			<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																																																		</ul></div></div>
+																																																																	
+</div>
+
+<div class="content">
+<h1>Expression Parser</h1>
+<h2><code>loop.compiler.Expression</code></h2><br>
+<p>Class of objects that parse simple expressions composed by values and operands with precedence.
+The operands are always parsed from left to right.
+Many restrictions are imposed to the expression grammar, however this class is useful to implement simple expressions evaluators when Lua expressions are too expressive (<i>i.e.</i> control structures or first-class functions may lead to undesirable situations) or to create compilers of simple expressions.
+All operators are parsed accordingly to their precedence that may be overhidden by the use of round brackets.</p>
+
+<p>Each object is created with lists defining the format of each valid value, format of operators (<i>i.e.</i> operator symbol and relative position of operands) and evaluation precedence.
+The object also must provide an operation for each operator that will be called whenever the operator is parsed.
+The same is true for values that are parsed by specific operations defined in the object instance.</p>
+
+<h2>Behavior</h2>
+
+<h3>Initialization</h3>
+
+<dl>
+	
+	<dt><code><b>Expression</b>([object])</code></dt>
+	<dd>
+		Creates an expression parser that parses expression of a given grammar.
+		The grammar is specified by field of the table <code>object</code> that will become the <code>Expression</code> instance.
+		These fields define operator format and precedence and format of values.
+		The resulted grammar is very restricted.
+		For further information see section <a href="#Remarks">Remarks</a>.
+		Below, there is a description of the informations that should be provided as fields of table <code>parser</code>.
+		These informations should be provided at creation time only and should not change later.<br><br>
+		<dl>
+			<dt><i>values</i></dt>
+			<dd>
+				Field that contains a table that maps the name of each value valid in the expression to a Lua pattern that matches the strings that represent these values.
+				The pattern must define a capture of the substring necessary for the evaluation of the value.<br>
+				<b>Example:</b>
+				<pre>values = {
+  number = "(%d*%.?%d+)",
+  string = "'([^']*)'",
+  name   = "([%a_][%w_]*)",
+}</pre>
+			</dd>
+
+			<dt><i>operators</i></dt>
+			<dd>
+				Field that contains a table that maps the name of each operator to a string that contains the format of the operator.
+				All non-space characters of the format are considered as operator delimiters and each space caracter is considered as the positions of operand values.
+				For example, the following strings specifies the binary operator '+' in prefixed, infixed and posfixed forms respectively: <code>'+  '</code>, <code>' + '</code>, <code>'  +'</code>.<br>
+				<b>Example:</b>
+				<pre>operators = {
+  invert   = "- ",
+  sum      = " + ",
+  subtract = " - ",
+  multiply = " * ",
+  divide   = " / ",
+}</pre>
+			</dd>
+
+			<dt><i>precedence</i></dt>
+			<dd>
+				Field that contains an array of lists containing the names of each valid operator.
+				The lists should be arranged in the array in increasing order of precedence, therefore higher the index of a list in the array the first those operators will be parsed in each expression.
+				All the operators in a list of a particular position in the array are evaluated in order of occourence in the expression from left to right.<br>
+				<b>Example:</b>
+				<pre>precedence = {
+  {"sum","subtract"},
+  {"multiply","divide"},
+  {"invert"},
+}</pre>
+			</dd>
+		</dl>
+		
+	</dd>
+	
+</dl>
+
+<h3>Methods</h3>
+
+<dl>
+	
+	<dt><code><b>evaluate</b>(expression [, start])</code></dt>
+	<dd>
+		Parses the expression in string <code>expression</code> stating at index <code>start</code>.
+		If not value is provided for <code>start</code> the parsing starts from first character.
+		Whenever a value or operand is parsed a particular method of the objet is invoked to properly evaluate the value or operator construction.
+		The name of the called method is the same name of the value or operator, <i>i.e.</i> names previously provided by fields <code>values</code> and <code>operators</code> of the table provided at object creation.
+		Below, there is a description of the methods called and the values they should return.
+		All these methods are not defined by class <code>Expression</code> and must be provided by the object instance.
+		<dl>
+			<dt><i>Value methods</i></dt>
+			<dd>
+				Each value of the expression is evaluated by a method which name matches the name of the value.
+				This method is called with the string captured by the pattern defined for that value and should return some Lua value that represents the parsed value.
+			</dd>
+			
+			<dt><i>Operator methods</i></dt>
+			<dd>
+				Whenever an operator and all its operands are parsed the method which name matches the name of the operator is called.
+				The arguments of this call are the values of all the operands that were previously returned by other calls of <i>value methods</i> or <i>operator methods</i>.
+				The operand values are provided as arguments of the call in the same order of occurence in the expression, <i>i.e.</i> from left to right.
+			</dd>
+		</dl>
+	</dd>
+	
+</dl>
+
+<h2><a name="Remarks">Remarks</a></h2>
+
+<ul>
+	<li>The symbols <code>'('</code> and <code>')'</code> are reserved for precedence overhidding and should not be used in value or operand representations.</li>
+	<li>The patterns of values should not match any operator delimiter, otherwise the parsing behavior is not defined.</li>
+	<li>If patterns of values present intersections there is no garantee which kind of value will be matched.</li>
+	<li>Operands of a given operator cannot be expressions with operators of lower or same precedence, except if the first operand occurs before any operator delimiter, in such case the first operand may be an expression with operators of the same precedence.
+	To allow such construction, the operand expressions must be delimited by round brackets, <i>i.e.</i> <code>'('</code> and <code>')'</code>.</li>
+	<li>The parsing process is slow, therefore should not be used for very long expressions.</li>
+</ul>
+
+<h2>Examples</h2>
+
+<h3><a name="ExpressionSolver">Meta-circular expression solver</a></h3>
+
+<pre>
+local Expression = require "loop.compiler.Expression"
+
+local solver = Expression{
+  values = {
+    number = "(%d*%.?%d+)",
+    variable = "([%a_][%w_]*)",
+  },
+  operators = {
+    invert   = "- ",
+    absolute = "| |",
+    sum      = " + ",
+    subtract = " - ",
+    multiply = " * ",
+    divide   = " / ",
+    power    = " ^ ",
+    apply    = "  ",
+  },
+  precedence = {
+    {"sum","subtract"},
+    {"multiply","divide"},
+    {"power"},
+    {"invert"},
+    {"absolute"},
+    {"apply"},
+  },
+}
+function solver:number  (value)    return tonumber(value)               end
+function solver:variable(name)     return self.vars[name] or math[name] end
+function solver:invert  (op)       return -op                           end
+function solver:absolute(op)       return math.abs(op)                  end
+function solver:sum     (op1, op2) return op1 + op2                     end
+function solver:subtract(op1, op2) return op1 - op2                     end
+function solver:multiply(op1, op2) return op1 * op2                     end
+function solver:divide  (op1, op2) return op1 / op2                     end
+function solver:power   (op1, op2) return op1 ^ op2                     end
+function solver:apply   (f,arg)    return f(arg)                        end
+
+function calculate(expr, vars)
+  solver.vars = vars
+  return solver:evaluate(expr)
+end
+
+
+
+-- calculate and show the roots of a quadratic equation
+local vars = { a = 3, b = -6, c = 6 }
+vars.d = calculate("b^2 - 4*a*c", vars)
+local r1, r2
+if vars.d >= 0 then
+  r1 = calculate("(-b + sqrt d) / (2*a)", vars)
+  r2 = calculate("(-b - sqrt d) / (2*a)", vars)
+else
+  local r = calculate("-b/(2*a)", vars)
+  local i = calculate("|( sqrt(-d)/(2*a) )|", vars)
+  if i == 1
+    then r1, r2 = "i", "-i"
+    else r1, r2 = i.."i", (-i).."i"
+  end
+  if r ~= 0 then r1, r2 = r.."+"..r1, r..r2 end
+end
+local msg = "The roots of (%d*x^2 + %d*x + %d) are"
+print(msg:format(vars.a, vars.b, vars.c), r1, r2)
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

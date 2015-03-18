@@ -1,0 +1,14 @@
+Description:
+Sample OLE control implemented in Lua.
+
+Files:
+  - control.lua: the code for the control
+  - client.* and form.frm: a VB client for the control
+  
+How to run:
+Run control.lua with the /Register command line switch to register the
+control, then run client.exe, which should show a form with the control
+inside (a black rectangle with a yellow square moving inside it). Click
+on the control and use the cursor keys to control the movement of the
+yellow square.
+

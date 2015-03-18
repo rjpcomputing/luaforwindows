@@ -1,0 +1,25 @@
+-{ block:
+   -{ extension 'log' }
+   -{ extension 'H' }
+
+   require 'metalua.dollar'
+
+   local H = H:new()
+   print("initial H.alpha", H.alpha)
+
+
+   function dollar.Q(cond, iftrue, iffalse)
+      local b = +{ block: 
+                   local v 
+                   if -{!cond} then v = -{!iftrue}
+                   else v = -{!iffalse} end }
+      local r = `Stat{ b, +{v} }
+      H(r)
+      return r
+   end 
+
+   $log(H)
+   return H.alpha }
+
+x=1 ; y=$Q(x==1, 'one', 'two') ; print(y)
+x=2 ; y=$Q(x==1, 'one', 'two') ; print(y)

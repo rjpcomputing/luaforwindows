@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>lPack Documentation</title>
+	<link rel="stylesheet" type="text/css" href="default.css" />
+</head>
+<body>
+<h1  id="T1">lPack Documentation</h1>
+
+<ul>
+    <li><a href="#T2">License</a></li>
+    <li><a href="#T3">Support</a></li>
+    <li><a href="#T4">Introduction</a></li>
+    <li><a href="#T5">Functions</a>
+    <ul>
+        <li><a href="#T6">string.pack</a></li>
+        <li><a href="#T7">string.unpack</a></li>
+    </ul></li>
+    <li><a href="#T8">Letter Codes</a></li>
+</ul>
+
+
+
+<h2  id="T2">License</h2>
+<p>This code is hereby placed in the public domain.</p>
+
+<h2  id="T3">Support</h2>
+<p>Please send comments, suggestions, and bug reports to <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#x3a;l&#104;&#x66;&#64;&#x74;&#101;&#x63;&#103;&#x72;a&#102;&#x2e;&#112;&#x75;&#99;&#x2d;&#114;&#x69;&#111;&#x2e;b&#114;">&#x6c;&#104;&#x66;&#64;&#x74;&#101;&#x63;g&#114;&#x61;&#102;&#x2e;&#112;&#x75;&#99;&#x2d;r&#105;&#x6f;&#46;&#x62;&#114;</a>.</p>
+
+<h2  id="T4">Introduction</h2>
+<p>This is a simple Lua library for packing and unpacking binary data.</p>
+
+<p>The library adds two functions to the <code>string</code> library: <code>pack</code> and <code>unpack</code>.</p>
+
+<h2  id="T5">Functions</h2>
+
+<h3  id="T6">string.pack</h3>
+<p><strong>Prototype:</strong></p>
+<blockquote>
+    <p><code>ret = pack( F, x1, x2, ... )</code></p>
+</blockquote>
+
+<p><strong>Description:</strong></p>
+<blockquote>
+    <p>Packs binary data into a string.</p>
+</blockquote>
+
+<p><strong>Parameters:</strong></p>
+<blockquote>
+    <p><code>F</code></p>
+    <blockquote>
+        <p>A string describing how the values <code>x1, x2, ...</code> are to be interpreted and formatted.    Each letter in the format string <code>F</code> consumes one of the given values. The letter codes understood by pack are listed below (they are inspired by Perl's codes but are not the same). Numbers following letter codes in <code>F</code> indicate repetitions.</p>
+    </blockquote>
+    
+    <p><code>x1, x2, ...</code></p>
+    <blockquote>
+        <p>Values to pack into binary. Only values of type number or string are accepted.</p>
+    </blockquote>
+</blockquote>
+
+<p><strong>Returns:</strong></p>
+<blockquote>
+    <p><code>ret</code></p>
+    <blockquote>
+        <p>A (binary) string containing the values packed as described in <code>F</code>.</p>
+    </blockquote>
+</blockquote>
+
+<h3  id="T7">string.unpack</h3>
+<p><strong>Prototype:</strong></p>
+<blockquote>
+    <p><code>val, next = unpack( s, F [,init] )</code></p>
+</blockquote>
+
+<p><strong>Description:</strong></p>
+<blockquote>
+    <p>Packs binary data into a string.</p>
+</blockquote>
+
+<p><strong>Parameters:</strong></p>
+<blockquote>
+    <p><code>s</code></p>
+    <blockquote>
+        <p>A (binary) string containing data packed as if by pack.</p>
+    </blockquote>
+    
+    <p><code>F</code></p>
+    <blockquote>
+        <p>A format string describing what is to be read from <code>s</code></p>
+    </blockquote>
+    
+    <p><code>init</code></p>
+    <blockquote>
+        <p>An optional init marks where in <code>s</code> to begin reading the values.</p>
+    </blockquote>
+</blockquote>
+
+<p><strong>Returns:</strong></p>
+<blockquote>
+    <p><code>next</code></p>
+    <blockquote>
+        <p>The first value returned by unpack is the next unread position in <code>s</code>, which can be used as the init position in a subsequent call to <code>unpack</code>. This allows you to <code>unpack</code> values in a loop or in several steps. If the position returned by <code>unpack</code> is beyond the end of <code>s</code>, then <code>s</code> has been exhausted; any calls to <code>unpack</code> starting beyond the end of <code>s</code> will always return <code>nil</code> values.</p>
+    </blockquote>
+    
+    <p><code>val</code></p>
+    <blockquote>
+        <p>One value per letter in <code>F</code> until <code>F</code> or <code>s</code> is exhausted (the letters codes are the same as for pack, except that numbers following <code>A</code> are interpreted as the number of characters to read into the string, not as repetitions).</p>
+    </blockquote>
+</blockquote>
+
+<h2  id="T8">Letter Codes</h2>
+<blockquote>
+    <p><strong><code>z</code></strong> : zero-terminated string <br/>
+    <strong><code>p</code></strong> : string preceded by length byte <br/>
+    <strong><code>P</code></strong> : string preceded by length word <br/>
+    <strong><code>a</code></strong> : string preceded by length size_t <br/>
+    <strong><code>A</code></strong> : string <br/>
+    <strong><code>f</code></strong> : float <br/>
+    <strong><code>d</code></strong> : double <br/>
+    <strong><code>n</code></strong> : Lua number <br/>
+    <strong><code>c</code></strong> : char <br/>
+    <strong><code>b</code></strong> : byte (unsigned char) <br/>
+    <strong><code>h</code></strong> : short <br/>
+    <strong><code>H</code></strong> : unsigned short <br/>
+    <strong><code>i</code></strong> : int <br/>
+    <strong><code>I</code></strong> : unsigned int <br/>
+    <strong><code>l</code></strong> : long <br/>
+    <strong><code>L</code></strong> : unsigned long</p>
+    
+    <p><strong><code>&lt;</code></strong> : little endian <br/>
+    <strong><code>&gt;</code></strong> : big endian <br/>
+    <strong><code>=</code></strong> : native endian  </p>
+</blockquote>
+
+</body></html>

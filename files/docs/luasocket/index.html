@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" 
+    "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<head>
+<meta name="description" content="The LuaSocket Homepage">
+<meta name="keywords" content="Lua, LuaSocket, Network, Library, Support, Internet">
+<title>LuaSocket: Network support for the Lua language </title>
+<link rel="stylesheet" href="reference.css" type="text/css">
+</head>
+
+<body>
+
+<!-- header +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<div class=header>
+<hr>
+<center>
+<table summary="LuaSocket logo">
+<tr><td align=center><a href="http://www.lua.org">
+<img width=128 height=128 border=0 alt="LuaSocket" src="luasocket.png">
+</a></td></tr>
+<tr><td align=center valign=top>Network support for the Lua language
+</td></tr>
+</table>
+<p class=bar>
+<a href="home.html">home</a> &middot;
+<a href="home.html#download">download</a> &middot;
+<a href="installation.html">installation</a> &middot;
+<a href="introduction.html">introduction</a> &middot;
+<a href="reference.html">reference</a> 
+</p>
+</center>
+<hr>
+</div>
+
+<!-- whatis +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<h2 id=whatis>What is LuaSocket?</h2>
+
+<p>
+LuaSocket  is a  <a href="http://www.lua.org">Lua</a>  extension library
+that is composed by two parts: a C core that provides  support for the TCP
+and UDP transport layers, and a set of Lua modules that add support for
+functionality commonly needed by applications that deal with the Internet. 
+</p>
+
+<p>
+The core support has been  implemented so that it  is both efficient and
+simple to use.  It is available to any Lua application once it has been
+properly initialized by the interpreter in use. The code has been tested
+and runs well on several Windows and Unix platforms. </p>
+
+<p>
+Among the support modules, the most commonly used implement the 
+<a href=smtp.html>SMTP</a>
+(sending  e-mails),  
+<a href=http.html>HTTP</a>
+(WWW access)  and  
+<a href=ftp.html>FTP</a>  
+(uploading  and downloading files) client
+protocols. These provide a very natural and generic interface to the
+functionality defined by each protocol. 
+In addition, you will find that the 
+<a href=mime.html>MIME</a> (common encodings), 
+<a href=url.html>URL</a> 
+(anything you could possible want to do with one) and 
+<a href=ltn12.html>LTN12</a> 
+(filters, sinks, sources and pumps) modules can be very handy. 
+</p>
+
+<p>
+The library is available under the same  
+<a href="http://www.lua.org/copyright.html">
+terms and conditions</a> as the Lua language, the MIT license. The idea is
+that if you can use Lua in a project, you should also be able to use 
+LuaSocket.
+</p>
+
+<p>
+Copyright &copy; 2004-2007 Diego Nehab. All rights reserved. <br>
+Author: <A href="http://www.cs.princeton.edu/~diego">Diego Nehab</a>
+</p>
+
+<!-- download +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<h2 id=download>Download</h2>
+
+<p>
+LuaSocket version 2.0.2 is now  available for download! It  is
+compatible with  Lua&nbsp;5.1, and has    
+been tested on Windows&nbsp;XP, Linux, and Mac OS X. Chances
+are it works well on most UNIX distributions and Windows flavors.
+</p>
+
+<p>
+The library can be downloaded in source code from the
+<a href=http://luaforge.net/projects/luasocket/>LuaSocket
+project page</a> at LuaForge. 
+Besides the full C and Lua source code for the library, the distribution
+contains several examples, this user's manual and basic test procedures.
+</p>
+
+<p>
+Danilo Tuler is maintaining Win32 binaries for LuaSocket, which are also
+available from LuaForge.  These are compatible with the 
+<a href=http://luaforge.net/projects/luabinaries>LuaBinaries</a>,
+also available from LuaForge. 
+</p>
+
+<p> Take a look at the <a
+href=installation.html>installation</a> section of the
+manual to find out how to properly install the library.
+</p>
+
+<!-- thanks +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<h2 id=thanks>Special thanks</h2>
+
+<p>
+Throughout LuaSocket's history, many people gave suggestions that helped
+improve it. For that, I thank the Lua community. 
+Special thanks go to
+David Burgess, who has helped push the library to a new level of quality and
+from whom I have learned a lot of stuff that doesn't show up in RFCs.
+Special thanks also to Carlos Cassino, who played a big part in the 
+extensible design seen in the C core of LuaSocket 2.0. Mike Pall
+has been helping a lot too! Thanks to you all! 
+</p>
+
+<!-- whatsnew +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<h2 id=new>What's New</h2>
+
+<p>
+2.0.2 is just a bug-fix/update release. 
+</p>
+
+<ul>
+<li> Improved: http.request() now supports deprecated
+HTTP/0.9 servers (Florian Berger);
+<li> Fixed: could return "timedout" instead of "timeout" (Leo Leo);
+<li> Fixed: crash when reading '*a' on closed socket (Paul Ducklin);
+<li> Fixed: return values are consistent when reading from closed sockets;
+<li> Fixed: case sensitivity in headers of multipart
+messages in smtp.message() (Graham Henstridge);
+<li> Fixed a couple instances of error() being called instead of
+base.error(). These would cause an error when an error was
+reported :)  (Ketmar Dark);
+<li> Fixed: test script now uses pairs() iterator instead
+of the old Lua syntax (Robert Dodier).
+</ul>
+
+<p>
+2.0.1 is just a bug-fix/update release. 
+</p>
+
+<ul>
+<li> Updated: now using <tt>compat-5.1r5</tt>; 
+<li> Improved: <tt>http.request</tt> is more robust to
+malformed URLs (Adrian Sietsma);
+<li> Improved: the simple <tt>http.request</tt> interface sends a
+"<tt>Content-type: application/x-www-form-urlencoded</tt>"
+header (William Trenker);
+<li> Improved: <tt>http.request</tt> is robust to evil
+servers that send inappropriate 100-continue messages
+(David Burgess);
+<li> Fixed: <tt>http.request</tt> was using the old host header during
+redirects (Florian Berger);
+<li> Fixed: sample <tt>unix.c</tt> had fallen through the
+cracks during development (Matthew Percival); 
+<li> Fixed: error code was not being propagated correctly in
+ftp.lua (David Burgess). 
+</ul>
+
+<!-- old ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<h2 id=old>Old Versions</h2>
+
+<p>
+All  previous versions  of the  LuaSocket library  can be  downloaded <a
+href="http://www.cs.princeton.edu/~diego/professional/luasocket/old">
+here</a>. Although these  versions are  no longer  supported, they  are
+still available for those that have compatibility issues. 
+</p>
+
+<!-- footer +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<div class=footer>
+<hr>
+<center>
+<p class=bar>
+<a href="home.html#download">download</a> &middot;
+<a href="installation.html">installation</a> &middot;
+<a href="introduction.html">introduction</a> &middot;
+<a href="reference.html">reference</a>
+</p>
+<p>
+<small>
+Last modified by Diego Nehab on <br>
+Wed Oct 3 02:07:59 BRT 2007
+</small>
+</p>
+</center>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Copas - Coroutine Oriented Portable Asynchronous Services for Lua</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+		<img alt="Copas logo" src="copas.png"/>
+	</a></div>
+	<div id="product_name"><big><strong>Copas</strong></big></div>
+	<div id="product_description">Coroutine Oriented Portable Asynchronous Services for Lua</div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+<div id="navigation">
+<h1>Copas</h1>
+<ul>
+    <li><strong>Home</strong>
+        <ul>
+            <li><a href="index.html#over">Overview</a></li>
+            <li><a href="index.html#status">Status</a></li>
+            <li><a href="index.html#download">Download</a></li>
+            <li><a href="index.html#dependencies">Dependencies</a></li>
+            <li><a href="index.html#history">History</a></li>
+            <li><a href="index.html#credits">Credits</a></li>
+            <li><a href="index.html#contact">Contact us</a></li>
+        </ul>
+    </li>
+    <li><a href="manual.html">Manual</a>
+        <ul>
+            <li><a href="manual.html#install">Installing</a></li>
+            <li><a href="manual.html#introduction">Introduction</a></li>
+            <li><a href="manual.html#why">Why use Copas?</a></li>
+            <li><a href="manual.html#using">Using Copas</a></li>
+            <li><a href="manual.html#control">Controlling Copas</a></li>
+        </ul>
+    </li>
+    <li><a href="reference.html">Reference</a></li>
+    <li><a href="http://luaforge.net/projects/copas/">Project</a>
+        <ul>
+            <li><a href="http://luaforge.net/tracker/?group_id=100">Bug Tracker</a></li>
+            <li><a href="http://luaforge.net/scm/?group_id=100">CVS</a></li>
+        </ul>
+    </li>
+    <li><a href="license.html">License</a></li>
+</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+ 
+<h2><a name="over"></a>Overview</h2>
+
+<p>
+Copas is a dispatcher based on coroutines that can be used by
+TCP/IP servers. It uses
+<a href="http://www.cs.princeton.edu/~diego/professional/luasocket/">LuaSocket</a>
+as the interface with the TCP/IP stack.
+</p>
+<p>
+A server registered with Copas should provide a handler for requests and use
+Copas socket functions to send the response. Copas loops through requests and
+invokes the corresponding handlers. For a full implementation of a Copas HTTP
+server you can refer to <a href="http://www.keplerproject.org/xavante">Xavante</a>
+as an example.
+</p>
+
+<p>Copas is free software and uses the same <a href="license.html">license</a>
+as Lua 5.1</p>
+
+
+<h2><a name="status"></a>Status</h2>
+
+<p>Current version is 1.1.5 and was developed for Lua 5.1.</p>
+
+<h2><a name="download"></a>Download</h2>
+
+<p>
+Copas can be downloaded from its
+<a href="http://luaforge.net/frs/?group_id=100">LuaForge</a> page.
+</p>
+
+<p>You can also install Copas using <a href="http://www.luarocks.org">LuaRocks</a>:</p>
+
+<pre class="example">
+luarocks install copas
+</pre>
+	
+
+<h2><a name="dependencies"></a>Dependencies</h2>
+
+<p>Copas depends on
+<a href="http://www.cs.princeton.edu/~diego/professional/luasocket/">LuaSocket 2.0</a> and
+<a href="http://coxpcall.luaforge.net/">Coxpcall 1.13</a>.
+</p>
+
+<h2><a name="history"></a>History</h2>
+
+<dl class="history">
+    <dt><strong>Copas 1.1.5</strong> [07/Apr/2009]</dt>
+	<dd><ul>
+		<li>Fixed bug reported by Sam Roberts on the
+			<a href="http://lists.luaforge.net/pipermail/kepler-project/2009-February/003095.html">Kepler list</a>
+			(found due to Xavante locking up on some POST requests)
+		</li>
+	</ul></dd>
+	
+    <dt><strong>Copas 1.1.4</strong> [10/Dec/2008]</dt>
+	<dd><ul>
+		<li>Fixed bug <a href="http://luaforge.net/tracker/?group_id=100&amp;atid=492&amp;func=detail&amp;aid=5372">[#5372]</a>
+		- copas.connect is semi-broken (found by Gary NG)</li>
+	</ul></dd>
+	
+    <dt><strong>Copas 1.1.3</strong> [19/May/2008]</dt>
+	<dd><ul>
+		<li>Using <code>copcall</code> instead of <code>pcall</code> in <code>socket.protect</code>
+		(feature request <a href="http://luaforge.net/tracker/index.php?func=detail&amp;aid=5274&amp;group_id=100&amp;atid=495">[#5274]</a> by Gary NG)</li>
+	</ul></dd>
+	
+    <dt><strong>Copas 1.1.2</strong> [15/May/2008]</dt>
+	<dd><ul>
+		<li>Fixed Bug <a href="http://luaforge.net/tracker/index.php?func=detail&amp;aid=4249&amp;group_id=100&amp;atid=492">[#4249]</a>
+		- bugs in copas.receive (found by Gary NG)</li>
+	</ul></dd>
+	
+    <dt><strong>Copas 1.1.1</strong> [13/Aug/2007]</dt>
+    <dd>
+    <ul>
+        <li>Compatible with Lua 5.1</li>
+        <li>Refactored by Thomas Harning Jr. (for more details check
+        <a href="http://luaforge.net/tracker/index.php?func=detail&amp;aid=766&amp;group_id=100&amp;atid=492">Bug 766</a>)</li>
+        <li>Patch by Gary NG concerning the handling of stopped sockets</li>
+    </ul>
+    
+    </dd>
+
+    <dt><strong>Copas 1.1</strong> [20/Sep/2006]</dt>
+    <dd><ul>
+		<li><a href="reference.html">copas.addthread()</a> added</li>
+	</ul></dd>
+
+    <dt><strong><a href="http://www.keplerproject.org/copas/1.0">Copas 1.0</a></strong> [17/May/2005]</dt>
+    <dd><ul>
+		<li><a href="reference.html">copas.step()</a> added</li>
+	</ul></dd>
+    
+    <dt><strong>Copas 1.0 Beta</strong>[17/Feb/2005]</dt>
+    <dd><ul>
+		<li>First public version</li>
+	</ul></dd>
+</dl>
+
+<h2><a name="credits"></a>Credits</h2>
+
+<p>Copas was designed and implemented by Andr&eacute; Carregal and
+Javier Guerra as part of the
+<a href="http://www.keplerproject.org">Kepler Project</a> which
+holds its copyright. Copas development had significative contributions from Diego Nehab,
+Mike Pall, David Burgess, Leonardo Godinho, Thomas Harning Jr. and Gary NG.</p>
+
+ 
+<h2><a name="contact"></a>Contact us</h2>
+
+<p>For more information please
+<a href="mailto:info-NO-SPAM-THANKS@keplerproject.org">contact us</a>.
+Comments are welcome!</p>
+
+<p>
+You can also reach other Kepler developers and users on the Kepler Project
+<a href="http://luaforge.net/mail/?group_id=104">mailing list</a>.
+</p>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
+	<p><small>$Id: index.html,v 1.38 2009/04/07 22:33:34 carregal Exp $</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+</body>
+</html>

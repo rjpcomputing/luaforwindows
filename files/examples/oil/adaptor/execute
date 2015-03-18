@@ -1,0 +1,36 @@
+#!/bin/sh
+
+LUA=lua
+
+echo "Starting collector server"
+$LUA collector.lua &
+pids="$pids $!"
+trap "kill $pids > /dev/null 2> /dev/null" 0
+
+for((i=0;i<10;++i)) ; do
+	if test -r c1.ior && test -r c2.ior && test -r c3.ior && test -r adaptor.ior
+		then break
+		else sleep 1
+	fi
+done
+
+echo "Starting client"
+$LUA client.lua &
+pids="$pids $!"
+trap "kill $pids > /dev/null 2> /dev/null" 0
+
+echo "Execute for 10 secs. (note e-mail duplications)"
+sleep 10
+
+echo
+echo "*********************"
+echo "*** Adapt server! ***"
+echo "*********************"
+echo
+$LUA adaptation.lua
+
+echo "Execute for 10 secs. without duplications"
+sleep 10
+
+echo "Demo finished."
+rm -f c1.ior c2.ior c3.ior adaptor.ior

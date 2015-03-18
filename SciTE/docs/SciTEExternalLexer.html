@@ -1,0 +1,48 @@
+<body bgcolor="#FFFFFF" text="#000000">
+
+    <table bgcolor="#000000" width="100%" cellspacing="0" cellpadding="0" border="0" id="table1">
+      <tr>
+        <td>
+          <img src="SciTEIco.png" border="3" height="64" width="64" alt="Scintilla icon" />
+        </td>
+        <td>
+          <a href="index.html" style="color:white;text-decoration:none"><font size="5">
+	  Add an external lexer to SciTE</font></a>
+        </td>
+      </tr>
+    </table>
+    <h2>
+       Lexer addition.
+    </h2>
+     <p>This document assumes you know how to create a lexer.&nbsp; It only 
+		covers information specific to making the changes necessary for that 
+		lexer to work as an external lexer.</p>
+<p>The lexer must export 4 functions (On Windows, it is necessary to create a 
+module definition file to export the symbols correctly).&nbsp; Below are the 
+proto-types for those functions (ExternalLexer.h must be included so that 
+EXT_LEXER_DECL can be resolved):</p>
+<p>void EXT_LEXER_DECL Lex(unsigned int lexer, unsigned int startPos, int 
+length, int initStyle, char *words[],<br>
+&nbsp;&nbsp;&nbsp; WindowID window, char *props);<br>
+int EXT_LEXER_DECL GetLexerCount();<br>
+void EXT_LEXER_DECL GetLexerName(unsigned int Index, char *name, int buflength);<br>
+void EXT_LEXER_DECL Fold(unsigned int lexer, unsigned int startPos, int length, 
+int initStyle, char *words[],<br>
+&nbsp;&nbsp;&nbsp; WindowID window, char *props);</p>
+<p>Lex - This function is called whenever lexing needs to be done.&nbsp; The 
+first thing you may notice is the lack of an Accessor object to style with.&nbsp; 
+A WindowAccessor object can be created from the WindowID and props objects.&nbsp; 
+A PropSet object must be created from props, first, then that PropSet and the 
+WindowID are used to create a WindowAccessor.&nbsp; You will also need to create 
+your own WordList.&nbsp; (The last row in the words array is a NULL pointer, so 
+you can safely read 1 past the last row to determine how many rows there are).&nbsp; 
+Once you have the WordList and Accessor, you can pass them to your lexing 
+function just like using a built-in lexer.&nbsp; The only other difference is 
+you need to call Accessor::Flush() sometime before Lex returns, or not all text 
+may be updated.&nbsp; This is due to Scintilla's buffering.</p>
+<p>GetLexerCount - This returns the number of individual lexers you want to 
+export from your module.</p>
+<p>GetLexerName - Fill in the name field with the name of the lexer.&nbsp; This 
+is how it is later identified in SciTE properties.</p>
+<p>Fold - The function called whenever SciTE requests folding be performed.&nbsp; 
+The same information found in Lex for creating a WindowAccessor apply here, too.</p>

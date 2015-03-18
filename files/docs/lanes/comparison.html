@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+    Comparison of Lua Lanes with other approaches
+-->
+
+<html>
+<head>
+  <meta name="description" content="Lua Lanes - Comparison" />
+  <meta name="keywords" content="Lua, Library, Multithreading, Threads, Rocks" />
+
+  <title>Lua Lanes - Comparison</title>
+</head>
+
+<body>
+
+<!-- comparisons +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+<h2 id="comparisons">Comparisons to other threading kits</h2>
+
+<p>
+A short comparison of Lanes with other existing Lua multithreading kits.
+</p>
+
+<table><tr><td width=40>
+    <td bgcolor="#ffffe0">
+<pre>
+=============
+  Lua Lanes
+=============
+
+With the introduction of Lindas (Jun-2008), Lua Lanes simplifies its API while
+simultaneously adding more power and speed.
+
+Pros:
+    - regular Lua 5.1 module
+    - completely separate Lua states, one per OS thread
+    - message passing, or shared data using Lindas
+    - no application level locking, ever
+    - scales well, up to 1000's of threads
+    - priorities (-2..+2) for launched threads
+    - threads are cancellable (with complete cleanup)
+    - timeouts on all pending operations
+    - thread contents are given as regular Lua functions; syntax checked early on,
+      syntax highlighting works
+    - standard libraries opened to subthreads can be granually selected
+    - fast stack-to-stack copies, via hidden "keeper states". No serialization needed.
+    - protects calls to 'require', allowing wide compatibility with existing
+      modules (and all, with minor changes)
+
+Cons:
+    - requires OS threads
+    - not utilizing network parallelism (all threads on one CPU)
+
+Sample:
+<<
+  require "lanes"
+  
+  local function calculate(a,b,c)
+    if not a then 
+      error "sample error; propagated to main lane when reading results"
+    end
+    return a+b+c
+  end
+
+  local h1= lanes.new(calculate)(1,2,3)
+  local h2= lanes.new(calculate)(10,20,30)
+  local h3= lanes.new(calculate)(100,200,300)
+
+  print( h1[1], h2[1], h3[1] )     -- pends for the results, or propagates error
+<<
+
+
+==================
+  Lua coroutines    (by Lua authors)
+==================
+
+<A HREF="http://www.lua.org/manual/5.1/manual.html#2.11">http://www.lua.org/manual/5.1/manual.html#2.11</A>
+<A HREF="http://lua-users.org/wiki/CoroutinesTutorial">http://lua-users.org/wiki/CoroutinesTutorial</A>
+
+Lua coroutines is an integral part of Lua 5 itself. It is listed here, since
+it should be the _first_ multitasking mechanism to consider. It can also be
+used together with Lanes, or the other mechanisms listed below.
+
+Coroutines are very usable in provider/consumer situations, allowing you to
+queue Lua functions on an as-needed dataflow basis with each other.
+ 
+Pros:
+    - works with plain Lua (no extensions)
+    - works on any platform
+    - lightweight (no OS level threading or locking involved)
+
+Cons:
+    - co-operative, meaning your code will need to decide, who gets to run
+    - does not utilize multiple CPUs/cores
+
+Sample:
+
+    ..TBD: sample code doing the "child" "parent" output here (see below)..
+
+
+=============
+  LuaThread     (by Diego Nehab)
+=============
+
+<A HREF="http://www.cs.princeton.edu/~diego/professional/luathread/">http://www.cs.princeton.edu/~diego/professional/luathread/</A>
+
+LuaThread provides thread creation, mutexes, condition variables, and inter-
+thread queues to the Lua scripts. It takes a C-kind of approach, where Lua
+globals are shared by the threads running, and need therefore to be guarded
+against multithreading conflicts. 
+
+Whether this is exactly what you want, or whether a more loosely implemented
+multithreading (s.a. Lanes) would be better, is up to you. One can argue that
+a loose implementation is easier for the developer, since no application level
+lockings need to be considered.
+
+Pros:
+    - no marshalling overhead, since threads share the same Lua state
+
+Cons:
+    - requires a modified Lua core
+    - application level locking required
+
+Sample:
+&lt;&lt;
+  local function flood(output, word)
+    while 1 do 
+        output:lock()
+        io.write(word, ", ")
+        output:unlock()
+    end
+  end
+
+  local output = thread.newmutex()
+  thread.newthread(flood, {output, "child"})
+  flood(output, "parent")
+&lt;&lt;
+
+
+=============
+  Lua Rings     (by Roberto Ierusalimschy &amp; Tom&aacute;s Guisasola)
+=============
+
+<A HREF="http://www.keplerproject.org/rings/">http://www.keplerproject.org/rings/</A>
+
+".. library which provides a way to create new Lua states from within Lua. 
+It also offers a simple way to communicate between the creator (master) and 
+the created (slave) states."
+
+".. master can execute code in any of its slaves but each slave only has
+access to its master (or its own slaves)."
+
+Rings offers separate Lua states, but no multithreading. This makes it simple,
+but it won't use more than one CPU core. Other differences include:
+
+    - opens all Lua standard libraries for subthreads
+      (Lanes opens the needed ones)
+
+    - marshalls numbers, strings, booleans, userdata
+      (Lanes marshalls also non-cyclic tables)
+
+    - "remotedostring" allows executing code in the master state
+      (Lanes does _not_ allow subthreads to trouble/modify master automatically,
+      to allow effective sandboxing. The same can be achieved by sending code 
+      between the threads, but master needs to explicitly allow this = receive
+      a function and execute it)
+
+    - offers "Stable, a very simple API to manage a shared table at the master
+      state"
+      (Lanes 2008 offers keeper tables)
+
+Pros:
+    - "offers Stable, a very simple API to manage a shared table at the master 
+    state"
+
+Cons:
+    - thread contents defined as strings, not Lua source as such; does not
+      give syntax check at file parsing, does not allow syntax highlight
+
+Sample:
+&lt;&lt;
+  require"rings"
+  S = rings.new ()
+
+  data = { 12, 13, 14, }
+  print (S:dostring ([[
+  aux = {}
+  for i, v in ipairs (arg) do
+	table.insert (aux, 1, v)
+  end
+  return unpack (aux)]], unpack (data))) -- true, 14, 13, 12
+
+  S:close ()
+&lt;&lt;
+
+
+==========================
+  Helper Threads Toolkit    (by Javier Guerra G.)
+==========================
+
+<A HREF="http://luaforge.net/projects/helper-threads/">http://luaforge.net/projects/helper-threads/</A>
+
+"Provides a consistent framework to write non-blocking C libraries, with a Lua
+interface for starting tasks and managing the Futures, Queues and Threads."
+
+This seems like a companion of the "occasional threading" model (see below);
+Lua side is kept clear of multithreading, while C side can be "spawn" off to
+do things on the background.
+
+Pros:
+    - provides an "update" mechanism, allowing the (C) thread and controlling
+      Lua to interact during execution of the thread
+    - ...
+
+Cons:
+    - thread is "only for C code and it can't touch or access the Lua state",
+      in other words there is no Lua-side multithreading concept (by design)
+
+
+========================
+  Occasional threading      (by Russ Cox)
+========================
+
+<A HREF="http://lua-users.org/lists/lua-l/2006-11/msg00368.html">http://lua-users.org/lists/lua-l/2006-11/msg00368.html</A>
+
+".. able to have certain C calls run in parallel with the [Lua] VM, but
+otherwise keep the VM single-threaded."
+
+That pretty much says it all.
+
+Pros:
+    - simple, yet providing for the "occasional" need to run really multithreaded
+    - can be made into a loadable module (says the message)
+
+Cons:
+    - only for occasional usage, the programming paradigm is still essentially
+      singlethreaded (by definition)
+    - not a real project, just a message on the Lua list (but a good one!)
+    
+
+=================
+  ConcurrentLua 
+=================
+
+<A TARGET="_blank" HREF="http://concurrentlua.luaforge.net/index.html"
+>http://concurrentlua.luaforge.net/index.html</A>
+
+ConcurrentLua is based on the Lua model for concurrency, namely coroutines, and
+extends this model by providing message-passing primitives. 
+
+".. implementation of the share-nothing asynchronous message-passing model"
+
+".. process can check its mailbox for new messages at any time, and if there 
+are any, they can be read in the order of arrival."
+
+".. processes in the system are implemented with Lua coroutines"
+
+".. still based on the cooperative multithreading model that Lua uses"
+
+Recent, released on 21 June 2008.
+
+Pros:
+    - From ground up designed for distributed computing (multiple computers,
+    not only CPU cores)
+    - Does not require a pre-emptive operating system
+
+Cons:
+    - Serialization must degrade raw performance in one-computer scenarios
+      (vs. stack-to-stack copying ala Lanes)
+    - Depends on LuaSocket and Copas modules.
+    - Each thread has a single mailbox tied to it (vs. separating threads and
+      connection resources)
+
+</pre>
+</td></tr></table>
+
+
+<!-- footnotes +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+
+<p>For feedback, questions and suggestions:
+<UL>
+    <li><A HREF="http://luaforge.net/projects/lanes">Lanes @ LuaForge</A></li>
+    <li><A HREF="mailto:akauppi@gmail.com">the author</A></li>
+</UL>
+</p>
+
+<!--
+<font size="-1">
+<p>
+1) ...
+</p>
+</font>
+-->
+
+</body>
+</html>

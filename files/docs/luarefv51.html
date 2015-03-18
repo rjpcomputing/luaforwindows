@@ -1,0 +1,3865 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 1 September 2005), see www.w3.org">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+
+  <title>Lua 5.1 short reference</title>
+<style type="text/css">
+<!--
+ body
+ {margin-left:24px;
+ margin-bottom:120px;
+ width:75%}
+ p.MsoNormal
+        {margin-top:0cm;
+        margin-right:0cm;
+        margin-bottom:0cm;
+        margin-left:2.85pt;
+        margin-bottom:.0001pt;
+        font-size:8.0pt;
+        font-family:"Times New Roman";}
+span.LuaCbold
+        {font-weight:bold;}
+span.LuaCitalic
+        {font-style:italic;}
+p.LuaPHeader2
+        {margin-top:32px;
+        margin-right:0cm;
+        margin-bottom:8px;
+        margin-left:0cm;
+        text-indent:2.85pt;
+        page-break-after:avoid;
+        font-size:10.0pt;
+        font-family:Arial;
+        color:gray;
+        font-weight:bold;
+        font-style:italic;}
+p.LuaPHeader1
+        {margin-top:48px;
+        margin-right:4.25pt;
+        margin-bottom:8px;
+        margin-left:0px;
+ width:100%;
+        page-break-after:avoid;
+        background:#F3F3F3;
+ padding:8px;
+        font-size:12.0pt;
+        font-family:Arial;
+        color:gray;
+        letter-spacing:1.2pt;
+        font-weight:bold;}
+table.LuaTTables
+ {width:100%;}
+td
+ {padding:4px;}
+a.IndexRef
+ {white-space:nowrap;
+ padding-right:8px;
+ text-decoration:none;
+ }
+-->
+</style>
+</head>
+
+<body bgcolor="white" style="line-break:strict">
+  <p class='LuaPHeader1'><span lang='EN-US'>Contents</span></p>
+
+  <div style='width:100%;font-size:12.0pt;font-weight:bold;text-align:center;line-height: 200%;'>
+    <p><a class="IndexRef" href="#The_Lua_language">&middot; The Lua language &middot;</a> <a class="IndexRef" href="#The_base_library">&middot; The base library &middot;</a> <a class="IndexRef" href="#Modules_and_the_package_library">&middot; Modules and
+    the package library &middot;</a> <a class="IndexRef" href="#The_coroutine_library">&middot; The coroutine library &middot;</a> <a class="IndexRef" href="#The_table_library">&middot; The table library &middot;</a> <a class="IndexRef" href=
+    "#The_mathematical_library">&middot; The mathematical library &middot;</a> <a class="IndexRef" href="#The_string_library">&middot; The string library &middot;</a> <a class="IndexRef" href="#The_I_O_library">&middot; The I/O library &middot;</a>
+    <a class="IndexRef" href="#The_operating_system_library">&middot; The operating system library &middot;</a> <a class="IndexRef" href="#The_debug_library">&middot; The debug library &middot;</a> <a class="IndexRef" href=
+    "#The_stand_alone_interpreter">&middot; The stand-alone interpreter &middot;</a> <a class="IndexRef" href="#The_compiler">&middot; The compiler &middot;</a></p>
+  </div>
+
+  <p class="LuaPHeader1"><a name="The_Lua_language" id="The_Lua_language"><span lang="EN-US">The Lua language (v5.1)</span></a></p>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Reserved identifiers and
+  comments</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" width="650" summary="?">
+    <tr>
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">and</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">break</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">do</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">else</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">elseif</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">end</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">false</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">for</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">function</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">if</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">in</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">local</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">nil</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">not</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">or</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">repeat</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">return</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">then</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">true</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">until</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">while</span></span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><b><span lang="EN-US">&nbsp;</span></b></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">-- ...</span></span></p>
+      </td>
+
+      <td width="236" colspan="4" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">comment to end of line</span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">--[=[</span></span> <span lang="EN-US">&nbsp; <span class="LuaCbold">]=]</span></span></p>
+      </td>
+
+      <td width="295" colspan="5" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">multi line comment (zero or multiple '=' are valid)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="295" colspan="5" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">_X</span></span> <span lang="EN-US">is "reserved" (by convention) for constants (with X being any sequence of uppercase letters)</span></p>
+      </td>
+
+      <td width="59" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">#!</span></p>
+      </td>
+
+      <td width="295" colspan="5" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">usual Unix shebang; Lua ignores whole first line if this starts the line.</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Types (the string values are the
+  possible results of base library function type())</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="81" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">"nil"</span></span></p>
+      </td>
+
+      <td width="81" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">"boolean"</span></span></p>
+      </td>
+
+      <td width="81" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">"number"</span></span></p>
+      </td>
+
+      <td width="81" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">"string"</span></span></p>
+      </td>
+
+      <td width="81" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">"table"</span></span></p>
+      </td>
+
+      <td width="81" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">"function"</span></span></p>
+      </td>
+
+      <td width="81" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">"thread"</span></span></p>
+      </td>
+
+      <td width="81" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">"userdata"</span></span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="MsoNormal"><span lang="EN-GB">Note: for type boolean,</span> <span class="LuaCbold"><span lang="EN-US">nil</span></span> <span lang="EN-GB">and</span> <span class="LuaCbold"><span lang="EN-US">false</span></span> <span lang="EN-GB">count as
+  false; everything else is true (including 0 and "").</span></p>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Strings and escape
+  sequences</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="95" colspan="2" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">'...'</span></span> <span lang="EN-US">and</span> <span class="LuaCbold"><span lang="EN-US">"..."</span></span></p>
+      </td>
+
+      <td width="201" colspan="3" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">string delimiters; interpret escapes.</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">[=[...]=]</span></span></p>
+      </td>
+
+      <td width="284" colspan="4" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">multi line strings; escape sequences are ignored.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="93" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">\a&nbsp; bell</span></p>
+      </td>
+
+      <td width="93" colspan="2" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">\b&nbsp; backspace</span></p>
+      </td>
+
+      <td width="93" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">\f&nbsp; form feed</span></p>
+      </td>
+
+      <td width="93" colspan="3" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">\n&nbsp; newline</span></p>
+      </td>
+
+      <td width="93" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">\r&nbsp; return</span></p>
+      </td>
+
+      <td width="93" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">\t&nbsp; horiz. tab</span></p>
+      </td>
+
+      <td width="93" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">\v&nbsp; vert. tab</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="93" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">\\&nbsp; backslash</span></p>
+      </td>
+
+      <td width="93" colspan="2" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">\"&nbsp; d. quote</span></p>
+      </td>
+
+      <td width="93" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">\'&nbsp; quote</span></p>
+      </td>
+
+      <td width="93" colspan="3" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">\[&nbsp; sq. bracket</span></p>
+      </td>
+
+      <td width="93" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">\]&nbsp; sq. bracket</span></p>
+      </td>
+
+      <td width="93" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">\ddd decimal</span></p>
+      </td>
+
+      <td width="93" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Operators, decreasing
+  precedence</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="650" colspan="6" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">^</span></span> <span lang="EN-US">&nbsp; (right associative, math library required)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="217" colspan="2" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">not</span></span></p>
+      </td>
+
+      <td width="217" colspan="2" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">#&nbsp; (length of strings and tables)</span></p>
+      </td>
+
+      <td width="217" colspan="2" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">-</span></span> <span lang="EN-US">&nbsp; (unary)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="217" colspan="2" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">*</span></span></p>
+      </td>
+
+      <td width="217" colspan="2" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">/</span></span></p>
+      </td>
+
+      <td width="217" colspan="2" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="325" colspan="3" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">+</span></span></p>
+      </td>
+
+      <td width="325" colspan="3" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">-</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="650" colspan="6" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">..</span></span> <span lang="EN-US">&nbsp; (string concatenation, right associative)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="108" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">&lt;</span></span></p>
+      </td>
+
+      <td width="108" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">&gt;</span></span></p>
+      </td>
+
+      <td width="108" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">&lt;=</span></span></p>
+      </td>
+
+      <td width="108" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">&gt;=</span></span></p>
+      </td>
+
+      <td width="108" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">~=</span></span></p>
+      </td>
+
+      <td width="108" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">==</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="650" colspan="6" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">and</span></span> <span lang="EN-US">&nbsp; (stops on <span class="LuaCbold">false</span> or <span class="LuaCbold">nil</span> , returns last evaluated value)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="650" colspan="6" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">or</span></span> <span lang="EN-US">&nbsp;(stops on <span class="LuaCbold">true</span> (not <span class="LuaCbold">false</span> or <span class="LuaCbold">nil</span> ), returns last
+        evaluated value)</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Assignment and
+  coercion</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">a = 5&nbsp; b= "hi"</span></span></p>
+
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">local a = a</span></span></p>
+      </td>
+
+      <td width="508" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">simple assignment; variables are not typed and can hold different types. Local variables are lexically scoped; their scope begins after the full declaration (so that local <span class="LuaCbold">a</span> =
+        5).</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">a, b, c = 1, 2, 3</span></span></p>
+      </td>
+
+      <td width="508" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">multiple assignments are supported</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">a, b = b, a</span></span></p>
+      </td>
+
+      <td width="508" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">swap values: right hand side is evaluated before assignment takes place</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">a, b = 4, 5, "6"</span></span></p>
+      </td>
+
+      <td width="508" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">excess values on right hand side ("6") are evaluated but discarded</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">a, b = "there"</span></span></p>
+      </td>
+
+      <td width="508" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">for missing values</span> <span lang="EN-US">on right hand side <span class="LuaCbold">nil</span> is assumed</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">a = nil</span></span></p>
+      </td>
+
+      <td width="508" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">destroys <span class="LuaCbold">a</span> ; its contents are eligible for garbage collection if unreferenced.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">a = z</span></span></p>
+      </td>
+
+      <td width="508" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">if <span class="LuaCbold">z</span> is not defined it is <span class="LuaCbold">nil</span> , so <span class="LuaCbold">nil</span> is assigned to <span class="LuaCbold">a</span> (destroying it)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">a = "3" + "2"</span></span></p>
+      </td>
+
+      <td width="508" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">numbers expected, strings are converted to numbers (a = 5)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">a = 3 .. 2</span></span></p>
+      </td>
+
+      <td width="508" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">strings expected, numbers are converted to strings (a = "32")</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Control structures</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">do</span></span> <span class="LuaCitalic"><span lang="EN-US">block</span></span> <span class="LuaCbold"><span lang="EN-US">end</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">block; introduces local scope.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">if</span></span> <span class="LuaCitalic"><span lang="EN-US">exp</span></span> <span class="LuaCbold"><span lang="EN-US">then</span></span> <span class="LuaCitalic"><span lang=
+        "EN-US">block</span></span> <span lang="EN-US">{ <span class="LuaCbold">elseif</span> <span class="LuaCitalic">exp</span> <span class="LuaCbold">then</span> <span class="LuaCitalic">block</span> } [ <span class="LuaCbold">else</span> <span class=
+        "LuaCitalic">block</span> ] <span class="LuaCbold">end</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">conditional execution</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">while</span></span> <span class="LuaCitalic"><span lang="EN-US">exp</span></span> <span class="LuaCbold"><span lang="EN-US">do</span></span> <span class="LuaCitalic"><span lang=
+        "EN-US">block</span></span> <span class="LuaCbold"><span lang="EN-US">end</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">loop as long as <span class="LuaCitalic">exp</span> is true</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">repeat</span></span> <span class="LuaCitalic"><span lang="EN-US">block</span></span> <span class="LuaCbold"><span lang="EN-US">until</span></span> <span class="LuaCitalic"><span lang=
+        "EN-US">exp</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">exits when <span class="LuaCitalic">exp</span> becomes true; <span class="LuaCitalic">exp</span> is in loop scope.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">for</span></span> <span class="LuaCitalic"><span lang="EN-US">var</span></span> <span lang="EN-US">= <span class="LuaCitalic">start</span> <span class="LuaCbold">,</span> <span class=
+        "LuaCitalic">end</span> [ <span class="LuaCbold">,</span> <span class="LuaCitalic">step</span> ] <span class="LuaCbold">do</span> <span class="LuaCitalic">block</span> <span class="LuaCbold">end</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">numerical for loop; <span class="LuaCitalic">var</span> is local to loop.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">for</span></span> <span class="LuaCitalic"><span lang="EN-US">vars</span></span> <span class="LuaCbold"><span lang="EN-US">in</span></span> <span class="LuaCitalic"><span lang=
+        "EN-US">iterator</span></span> <span class="LuaCbold"><span lang="EN-US">do</span></span> <span class="LuaCitalic"><span lang="EN-US">block</span></span> <span class="LuaCbold"><span lang="EN-US">end</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">iterator based for loop; <span class="LuaCitalic">vars</span> are local to loop.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">break</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">exits loop; must be last statement in block.</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Table constructors</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">t = {}</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">creates an empty table and assigns it to <span class="LuaCbold">t</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">t = {"yes", "no", "?"}</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">simple array; elements are <span class="LuaCbold">t[1]</span> , <span class="LuaCbold">t[2]</span> , <span class="LuaCbold">t[3]</span> .</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">t = { [1] = "yes", [2] = "no", [3] = "?" }</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">same as above, but with explicit fields</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">t = {[-900] = 3, [+900] = 4}</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sparse array with just two elements (no space wasted)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">t = {x=5, y=10}</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">hash table, fields are <span class="LuaCbold">t["x"]</span> , <span class="LuaCbold">t["y"]</span> (or <span class="LuaCbold">t.x</span> , <span class="LuaCbold">t.y</span> )</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">t = {x=5, y=10; "yes", "no"}</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">mixed, fields/elements are <span class="LuaCbold">t.x</span> , <span class="LuaCbold">t.y</span> , <span class="LuaCbold">t[1]</span> , <span class="LuaCbold">t[2]</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">t = {msg = "choice", {"yes", "no", "?"}}</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">tables can contain others tables as fields</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Function definition</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">function</span></span> <span class="LuaCitalic"><span lang="EN-US">name</span></span> <span class="LuaCbold"><span lang="EN-US">(</span></span> <span class="LuaCitalic"><span lang=
+        "EN-US">args</span></span> <span class="LuaCbold"><span lang="EN-US">)</span></span> <span class="LuaCitalic"><span lang="EN-US">body</span></span> <span lang="EN-US">[ <span class="LuaCbold">return</span> <span class="LuaCitalic">values</span> ]
+        <span class="LuaCbold">end</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">defines function and assigns to global variable <span class="LuaCbold">name</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">local function</span></span> <span class="LuaCitalic"><span lang="EN-US">name</span></span> <span class="LuaCbold"><span lang="EN-US">(</span></span> <span class=
+        "LuaCitalic"><span lang="EN-US">args</span></span> <span class="LuaCbold"><span lang="EN-US">)</span></span> <span class="LuaCitalic"><span lang="EN-US">body</span></span> <span lang="EN-US">[ <span class="LuaCbold">return</span> <span class=
+        "LuaCitalic">values</span> ] <span class="LuaCbold">end</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">defines function as local to chunk</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">f = function (</span></span> <span class="LuaCitalic"><span lang="EN-US">args</span></span> <span class="LuaCbold"><span lang="EN-US">)</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">anonymous function assigned to variable <span class="LuaCbold">f</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">function (</span></span> <span lang="EN-US">[ <span class="LuaCitalic">args</span> , ] <span class="LuaCbold">... )</span> <span class="LuaCitalic">body</span> [ <span class=
+        "LuaCbold">return</span> <span class="LuaCitalic">values</span> ] <span class="LuaCbold">end</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">variable argument list, in <span class="LuaCitalic">body</span> accessed as <span class="LuaCbold">...</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">function</span></span> <span class="LuaCitalic"><span lang="EN-US">t</span></span> <span class="LuaCbold"><span lang="EN-US">.</span></span> <span class="LuaCitalic"><span lang=
+        "EN-US">name</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">shortcut for <span class="LuaCitalic">t</span> <span class="LuaCbold">.</span> <span class="LuaCitalic">name</span> = <span class="LuaCbold">function</span> <span class="LuaCbold">...</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">function</span></span> <span class="LuaCitalic"><span lang="EN-US">obj</span></span> <span class="LuaCbold"><span lang="EN-US">:</span></span> <span class="LuaCitalic"><span lang=
+        "EN-US">name</span></span></p>
+      </td>
+
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">object function, gets <span class="LuaCitalic">obj</span> as extra argument <span class="LuaCbold">self</span></span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Function call</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">f (x)</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">simple call, possibly returning one or more values</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">f "hello"</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">shortcut for <span class="LuaCbold">f("hello")</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">f 'goodbye'</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">shortcut for <span class="LuaCbold">f('goodbye')</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">f [[see you soon]]</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">shortcut for <span class="LuaCbold">f([[see you soon]])</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">f {x = 3, y = 4}</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">shortcut for <span class="LuaCbold">f({x = 3, y = 4})</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">t.f (x)</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">calling a function assigned to field <span class="LuaCbold">f</span> of table <span class="LuaCbold">t</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">x:move (2, -3)</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">object call: shortcut for <span class="LuaCbold">x.move(x, 2, -3)</span> , <span class="LuaCbold">x</span> will be assigned to <span class="LuaCbold">self</span></span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Metatable operations (base
+  library required)</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">setmetatable</span></span> <span lang="EN-US">(t, mt)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets <span class="LuaCbold">mt</span> as metatable for <span class="LuaCbold">t</span> , unless <span class="LuaCbold">t</span> 's metatable has a <span class="LuaCbold">__metatable</span> field</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">getmetatable</span></span> <span lang="EN-US">(t)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns <span class="LuaCbold">__metatable</span> field of <span class="LuaCbold">t</span> 's metatable or <span class="LuaCbold">t</span> 's metatable or <span class="LuaCbold">nil</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">rawget</span></span> <span lang="EN-US">(t, i)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">gets <span class="LuaCbold">t[i]</span> of a table without invoking metamethods</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">rawset</span></span> <span lang="EN-US">(t, i, v)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets <span class="LuaCbold">t[i] = v</span> on a table without invoking metamethods</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">rawequal</span></span> <span lang="EN-US">(t1, t2)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns boolean <span class="LuaCbold">(t1 == t2)</span> without invoking metamethods</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Metatable fields (for tables and
+  userdata)</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" width="650" summary="?">
+    <tr>
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__add, __sub</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets handler <span class="LuaCbold">h(a, b)</span> for ' <span class="LuaCbold">+</span> ' and for binary ' <span class="LuaCbold">-</span> '</span></p>
+      </td>
+
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__mul, __div</span></span></p>
+      </td>
+
+      <td width="236" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets handler <span class="LuaCbold">h(a, b)</span> for ' <span class="LuaCbold">*</span> ' and for ' <span class="LuaCbold">/</span> '</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__mod</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">set handler <span class="LuaCbold">h(a, b)</span> for '%'</span></p>
+      </td>
+
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__pow</span></span></p>
+      </td>
+
+      <td width="236" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets handler <span class="LuaCbold">h(a, b)</span> for ' <span class="LuaCbold">^</span> '</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__unm</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets handler <span class="LuaCbold">h(a)</span> for unary ' <span class="LuaCbold">-</span> '</span></p>
+      </td>
+
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__len</span></span></p>
+      </td>
+
+      <td width="236" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets handler <span class="LuaCbold">h(a)</span> for the # operator</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__concat</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets handler <span class="LuaCbold">h(a, b)</span> for '..'</span></p>
+      </td>
+
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__eq</span></span></p>
+      </td>
+
+      <td width="236" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets handler <span class="LuaCbold">h(a, b)</span> for ' <span class="LuaCbold">==</span> ', ' <span class="LuaCbold">~=</span> '</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__lt</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets handler <span class="LuaCbold">h(a, b)</span> for ' <span class="LuaCbold">&lt;</span> ', ' <span class="LuaCbold">&gt;</span> ' and possibly ' <span class="LuaCbold">&lt;=</span> ', ' <span class=
+        "LuaCbold">&gt;=</span> ' (if no <span class="LuaCbold">__le</span> )</span></p>
+      </td>
+
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__le</span></span></p>
+      </td>
+
+      <td width="236" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets handler <span class="LuaCbold">h(a, b)</span> for ' <span class="LuaCbold">&lt;=</span> ', ' <span class="LuaCbold">&gt;=</span> '</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__index</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets handler <span class="LuaCbold">h(t, k)</span> for access to non-existing field</span></p>
+      </td>
+
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__newindex</span></span></p>
+      </td>
+
+      <td width="236" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets handler <span class="LuaCbold">h(t, k)</span> for assignment to non-existing field</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__call</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets handler <span class="LuaCbold">h(f, ...)</span> for function call (using the object as a function)</span></p>
+      </td>
+
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__tostring</span></span></p>
+      </td>
+
+      <td width="236" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets handler <span class="LuaCbold">h(a)</span> to convert to string, e.g. for <span class="LuaCbold">print()</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__gc</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets finalizer <span class="LuaCbold">h(ud)</span> for userdata (has to be set from C)</span></p>
+      </td>
+
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__mode</span></span></p>
+      </td>
+
+      <td width="236" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">table mode: <span class="LuaCbold">'k'</span> = weak keys; <span class="LuaCbold">'v'</span> = weak values; <span class="LuaCbold">'kv'</span> = both.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__metatable</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets value to be returned by <span class="LuaCbold">getmetatable()</span></span></p>
+      </td>
+
+      <td width="83" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">&nbsp;</span></span></p>
+      </td>
+
+      <td width="236" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader1"><a name="The_base_library" id="The_base_library"><span lang="EN-US">The base library [no prefix]</span></a></p>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Environment and global
+  variables</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">getfenv</span></span> <span lang="EN-US">([f])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">if <span class="LuaCbold">f</span> is a function, returns its environment; if <span class="LuaCbold">f</span> is a number, returns the environment of function at level <span class="LuaCbold">f</span> (1 =
+        current [default], 0 = global); if the environment has a field <span class="LuaCbold">__fenv</span> , returns that instead.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">setfenv</span></span> <span lang="EN-US">(f, t)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets environment for function <span class="LuaCbold">f</span> or function at level <span class="LuaCbold">f</span> (0 = current thread);</span></p>
+
+        <p class="MsoNormal"><span lang="EN-US">if the original environment has a field <span class="LuaCbold">__fenv</span> , raises an error.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">_G</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">global variable whose value is the global environment (that is, <span class="LuaCbold">_G._G == _G</span> <span class="LuaCbold"><span style="font-weight:normal">)</span></span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">_VERSION</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">global variable containing the interpreter's version (e.g. <span class="LuaCbold">"Lua 5.1"</span> )</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Loading and executing</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">require</span></span> <span lang="EN-US">(pkgname)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">loads a package, raises error if it can't be loaded</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">dofile</span></span> <span lang="EN-US">([filename])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">loads and executes the contents of <span class="LuaCbold">filename</span> [default: standard input]; returns its returned values.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">load</span></span> <span lang="EN-US">(func [, chunkname])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">loads a chunk (with chunk name set to <span class="LuaCbold">name</span> ) using function <span class="LuaCbold">func</span> to get its pieces; returns compiled chunk as function (or <span class=
+        "LuaCbold">nil</span> and error message).</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">loadfile</span></span> <span lang="EN-US">(filename)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">loads file <span class="LuaCbold">filename</span> ; return values like <span class="LuaCbold">load()</span> .</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">loadstring</span></span> <span lang="EN-US">(s [, name])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">loads string <span class="LuaCbold">s</span> (with chunk name set to <span class="LuaCbold">name</span> ); return values like <span class="LuaCbold">load()</span> .</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">pcall</span></span> <span lang="EN-US">(f [, <span class="LuaCitalic">args</span> ])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">calls <span class="LuaCbold">f()</span> in protected mode; returns <span class="LuaCbold">true</span> and function results or <span class="LuaCbold">false</span> and error message.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">xpcall</span></span> <span lang="EN-US">(f, h)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">as <span class="LuaCbold">pcall()</span> but passes error handler <span class="LuaCbold">h</span> instead of extra args; returns as <span class="LuaCbold">pcall()</span> but with the result of <span class=
+        "LuaCbold">h()</span> as error message, if any.</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Simple output and error
+  feedback</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">print</span></span> <span lang="EN-US">( <span class="LuaCitalic">args</span> )</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">prints each of the passed <span class="LuaCitalic">args</span> to stdout using <span class="LuaCbold">tostring()</span> (see below)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">error</span></span> <span lang="EN-US">(msg [, n])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">terminates the program or the last protected call (e.g. <span class="LuaCbold">pcall()</span> ) with error message <span class="LuaCbold">msg</span> quoting level <span class="LuaCbold">n</span> [default: 1,
+        current function]</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">assert</span></span> <span lang="EN-US">(v [, msg])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">calls <span class="LuaCbold">error(msg)</span> if <span class="LuaCbold">v</span> is <span class="LuaCbold">nil</span> or <span class="LuaCbold">false</span> [default <span class="LuaCbold">msg</span> :
+        <span class="LuaCbold">"assertion failed!"</span> ]</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">&nbsp;Information and
+  conversion</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">select</span></span> <span lang="EN-US">(index, ...)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the arguments after argument number <span class="LuaCbold">index</span> or (if index is "#") the total number of arguments it received after <span class="LuaCbold">index</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">type</span></span> <span lang="EN-US">(x)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the type of <span class="LuaCbold">x</span> as a string (e.g. <span class="LuaCbold">"nil"</span> , <span class="LuaCbold">"string"</span> ); see <span class="LuaCitalic">Types</span>
+        above.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">tostring</span></span> <span lang="EN-US">(x)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">converts <span class="LuaCbold">x</span> to a string, using <span class="LuaCbold">t</span> 's metatable's <span class="LuaCbold">__tostring</span> if available</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">tonumber</span></span> <span lang="EN-US">(x [, b])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">converts string <span class="LuaCbold">x</span> representing a number in base <span class="LuaCbold">b</span> [2..36, default: 10] to a number, or <span class="LuaCbold">nil</span> if invalid; for base 10
+        accepts full format (e.g. "1.5e6").</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">unpack</span></span> <span lang="EN-US">(t)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns <span class="LuaCbold">t[1]</span> .. <span class="LuaCbold">t[n]</span> (n = <span class="LuaCbold">#t</span> ) as separate values</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Iterators</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">ipairs</span></span> <span lang="EN-US">(t)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns an iterator getting <span class="LuaCbold">index, value</span> pairs of array <span class="LuaCbold">t</span> in numerical order</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">pairs</span></span> <span lang="EN-US">(t)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns an iterator getting <span class="LuaCbold">key, value</span> pairs of table <span class="LuaCbold">t</span> in an unspecified order</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">next</span></span> <span lang="EN-US">(t [, inx])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">if <span class="LuaCbold">inx</span> is <span class="LuaCbold">nil</span> [default] returns first <span class="LuaCbold">index, value</span> pair of table <span class="LuaCbold">t</span> ; if <span class=
+        "LuaCbold">inx</span> is the previous index returns next <span class="LuaCbold">index, value</span> pair or <span class="LuaCbold">nil</span> when finished.</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Garbage collection</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">collectgarbage</span></span> <span lang="EN-US">(opt [, arg])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">generic interface to the garbage collector; <span class="LuaCbold">opt</span> defines function performed.</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader1"><a name="Modules_and_the_package_library" id="Modules_and_the_package_library"><span lang="EN-US">Modules and the package library [package]</span></a></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="166" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">module</span></span> <span lang="EN-US">(name, ...)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">creates module <span class="LuaCbold">name.</span> If there is a table in <span class="LuaCbold">package.loaded[name]</span> , this table is the module. Otherwise, if there is a global table <span class=
+        "LuaCbold">name</span> , this table is the module. Otherwise creates a new table and sets it as the value of the global <span class="LuaCbold">name</span> and the value of <span class="LuaCbold">package.loaded[name]</span> . Optional arguments are
+        functions to be applied over the module.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="166" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">package.loadlib</span></span> <span lang="EN-US">(lib, func)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">loads dynamic library <span class="LuaCbold">lib</span> (e.g. .so or .dll) and returns function <span class="LuaCbold">func (</span> or <span class="LuaCbold">nil</span> and error message)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="166" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">package.path, package.cpath</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">contains the paths used by <span class="LuaCbold">require()</span> to search for a Lua or C loader, respectively</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="166" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">package.loaded</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">a table used by require to control which modules are already loaded (see module)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="166" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">package.preload</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">a table to store loaders for specific modules (see require)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="166" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">package.seeall</span></span> <span lang="EN-US">(module)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets a metatable for <span class="LuaCbold">module</span> with its <span class="LuaCbold">__index</span> field referring to the global environment</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader1"><a name="The_coroutine_library" id="The_coroutine_library"><span lang="EN-US">The coroutine library [coroutine]</span></a></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="168" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">coroutine.create</span></span> <span lang="EN-US">(f)</span></p>
+      </td>
+
+      <td width="482" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">creates a new coroutine with Lua function <span class="LuaCbold">f()</span> as body and returns it</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="168" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">coroutine.resume</span></span> <span lang="EN-US">(co, <span class="LuaCitalic">args</span> )</span></p>
+      </td>
+
+      <td width="482" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">starts or continues running coroutine <span class="LuaCbold">co</span> , passing <span class="LuaCitalic">args</span> to it; returns <span class="LuaCbold">true</span> (and possibly values) if <span class=
+        "LuaCbold">co</span> calls <span class="LuaCbold">coroutine.yield()</span> or terminates or <span class="LuaCbold">false</span> and an error message.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="168" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">coroutine.yield</span></span> <span lang="EN-US">( <span class="LuaCitalic">args</span> )</span></p>
+      </td>
+
+      <td width="482" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">suspends execution of the calling coroutine (not from within C functions, metamethods or iterators); any <span class="LuaCitalic">args</span> become extra return values of <span class=
+        "LuaCbold">coroutine.resume()</span> .</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="168" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">coroutine.status</span></span> <span lang="EN-US">(co)</span></p>
+      </td>
+
+      <td width="482" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the status of coroutine <span class="LuaCbold">co</span> : either <span class="LuaCbold">"running"</span> , <span class="LuaCbold">"suspended"</span> or <span class=
+        "LuaCbold">"dead"</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="168" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">coroutine.running ()</span></span></p>
+      </td>
+
+      <td width="482" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the running coroutine or nil when called by the main thread</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="168" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">coroutine.wrap</span></span> <span lang="EN-US">(f)</span></p>
+      </td>
+
+      <td width="482" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">creates a new coroutine with Lua function <span class="LuaCbold">f</span> as body and returns a function; this function will act as <span class="LuaCbold">coroutine.resume()</span> without the first argument
+        and the first return value, propagating any errors.</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader1"><a name="The_table_library" id="The_table_library"><span lang="EN-US">The table library [table]</span></a></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="168" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">table.insert</span></span> <span lang="EN-US">(t, [i,] v)</span></p>
+      </td>
+
+      <td width="482" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">inserts <span class="LuaCbold">v</span> at numerical index <span class="LuaCbold">i</span> [default: after the end] in table <span class="LuaCbold">t</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="168" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">table.remove</span></span> <span lang="EN-US">(t [, i])</span></p>
+      </td>
+
+      <td width="482" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">removes element at numerical index <span class="LuaCbold">i</span> [default: last element] from table <span class="LuaCbold">t</span> ; returns the removed element or <span class="LuaCbold">nil</span> on
+        empty table.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="168" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">table.maxn</span></span> <span lang="EN-US">(t)</span></p>
+      </td>
+
+      <td width="482" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the largest positive numerical index of table <span class="LuaCbold">t</span> or zero if <span class="LuaCbold">t</span> has no positive indices</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="168" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">table.sort</span></span> <span lang="EN-US">(t [, cf])</span></p>
+      </td>
+
+      <td width="482" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sorts (in place) elements from <span class="LuaCbold">t[1]</span> to # <span class="LuaCbold">t</span> , using compare function <span class="LuaCbold">cf(e1, e2)</span> [default: ' <span class=
+        "LuaCbold">&lt;</span> ']</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="168" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">table.concat</span></span> <span lang="EN-US">(t [, s [, i [, j]]])</span></p>
+      </td>
+
+      <td width="482" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a single string made by concatenating table elements <span class="LuaCbold">t[i]</span> to <span class="LuaCbold">t[j]</span> [default: <span class="LuaCbold">i =1</span> , <span class="LuaCbold">j =
+        #t</span> ] separated by string <span class="LuaCbold">s</span> ; returns empty string if no elements exist or <span class="LuaCbold">i</span> &gt; <span class="LuaCbold">j</span> .</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader1"><a name="The_mathematical_library" id="The_mathematical_library"><span lang="EN-US">The mathematical library [math]</span></a></p>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Basic operations</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.abs</span></span> <span lang="EN-US">(x)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the absolute value of <span class="LuaCbold">x</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.mod</span></span> <span lang="EN-US">(x, y)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the remainder of <span class="LuaCbold">x</span> / <span class="LuaCbold">y</span> as a rounded-down integer, for <span class="LuaCbold">y</span> ~= 0</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.floor</span></span> <span lang="EN-US">(x)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns <span class="LuaCbold">x</span> rounded down to the nearest integer</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.ceil</span></span> <span lang="EN-US">(x)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns <span class="LuaCbold">x</span> rounded up to the nearest integer</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.min</span></span> <span lang="EN-US">( <span class="LuaCitalic">args</span> )</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the minimum value from the <span class="LuaCitalic">args</span> received</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.max</span></span> <span lang="EN-US">( <span class="LuaCitalic">args</span> )</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the maximum value from the <span class="LuaCitalic">args</span> received</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Exponential and
+  logarithmic</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.sqrt</span></span> <span lang="EN-US">(x)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the square root of <span class="LuaCbold">x</span> , for <span class="LuaCbold">x</span> &gt;= 0</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.pow</span></span> <span lang="EN-US">(x, y)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns <span class="LuaCbold">x</span> raised to the power of <span class="LuaCbold">y</span> , i.e. <span class="LuaCbold">x</span> ^ <span class="LuaCbold">y</span> ; if <span class="LuaCbold">x</span>
+        &lt; 0, <span class="LuaCbold">y</span> must be integer.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">__pow</span></span> <span lang="EN-US">(x, y)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">global function added by the math library to make operator ' <span class="LuaCbold">^</span> ' work</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.exp</span></span> <span lang="EN-US">(x)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns e (base of natural logs) raised to the power of <span class="LuaCbold">x</span> , i.e. e^ <span class="LuaCbold">x</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.log</span></span> <span lang="EN-US">(x)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the natural logarithm of <span class="LuaCbold">x</span> , for <span class="LuaCbold">x</span> &gt;= 0</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.log10</span></span> <span lang="EN-US">(x)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the base-10 logarithm of <span class="LuaCbold">x</span> , for <span class="LuaCbold">x</span> &gt;= 0</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Trigonometrical</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.deg</span></span> <span lang="EN-US">(a)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">converts angle <span class="LuaCbold">a</span> from radians to degrees</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.rad</span></span> <span lang="EN-US">(a)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">converts angle <span class="LuaCbold">a</span> from degrees to radians</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.pi</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">constant containing the value of pi</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.sin</span></span> <span lang="EN-US">(a)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the sine of angle <span class="LuaCbold">a</span> (measured in radians)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.cos</span></span> <span lang="EN-US">(a)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the cosine of angle <span class="LuaCbold">a</span> (measured in radians)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.tan</span></span> <span lang="EN-US">(a)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the tangent of angle <span class="LuaCbold">a</span> (measured in radians)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.asin</span></span> <span lang="EN-US">(x)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the arc sine of <span class="LuaCbold">x</span> in radians, for <span class="LuaCbold">x</span> in [-1, 1]</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.acos</span></span> <span lang="EN-US">(x)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the arc cosine of <span class="LuaCbold">x</span> in radians, for <span class="LuaCbold">x</span> in [-1, 1]</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.atan</span></span> <span lang="EN-US">(x)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the arc tangent of <span class="LuaCbold">x</span> in radians</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.atan2</span></span> <span lang="EN-US">(y, x)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">similar to <span class="LuaCbold">math.atan(y / x)</span> but with quadrant and allowing x = 0</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Splitting on powers of
+  2</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.frexp</span></span> <span lang="EN-US">(x)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">splits <span class="LuaCbold">x</span> into normalized fraction and exponent of 2 and returns both</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.ldexp</span></span> <span lang="EN-US">(x, y)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns <span class="LuaCbold">x</span> * (2 ^ <span class="LuaCbold">y</span> ) with <span class="LuaCbold">x</span> = normalized fraction, <span class="LuaCbold">y</span> = exponent of <span class=
+        "LuaCbold">2</span></span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Pseudo-random numbers</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.random</span></span> <span lang="EN-US">([n [, m])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a pseudo-random number in range [0, 1] if no arguments given; in range [1, <span class="LuaCbold">n</span> ] if <span class="LuaCbold">n</span> is given, in range [ <span class="LuaCbold">n</span> ,
+        <span class="LuaCbold">m</span> ] if both <span class="LuaCbold">n</span> and <span class="LuaCbold">m</span> are passed.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">math.randomseed</span></span> <span lang="EN-US">(n)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets a seed <span class="LuaCbold">n</span> for random sequence (same seed = same sequence)</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader1"><a name="The_string_library" id="The_string_library"><span lang="EN-US">The string library [string]</span></a></p>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Basic operations</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.len</span></span> <span lang="EN-US">(s)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the length of string <span class="LuaCbold">s</span> , including embedded zeros (see also # operator)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.sub</span></span> <span lang="EN-US">(s, i [, j])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the substring of <span class="LuaCbold">s</span> from position <span class="LuaCbold">i</span> to <span class="LuaCbold">j</span> [default: -1] inclusive</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.rep</span></span> <span lang="EN-US">(s, n)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a string made of <span class="LuaCbold">n</span> concatenated copies of string <span class="LuaCbold">s</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.upper</span></span> <span lang="EN-US">(s)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a copy of <span class="LuaCbold">s</span> converted to uppercase according to locale</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.lower</span></span> <span lang="EN-US">(s)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a copy of <span class="LuaCbold">s</span> converted to lowercase according to locale</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Character codes</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.byte</span></span> <span lang="EN-US">(s [, i])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the platform-dependent numerical code (e.g. ASCII) of character at position <span class="LuaCbold">i</span> [default: 1] in string <span class="LuaCbold">s</span> , or <span class=
+        "LuaCbold">nil</span> if <span class="LuaCbold">i</span> is invalid</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.char</span></span> <span lang="EN-US">( <span class="LuaCitalic">args</span> )</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a string made of the characters whose platform-dependent numerical codes are passed as <span class="LuaCitalic">args</span></span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Function storage</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.dump</span></span> <span lang="EN-US">(f)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a binary representation of function <span class="LuaCbold">f()</span> , for later use with <span class="LuaCbold">loadstring()</span> ( <span class="LuaCbold">f()</span> must be a Lua function with
+        no upvalues)</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="MsoNormal"><span lang="EN-GB">Note: string indexes extend from 1 to #string, or from end of string if negative (index -1 refers to the last character).</span></p>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Formatting</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.format</span></span> <span lang="EN-US">(s [, <span class="LuaCitalic">args</span> ])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a copy of <span class="LuaCbold">s</span> where formatting directives beginning with ' <span class="LuaCbold">%</span> ' are replaced by the value of arguments <span class="LuaCitalic">args</span> ,
+        in the given order (see <span class="LuaCitalic">Formatting directives</span> below)</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Formatting directives for
+  string.format</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="650" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%</span></span> <span lang="EN-US">[ <span class="LuaCitalic">flags</span> ] [ <span class="LuaCitalic">field_width</span> ] [ <span class="LuaCbold">.</span> <span class=
+        "LuaCitalic">precision</span> ] <span class="LuaCitalic">type</span></span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Formatting field
+  types</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%d</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">decimal integer</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%o</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">octal integer</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%x</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">hexadecimal integer, uppercase if <span class="LuaCbold">%X</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%f</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">floating-point in the form [-]nnnn.nnnn</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%e</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">floating-point in exp. Form [-]n.nnnn e [+|-]nnn, uppercase if <span class="LuaCbold">%E</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%g</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">floating-point as <span class="LuaCbold">%e</span> if exp. &lt; -4 or &gt;= precision, else as <span class="LuaCbold">%f</span> ; uppercase if <span class="LuaCbold">%G</span> .</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%c</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">character having the (system-dependent) code passed as integer</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%s</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">string with no embedded zeros</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%q</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">string between double quotes, with all special characters escaped</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%%</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">' <span class="LuaCbold">%</span> ' character</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Formatting flags</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">-</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">left-justifies within <span class="LuaCbold">field_width</span> [default: right-justify]</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">+</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">prepends sign (only applies to numbers)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">( <span class="LuaCbold">space</span> )</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">prepends sign if negative, else blank space</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">#</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">adds "0x" before <span class="LuaCbold">%x</span> , force decimal point for <span class="LuaCbold">%e</span> , <span class="LuaCbold">%f</span> , leaves trailing zeros for <span class=
+        "LuaCbold">%g</span></span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Formatting field width and
+  precision</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">n</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">puts at least <span class="LuaCbold">n</span> characters, pad with blanks</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">0n</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">puts at least <span class="LuaCbold">n</span> characters, left-pad with zeros</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">.n</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">puts at least <span class="LuaCbold">n</span> digits for integers; rounds to <span class="LuaCbold">n</span> decimals for floating-point; puts no more than <span class="LuaCbold">n</span> characters for
+        strings.</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Formatting examples</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.format("results: %d, %d", 13, 27)</span></span></p>
+      </td>
+
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">results: 13, 27</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.format("&lt;%5d&gt;", 13)</span></span></p>
+      </td>
+
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&lt;&nbsp;&nbsp; 13&gt;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.format("&lt;%-5d&gt;", 13)</span></span></p>
+      </td>
+
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&lt;13&nbsp;&nbsp; &gt;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.format("&lt;%05d&gt;", 13)</span></span></p>
+      </td>
+
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&lt;00013&gt;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.format("&lt;%06.3d&gt;", 13)</span></span></p>
+      </td>
+
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&lt;&nbsp;&nbsp; 013&gt;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.format("&lt;%f&gt;", math.pi)</span></span></p>
+      </td>
+
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&lt;3.141593&gt;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.format("&lt;%e&gt;", math.pi)</span></span></p>
+      </td>
+
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&lt;3.141593e+00&gt;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.format("&lt;%.4f&gt;", math.pi)</span></span></p>
+      </td>
+
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&lt;3.1416&gt;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.format("&lt;%9.4f&gt;", math.pi)</span></span></p>
+      </td>
+
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&lt;&nbsp;&nbsp; 3.1416&gt;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.format("&lt;%c&gt;", 64)</span></span></p>
+      </td>
+
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&lt;@&gt;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.format("&lt;%.4s&gt;", "goodbye")</span></span></p>
+      </td>
+
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&lt;good&gt;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.format("%q", [[she said "hi"]])</span></span></p>
+      </td>
+
+      <td width="331" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">"she said \"hi\""</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Finding, replacing, iterating
+  (for the Patterns see below)</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.find</span></span> <span lang="EN-US">(s, p [, i [, d]])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns first and last position of pattern <span class="LuaCbold">p</span> in string <span class="LuaCbold">s</span> , or <span class="LuaCbold">nil</span> if not found, starting search at position
+        <span class="LuaCbold">i</span> [default: 1]; returns captures as extra results. If <span class="LuaCbold">d</span> is true, treat pattern as plain string.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.gmatch</span></span> <span lang="EN-US">(s, p)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns an iterator getting next occurrence of pattern <span class="LuaCbold">p</span> (or its captures) in string <span class="LuaCbold">s</span> as substring(s) matching the pattern.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.gsub</span></span> <span lang="EN-US">(s, p, r [, n])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a copy of <span class="LuaCbold">s</span> with up to <span class="LuaCbold">n</span> [default: 1] occurrences of pattern <span class="LuaCbold">p</span> (or its captures) replaced by <span class=
+        "LuaCbold">r</span> if <span class="LuaCbold">r</span> is a string ( <span class="LuaCbold">r</span> can include references to captures in the form <span class="LuaCbold">%</span> <span class="LuaCitalic">n</span> ). If <span class=
+        "LuaCbold">r</span> is a function <span class="LuaCbold">r()</span> is called for each match and receives captured substrings; it should return the replacement string. If <span class="LuaCbold">r</span> is a table, the captures are used as fields
+        into the table. The function returns the number of substitutions made as second result.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.match</span></span> <span lang="EN-US">(s, p [, i])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns captures of pattern <span class="LuaCbold">p</span> in string <span class="LuaCbold">s</span> (or the whole match if <span class="LuaCbold">p</span> specifies no captures) or <span class=
+        "LuaCbold">nil</span> if <span class="LuaCbold">p</span> does not match <span class="LuaCbold">s</span> ; starts search at position <span class="LuaCbold">i</span> [default: 1].</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Patterns and pattern
+  items</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="650" colspan="2" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">General pattern format: <span class="LuaCitalic">pattern_item</span> [ <span class="LuaCitalic">pattern_items</span> ]</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCitalic"><span lang="EN-US">cc</span></span></p>
+      </td>
+
+      <td width="579" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">matches a single character in the class <span class="LuaCitalic">cc</span> (see <span class="LuaCitalic">Pattern character classes</span> below)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCitalic"><span lang="EN-US">cc</span></span> <span class="LuaCbold"><span lang="EN-US">*</span></span></p>
+      </td>
+
+      <td width="579" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">matches zero or more characters in the class <span class="LuaCitalic">cc</span> ; matchest longest sequence (greedy).</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCitalic"><span lang="EN-US">cc</span></span> <span class="LuaCbold"><span lang="EN-US">-</span></span></p>
+      </td>
+
+      <td width="579" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">matches zero or more characters in the class <span class="LuaCitalic">cc</span> ; matchest shortest sequence (non-greedy).</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCitalic"><span lang="EN-US">cc</span></span> <span class="LuaCbold"><span lang="EN-US">+</span></span></p>
+      </td>
+
+      <td width="579" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">matches one or more characters in the class <span class="LuaCitalic">cc</span> ; matchest longest sequence (greedy).</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCitalic"><span lang="EN-US">cc</span></span> <span class="LuaCbold"><span lang="EN-US">?</span></span></p>
+      </td>
+
+      <td width="579" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">matches zero or one character in the class <span class="LuaCitalic">cc</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%</span></span> <span class="LuaCitalic"><span lang="EN-US">n</span></span></p>
+      </td>
+
+      <td width="579" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">matches the <span class="LuaCitalic">n</span> -th captured string ( <span class="LuaCitalic">n</span> = 1..9, see <span class="LuaCitalic">Pattern captures</span> )</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%b</span></span> <span class="LuaCitalic"><span lang="EN-US">xy</span></span></p>
+      </td>
+
+      <td width="579" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">matches the balanced string from character <span class="LuaCitalic">x</span> to character <span class="LuaCitalic">y</span> (e.g. <span class="LuaCbold">%b()</span> for nested parentheses)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">^</span></span></p>
+      </td>
+
+      <td width="579" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">anchors pattern to start of string, must be the first item in the pattern</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">$</span></span></p>
+      </td>
+
+      <td width="579" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">anchors pattern to end of string, must be the last item in the pattern</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Captures</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">( <span class="LuaCitalic">pattern</span> )</span></p>
+      </td>
+
+      <td width="579" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">stores substring matching <span class="LuaCitalic">pattern</span> as capture <span class="LuaCbold">%1</span> .. <span class="LuaCbold">%9</span> , in order of opening parentheses</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">()</span></p>
+      </td>
+
+      <td width="579" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">stores current string position as capture</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Pattern character
+  classes</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" width="650" summary="?">
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">.</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any character</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%a</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any letter</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%A</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any non-letter</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%c</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any control character</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%C</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any non-control character</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%d</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any digit</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%D</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any non-digit</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%l</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any lowercase letter</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%L</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any non-(lowercase letter)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%p</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any punctuation character</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%P</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any non-punctuation character</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%s</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any whitespace character</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%S</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any non-whitespace character</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%u</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any uppercase letter</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%U</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any non-(uppercase letter)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%w</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any alphanumeric character</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%W</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any non-alphanumeric character</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%x</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any hexadecimal digit</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%X</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any non-(hexadecimal digit)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%z</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">the byte value zero</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%Z</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any non-zero character</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%</span></span> <span class="LuaCitalic"><span lang="EN-US">x</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">if <span class="LuaCitalic">x</span> is a symbol the symbol itself</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCitalic"><span lang="EN-US">x</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">if <span class="LuaCitalic">x</span> not in ^$()%.[]*+-? the character itself</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">[</span></span> <span class="LuaCitalic"><span lang="EN-US">set</span></span> <span class="LuaCbold"><span lang="EN-US">]</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any character in any of the given classes; can also be a range <span class="LuaCbold">[</span> <span class="LuaCitalic">c1</span> <span class="LuaCbold">-</span> <span class="LuaCitalic">c2</span>
+        <span class="LuaCbold">]</span> , e.g. [a-z].</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">[</span></span> <span class="LuaCbold"><span lang="EN-US">^</span></span> <span class="LuaCitalic"><span lang="EN-US">set</span></span> <span class="LuaCbold"><span lang=
+        "EN-US">]</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">any character not in <span class="LuaCitalic">set</span></span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Pattern examples</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.find("Lua is great!", "is")</span></span></p>
+      </td>
+
+      <td width="189" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">5</span></p>
+      </td>
+
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">6</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.find("Lua is great!", "%s")</span></span></p>
+      </td>
+
+      <td width="189" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">4</span></p>
+      </td>
+
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">4</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.gsub("Lua is great!", "%s", "-")</span></span></p>
+      </td>
+
+      <td width="189" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">Lua-is-great!</span></p>
+      </td>
+
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">2</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.gsub("Lua is great!", "[%s%l]", "*")</span></span></p>
+      </td>
+
+      <td width="189" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">L***********!</span></p>
+      </td>
+
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">11</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.gsub("Lua is great!", "%a+", "*")</span></span></p>
+      </td>
+
+      <td width="189" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">* * *!</span></p>
+      </td>
+
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">3</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.gsub("Lua is great!", "(.)", "%1%1")</span></span></p>
+      </td>
+
+      <td width="189" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">LLuuaa&nbsp; iiss&nbsp; ggrreeaatt!!</span></p>
+      </td>
+
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">13</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.gsub("Lua is great!", "%but", "")</span></span></p>
+      </td>
+
+      <td width="189" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">L!</span></p>
+      </td>
+
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">1</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.gsub("Lua is great!", "^.-a", "LUA")</span></span></p>
+      </td>
+
+      <td width="189" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">LUA is great!</span></p>
+      </td>
+
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">1</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="319" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">string.gsub("Lua is great!", "^.-a",</span></span></p>
+
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">&nbsp;&nbsp; function(s) return string.upper(s) end)</span></span></p>
+      </td>
+
+      <td width="189" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">LUA is great!</span></p>
+      </td>
+
+      <td width="142" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">1</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader1"><a name="The_I_O_library" id="The_I_O_library"><span lang="EN-US">The I/O library [io]</span></a></p>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Complete I/O</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">io.open</span></span> <span lang="EN-US">(fn [, m])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">opens file with name <span class="LuaCbold">fn</span> in mode <span class="LuaCbold">m</span> : "r" = read [default], "w" = write", "a" = append, "r+" = update-preserve, "w+" = update-erase, "a+" =
+        update-append (add trailing "b" for binary mode on some systems); returns a file object (a userdata with a C handle).</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">file <span class="LuaCbold">:close</span> ()</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">closes <span class="LuaCbold">file</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">file <span class="LuaCbold">:read</span> ( <span class="LuaCitalic">formats</span> )</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a value from <span class="LuaCbold">file</span> for each of the passed <span class="LuaCitalic">formats</span> : "*n" = reads a number, "*a" = reads the whole <span class="LuaCbold">file</span> as a
+        string from current position (returns "" at end of file), "*l" = reads a line ( <span class="LuaCbold">nil</span> at end of file) [default], <span class="LuaCitalic">n</span> = reads a string of up to <span class="LuaCitalic">n</span> characters (
+        <span class="LuaCbold">nil</span> at end of file)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">file <span class="LuaCbold">:lines</span> ()</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns an iterator function for reading <span class="LuaCbold">file</span> line by line; the iterator does not close the file when finished.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">file <span class="LuaCbold">:write</span> ( <span class="LuaCitalic">values</span> )</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">writes each of the <span class="LuaCitalic">values</span> (strings or numbers) to <span class="LuaCbold">file</span> , with no added separators. Numbers are written as text, strings can contain binary data
+        (in this case, <span class="LuaCbold">file</span> may need to be opened in binary mode on some systems).</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">file <span class="LuaCbold">:seek</span> ([p] [, of])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets the current position in <span class="LuaCbold">file</span> relative to <span class="LuaCbold">p</span> ("set" = start of file [default], "cur" = current, "end" = end of file) adding offset <span class=
+        "LuaCbold">of</span> [default: zero]; returns new current position in <span class="LuaCbold">file</span> .</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">file <span class="LuaCbold">:flush</span> ()</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">flushes any data still held in buffers to <span class="LuaCbold">file</span></span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Simple I/O</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">io.input</span></span> <span lang="EN-US">([file])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets <span class="LuaCbold">file</span> as default input file; <span class="LuaCbold">file</span> can be either an open file object or a file name; in the latter case the file is opened for reading in text
+        mode. Returns a file object, the current one if no <span class="LuaCbold">file</span> given; raises error on failure.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">io.output</span></span> <span lang="EN-US">([file])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets <span class="LuaCbold">file</span> as default output file (the current output file is not closed); <span class="LuaCbold">file</span> can be either an open file object or a file name; in the latter case
+        the file is opened for writing in text mode. Returns a file object, the current one if no <span class="LuaCbold">file</span> given; raises error on failure.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">io.close</span></span> <span lang="EN-US">([file])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">closes <span class="LuaCbold">file</span> (a file object) [default: closes the default output file]</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">io.read</span></span> <span lang="EN-US">( <span class="LuaCitalic">formats</span> )</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">reads from the default input file, usage as <span class="LuaCbold">file:read()</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">io.lines</span></span> <span lang="EN-US">([fn])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">opens the file with name <span class="LuaCbold">fn</span> for reading and returns an iterator function to read line by line; the iterator closes the file when finished. If no <span class="LuaCbold">fn</span>
+        is given, returns an iterator reading lines from the default input file.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">io.write</span></span> <span lang="EN-US">( <span class="LuaCitalic">values</span> )</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">writes to the default output file, usage as <span class="LuaCbold">file:write()</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">io.flush</span></span> <span lang="EN-US">()</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">flushes any data still held in buffers to the default output file</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Standard files and utility
+  functions</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">io.stdin, io.stdout, io.stderr</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">predefined file objects for stdin, stdout and stderr streams</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">io.popen</span></span> <span lang="EN-US">([prog [, mode]])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">starts program <span class="LuaCbold">prog</span> in a separate process and returns a file handle that you can use to read data from (if <span class="LuaCbold">mode</span> is "r", default) or to write data
+        to (if <span class="LuaCbold">mode</span> is "w")</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">io.type</span></span> <span lang="EN-US">(x)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the string "file" if <span class="LuaCbold">x</span> is an open file, "closed file" if <span class="LuaCbold">x</span> is a closed file or <span class="LuaCbold">nil</span> if <span class=
+        "LuaCbold">x</span> is not a file object</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">io.tmpfile</span></span> <span lang="EN-US">()</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a file object for a temporary file (deleted when program ends)</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="MsoNormal"><span lang="EN-US">Note: unless otherwise stated, the I/O functions return <span class="LuaCbold">nil</span> and an error message on failure; passing a closed file object raises an error instead.</span></p>
+
+  <p class="LuaPHeader1"><a name="The_operating_system_library" id="The_operating_system_library"><span lang="EN-US">The operating system library [os]</span></a></p>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">System interaction</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">os.execute</span></span> <span lang="EN-US">(cmd)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">calls a system shell to execute the string <span class="LuaCbold">cmd</span> as a command; returns a system-dependent status code.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">os.exit</span></span> <span lang="EN-US">([code])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">terminates the program returning <span class="LuaCbold">code</span> [default: success]</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">os.getenv</span></span> <span lang="EN-US">(var)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a string with the value of the environment variable <span class="LuaCbold">var</span> or <span class="LuaCbold">nil</span> if no such variable exists</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">os.setlocale</span></span> <span lang="EN-US">(s [, c])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets the locale described by string <span class="LuaCbold">s</span> for category <span class="LuaCbold">c</span> : "all", "collate", "ctype", "monetary", "numeric" or "time" [default: "all"]; returns the
+        name of the locale or <span class="LuaCbold">nil</span> if it can't be set.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">os.remove</span></span> <span lang="EN-US">(fn)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">deletes the file <span class="LuaCbold">fn</span> ; in case of error returns <span class="LuaCbold">nil</span> and error description.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">os.rename</span></span> <span lang="EN-US">(of, nf)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">renames file <span class="LuaCbold">of</span> to <span class="LuaCbold">nf</span> ; in case of error returns <span class="LuaCbold">nil</span> and error description.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">os.tmpname</span></span> <span lang="EN-US">()</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a string usable as name for a temporary file; subject to name conflicts, use <span class="LuaCbold">io.tmpfile()</span> instead.</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Date/time</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">os.clock</span></span> <span lang="EN-US">()</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns an approximation of the amount in seconds of CPU time used by the program</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">os.time</span></span> <span lang="EN-US">([tt])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a system-dependent number representing date/time described by table <span class="LuaCbold">tt</span> [default: current]. <span class="LuaCbold">tt</span> must have fields <span class=
+        "LuaCbold">year</span> , <span class="LuaCbold">month</span> , <span class="LuaCbold">day</span> ; can have fields <span class="LuaCbold">hour</span> , <span class="LuaCbold">min</span> , <span class="LuaCbold">sec</span> , <span class=
+        "LuaCbold">isdst</span> (daylight saving, boolean). On many systems the returned value is the number of seconds since a fixed point in time (the "epoch").</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">os.date</span></span> <span lang="EN-US">([fmt [, t]])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a table or a string describing date/time <span class="LuaCbold">t</span> (should be a value returned by <span class="LuaCbold">os.time()</span> [default: current date/time]), according to the format
+        string <span class="LuaCbold">fmt</span> [default: date/time according to locale settings]; if <span class="LuaCbold">fmt</span> is "*t" or "!*t", returns a table with fields <span class="LuaCbold">year</span> (yyyy), <span class=
+        "LuaCbold">month</span> (1..12), <span class="LuaCbold">day</span> (1..31), <span class="LuaCbold">hour</span> (0..23), <span class="LuaCbold">min</span> (0..59), <span class="LuaCbold">sec</span> (0..61), <span class="LuaCbold">wday</span> (1..7,
+        Sunday = 1), <span class="LuaCbold">yday</span> (1..366), <span class="LuaCbold">isdst</span> (true = daylight saving), else returns the <span class="LuaCbold">fmt</span> string with formatting directives beginning with ' <span class=
+        "LuaCbold">%</span> ' replaced according to <span class="LuaCitalic">Time formatting directives</span> (see below). In either case a leading "!" requests UTC (Coordinated Universal Time).</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">os.difftime</span></span> <span lang="EN-US">(t2, t1)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns the difference between two values returned by <span class="LuaCbold">os.time()</span></span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Time formatting directives (most
+  used, portable features):</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%c</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">date/time (locale)</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%x</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">date only (locale)</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%X</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">time only (locale)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%y</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">year (nn)</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%Y</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">year (yyyy)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%j</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">day of year (001..366)</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%m</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">month (01..12)</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%b</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">abbreviated month name (locale)</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%B</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">full name of month (locale)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%d</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">day of month (01..31)</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%U</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">week number (01..53), Sunday-based</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%W</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">week number (01..53), Monday-based</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%w</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">weekday (0..6), 0 is Sunday</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%a</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">abbreviated weekday name (locale)</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%A</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">full weekday name (locale)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%H</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">hour (00..23)</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%I</span></span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">hour (01..12)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%p</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">either AM or PM</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%M</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">minute (00..59)</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%S</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">second (00..61)</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">%Z</span></span></p>
+      </td>
+
+      <td width="260" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">time zone name, if any</span></p>
+      </td>
+
+      <td width="71" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+
+      <td width="248" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader1"><a name="The_debug_library" id="The_debug_library"><span lang="EN-US">The debug library [debug]</span></a></p>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Basic functions</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">debug.debug</span></span> <span lang="EN-US">()</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">enters interactive debugging shell (type <span class="LuaCbold">cont</span> to exit); local variables cannot be accessed directly.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">debug.getinfo</span></span> <span lang="EN-US">(f [, w])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a table with information for function <span class="LuaCbold">f</span> or for function at level <span class="LuaCbold">f</span> [1 = caller], or <span class="LuaCbold">nil</span> if invalid level (see
+        <span class="LuaCitalic">Result fields for getinfo</span> below); characters in string <span class="LuaCbold">w</span> select one or more groups of fields [default: all] (see <span class="LuaCitalic">Options for getinfo</span> below).</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">debug.getlocal</span></span> <span lang="EN-US">(n, i)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns name and value of local variable at index <span class="LuaCbold">i</span> (from 1, in order of appearance) of the function at stack level <span class="LuaCbold">n</span> (1= caller); returns
+        <span class="LuaCbold">nil</span> if <span class="LuaCbold">i</span> is out of range, raises error if <span class="LuaCbold">n</span> is out of range.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">debug.getupvalue</span></span> <span lang="EN-US">(f, i)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns name and value of upvalue at index <span class="LuaCbold">i</span> (from 1, in order of appearance) of function <span class="LuaCbold">f</span> ; returns <span class="LuaCbold">nil</span> if
+        <span class="LuaCbold">i</span> is out of range.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">debug.traceback</span></span> <span lang="EN-US">([msg])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns a string with traceback of call stack, prepended by <span class="LuaCbold">msg</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">debug.setlocal</span></span> <span lang="EN-US">(n,&nbsp; i, v)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">assigns value <span class="LuaCbold">v</span> to the local variable at index <span class="LuaCbold">i</span> (from 1, in order of appearance) of the function at stack level <span class="LuaCbold">n</span>
+        (1= caller); returns <span class="LuaCbold">nil</span> if <span class="LuaCbold">i</span> is out of range, raises error if <span class="LuaCbold">n</span> is out of range.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">debug.setupvalue</span></span> <span lang="EN-US">(f, i, v)</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">assigns value <span class="LuaCbold">v</span> to the upvalue at index <span class="LuaCbold">i</span> (from 1, in order of appearance) of function <span class="LuaCbold">f</span> ; returns <span class=
+        "LuaCbold">nil</span> if <span class="LuaCbold">i</span> is out of range.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">debug.sethook</span></span> <span lang="EN-US">([h, m [, n]])</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sets function <span class="LuaCbold">h</span> as hook, called for events given in string (mask) <span class="LuaCbold">m</span> : "c" = function call, "r" = function return, "l" = new code line; also, a
+        number <span class="LuaCbold">n</span> will call <span class="LuaCbold">h()</span> every <span class="LuaCbold">n</span> instructions; <span class="LuaCbold">h()</span> will receive the event type as first argument: "call", "return", "tail
+        return", "line" (line number as second argument) or "count"; use <span class="LuaCbold">debug.getinfo(2)</span> inside <span class="LuaCbold">h()</span> for info (not for "tail_return").</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">debug.gethook</span></span> <span lang="EN-US">()</span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns current hook function, mask and count set with <span class="LuaCbold">debug.sethook()</span></span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="MsoNormal"><span lang="EN-US">Note: the debug library functions are not optimised for efficiency and should not be used in normal operation.</span></p>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Result fields for
+  debug.getinfo</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">source</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">name of file (prefixed by '@') or string where the function was defined</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">short_src</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">short version of <span class="LuaCbold">source</span> , up to 60 characters</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">linedefined</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">line of source where the function was defined</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">what</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">"Lua" = Lua function, "C" = C function, "main" = part of main chunk</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">name</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">name of function, if available, or a reasonable guess if possible</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">namewhat</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">meaning of <span class="LuaCbold">name</span> : "global", "local", "method", "field" or ""</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">nups</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">number of upvalues of the function</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="165" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">func</span></span></p>
+      </td>
+
+      <td width="484" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">the function itself</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Options for debug.getinfo
+  (character codes for argument w)</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="36" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">n</span></span></p>
+      </td>
+
+      <td width="295" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns fields <span class="LuaCbold">name</span> and <span class="LuaCbold">namewhat</span></span></p>
+      </td>
+
+      <td width="36" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">l</span></span></p>
+      </td>
+
+      <td width="284" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns field <span class="LuaCbold">currentline</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="36" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">f</span></span></p>
+      </td>
+
+      <td width="295" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns field <span class="LuaCbold">func</span></span></p>
+      </td>
+
+      <td width="36" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">u</span></span></p>
+      </td>
+
+      <td width="284" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns field <span class="LuaCbold">nup</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="36" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">S</span></span></p>
+      </td>
+
+      <td width="295" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">returns fields <span class="LuaCbold">source</span> , <span class="LuaCbold">short_src</span> , <span class="LuaCbold">what</span> and <span class="LuaCbold">linedefined</span></span></p>
+      </td>
+
+      <td width="36" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+
+      <td width="284" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader1"><a name="The_stand_alone_interpreter" id="The_stand_alone_interpreter"><span lang="EN-US">The stand-alone interpreter</span></a></p>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Command line syntax</span></p>
+
+  <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">lua</span></span> <span lang="EN-US">[ <span class="LuaCitalic">options</span> ] [ <span class="LuaCitalic">script</span> [ <span class="LuaCitalic">arguments</span> ]]</span></p>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Options</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">-</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">loads and executes <span class="LuaCbold">script</span> from standard input (no args allowed)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">-e</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">executes the Lua statements in the literal string <span class="LuaCitalic">stats</span> , can be used multiple times on the same line</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">-l</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">requires <span class="LuaCitalic">filename</span> (loads and executes if not already done)</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">-i</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">enters interactive mode after loading and executing <span class="LuaCitalic">script</span></span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">-v</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">prints version information</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">--</span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">stops parsing options</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Recognized environment
+  variables</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">LUA_INIT</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">if this holds a string in the form <span class="LuaCitalic">@filename</span> loads and executes <span class="LuaCitalic">filename</span> , else executes the string itself</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">LUA_PATH</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">defines search path for Lua modules, with "?" replaced by the module name</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">LUA_CPATH</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">defines search path for dynamic libraries (e.g. .so or .dll files), with "?" replaced by the module name</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">_PROMPT[2]</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">set the prompts for interactive mode</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Special Lua variables</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">arg</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">nil</span></span> <span lang="EN-US">if no arguments on the command line, else a table containing command line <span class="LuaCitalic">arguments</span> starting from <span class=
+        "LuaCbold">arg[1]</span> while # <span class="LuaCbold">arg</span> is the number of <span class="LuaCitalic">arguments</span> ; <span class="LuaCbold">arg[0]</span> holds the script name as given on the command line; <span class=
+        "LuaCbold">arg[-1]</span> and lower indexes contain the fields of the command line preceding the script name.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">_PROMPT[2]</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">contain the prompt for interactive mode; can be changed by assigning a new value.</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="LuaPHeader1"><a name="The_compiler" id="The_compiler"><span lang="EN-US">The compiler</span></a></p>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Command line syntax</span></p>
+
+  <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">luac</span></span> <span lang="EN-US">[ <span class="LuaCitalic">options</span> ] [ <span class="LuaCitalic">filenames</span> ]</span></p>
+
+  <p class="LuaPHeader2"><span lang="EN-US" style="font-size: 9.0pt;font-family:Symbol;font-weight:normal;font-style:normal">&middot; <span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;</span></span> <span lang="EN-US">Options</span></p>
+
+  <table class="LuaTTables" border="1" cellspacing="0" cellpadding="0" summary="?">
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">-</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">compiles from standard input</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">-l</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">produces a listing of the compiled bytecode</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">-o</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">sends output to <span class="LuaCbold">filename</span> [default: <span class="LuaCbold">luac.out</span> ]</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">-p</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">performs syntax and integrity checking only, does not output bytecode</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">-s</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">strips debug information; line numbers and local names are lost.</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span class="LuaCbold"><span lang="EN-US">-v</span></span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">prints version information</span></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="95" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">--</span></p>
+      </td>
+
+      <td width="555" valign="top">
+        <p class="MsoNormal"><span lang="EN-US">stops parsing options</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <p class="MsoNormal"><span lang="EN-US">Note: compiled chunks are portable between machines having the same word size.</span></p>
+
+  <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+
+  <p class="MsoNormal"><i><span lang="EN-US" style="font-size:6.0pt"><br>
+  <br>
+  Lua is a language designed and implemented by Roberto Ierusalimschy, Luiz Henrique de Figueiredo and Waldemar Celes; for details see lua.org. Drafts of this reference card (for Lua 5.0) were produced by Enrico Colombini &lt;erix@erix.it&gt; in 2004 and
+  updated by Thomas Lauer &lt;thomas.lauer@gmail.com&gt; in 2007. Comments, praise or blame please to the lua-l mailing list.</span></i></p>
+</body>
+</html>

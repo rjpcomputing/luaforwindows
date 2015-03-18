@@ -1,0 +1,12 @@
+This is test data for the Lua gzip file I/O module.
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+Did we count to ten?

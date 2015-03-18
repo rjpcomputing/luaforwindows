@@ -1,0 +1,216 @@
+
+require 'metalua.extension.match'
+
+module ('spmatch', package.seeall)
+
+require 'metalua.walk.id'
+
+-{extension 'log'}
+
+----------------------------------------------------------------------
+-- Back-end for statements
+-- "match function ..." and "local match function...".
+-- Tag must be either "Localrec" or "Set".
+----------------------------------------------------------------------
+named_match_function_builder = |tag| function (x)
+   local func_name, _, cases = unpack(x)
+   local arity = #cases[1][1][1]
+   if arity==0 then
+      error "There must be at least 1 case in match function"
+   end
+   local args = { }
+   for i=1, arity do args[i] = mlp.gensym("arg."..i) end
+   local body = match_builder{args, cases}
+   return { tag=tag, {func_name}, { `Function{ args, {body} } } }
+end
+
+-- Get rid of the former parser, it will be blended in a multiseq:
+mlp.stat:del 'match'
+
+----------------------------------------------------------------------
+-- "match function", "match ... with"
+----------------------------------------------------------------------
+mlp.stat:add{ 'match',
+   gg.multisequence{
+
+      ----------------------------------------------------------------
+      -- Shortcut for declaration of functions containing only a match:
+      -- "function f($1) match $1 with $2 end end" can be written:
+      -- "match function f $2 end"
+      ----------------------------------------------------------------
+      { 'function', mlp.expr, gg.optkeyword '|',
+         match_cases_list_parser, 'end',
+         builder = named_match_function_builder 'Set' },
+
+      ----------------------------------------------------------------
+      -- Reintroduce the original match statement:
+      ----------------------------------------------------------------
+      default = gg.sequence{
+         mlp.expr_list, 'with', gg.optkeyword '|',
+         match_cases_list_parser, 'end',
+         builder = |x| match_builder{ x[1], x[3] } } } }
+
+----------------------------------------------------------------------
+-- Shortcut: "local match function f $cases end" translates to:
+-- "local function f($args) match $args with $cases end end"
+----------------------------------------------------------------------
+mlp.stat:get'local'[2]:add{
+   'match', 'function', mlp.expr, gg.optkeyword '|',
+   match_cases_list_parser, 'end',
+   builder = named_match_function_builder 'Localrec' }
+
+----------------------------------------------------------------------
+-- "match...with" expressions and "match function..."
+----------------------------------------------------------------------
+mlp.expr:add{ 'match', builder = |x| x[1], gg.multisequence{
+
+      ----------------------------------------------------------------
+      -- Anonymous match functions:
+      -- "function ($1) match $1 with $2 end end" can be written:
+      -- "match function $2 end"
+      ----------------------------------------------------------------
+      { 'function', gg.optkeyword '|',
+         match_cases_list_parser,
+         'end',
+         builder = function(x)
+            local _, cases = unpack(x)
+            local v        = mlp.gensym()
+            local body     = match_builder{v, cases}
+            return `Function{ {v}, {body} }
+         end },
+
+      ----------------------------------------------------------------
+      -- match expressions: you can put a match where an expression
+      -- is expected. The case bodies are then expected to be
+      -- expressions, not blocks.
+      ----------------------------------------------------------------
+      default = gg.sequence{
+         mlp.expr_list, 'with', gg.optkeyword '|',
+         gg.list{  name = "match cases list",
+            gg.sequence{ name = "match expr case",
+               gg.list{ name  = "match expr case patterns list",
+                  primary     = mlp.expr_list,
+                  separators  = "|",
+                  terminators = { "->", "if" } },
+               gg.onkeyword{ "if", mlp.expr, consume = true },
+               "->",
+               mlp.expr }, -- Notice: expression, not block!
+            separators  = "|" },
+         -- Notice: no "end" keyword!
+         builder = function (x)
+            local tested_term_seq, _, cases = unpack(x)
+            local v = mlp.gensym 'match_expr'
+            -- Replace expressions with blocks
+            for case in ivalues (cases) do
+               local body = case[3]
+               case[3] = { `Set{ {v}, {body} } }
+            end
+            local m = match_builder { tested_term_seq, cases }
+            return `Stat{ { `Local{{v}}; m }, v }
+         end } } }
+
+function bind (x)
+   local patterns, values = unpack(x)
+
+   -------------------------------------------------------------------
+   -- Generate pattern code: "bind vars = vals" translates to:
+   -- do
+   --   pattern matching code, goto 'fail' on mismatch
+   --   goto 'success'
+   --   label 'fail': error "..."
+   --   label success
+   -- end
+   -- vars is the set of variables used by the pattern
+   -------------------------------------------------------------------
+   local code, vars do
+      local match_cfg = {
+         on_failure = mlp.gensym 'mismatch' [1],
+         locals = { },
+         code = { } }
+      pattern_seq_builder(patterns, values, match_cfg)
+      local on_success = mlp.gensym 'on_success' [1]
+      code = {
+         match_cfg.code;
+         `Goto{ on_success };
+         `Label{ match_cfg.on_failure };
+         +{error "bind error"};
+         `Label{ on_success } }
+      vars = match_cfg.locals
+   end
+
+   -------------------------------------------------------------------
+   -- variables that actually appear in the pattern:
+   -------------------------------------------------------------------
+   local vars_in_pattern do
+      vars_in_pattern = { }
+      local walk_cfg = { id = { } }
+      function walk_cfg.id.free(v) vars_in_pattern[v[1]]=true end
+      walk_id.expr_list(walk_cfg, patterns)
+   end
+
+   -------------------------------------------------------------------
+   -- temp variables that are generated for destructuring,
+   -- but aren't explicitly typed by the user. These must be made
+   -- local.
+   -------------------------------------------------------------------
+   local vars_not_in_pattern do
+      vars_not_in_pattern = { }
+      for k in keys(vars) do
+         if not vars_in_pattern[k] then
+            vars_not_in_pattern[k] = true
+         end
+      end
+   end
+
+   -------------------------------------------------------------------
+   -- Declare the temp variables as local to the statement.
+   -------------------------------------------------------------------
+   if next(vars_not_in_pattern) then
+      local loc = { }
+      for k in keys (vars_not_in_pattern) do
+         table.insert (loc, `Id{k})
+      end
+      table.insert (code, 1, `Local{ loc, { } })
+   end
+
+   -------------------------------------------------------------------
+   -- Transform the set of pattern variable names into a list of `Id{}
+   -------------------------------------------------------------------
+   local decl_list do
+      decl_list = { }
+      for k in keys (vars_in_pattern) do
+         table.insert (decl_list, `Id{k})
+      end
+   end
+
+   return code, decl_list
+end
+
+function local_bind(x)
+   local code, vars = bind (x)
+   return { `Local{ vars, { } }; code }
+end
+
+function non_local_bind(x)
+   local code, _ = bind (x)
+   code.tag = 'Do'
+   return code
+end
+
+----------------------------------------------------------------------
+-- Syntax front-end
+----------------------------------------------------------------------
+mlp.lexer:add 'bind'
+
+----------------------------------------------------------------------
+-- bind patterns = vars
+----------------------------------------------------------------------
+mlp.stat:add{ 'bind', mlp.expr_list, '=', mlp.expr_list,
+   builder = non_local_bind }
+
+----------------------------------------------------------------------
+-- local bind patterns = vars
+-- Some monkey-patching of "local ..." must take place
+----------------------------------------------------------------------
+mlp.stat:get'local'[2]:add{ 'bind', mlp.expr_list, '=', mlp.expr_list,
+   builder = local_bind }

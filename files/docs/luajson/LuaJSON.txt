@@ -1,0 +1,206 @@
+LuaJSON(3)
+==========
+:Author: Thomas Harning
+:Email:  harningt@gmail.com
+:Date:   2009/04/29
+
+NAME
+----
+luajson - JSON encoder/decoder for Lua
+
+SYNOPSIS
+--------
+require("json")
+
+json.decode("json-string" [, parameters])
+
+json.decode.getDecoder(parameters)
+
+json.encode(lua_value [, parameters])
+
+json.encode.getEncoder(parameters)
+
+DESCRIPTION
+-----------
+json.decode("json-string" [, parameters])::
+    Obtains a JSON decoder using `getDecoder` with the parameters specified,
+    then performs the decoding operation.
+
+json.encode(lua_value [, parameters])::
+    Obtains a JSON encoder using `getEncoder` with the parameters specified,
+    then performs the encoding operation.
+
+json.decode.getDecoder(parameters)::
+    Obtains a JSON decoder configured with the given parameters or defaults.
+
+json.encode.getEncoder(parameters)::
+    Obtains a JSON encoder configured with the given parameters or defaults.
+
+json.encode.strict::
+    A default parameter specification containing 'strict' rules for encoding
+
+json.decode.strict::
+    A default parameter specification containing 'strict' rules for decoding
+
+=== COMMON PARAMETERS
+
+initialObject : boolean::
+    Specifies if the outermost element be an array or object
+
+allowUndefined : boolean::
+    Specifies if 'undefined' is an allowed value
+
+null : any::
+    Placeholder object for null values
+
+undefined : any::
+    Placeholder for undefined values
+
+number.nan : boolean::
+    Specifies if NaN is an allowed value
+
+number.inf : boolean::
+    Specifies if +/-Infinity is an allowed value
+
+=== ENCODER-SPECIFIC PARAMETERS
+
+preProcess : `function(object)`::
+    Called for every value to be encoded, optionally altering.
+    If returns `nil` then no value change occurs.
+
+output : function::
+    Function that returns an encoder specification (TBD), if null
+    default used that returns a string.
+
+array.isArray : `function(object)`::
+    If `true`/`false` returned, then the value is authoritatively
+    an array or not
+
+strings.xEncode : boolean::
+    Specifies if binary values are to be encoded with \xNN rather than \uNNNN
+
+strings.encodeSet : string::
+    http://www.lua.org/manual/5.1/manual.html#5.4.1[gmatch-style] set of
+    characters that need to be escaped (to be contained in `[]`)
+
+strings.encodeSetAppend : string::
+    Set of characters that need to be escaped (to be contained in `[]`).
+    Appended to the current encodeSet.
+
+==== Default Configuration
+[source,lua]
+----
+array.isArray == json-util's isArray implementation
+allowUndefined = true
+number.nan = true
+number.inf = true
+strings.xEncode = false
+strings.encodeSet = '\\"/%z\1-\031'
+----
+
+==== Strict Configuration
+[source,lua]
+----
+initialObject = true
+allowUndefined = false
+number.nan = false
+number.inf = false
+----
+
+=== DECODER-SPECIFIC PARAMETERS
+
+unicodeWhitespace : boolean::
+    Specifies if unicode whitespace characters are counted
+
+array.trailingComma / object.trailingComma : boolean::
+    Specifies if extraneous trailing commas are ignored in declaration
+
+calls.defs : map<string | LPEG, function | boolean>::
+    Defines set of specifically permitted function definitions.
+    If boolean value, determines if allowed or not, decoded as a call object.
+    Function return-value is the decoded result.
+    Function definition:  `function(name, [arguments])` : output-value
+
+calls.allowUndefined : boolean::
+    Specifies if undefined call definitions are decoded as call objects.
+
+number.frac : boolean::
+    Specifies if numbers can have a decimal component (ex: `.01`)
+
+number.exp : boolean::
+    Specifies if exponents are allowed (ex: `1e2`)
+
+number.hex : boolean::
+    Specifies if hexadecimal numbers are allowed (ex: `0xDEADBEEF`)
+
+object.number : boolean::
+    Specifies if numbers can be object keys
+
+object.identifier : boolean::
+    Specifies if unquoted 'identifiers' can be object keys (matching `[A-Za-z_][A-Za-z0-9_]*`)
+
+strings.badChars : string::
+    Set of characters that should not be present in a string
+
+strings.additionalEscapes : LPeg expression::
+    LPeg expression to handle output (ex: `lpeg.C(1)` would take `\k` and spit out `k`)
+
+strings.escapeCheck : non-consuming LPeg expression::
+    LPeg expression to check if a given character is allowed to be an escape value
+
+strings.decodeUnicode::
+    `function (XX, YY)` handling \uXXYY situation to output decoded unicode sequence
+
+strings.strict_quotes : boolean::
+    Specifies if the `'` character is considered a quoting specifier
+
+==== Default configuration
+
+[source,lua]
+----
+unicodeWhitespace = true
+initialObject = false
+allowUndefined = true
+array.trailingComma = true
+number.frac = true
+number.exp = true
+number.hex = false
+object.number = true
+object.identifier = true
+object.trailingComma = true
+strings.badChars = '' -- No characters considered bad in a string
+strings.additionalEscapes = false, -- disallow untranslated escapes
+strings.escapeCheck = #lpeg.S('bfnrtv/\\"xu\'z'),
+strings.decodeUnicode = utf8DecodeUnicode,
+strings.strict_quotes = false
+----
+
+==== Strict configuration
+
+[source,lua]
+----
+initialObject = true
+allowUndefined = false
+array.trailingComma = false
+object.identifier = false
+object.trailingComma = false
+strings.badChars = '\b\f\n\r\t\v'
+strings.additionalEscapes = false -- no additional escapes
+strings.escapeCheck = #lpeg.S('bfnrtv/\\"u') --only these are allowed to be escaped
+strings.strict_quotes = true
+----
+
+AUTHOR
+------
+Written by Thomas Harning Jr., <harningt@gmail.com>
+
+REFERENCES
+----------
+http://www.inf.puc-rio.br/~roberto/lpeg[LPeg]
+
+http://json.org[JSON]
+
+COPYING
+-------
+Copyright (C) 2008-2009 Thomas Harning Jr.  Free use of this software is granted
+under the terms of the MIT license.

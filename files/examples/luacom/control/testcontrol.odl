@@ -1,0 +1,56 @@
+import "ocidl.idl";
+
+[
+  uuid(AB290DA3-2F9E-4200-8A69-AE4C3A6A82EF),
+  version(1.0)
+]
+library TestControl
+{
+  importlib("stdole32.tlb");
+[
+    uuid(05E662B4-05A3-4ba2-A8AB-B5A365CCB624)
+]
+dispinterface ITestLuaControl
+{
+  properties:
+  methods:
+  [
+  id(1)
+  ]
+  int Sum(
+    [in] int i1,
+    [in] VARIANT i2
+  );
+  [
+  id(2)
+  ]
+  BSTR I2A(
+    [in] int i1
+  );
+  [
+  id(3)
+  ]
+  void IntDivide(
+    [in] int i1,
+    [in] int i2,
+    [out] VARIANT* quot,
+    [out] VARIANT* rem
+  );
+  [
+  id(4)
+  ]
+  void Close(
+    void
+  );
+};
+
+[
+  uuid(687362C8-00D6-4eff-9207-DDB22EE23A6D),
+  control
+]
+coclass Teste
+{
+[default] dispinterface ITestLuaControl;
+};
+};
+

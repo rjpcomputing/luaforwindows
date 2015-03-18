@@ -1,0 +1,4 @@
+-{ extension 'xloop' }
+for i=1,9 for j=10,90,10 if i~=3 while i<8 do
+   io.write(i+j, ' ')
+end

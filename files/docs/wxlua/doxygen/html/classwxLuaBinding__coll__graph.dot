@@ -1,0 +1,25 @@
+digraph G
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir=LR;
+  Node1 [label="wxLuaBinding",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node2 -> Node1 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="m_objectArray",fontname="FreeSans"];
+  Node2 [label="wxLuaBindObject",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structwxLuaBindObject.html"];
+  Node3 -> Node1 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="m_stringArray",fontname="FreeSans"];
+  Node3 [label="wxLuaBindString",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structwxLuaBindString.html"];
+  Node4 -> Node1 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="m_numberArray",fontname="FreeSans"];
+  Node4 [label="wxLuaBindNumber",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structwxLuaBindNumber.html"];
+  Node5 -> Node1 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="m_functionArray",fontname="FreeSans"];
+  Node5 [label="wxLuaBindMethod",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structwxLuaBindMethod.html"];
+  Node6 -> Node5 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="wxluacfuncs",fontname="FreeSans"];
+  Node6 [label="wxLuaBindCFunc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structwxLuaBindCFunc.html"];
+  Node5 -> Node5 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="basemethod",fontname="FreeSans"];
+  Node7 -> Node1 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="m_classArray",fontname="FreeSans"];
+  Node7 [label="wxLuaBindClass",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structwxLuaBindClass.html"];
+  Node4 -> Node7 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="enums",fontname="FreeSans"];
+  Node7 -> Node7 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="baseBindClasses",fontname="FreeSans"];
+  Node5 -> Node7 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="wxluamethods",fontname="FreeSans"];
+  Node8 -> Node1 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="m_eventArray",fontname="FreeSans"];
+  Node8 [label="wxLuaBindEvent",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structwxLuaBindEvent.html"];
+}

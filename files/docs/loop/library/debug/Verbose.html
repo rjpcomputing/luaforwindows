@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Verbose Manager</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																																																																					<li><a href="../../index.html", title="">Home</a></li>
+																																																																																					<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																																																																					<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																																																																					<li><a href="../index.html", title="Class Library">Library</a>
+																																																																																						<div class="outside"><div class="inside"><ul>
+																																																																																							<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																																																																								</li>
+																																																																																								<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																																																																									</li>
+																																																																																									<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																																																																										</li>
+																																																																																										<li><a href="../overview.html#object", title="Objects">object</a>
+																																																																																											</li>
+																																																																																											<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																																																																												</li>
+																																																																																												<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																																																																													</li>
+																																																																																												</ul></div></div>
+																																																																																											</li>
+																																																																																											<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																																																																											<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																																																																										</ul></div></div>
+																																																																																									
+</div>
+
+<div class="content">
+<h1>Verbose Manager</h1>
+<h2><code>loop.debug.Verbose</code></h2><br>
+<p>Class of objects that provide operations to generate and manage verbose messages of a continuous application.
+All messages are flagged and may be hierarchly organized in order to reflect the application structure.
+The flagged messages can be turned on/off by flag or group of flags.
+The messages also provides support for indentation in order to reflect the hierarchical structure of the calls of functions of the application.
+This class is useful for implementation of logging mechanisms in server applications.</p>
+
+<p>Each object can be indexed to provide a method to be used to generate verbose messages.
+The name of the method is the flag of the message produced.
+The methods provided accept an abritrary number of values that are written to the output if the message flag is active.
+Optionally, these methods also receive a <code>boolean</code> as the first parameter that indicates if the indentation level should be increased (<code>true</code>) or decreased (<code>false</code>).</p>
+
+<h2>Behavior</h2>
+
+<h3>Initialization</h3>
+
+<dl>
+	
+	<dt><code><b>Verbose</b>([object])</code></dt>
+	<dd>
+		Turns <code>object</code> into an instance of <code>Verbose</code> and sets the values of its fields if they are not already set.
+		If <code>object</code> is not provided a new table is created to represent the object.
+		Anyway, the new created instance is returned.
+	</dd>
+	
+</dl>
+
+<h3>Fields</h3>
+
+<dl>
+	
+	<dt><code><b>groups</b></code></dt>
+	<dd>
+		Field that holds a table that map the name of a group of flags to a list of the flags belonging tho that group.
+		It also maps the number of a given verbose level to the list of flags introduced at that level.
+		This table should be accessed through metods <code>addgroup</code>, <code>newlevel</code> and <code>setlevel</code>.
+	</dd>
+	
+	<dt><code><b>custom</b></code></dt>
+	<dd>
+		Field that holds a table that map the name of a flag to a function used to generate a custom message from the parameters passed to the method used to generate the message.
+		The custom function receives as arguments the <code>Verbose</code> instance (<i>i.e.</i> like an ordinary method) and all the values passed to the method called to generate the message.
+		The custom function is responsible to write the message using the <code>viewer</code> field.
+		Additionally, the custom function may cancel the message customization by returning some value (that evaluates to <code>true</code>), in such case the message is produced as if no custom function were defined.
+	</dd>
+	
+	<dt><code><b>inspect</b></code></dt>
+	<dd>
+		Field that holds a table that map the name of a flag or group of flags to a function that is called after each message of that flag is generated.
+		Typically, this is used to introduce a pause at each message of a given flag.
+		Optionally, this field may be set to a function, in such case, this function is used for all flagged messages generated through that instance.
+		If the value set for a given flag or group of flags or even all flags (<i>i.e.</i> by setting the value of the field itself) is the value <code>true</code> then the function <code>io.read()</code> is used to introduce a pause at the end of each message generation.
+	</dd>
+	
+	<dt><code><b>timed</b></code></dt>
+	<dd>
+		Field that holds a table that map the name of a flag or group of flags to a string used as a parameter to the function <code>os.date()</code> to generate a timestamp for each generated message of that flag.
+		Optionally, this field may be set to a string, in such case, this string is used for all flagged messages generated through that instance.
+		If the value set for a given flag or group of flags or even all flags (<i>i.e.</i> by setting the value of the field itself) is the value <code>true</code> then default format of function <code>os.date()</code> is used to create a timestamp for the messages.
+	</dd>
+	
+	<dt><code><b>viewer</b></code></dt>
+	<dd>
+		Field that holds the object used to print out messages of the command prompt.
+		The object must provide the same API of instances of <code><a href="Viewer.html">Viewer</a></code>.
+		The default value for this field is an instance of <code>Viewer</code> with <code>maxdepth</code> set to 2.
+	</dd>
+	
+</dl>
+
+<h3>Methods</h3>
+
+<dl>
+	
+	<dt><code><b>flag</b>(name [, status])</code></dt>
+	<dd>
+		If <code>status</code> is <code>true</code>, the flag or group of flags <code>name</code> is activated and all further messages generated with that flag will be printed.
+		If <code>status</code> is <code>false</code>, the flag or group of flags <code>name</code> is deactivated and all calls to the method used to generate messages with that flag (<i>i.e.</i> method with the same name of the flag) are ignored.
+		If <code>status</code> is not provided, the call returns <code>true</code> if the flag is currently activated or <code>false</code> otherwise.
+	</dd>
+	
+	<dt><code><b>level</b>([value])</code></dt>
+	<dd>
+		If <code>value</code> is provided then this value is set as the current verbose level in such way that all flags from the same level or lower are active and flags of levels higher than <code>level</code> are inactive.
+		Otherwise, the current verbose level is returned.
+	</dd>
+	
+	<dt><code><b>newlevel</b>([level, ] group)</code></dt>
+	<dd>
+		Inserts the list of flags <code>group</code> in the verbose level <code>level</code> shifting all upper levels.
+		If no <code>level</code> is provided the group is added to the higher level available.
+		Therefore, when the verbose level is set to a level equal or greater than <code>level</code>, these flags will be active.
+	</dd>
+	
+	<dt><code><b>setgroup</b>(name, group)</code></dt>
+	<dd>
+		Defines that the list of flags <code>group</code> compose the group of flags <code>name</code>.
+		Therefore, whenever the status of flag <code>name</code> is changed, all the flags of the group are changed to the same status.
+	</dd>
+	
+	<dt><code><b>setlevel</b>(level, group)</code></dt>
+	<dd>
+		Defines that the list of flags <code>group</code> defines the set of flags added at level <code>group</code>.
+	</dd>
+	
+</dl>
+
+<h3>Meta-Fields</h3>
+
+<dl>
+	
+	<dt><code><b>__index</b> = function</code></dt>
+	<dd>
+		Retrieves methods used to print messages with the index string as flag.
+		The methods provided receive an arbitrary number of arguments that are written to the output to generate messages.
+		Strings have their contents written directly to the output while other values have their textual representation generated by field <code>viewer</code> written to the output.
+		If the first argument is a boolean value, then the indentation level of all generated messages is increased (<code>true</code>) or decreased (<code>false</code>).
+	</dd>
+	
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	<li>The following flags are reserved for the internal implementation of the <code>Verbose</code> class:
+		<ul>
+			<li><code>custom</code></li>
+			<li><code>flag</code></li>
+			<li><code>flags</code></li>
+			<li><code>groups</code></li>
+			<li><code>inspect</code></li>
+			<li><code>level</code></li>
+			<li><code>newlevel</code></li>
+			<li><code>setgroup</code></li>
+			<li><code>setlevel</code></li>
+			<li><code>timed</code></li>
+			<li><code>updatetabs</code></li>
+		</ul>
+	</li>
+</ul>
+
+<h2>Examples</h2>
+
+<h3><a name="LoggedCounter">Counter that generates a log of its actions.</a></h3>
+
+<pre>
+local Verbose = require "loop.debug.Verbose"
+
+LOG = Verbose{
+  groups = {
+    -- levels
+    {"main"},
+    {"counter"},
+    -- aliases
+    all = {"main", "counter"},
+  },
+}
+LOG:flag("all", true)
+
+
+
+local oo = require "loop.base"
+
+local Counter = oo.class{
+  value = 0,
+  step = 1,
+}
+function Counter:add()                LOG:counter "Adding step to counter"
+  self.value = self.value + self.step
+end
+
+counter = Counter()                   LOG:main "Counter object created"
+steps = 10                            LOG:main(true, "Counting ",steps," steps")
+for i=1, steps do counter:add() end   LOG:main(false, "Done! Counter=",counter)
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

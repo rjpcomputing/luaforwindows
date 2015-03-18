@@ -1,0 +1,2285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>wxLua Documentation</title>
+
+<meta content="John Labenski" name="author"></head><body>
+<h2><u>wxLua
+2.8.10 - Documentation</u></h2>
+<a href="http://wxlua.sourceforge.net">wxLua</a> is
+a <a href="http://www.lua.org">Lua</a>
+scripting
+language wrapper around the <a href="http://www.wxwidgets.org">wxWidgets</a>
+cross-platform GUI library. It consists of two IDE type editors that
+can edit and run Lua programs (wxLua and wxLuaEdit), an
+executable for
+running
+standalone wxLua
+scripts (wxLuaFreeze), a Lua module to load using&nbsp;<i>require("wx")</i>
+when using
+the standard Lua executable, and a
+library for
+extending C++ programs with a fast, small,
+fully
+embeddable scripting language.<br>
+<br>
+Lua is a small scripting language written in ANSI
+C that can load and run
+interpreted scripts as either files or strings. The Lua language is
+fast, dynamic, and easy to learn. Lua contains a limited
+number of data types,
+mainly numbers, strings, functions,&nbsp;tables, and userdata.
+Perhaps the most
+powerful
+feature of the Lua language is that the tables can be used as either
+arrays
+or hash tables that can cross-reference numbers, strings,
+functions, and/or
+subtables.<br>
+<br>
+wxLua adds to this small and elegant language the power of
+the
+C++ wxWidgets cross-platform GUI library. This includes the ability to
+create complex user interface dialogs, image manipulation, file
+manipulation, sockets, displaying HTML, and printing to name a few.
+You can use as
+much or as little of wxWidgets as you like and C++ developers can trim
+down the size by turning off preprocessor directives.<br>
+<br>
+Additionally,
+wxLua adds a library for manipulating the bits of integer numbers using
+the Bitlib library from Reuben Thomas.<br>
+<h3>References:</h3>
+wxLua website : <a href="http://wxlua.sourceforge.net">http://wxlua.sourceforge.net</a><br>
+wxLua Sourceforge page : <a href="http://sourceforge.net/projects/wxlua">http://sourceforge.net/projects/wxlua</a><br>
+Lua website : <a href="http://www.lua.org">http://www.lua.org</a><br>
+wxWidgets website : <a href="http://www.wxwidgets.org">http://www.wxwidgets.org</a><br>
+Bitlib
+library : <a href="http://rrt.sc3d.org/Software/Lua/">http://rrt.sc3d.org/Software/Lua/</a><br>
+User
+and developer mailing list :
+wxlua-users@lists.sourceforge.net
+<h2 style="text-decoration: underline;">Contents</h2>
+<ol>
+<li><a href="#Version_Information">Version
+Information</a></li>
+<li><a href="#wxLua_Requirements">Requirements</a></li>
+<li><a href="#Introduction_to_Lua_very_brief">Introduction
+to Lua
+(very brief)</a></li>
+<li><a href="#Bit_Library">Bit
+Library</a></li>
+<li><a href="#wxLua_Programming_in_Lua">Programming
+in wxLua</a></li>
+<li><a href="#wxLua_Samples">wxLua
+Samples and How
+to Run Them</a></li>
+<ol>
+<li><a href="#How_to_run_the_samples">How to Run
+the Samples</a></li>
+<li><a href="#Provided_samples">Provided Samples</a></li>
+</ol>
+<li><a href="#wxLua_Applications">wxLua
+Applications</a></li>
+<ol>
+<li><a href="#wxLua">wxLua</a></li>
+<li><a href="#wxLuaFreeze">wxLuaFreeze</a></li>
+<li><a href="#wxLuaEdit">wxLuaEdit</a></li>
+</ol>
+<li><a href="#wxLua_Utils">wxLua Utils</a></li>
+<ol>
+<li><a href="#bin2c.lua">bin2c.lua</a></li>
+<li><a href="#wrapmodule.wx.lua">wrapmodule.wx.lua</a></li>
+</ol>
+<li><a href="#wxLua_Sourcecode_Modules">wxLua
+Sourcecode Modules</a></li>
+<li><a href="#wxLua_Programming_in_C">wxLua C++
+Programming Guide</a></li>
+<ol>
+<li><a href="#Data_stored_in_Luas_LUA_REGISTRYINDEX">Data
+stored in Lua's LUA_REGISTRYINDEX table</a></li>
+<li><a href="#Functions_to_Create_a_wxLuaState">Functions
+to Create a wxLuaState</a></li>
+<li><a href="#Using_a_wxLuaState">Using a
+wxLuaState</a></li>
+</ol>
+</ol>
+<h2><a name="Version_Information"></a><u>Version
+Information</u></h2>
+<ul>
+<li>The wxLua
+version number is set to the stable version of
+wxWidgets that it has been updated to. It should also compile with
+newer versions of wxWidgets as well as older ones.</li>
+<li>Lua
+5.1.4</li>
+<ul>
+<li>wxLua
+uses an unmodified copy of Lua 5.1.4 (with patches applied)</li>
+<li>Any
+program
+that works using the official
+release of Lua will work in wxLua.</li>
+</ul>
+<li>wxWidgets
+2.8.10 (&gt;= 2.6.3)</li>
+<ul>
+<li>The interface
+files have #ifdefs for 2.4, but
+they are not maintained anymore since in some cases the complexity of
+maintaining backwards compatibility is not worth it and it is better to
+take advantage of the fixes and additions to newer versions of
+wxWidgets. With a little work you may be able to resurrect it to
+work with wxWidgets 2.4. </li>
+<li>Note for wxWidgets
+&lt; 2.9 :
+wxLua makes use of the wxStyledTextCtrl contrib library
+in wxWidgets/contrib/src/stc. You need to have compiled this into a
+library if you want to compile the wxLua apps. In wxWidgets &gt;=
+2.9 the wxStyledTextCtrl is now part of the main library.</li>
+<li>The
+wxLua library links to these wxWidgets libs: stc, xrc, html, media,
+adv, net, xml, core, base, tiff, jpeg, png, zlib, regex, expat.</li>
+<li>See
+install.html for more information.</li>
+</ul>
+</ul>
+<h2><a name="wxLua_Requirements"></a><u>Requirements</u></h2>
+An end user of wxLua can use the binary packages of wxLua and
+everything that's needed is contained within it. C++ programmers or
+users on platforms that we don't provide binaries will need a
+development library of wxWidgets, typically the source
+code itself that you have compiled on your system. More
+information about
+compiling wxLua is contained in the install.htm file and on <a href="http://wxlua.sourceforge.net/">http://wxlua.sourceforge.net</a>.
+<h2><a name="Introduction_to_Lua_very_brief"></a><u>Introduction
+to Lua (very brief)</u></h2>
+Assuming that you have a cursory understanding of programming
+techniques, this primer should give you a good enough feel for Lua to
+understand the sample programs and begin to write your own. You should
+in any case read the documentation at <a href="http://www.lua.org">www.lua.org</a>.<br>
+<ul>
+<li><b>Comments</b></li>
+<ul>
+<li>Line comments are marked by <i>-- rest of line is
+commented</i></li>
+<li>Block Comments are <i>--[[
+multiple line comment ]]</i></li>
+</ul>
+<li><b>Variables</b></li>
+<ul>
+<li>Variables are not permanently typed and you can
+freely
+overwrite
+them with other values or types, there is no "const" keyword.</li>
+<li>Variables are global unless you put the keyword
+"local" in front of them, this is sometimes good practice.</li>
+<li>The
+scope of local variables is limited to the current
+scope and it's children.</li>
+<li>Local variables can be
+harder to debug because they are stored on the stack and you need the
+Lua debug
+functions to resolve the name.</li>
+<li>A local
+variable created with the same name as a global
+variable only temporarily supersedes the global.</li>
+<li>Use
+the function <i>type(var_name)</i> to
+get the variable type as a string.</li>
+<ul>
+<li>"nil",
+"boolean", "number",
+"string", "table",
+"userdata", "function"</li>
+</ul>
+</ul>
+<li><b>Lua
+Types</b></li>
+<ul>
+<li><b>nil</b>
+: A special value meaning NULL or
+nothing.</li>
+<ul>
+<li>Variables that are not
+assigned a value are nil and can
+be reset back to nil at any time.</li>
+<li>This value is
+often returned for functions that fail.</li>
+<li>You can
+provide an inline alternative to nil using the 'or' keyword since nil
+evaluates to false.</li>
+<ul>
+<li><span style="font-style: italic;">print(tonumber("a"),
+tonumber("a") or 1)</span> -&gt; prints "nil 1"</li>
+</ul>
+</ul>
+<li><b>boolean</b>
+: true or false, nil works as
+false, but the number 0 evaluates as true. </li>
+<ul>
+<li>Note: <i>"a = 0; if a
+then print(a) end"</i>
+evaluates "a" to
+true since it has a value, i.e. not nil, use <i>"a ~= 0"</i>.</li>
+</ul>
+</ul>
+<ul>
+<li><b>number</b>
+: All numbers in Lua are double
+valued floating
+point numbers. </li>
+<ul>
+<li><i>mynumber =
+(1E1+ 2e-2 * 3.14 / (4 * 1)
+)*math.pow(2.5e+2, 4)</i></li>
+<li>Variables can be
+coerced into numbers using the
+function <i>tonumber(variable)</i> which returns <i>nil</i>
+on failure.</li>
+<li>Additional math functions are in the <i>math</i>
+table.</li>
+</ul>
+<li><b>string</b> :
+Strings in Lua can have
+embedded nulls "\0" and use the same escape characters as C.</li>
+<ul>
+<li>Strings are internally hashed by Lua so that
+there is only one
+copy
+of a particular string stored at any one time no matter how many
+variables reference it.</li>
+<li><i>mystring = "How
+are 'you'!"</i> or <i>mystring
+= 'How\tare "You"!\n'</i> are both valid since either " or ' can
+be used
+to quote strings. ('\t' = tab, '\n' = line feed)</li>
+<li><i>mystring
+= [[How are
+"'you'"!]]</i>
+means take everything
+including new lines and whitespace literally.</li>
+<li>Concatenate
+two strings using the .. operator</li>
+<ul>
+<li><i>str1
+= "hello"; str2 = "number"; str3 =
+str1.."
+"..str2.." "..tostring(2).."!"</i></li>
+<li>Numbers
+can be typically coerced into strings as <i>("A
+"..1)</i>, but not <i>(1.." A")</i> since in the
+second case the string "A" cannot be coerced into a number.</li>
+<li>If
+many strings need to be concatenated together it is best to insert them
+into a table using table.insert() and then call table.concat() to
+create the
+single output string. The reason why the concat operator .. is slower
+is that it requires an allocation of memory for each new string and
+then it must be hashed. The table.concat() method's speed is quite
+competitive to other scripting languages.</li>
+</ul>
+<li>Variables
+can be coerced into strings using the
+function <i>tostring(variable)</i> which returns <i>nil</i>
+on failure. </li>
+<li>Additional string functions are in
+the <i>string</i>
+table.</li>
+</ul>
+<li><b>table</b> :
+Tables can be indexed by
+numbers, strings,
+functions, other tables...</li>
+<ul>
+<li><i>mytable
+= {}</i> a default empty table,
+you must declare a variable as a table before using it's indexes.</li>
+<li><i>mytable = { ["index1"] = 1, "first value",
+"second
+value", index2 = 2 }</i></li>
+<ul>
+<li><i>print(mytable.index1,
+mytable["index1"],
+mytable[1],
+mytable[2], mytable.index2, mytable.index10)</i></li>
+<li>Outputs
+this : "1, 1, first value, second value, 2,
+nil"</li>
+<li>Set values as : <i>mytable.index1 =
+2;
+mytable["index10"] = 3; mytable[10] = 4</i></li>
+<li>New
+values that don't already exist are automatically
+created</li>
+<li>Clear values by setting them to <i>nil</i>
+: <i>mytable.index1
+= nil</i></li>
+<li>The length operator <i>#mytable</i>
+returns 2 since there are only two contiguous numeric table indexes
+starting from 1 even though in this case there are actually 4 entries
+in the table. Lua table arrays have a starting index of 1.</li>
+</ul>
+<li>Note: Functions
+defined by Lua are placed into tables,
+a namespace if you will, to keep the global namespace uncluttered.</li>
+<ul>
+<li>See table.XXX, string.XXX, math.XXX, os.XXX etc.
+in the Lua
+documentation.</li>
+<li>wxLua places the wxWidgets
+bindings into the wx.XXX
+table "namespace".</li>
+<li>The global table is called _G
+and you can display it
+or any table using (k = key, v = value) </li>
+<ul>
+<li><i>for
+k, v in pairs(_G) do print(k, v) end</i></li>
+</ul>
+</ul>
+</ul>
+<li><b>userdata</b> :</li>
+<ul>
+<li>This is a C/C++ pointer to an object that by itself
+cannot be used in Lua.</li>
+<li>A metatable (see Lua documentation) may be
+assigned to it to allow it to act like a table or be called like a
+function, among other things.</li>
+<li>This
+is the datatype that wxLua uses wrap wxWidgets C++ objects
+that are pushed into Lua. The metatable that is assigned to the
+userdata when created determines what type of C++ object and therefore
+what functions are available to be called on it.</li>
+</ul>
+<li><b>function</b>
+:</li>
+<ul>
+<li><i>function SumDiff(a, b)
+print(a, b);
+return a+b, a-b end</i></li>
+<ul>
+<li><i>num_sum,
+num_diff = SumDiff(2, 3)</i></li>
+</ul>
+<li>Can
+return multiple values and be passed less or more
+variables
+than specified. The unhandled returns or inputs are set to <span style="font-style: italic;">nil</span>
+or if
+there are extra thrown out. </li>
+<li>Variables can be
+assigned to functions if desired or
+functions can be put into tables</li>
+<ul>
+<li><i>PrintWarning
+= function(msg) print("Warning:
+"..msg) end</i></li>
+<li><i>FuncTable = {};
+FuncTable["Warning"] =
+PrintWarning; FuncTable.Warning("I'm broke")</i></li>
+</ul>
+</ul>
+<ul>
+<li>Values passed to functions are local
+copies and not
+modified unless they are tables or userdata</li>
+</ul>
+<ul>
+<ul>
+<li><i>function AppendToTable(atable, val)
+atable[#atable+1] = val end</i></li>
+<ul>
+<li><i>mytable
+= {}; AppendToTable(mytable,
+"hello")</i>
+adds "hello" to index 1, i.e. mytable[1] == "hello"</li>
+</ul>
+<ul>
+<li>Note that the table is not returned, but modified
+in place, also note that we can use table.insert() to append to
+a
+table instead of the above method.</li>
+</ul>
+</ul>
+</ul>
+</ul>
+<li><b>Operators</b></li>
+<ul>
+<li>Relational : == ~= &lt; &gt; &lt;=
+&gt;=
+(Note: not equal is ~=) </li>
+<li>Logical: <i>and,
+or,
+not</i></li>
+<li>Precedence (low to high):</li>
+<ul>
+<li>or<br>
+</li>
+<li> and<br>
+</li>
+<li> &lt; &gt; &lt;= &gt;= ~= ==<br>
+</li>
+<li> ..<br>
+</li>
+<li> + -<br>
+</li>
+<li> * / %<br>
+</li>
+<li> not #
+- (unary)<br>
+</li>
+<li> ^ </li>
+</ul>
+</ul>
+<li><b>Keywords</b></li>
+<ul>
+<li><i>and break do else elseif end false for function
+if in
+local nil not or repeat return then true until while</i> </li>
+</ul>
+<li><b>do ... end</b></li>
+<ul>
+<li>Create a new local scope in a <span style="font-style: italic;">do end</span> block.</li>
+<li>Note : You cannot write <i>function
+printHi() return; print("hi") end</i>, but you can have <i>function
+printHi() do return end; print("hi") end</i> which can be useful
+for debugging functions.</li>
+</ul>
+</ul>
+<blockquote>
+<pre>do<br> -- create a new local scope<br> local a = 2<br>end<br></pre>
+</blockquote>
+<ul>
+<li><b>if
+(bool) then ...
+elseif (bool) then ... else ...
+end</b></li>
+</ul>
+<blockquote>
+<pre>local a, b, c = 1, 2, 3 -- can assign multiple values<br>a = 1; b = 2; c = 3 -- use ; for multiple lines of code on single line<br>a, b, c = 1, 2, 3 -- this works too<br>if (a == 1) and ((b &lt;= 2) or (c ~= 3)) then <br> print(a+b/c) <br>elseif a == 2 then -- no parentheses necessary<br> print(a)<br>else<br> print(b)<br>end</pre>
+</blockquote>
+<ul>
+<ul>
+<li>There
+is no case
+statement, but <i>table[value] =
+function() ... end</i> may be used to simulate one.</li>
+<blockquote>
+<pre>mycase = {}<br>mycase[1] = function() print("Hello #1") end<br>mycase[2] = function() print("Hello #2") end<br>...<br>if mycase[value] then<br> mycase[value]()<br>else<br> print("Unknown case value")<br>end</pre>
+</blockquote>
+</ul>
+<li><b>while
+(bool) ...
+end</b></li>
+<ul>
+<li>Note : there is no <i>continue</i>
+keyword
+only <i>break</i></li>
+</ul>
+</ul>
+<blockquote>
+<pre>function CheckA(val) if val == 5 then return true end end -- returns nil if val ~= 5<br>local a = 1<br>while a &lt; 10 do<br> print(a)<br> a = a + 1 -- no increment operator<br> if CheckA(a) then break end<br>end</pre>
+</blockquote>
+<ul>
+<ul>
+<li>You
+can make a
+"fake" continue by adding a while loop (doesn't
+print # 5). <br>
+</li>
+</ul>
+</ul>
+<blockquote>
+<pre>local a = 1<br>while a &lt; 10 do while true do<br> a = a + 1 -- no increment operator<br> if CheckA(a) then <br> break <br> else<br> print(a)<br> end<br>break end end</pre>
+</blockquote>
+<ul>
+<li><b>repeat
+... until
+(bool)</b></li>
+<ul>
+<li>Note : there is no
+continue keyword only break</li>
+</ul>
+</ul>
+<blockquote>
+<pre>local a = 1<br>repeat<br> local temp = a * 2<br> print(temp, type(temp))<br> a = a + 1 -- no increment operator<br>until a &gt; 10</pre>
+</blockquote>
+<ul>
+<li><b>for
+var = init_value,
+end_value [, increment] do
+... end</b></li>
+<ul>
+<li>Note : there is no
+continue keyword only break</li>
+<li>You cannot modify the
+loop variable, limit, or increment from within the loop. The
+loop counter variable is local to the
+loop and the final print(a) statement below will print that a = "hello"
+as
+it did before the loop.</li>
+<li>Copy the loop counter variable to a separate
+variable if you need to save it when breaking for example.</li>
+</ul>
+</ul>
+<blockquote>
+<pre>local a = "hello"<br>for a = 1, 10 --[[, increment]] do -- optional increment value, else 1<br> local temp = a * 2<br> print(temp)<br>end<br>print(a) -- a == "hello" since loop counter variable is local to the loop<br></pre>
+</blockquote>
+<ul>
+<li><b>functions</b></li>
+<ul>
+<li>Input any number of values by value, tables and userdata
+are
+passed by
+reference</li>
+<li>Missing input variables are assigned
+the value nil, extra inputs are discarded.</li>
+<li>Return
+values using the "return" keyword</li>
+<li>Not all return
+values need to be used and extra ones will be discarded. </li>
+<ul>
+<li>The
+symbol "_"
+is a valid variable name and is often used as a dummy variable to
+receive return values that you do not want.</li>
+<ul style="font-style: italic;">
+<li>function GetNums()
+return 3, 4 end; local _, num2 = GetNums()</li>
+</ul>
+<li>You
+may also use the <span style="font-style: italic;">select(n,
+...)</span> function to choose return values to use.</li>
+</ul>
+<li>Tables
+can be used as containers for input values to functions using the
+unpack(table, [i, [, j]]) function. This is useful for creating complex
+inputs to a function or storing them for reuse.</li>
+<ul>
+<li><span style="font-style: italic;">print(string.find(unpack({"Hello",
+"ll", 1, 1})))</span> -&gt; prints "3 4"</li>
+</ul>
+<li>Vararg
+inputs are written as <span style="font-style: italic;">function
+dostuff( ... )</span></li>
+<ul>
+<li>The number of
+args is found using: <span style="font-style: italic;">local
+n = select("#", ...)</span></li>
+<li>The args can be
+converted into table using: <span style="font-style: italic;">local
+args = { ... }</span></li>
+<li>A particular arg can be
+chosen using: <span style="font-style: italic;">local
+arg3 = select(3, ...)</span> </li>
+<ul>
+<li>Note
+<span style="font-style: italic;">select(n, ...)</span>
+returns
+all args after <span style="font-style: italic;">n</span>,
+but if the left hand side is a single variable the others are
+discarded. See above about using <span style="font-style: italic;">select()</span>
+to pick return values of a function as well.</li>
+</ul>
+</ul>
+</ul>
+</ul>
+<blockquote>
+<pre>function DoStuff(a, b, c)<br> a = b*c -- does not change global and/or input number a<br> local function Calc(a)<br> return a*2<br> end<br>	<br> return Calc(a)*b*c -- or for multiple values "return a*b*c, a*b"<br>end<br>-- call function<br>a = 10<br>result = DoStuff(a, 1, 2)<br>-- can also put function into a table<br>stuff = {}<br>stuff.DoStuff = DoStuff<br>result = stuff.DoStuff(1, 2, 3)<br>print(a, result) -- "10, 72" since a is not changed</pre>
+</blockquote>
+<h2 style="text-decoration: underline;"><a name="Bit_Library"></a>Bit
+Library</h2>
+wxLua automatically loads a library for manipulating
+the bits of an integer and puts it into the global "bit" table. This is
+because wxWidgets often uses enumeration flags to control the behavior
+of functions and for compactly storing status information. You can
+easily "or" bits by adding them together and
+this is the preferred method, for example 0x02 + 0x04 = 0x06 or bitwise
+0110. If the bits you're trying to "or" are not unique
+(perhaps one is a bit mask) this fails, 0x01 + 0x03 =
+0x04 or bitwise 0100 (oops).<br>
+<br>
+wxLua uses the bitlib library written by
+Reuben Thomas and since the code for it is very small, it's embedded
+into
+the wxLua sourcecode. <br>
+<br>
+All
+function arguments should be integers. The number of bits available for
+logical operations depends on the data type used to represent Lua
+numbers; this is typically 8-byte IEEE floats, which give 53 bits (the
+size of the mantissa).<br>
+The logical operations start with "b"
+for "bit" to avoid clashing with reserved words; although "xor" isn't a
+reserved word, it seemed better to use "bxor" for consistency.<br>
+<ul>
+<li>bit.bnot(a)
+returns the one's complement of a</li>
+<li>bit.band(w1,...)
+returns the bitwise and of the w's</li>
+<li>bit.bor(w1,...)
+returns the bitwise or of the w's</li>
+<li>bit.bxor(w1,...)
+returns the bitwise exclusive or of the w's</li>
+<li>bit.lshift(a,b)
+returns a shifted left b places</li>
+<li>bit.rshift(a,b)
+returns a shifted logically right b places</li>
+<li>bit.arshift(a,b)
+returns a shifted arithmetically right b places (works on negative
+numbers too)</li>
+<li>bit.mod(a,b) returns the integer
+remainder of a divided by b</li>
+</ul>
+<h2><a name="wxLua_Programming_in_Lua"></a><u>Programming
+in wxLua</u></h2>
+Programming in wxLua means that you're writing Lua programs using the
+Lua
+language using an additional table of functions, objects, numbers,
+strings, and
+"classes" in the namespace <b><i>wx</i></b>
+from
+wxWidgets. Additional libraries may be added as bindings and can be
+placed in their own "namespace" table, but for the examples below we
+will use the <i><b>wx</b></i> table. <br>
+<br>
+The list below are the tables that wxLua creates containing the binding
+functions or
+objects. These are in addition to the standard Lua tables; <span style="font-weight: bold;">coroutine, debug, io, math, os,
+package, string, table</span>. Note that the wxaui and wxstc
+libraries have been separated into their own tables since they are
+fairly specialized libraries.<br>
+<ul>
+<li><span style="font-weight: bold;">bit</span>
+- The bit
+library from Reuben Thomas for manipulating integer bits.</li>
+<li><span style="font-weight: bold;">wxlua</span>
+- Special
+functions for introspecting into wxLua or generic functions that wxLua
+provides that are independent of wxWidgets.</li>
+<li><span style="font-weight: bold;">wx</span>
+- wxWidgets
+functions, classes, defines, enums, strings, events, and
+objects are placed here.</li>
+<li><b>wxaui</b>
+- The wxWidgets Advanced User Interface
+library.<span style="font-weight: bold;"></span></li>
+<li><span style="font-weight: bold;">wxstc</span>
+- The
+wxStyledTextCtrl wrapper around the Scintilla text editor.</li>
+</ul>
+The
+semantics for accessing wxWidgets elements in wxLua tries
+to map as closely as possible to the underlying C++
+notation so that the official C++ documentation may be used as
+a reference, <a href="http://www.wxwidgets.org/docs">http://www.wxwidgets.org/docs</a>.
+The most common case where wxLua deviates from C++ is when
+values are passed by reference to a function to be
+changed; wxLua will return multiple values instead. Please see
+the <b><i>wxluaref.html</i></b>
+document that lists all the wxWidgets objects wrapped by wxLua and take
+note of the functions that are marked <span style="font-style: italic;">%override</span> since you
+will need to
+use them as described in that document. You should also look at the <b><i>binding.html</i></b>
+file, even if you do not plan to write your own bindings, to get a
+better understanding of the <b><i>wxluaref.html</i></b>
+file.<br>
+<br>
+<u><b>Strings</b></u>: wxLua does not
+typically
+use the
+wxString class for strings,
+rather it
+uses Lua strings. This means that all wxWidgets functions
+that take a wxString parameter take either a wxString userdata or
+(preferred) a Lua string (Lua variables that are of type(var) ==
+"string"). Functions that return wxStrings convert the value into
+a Lua string for convenience. The conversion from
+the Lua ANSI C 8-bit char* string to a wxString (which may be a Unicode
+wchar* string) is done internally.<br>
+<br>
+<u><b>wxArrayString and wxSortedArrayString:</b></u>
+Function
+parameters that take a "const wxArrayString&amp; arr" or
+"wxArrayString arr" will accept either a wxArrayString userdata
+or a Lua table that has numeric indexes and string values and convert
+it into
+a wxArrayString for the function call. If the function call is
+"wxArrayString&amp; arr" or "wxArrayString* arr" you must provide a
+wxArrayString userdata since the C++ function will most
+likely modify
+the wxArrayString that's passed to it.<br>
+<br>
+<u><b>wxArrayInt</b></u>: Function
+parameters
+that take a "const wxArrayInt&amp; arr" or "wxArrayInt arr" will
+accept either a wxArrayInt userdata or a Lua table that has numeric
+indexes and numeric values and convert it into a wxArrayInt for the
+function call. If the function call is "wxArrayInt&amp; arr" or
+"wxArrayInt*
+arr" you must provide a wxArrayInt userdata since the C++ function
+will most likely modify the wxArrayInt that's passed to it.
+<br>
+<br>
+<b>Location of the wxWidgets objects declared in a
+C++ header files in the <i>wx</i> Lua
+table</b>
+<ul>
+<li><b>#define
+NUMBER_DEFINE VALUE</b> </li>
+<ul>
+<li>All
+#defined numerical values are available as <i>wx.NUMBER_DEFINE</i></li>
+<li>Example <i>"#define wxID_ANY -1"</i> is
+accessed as <i>wx.wxID_ANY</i></li>
+<li>Declared
+in the bindings using the <i>%define</i>
+tag<br>
+</li>
+</ul>
+<li><b>[int,
+double, etc] NUMBER_VARIABLE;</b></li>
+<ul>
+<li>All
+global numerical variables are available as <i>wx.NUMBER_VARIABLE</i></li>
+<li>Example : <i>"extern const int wxInvalidOffset;"</i>
+is accessible as <i>wx.wxInvalidOffset</i>.</li>
+<li>Declared
+in the bindings using the <i>%define</i>
+tag</li>
+</ul>
+<li><b>enum ENUM_NAMESPACE [or
+CLASSNAME::ENUM_NAMESPACE] { ENUM_NAME }</b></li>
+<ul>
+<li>All global enums, named or not, are available as <i>wx.ENUM_NAME</i></li>
+<ul>
+<li>Example : <i>"enum wxDirection { wxLEFT,
+... }"</i>
+is accessible as <i>wx.wxLEFT</i></li>
+</ul>
+<li>All
+enums that are members of classes are available as <i>wx.CLASSNAME.ENUM_NAME</i></li>
+<ul>
+<li>Example : <i>"enum wxFTP::TransferMode {
+ASCII, ... }"</i> is accessible as <i>wx.wxFTP.ASCII</i></li>
+</ul>
+<li>This follows the C++ semantics that you do not
+have to
+specify the name of an enum, but you do have to use its scope if it is
+a class member.</li>
+<li>Declared in the bindings using
+the <i>%enum</i>
+tag</li>
+</ul>
+<li><b>#define
+STRING_DEFINE wxT("String Value")</b></li>
+<ul>
+<li>All
+#defined string values are available as <i>wx.STRING_DEFINE</i></li>
+<li>Example : <i>"#define
+wxIMAGE_OPTION_CUR_HOTSPOT_X wxT("HotSpotX")"</i> is
+accessible as <i>wx.wxIMAGE_OPTION_CUR_HOTSPOT_X</i></li>
+<li>Declared in the bindings using the <i>%define_string</i>
+tag</li>
+</ul>
+<li><b>const wxChar*
+STRING_VARIABLE;</b></li>
+<ul>
+<li>All global
+string variables are available as <i>wx.STRING_VARIABLE</i></li>
+<li>No examples yet.</li>
+<li>Declared in the
+bindings using the <i>%define_string</i>
+tag</li>
+</ul>
+<li><b>wxEVT_XXX
+for wxEvtHandler::Connect()</b></li>
+<ul>
+<li>All
+<i>wxEVT_XXX</i> wxEventTypes (an integer) are
+available as <i>wx.wxEVT_XXX</i></li>
+<ul>
+<li>Example : <i>wx.wxEVT_COMMAND_MENU_SELECTED</i>
+for menu item selection.<br>
+</li>
+</ul>
+<li>wxLua
+does not use the static event tables since it is
+not a compiled language. Rather the wxEvtHandler::Connect() function is
+used
+to connect event types to a wxEvtHandler, typically a wxWindow
+derived class. Therefore you do not use EVT_XXX() macros, but the
+corresponding wxEVT_XXX. The wxluaref.html manual contains a complete
+mapping between the two. </li>
+<ul>
+<li>Example : <i>EVT_MENU(id,
+func)</i> use <i>window:Connect(menuId,
+wx.wxEVT_COMMAND_MENU_SELECTED, Lua function)</i>. The Lua
+function must have the signature of <i>"function
+MenuEvent(event) ...
+handle event ... return"</i> where the event variable will be of
+the wxEvent class
+the wxEventType was declared in, which in this case is a
+wxCommandEvent.</li>
+</ul>
+<ul>
+<li>Example
+: <i>EVT_PAINT(func)</i>
+use <i>window:Connect(wx.wxEVT_PAINT, Lua function)</i>.
+There is no id used for this connect event
+function call since you are directly connecting the paint event to the
+window, whereas in the menu case you are handling a menu event
+from the menu that travels up the chain of window parents until a
+handler is found, therefore you need the Id to determine where
+the
+event came from. </li>
+<ul>
+<li>Note: You must
+always create a wxPaintDC for wxEVT_PAINT.</li>
+</ul>
+<ul>
+<li><span style="font-style: italic;">local
+dc =
+wx.wxPaintDC(event:GetEventObject():DynamicCast("wxWindow"))</span>
+and then call <span style="font-style: italic;">dc:delete()</span>
+at the end of the function because the paint event clears the
+"dirty" region to repaint and if it is not cleared another paint event
+will be sent... and so on.</li>
+</ul>
+</ul>
+<li>Declared
+in the
+bindings using the <i>%define_event</i>
+tag</li>
+</ul>
+<li><b>Objects
+of classes or structs OBJECT_NAME</b></li>
+<ul>
+<li>All
+global objects that are classes or structs are
+available as <i>wx.OBJECT_NAME</i></li>
+<li>Example
+: <i>"const wxImage wxNullImage;"</i>
+is accessible as <i>wx.wxNullImage</i> and functions from
+the wxImage class can be called as <i>wx.wxNullImage:Ok()</i>
+which should
+return false.</li>
+<li>Declared in the bindings using the <i>%define_object</i>
+tag</li>
+</ul>
+<li><b>Pointers to
+classes or structs POINTER_NAME</b></li>
+<ul>
+<li>All
+global pointers that are classes or structs are
+available as <i>wx.POINTER_NAME</i></li>
+<li>Example
+: <i>"extern wxPenList*
+wxThePenList;"</i> is accessible as <i>wx.wxThePenList</i>
+and
+functions from the wxPenList class can be made as <i>"pen =
+wx.wxThePenList:FindOrCreatePen(wx.wxColour(1,2,3), 1, wx.wxSOLID)"</i></li>
+<li>Declared in the bindings using the <i>%define_object</i>
+tag</li>
+</ul>
+<li><b>Global<i> </i>C
+style
+functions
+VAR_TYPE FUNCTION_NAME(int a, const wxString&amp; str)</b></li>
+<ul>
+<li>All global C style functions are available as <i>wx.FUNCTION_NAME(1,
+"Hello")</i></li>
+<li>Example : <i>"extern
+wxString
+wxGetUserHome(const wxString&amp; name)"</i> is accessible as
+<i>"home_dir = wx.wxGetUserHome("john")"</i>
+where wxString means to input a Lua string and a Lua string is
+returned.</li>
+<li>Declared in the bindings using the <i>%function</i>
+tag</li>
+</ul>
+<li><b>C++ Classes
+CLASS_NAME</b></li>
+<ul>
+<li>All C++ classes
+are available as <i>wx.CLASS_NAME</i>,
+however in order to use one you must call one of the constructors first
+or get the class as a return value from another function call.</li>
+<ul>
+<li>Example : <i>"pt = wx.wxPoint(1,
+2); pt2 = wx.wxPoint(pt)"</i>.</li>
+<li>Multiple member functions
+with the same
+name are overloaded as in C++ and
+the proper function to call
+is determined at runtime. This is one of the reasons why wxLua is
+stricter about type than Lua. For example; string arguments do
+not accept numbers which Lua would silently convert. </li>
+<li>Member functions from
+the
+base class(es) are also available
+and may be overloaded as well. </li>
+<li>The C++ classes
+are exposed as tables in Lua, but have a __call
+metatable item so they can be called as a function. If you need to get
+the
+constructor function itself you can use <i>wx.CLASS_NAME.new(...)</i>
+which is the constructor exposed as a Cfunction.</li>
+</ul>
+<li>The
+C++ class objects are pushed into Lua as a userdata wrapping a void*
+pointer to the C++ object.</li>
+<ul>
+<li>A special metatable
+is set on the userdata with these entries :</li>
+<ul>
+<li>__index to call functions on the object or
+to get member variable values.</li>
+<li>__newindex to set new functions or values or set
+member variable values.</li>
+<li>__tostring to allow print() to show something useful</li>
+<ul>
+<li>print(wx.wxPoint()) "userdata: 0x858df5c
+[wxPoint(0x84ab550, 251)]", where 0x858df5c is the Lua userdata
+address, 0x84ab550 is the address of the wxPoint object, and
+251 is the wxLua type that wxLua uses to determine that this Lua
+userdata wraps a wxPoint. The wxPoint type may not always be 251 since
+it depends on the number and order in which the bindings were
+initialized.</li>
+</ul>
+<li>__gc to tell wxLua when the userdata is no longer
+used so wxLua can delete the C++ object if appropriate. </li>
+</ul>
+</ul>
+<li>Declared
+in the bindings using the <i>%class</i>
+tag</li>
+<li><span style="font-weight: bold;">Deleting
+class userdata</span> can be done using the wxLua added class
+member function delete().</li>
+<ul>
+<li>All classes
+that have the %delete binding tag will be eventually garbage collected
+when they go out of scope.</li>
+<li>Classed without the
+%delete tag are assumed to be eventually attached to another object
+that will delete them for you.</li>
+<li>The Lua garbage
+collector uses an incremental collector that waits until the data size
+reaches a limit and slowly removes them to avoid program slowdown. This
+is a good thing and makes Lua programs run at an even pace.</li>
+<li>However!
+Some graphical device interface (GDI) classes need to be deleted
+immediately when you are done with them.</li>
+<ul>
+<li>This
+is really a MS Windows problem, in Win95 based systems the number that
+you could create was severely limited, but even in NT systems (XP,
+Vista) you
+will have problems if you've created hundreds of them. One visible sign
+that something is wrong is when controls, like menus, stop redrawing
+themselves properly and the program becomes sluggish.</li>
+<li>In
+any case, just delete() them when done so that your program will work
+equally well in MSW as it would in Linux or OSX.</li>
+</ul>
+<li>Additionally,
+since the Lua userdata that wxLua pushes into Lua only store a void*
+pointer to the C++ class object, Lua only
+thinks they are of size void* which are on 32bit x86 machines only 8
+bytes.
+However, the class might store a 1024x768 x 3 bytes/pixel
+image as a wxImage (2.36Mb). There have been a number of
+discussions about this on the Lua mailing list, but currently there is
+no way to let Lua know the true size of a userdata to help it better
+decide when and what to garbage collect. The core of
+Lua could be modified, but that would make it harder to use wxLua as a
+loadable module.</li>
+<li>The solution is to use the delete()
+function on certain types of userdata when you are done.</li>
+<li>Care must be taken to ensure that you're not silently
+creating too many temporary objects.</li>
+<ul>
+<li>Example: <i>"wxDC:SetPen(wx.wxPen(wx.wxColour(1,2,3),
+1, wx.wxSOLID))"</i>; notice that both a wxPen and a wxColour
+have been created, but there is no way for you to call delete() on them
+so they will collect until Lua runs its garbage collector.</li>
+<li>You can force garbage collection using <i>"collectgarbage("collect")"</i>
+in Lua, but this may cause pauses in your program's execution. It is a
+good idea to collect all the garbage at the end of your initialization
+function to at least start out with a clean slate since
+program
+startup time is usually not a concern.</li>
+</ul>
+<li>This
+is a list of classes by order of importance of deleting them</li>
+<ul>
+<li style="font-weight: bold;">Must delete :
+wxDC, wxPaintDC, and ALL classed derived from wxDC</li>
+<li><span style="font-weight: bold;">Must
+delete if &gt; 50 :
+wxBitmap, wxBrush, wxColour, wxCursor, wxFont, wxIcon,
+wxPen, wxRegion</span> </li>
+<ul>
+<li>To
+be sure, delete them when you're done and not worry.</li>
+</ul>
+<li>Must delete
+if large and you're creating many of them : wxImage</li>
+<li>Don't
+bother : wxPoint, wxRect... etc</li>
+<li>Never delete :
+wxWindows attached their their parents (use Destroy()), wxMenuItems
+returned from a wxMenu.</li>
+<ul>
+<li>Safe rule,
+don't
+delete() things that aren't yours. Refer to the wxWidgets documentation
+about whether an object will take ownership of an object passed to
+it. </li>
+</ul>
+</ul>
+<li>How to tell how
+many userdata objects you currently have?</li>
+<ul>
+<li>Print the output of <b><i>wxlua.GetGCUserdataInfo(true)</i></b>
+to show what objects will be garbage collected when their reference
+count goes to 0 and the Lua garbage collector runs.</li>
+<li>Print the output of <i><b>wxlua.GetTrackedObjectInfo(true)</b></i>
+to get class objects that wxLua has pushed into Lua that may or may not
+be garbage collected.</li>
+</ul>
+<ul>
+<li>Call
+the function <b><i>wxlua.LuaStackDialog()</i></b>
+when you run
+your program and examine the items in the Lua LUA_REGISTRYINDEX table.
+Expand "wxLua objects pushed" and "wxLua gc objects to delete" tables.<br>
+</li>
+</ul>
+</ul>
+<li><b>Member functions</b>
+of the class are called using the colon ':' convention and NOT the
+period
+'.'.
+This is because ':' in Lua puts the object itself on the
+stack, the
+"self" as it's called, and this is used by the binding code to call the
+function with. If you <span style="font-style: italic;">really</span>
+want to use the '.' notation you can pass the "self" in as the first
+parameter. There are two exceptions to the ':' calling convention rule,
+<span style="font-weight: bold;">properties</span>
+and <span style="font-weight: bold;">static</span>
+functions, please see the sections below about why they only use the
+'.' convention.</li>
+<ul>
+<li>Example : <i>"size
+= wx.wxSize(1, 2); size:SetWidth(10); size.SetHeight(size, 11);
+print(size:GetWidth(), size.GetHeight(size))"</i> where we create
+a
+wxSize, set a new width and height, and then print the numerical values.</li>
+<li>Functions may be renamed in the bindings using the <i>%rename</i>
+tag in the interface files. You call the functions using the name after
+the <i>%rename</i> tag with the same parameters as the
+original function. This is only done for special cases that
+would be awkward, if not impossible, to wrap otherwise.</li>
+</ul>
+<li><b>Property functions</b>
+allow
+you to read and/or write values to a class using the '.' convention and
+a shortened name.</li>
+<ul>
+<li>These are generated
+on the fly when the function
+is
+called on a wxLua userdata and work only for functions
+following these rules.</li>
+<ul>
+<li>GetXXX()
+takes no values and returns one. </li>
+<li>SetXXX(value)
+takes one value and
+returns none.</li>
+</ul>
+<li>The Get/Set part of
+the
+function name is removed leaving only XXX and you
+do not call them like
+a function using "()", but rather like accessing a table
+member, without the "()".</li>
+<li>Example
+: <i>"rect
+=
+wx.wxRect(wx.wxPoint(1,2), wx.wxSize(3,4)); rect:SetX(20); rect.X = 10;
+print(rect.X, rect.X == rect:GetX(), rect.X == rect.GetX(rect))"</i>
+should print "10, true, true".</li>
+<li>Note : There is no
+way to find out from Lua if the
+code used
+a '.' or a ':' to call the function and therefore properties cannot be
+made to work for the ':' calling convention since in that case
+we have to remove the object (the self) that Lua automatically pushes
+onto the stack that we don't need or want.</li>
+<li>Note :
+Since these methods are generated at runtime they will not work for
+static functions in the class table, but they will work for static
+functions called from a userdata object.</li>
+<li>Below is
+a
+list of what works and doesn't, the example is for a static function,
+but the same works for a regular class member function.</li>
+<ul>
+<li>Works
+(static functions only) : <span style="font-style: italic;">"print(wx.wxFileName.GetCwd())"</span>
+and <span style="font-style: italic;">"print(wx.wxFileName.GetCwd)"</span>
+prints that it's a function.</li>
+<li>Fails (static
+functions only) : <span style="font-style: italic;">"print(wx.wxFileName:GetCwd())"</span>
+and <span style="font-style: italic;">"print(wx.wxFileName:GetCwd)"</span></li>
+<li>Works
+: <span style="font-style: italic;">"f =
+wx.wxFileName("a"); print(f.GetCwd())"</span> and <span style="font-style: italic;">"print(f.GetCwd)"</span>
+prints that it's a function.</li>
+<li>Fails
+: <span style="font-style: italic;">"f =
+wx.wxFileName("a"); print(f:GetCwd())"</span> and <span style="font-style: italic;">"print(f:GetCwd)"</span></li>
+<li>Works : <span style="font-style: italic;">"f
+= wx.wxFileName("a");
+print(f.Cwd)"</span></li>
+<li>Fails : <span style="font-style: italic;">"f
+= wx.wxFileName("a");
+print(f.Cwd())"</span> and <span style="font-style: italic;">"print(f:Cwd)"</span>
+and <span style="font-style: italic;">"print(f:Cwd())"</span></li>
+</ul>
+<li>Note :
+Are properties really
+necessary? Confusing? Useful?
+I'd stick with the Get/Set functions. - JL</li>
+</ul>
+<li><b>Member
+variables </b>allow you
+to read and/or write to member variables of a class.</li>
+<ul>
+<li>Declared in the interface files using the <i>%member</i>
+or <i>%member_func</i> tag.</li>
+<li>Example : In the
+interface file <i>gdi.i</i>
+this is
+declared for wxPoint : <i>"%rename X %member_func int x"</i></li>
+<li>The wxPoint class does not have functions to access
+the int x, y variables so we create our own.</li>
+<li>The <i>%member_func</i>
+tag creates functions
+called Get/Set[variable name] or in this case Getx() and Setx(value),
+but these aren't too pretty so we use the <i>%rename</i>
+tag to rename them to GetX() and SetX(value). It additionally creates
+properties for the x variable so the '.' calling convention also works.</li>
+<li>These two methods of getting and setting the x and y
+member
+of the wxPoint class are interchangeable.<i><span style="font-style: italic;"> </span></i></li>
+<ul>
+<li>Example : <i>"pt =
+wx.wxPoint(1,2); pt.x = 10; pt:SetY(11); print(pt.x, pt:GetY())"</i></li>
+</ul>
+<li>If the <i>%member</i> tag is
+used (as opposed to the <i>%member_func</i>) the Get/Set
+functions are not generated and the member variables are accessible
+only through the properties. </li>
+<li>If the member
+variable is constant (const) the
+variable is read-only and you cannot set it's value.</li>
+</ul>
+<li><b>Static
+functions</b> are part of the
+table that holds the class and can be called with or without a class
+instance (a userdata).</li>
+<ul>
+<li>Example : <i>f
+=
+wx.wxFileName('dummy');
+f.GetCwd() == wx.wxFileName.GetCwd()</i></li>
+<li>Note
+that you always use the '.' calling convention since
+static C++ functions do not require the object itself or in Lua's case
+the userdata.</li>
+<li>See the <span style="font-weight: bold;">properties</span>
+section
+about the difference between '.' and ':' and why using a ':' cannot be
+made to work reliably when you don't want or need the self pushed onto
+the stack. </li>
+</ul>
+<li><b>Enum members</b>
+are also part of
+the
+table that holds the class and are used by accessing the class table
+itself.</li>
+<ul>
+<li>Example : <i>"enum
+wxFTP::TransferMode {
+ASCII, ... }"</i> is accessible as <i>wx.wxFTP.ASCII</i></li>
+</ul>
+<li><b>Operator functions</b>
+allow you to use
+C++ operators in Lua. </li>
+<ul>
+<li>Lua has a
+limited set of operators, see the Lua
+primer, whereas C++ can define many more. Also, not
+all C++ operators are
+defined for all classes and very few classes can be mixed
+with other classes. Operators for classes must be declared
+in C++. Therefore Lua uses functions to call these operators rather
+than try to directly modify the existing ones in Lua and then
+declare the remaining ones as functions.</li>
+<li>Note
+also that declaring
+every operator for all classes in wxLua is usually not necessary
+because in C++ they typically shadow an existing function that wxLua
+already wraps.</li>
+<li>The Lua = operator for a class
+object will merely
+create a reference to the object and this itself is useful and why
+wxLua does not try to override the default behavior.</li>
+<li>Declared
+in the interface files
+using the <i>%operator</i>
+tag.</li>
+<li><br>
+</li>
+<li>"==" = "op_eq"<br>
+</li>
+<li>"!="
+= "op_ne"<br>
+</li>
+<li>"&lt;" = "op_lt"<br>
+</li>
+<li>"&gt;" = "op_gt"<br>
+</li>
+<li>"&lt;="
+= "op_le"<br>
+</li>
+<li>"&gt;=" = "op_ge"</li>
+<li>"||" = "op_lor" note:
+"lor"
+stands for logical (boolean)
+or,
+same for "land."<br>
+</li>
+<li>"&amp;&amp;"
+=
+"op_land"<br>
+</li>
+<li>"!" = "op_not"</li>
+<li><br>
+</li>
+<li>"|" = "op_or"<br>
+</li>
+<li>"&amp;"
+= "op_and"<br>
+</li>
+<li>"^" = "op_xor"</li>
+<li>"&lt;&lt;" = "op_lshift"</li>
+<li>"&gt;&gt;" = "op_rshift"</li>
+<li><br>
+</li>
+<li>"|="
+= "op_ior"</li>
+<li>"&amp;=" = "op_iand"</li>
+<li>"^="
+= "op_ixor"</li>
+<li>"&lt;&lt;=" = "op_ilshift"</li>
+<li>"&gt;&gt;=" = "op_irshift"</li>
+<li><br>
+</li>
+<li>"++"
+=
+"op_inc"<br>
+</li>
+<li>"--" = "op_dec"</li>
+<li>"-
+(unary)" = "op_neg"</li>
+<li>"~ (unary)" = "op_comp"</li><li>"[]" = "op_index"</li><li>"()" = "op_func"</li>
+<li><br>
+</li>
+<li>"=" = op_set</li>
+<li>"+" = "op_add"<br>
+</li>
+<li>"-" =
+"op_sub"<br>
+</li>
+<li>"*" = "op_mul"<br>
+</li>
+<li>"/"
+= "op_div"</li>
+<li>"%" = "op_mod"</li>
+<li><br>
+</li>
+<li>"+=" =
+"op_iadd" note: ixxx stands for "inplace" as
+it modifies the original object. </li>
+<li>"-=" =
+"op_isub"<br>
+</li>
+<li>"*="
+= "op_imul"<br>
+</li>
+<li>"/=" =
+"op_idiv"</li>
+<li>"%=" = "op_imod"</li>
+<li><br>
+</li>
+<li>Example : <i>"pt =
+wx.wxPoint(1,2); pt = pt +
+1"</i> gives an error since we're trying to use the Lua operator
+and even in C++ this wouldn't compile since there is no operator
+defined for adding a single number to a wxPoint.</li>
+<li>Example
+: <i>"pt1 = wx.wxPoint(1,2); pt2 =
+pt1; print(pt2:GetX()); pt2:SetX(10); print(pt1:GetX(), pt1 == pt2)"</i>
+the = operator works in this case because we are not copying the values
+of pt1, but rather the address of pt1 to pt2, meaning that pt2 <b><i>is</i></b>
+pt1 and when we set the value for pt2 we're also setting the value for
+pt1. We know this because the Lua == operators tells us that they have
+the same address and if you type <i>"print(pt1, pt2)"</i>
+the result is <i>"userdata: 0x858df5c [wxPoint(0x84ab550, 251)],
+userdata: 0x858df5c [wxPoint(0x84ab550, 251)]"</i>. See the wxLua
+userdata metatable function <i>__tostring</i> above.</li>
+<li>Example : <i>"pt1 =
+wx.wxPoint(1,2); pt2 =
+wx.wxPoint(); pt2:op_set(pt1); pt1:SetX(10); print(pt2:GetX());
+print(pt2:op_eq(pt1))"</i> creates pt1 and also creates pt2, but
+we don't care what value it has since we use op_set to use the C++ =
+operator to copy the values from pt1. We then change the value of pt1,
+test if pt2 has changed, it hasn't, and the test to see if they're
+still equal and as expected, they're not.</li>
+</ul>
+<li style="font-weight: bold;">Virtual functions</li>
+<ul>
+<li>You
+cannot
+arbitrarily override C++ virtual functions
+in wxLua as this must be done in C++. The C++ class must be subclassed
+and
+the virtual functions overridden to check to see if there is a Lua
+function to call instead of the base class function. This has only
+been done for cases where it is necessary. In many cases you can
+intercept the appropriate wxEvent and change the behavior from within
+the handler.</li>
+<li>Examples of virtual functions that
+must or can be
+overridden are in the wxLuaPrintout class, see the printing
+sample, and wxLuaHtmlWindow, see html sample. The only virtual
+functions that you can override are marked with comments in the binding
+files and wxluaref.htm.</li>
+<li>Prepend the function name
+with an underscore, '_' in order to directly access the C++ base class
+function that you have overridden in Lua.</li>
+<li>Adding
+virtual functions to
+wxLua will be done on a case by case basis. If it is absolutely
+necessary to override a virtual function for a class you should ask
+about adding it on the wxLua mailing list. The reason why they have not
+already been added is that there is a price to pay in terms
+of binding size and speed.</li>
+</ul>
+<li><span style="font-weight: bold;">Overriding
+member functions</span> with Lua functions</li>
+<ul>
+<li>You
+may override class member functions for a wxLua userdata and still be
+able to call back to the Cfunction by prepending the function name with
+an underscore '_'.</li>
+<li>The Lua function that you
+assign
+to a userdata will be called directly from Lua without regard to the
+existing Cfunction(s), but will never be called by the C++ class
+functions.</li>
+<li>Example : <span style="font-style: italic;">"p
+= wx.wxPoint(1,2); p.GetX =
+function(self) return 10-self:_GetX() end; print(p:GetX(), p:_GetX())"</span>
+prints "9, 1".</li>
+<li>Note : Make sure that if you want
+to
+call the base function you use the '_' in your overridden function
+since otherwise you'll get
+recursion. </li>
+</ul>
+<li><b>Extending
+classes</b> </li>
+<ul>
+<li>You
+may add your
+own functions to classes that
+will not be called by C++, but can be called from Lua. This makes sense
+if you would like to keep functions that act on a particular class with
+it rather than having global functions that take that class as a
+parameter.</li>
+<li>Example : <i>"r =
+wx.wxRect(1,2,3,4); r.PrintXY = function(self) print(self:GetX(),
+self:GetY()) end; r:PrintXY()"</i> adds the function PrintXY() to
+the wxRect instance r. The userdata, class instance, r is
+passed to the Lua function as the parameter "self" which is pushed onto
+the stack when the PrintXY() function is called with the ":" notation.</li>
+<li>Note
+that the above example is the same as <i>"</i><i>r
+= wx.wxRect(1,2,3,4); </i><i>function wxRect_PrintXY(r)
+print(r:GetX(), r:GetY()) end; wxRect_PrintXY(r)"</i>.</li>
+<li>You
+may also create the Lua function beforehand and
+then assign it to the rect object. <i>"function
+wxRect_PrintXY_func(self) print(self:GetX(), self:GetY()) end;
+r1 = wx.wxRect(1,2,3,4); r1.PrintXY = wxRect_PrintXY_func; r1:PrintXY()"</i>.
+You can see that using this idea you can write a Lua function
+that creates a new wxRect, sets your extra functions
+for it, and returns it for use.</li>
+<ul>
+<ul>
+</ul>
+</ul>
+</ul>
+</ul>
+</ul>
+<h2><a name="wxLua_Samples"></a><u><u>wxLua
+Samples and How to Run Them</u></u></h2>
+There are a number of sample programs in the <i style="font-style: italic;">wxLua/samples</i>
+directory. These programs demonstrate how to write simple programs and
+try to show how to use some of the many classes of wxWidgets. They are
+a good resource to learn how to write your own more complicated
+programs. <br>
+<br>
+We welcome any enhancements or additional samples that might
+be
+generally useful to the wxLua community. Please understand that any
+code you contribute has to be maintained and easily
+understood so try to
+keep things simple and clear.<br>
+<br>
+If something in wxLua seems to not work as expected it is
+best to try
+to duplicate your error in the simplest possible way in one of the
+samples and ask on the <i>wxlua-users@lists.sourceforge.net</i>
+mailing list.<br>
+<br>
+Why are the samples named <span style="font-style: italic;">sample.wx.lua</span>?
+To allow them to be colorized correctly in syntax highlighting
+editors, yet denote to people that they are for wxLua and must
+be run using a wxLua executable or the wxLua module. <br>
+<h3><a name="How_to_run_the_samples"></a>How
+to Run the
+Samples</h3>
+The
+examples below are for MS Windows .exe executables, but the same
+applies for Linux or OSX, just remove the .exe extension for the
+executable. See also <a href="#wxLua_Applications">wxLua
+Applications</a> for more information about these programs.
+<ul>
+<li>On
+the command line run <span style="font-weight: bold; font-style: italic;">$wxlua.exe
+sample.wx.lua</span></li>
+<li>On the command line
+run <span style="font-weight: bold; font-style: italic;">$wxluafreeze.exe
+sample.wx.lua</span></li>
+<li>Open the Lua program in <span style="font-weight: bold;">wxlua.exe</span>
+and choose
+the menu item Run.</li>
+<li>Open the Lua program in <span style="font-weight: bold;">wxluaedit.exe</span>
+and
+select the menu item wxLua-&gt;Run or press the toolbar "play"
+button to run it.</li>
+<li>Use
+wxLua as a Lua module (using the function require), run <span style="font-weight: bold; font-style: italic;">$lua.exe sample.wx.lua</span></li>
+<ul>
+<li>In order to use wxLua as a module the Lua code must have <i>require("wx")</i>
+to load the wxLua bindings in the beginning and <i>wx.wxGetApp():MainLoop()</i>
+at the end to start the wxWidgets event loop.</li>
+<li>You may need to adjust the <i>package.cpath</i>
+variable to have it point to the correct location of the wx.so or
+wx.dll shared library for require("wx") to load.</li>
+</ul>
+</ul>
+<h3><a name="Provided_samples"></a>Provided
+Samples</h3>
+<ul>
+<li><b>bindings.wx.lua</b></li>
+<ul>
+<li>This is a MUST use program, at least once, to get a
+better understanding of the bindings.</li>
+<li>Lets you
+explore the C++ binding structs from within Lua
+using a wxListCtrl. This program shows the raw data that is
+used to push the
+bindings into Lua when a wxLuaState is created.</li>
+<li>Take
+note of the menu item "Show Lua stack dialog..." and the code for it.
+You can use this dialog to debug your own programs by viewing the
+stack, local and global variables, as well as the Lua registry which is
+only accessible in C. </li>
+</ul>
+<li><b>calculator.wx.lua</b></li>
+<ul>
+<li>A
+simple calculator program that demonstrates loading and
+using controls from an
+XRC resource, accelerator tables, and event handling. This programs
+loads the file calculator.xrc to create it's GUI.</li>
+</ul>
+<li><b>choices.wx.lua</b></li>
+<ul>
+<li>Demonstrates
+a number of controls that offer choices to
+the user, wxRadioBox, wxListBox, wxComboBox, wxChoice, and
+wxCheckListBox. It uses a wxNotebook and wxSizers for layout.</li>
+</ul>
+<li style="font-weight: bold;">coroutine.wx.lua</li>
+<ul>
+<li>A
+demo of how to use coroutines in wxLua using wxEVT_IDLE to call
+coroutine.resume().</li>
+</ul>
+<li><b>dialog.wx.lua</b></li>
+<ul>
+<li>A simple temperature conversion program to/from
+Fahrenheit to/from Celsius. Shows the use of wxSizers, wxButtons, and
+the wxTextCtrl.</li>
+</ul>
+<li><b>editor.wx.lua</b></li>
+<ul>
+<li>This is the editor that the wxLua application <i>apps/wxlua</i>
+uses. It uses the wxStyledTextCtrl for the editor and can run and debug
+Lua programs. For more information see the wxLua application notes
+below. </li>
+</ul>
+<li><b>grid.wx.lua</b></li>
+<ul>
+<li>A
+very simple demo of the wxGrid class. A better
+one would be appreciated.</li>
+</ul>
+<li><b>htmlwin.wx.lua</b></li>
+<ul>
+<li>Shows the wxLuaHtmlWindow and it's virtual
+functions as
+well
+as adding.custom widgets to a wxHtmlWindow.</li>
+</ul>
+<li style="font-weight: bold;">luamodule.wx.lua</li>
+<ul>
+<li>A
+sample for loading the wxLua "wx" module using Lua's require
+function when wxLua is compiled as a shared library. Run this program
+using the Lua executable and not wxLua or wxLuaFreeze since the wxLua
+library is loaded at run-time. See also <a href="#wrapmodule.wx.lua">wrapmodule.wx.lua</a>
+for more information about loading Lua modules.</li>
+</ul>
+<li><b>mdi.wx.lua</b></li>
+<ul>
+<li>Shows
+the MDI classes, wxMDIParentFrame and
+wxMDIChildFrame.</li>
+</ul>
+<li><b>media.wx.lua</b></li>
+<ul>
+<li>A sample for the wxMediaCtrl that can load and
+play audio
+and video files.</li>
+</ul>
+<li><b>minimal.wx.lua</b></li>
+<ul>
+<li>A minimal sample that creates a wxFrame,
+wxMenuBar, and
+wxStatusBar.</li>
+</ul>
+<li><b>printing.wx.lua</b></li>
+<ul>
+<li>Demonstrates how to use the printing architecture
+and
+some wxDC
+drawing classes in wxLua.</li>
+</ul>
+<li><b>scribble.wx.lua</b></li>
+<ul>
+<li>A simple drawing program that shows how to handle
+wxMouseEvents
+and
+wxDC drawing as well as creating a custom control.</li>
+</ul>
+<li><b>sizer.wx.lua</b></li>
+<ul>
+<li>A
+simple wxSizer demonstration.</li>
+</ul>
+<li><b>tree.wx.lua</b></li>
+<ul>
+<li>A wxTreeCtrl demonstration.</li>
+</ul>
+<li><b>unittest.wx.lua</b></li>
+<ul>
+<li>Tests
+that the binding generator is working properly as well as wxLua itself.</li>
+<li>This
+is also a good reference for how to call various objects since it tries
+to test all the valid methods.</li>
+</ul>
+<li><b>validator.wx.lua</b></li>
+<ul>
+<li>Tests the wxGenericValidator and wxTextValidator.</li>
+</ul>
+<li><b>veryminimal.wx.lua</b></li>
+<ul>
+<li>A wxFrame only.</li>
+</ul>
+<li><b>wxluasudoku.wx.lua</b></li>
+<ul>
+<li>A complete Sudoku solver and program to
+play
+Sudoku puzzles. This program demonstrates most things that might
+be required for typical GUI programs; drawing, printing,
+event handling, custom dialogs, key and mouse events, menu, toolbar,
+statusbar, etc...</li>
+<li>The program is broken into two
+parts and the code put in
+two separate Lua tables to make things easier to understand. The sudoku
+solver code is in the "sudoku" table at the top of the listing and the
+wxWidgets GUI code in the "sudokuGUI" table at the bottom.</li>
+</ul>
+</ul>
+<h2><a name="wxLua_Applications"></a><u>wxLua
+Applications</u></h2>
+The applications that wxLua provides are in the <span style="font-style: italic;">wxLua/apps</span>
+directory. These
+are C++ programs that are compiled against the wxWidgets library and
+the wxWidgets wxStyledTextCtrl library. <br>
+<ul>
+<li>
+<h3><a name="wxLua"></a>wxLua</h3>
+</li>
+<ul>
+<li>This
+is a wxLua IDE editor program written in Lua that has a
+nice editor using the wxStyledTextCtrl.</li>
+<li>The Lua
+code for it is in samples/editor.wx.lua</li>
+<li>You can
+fully debug Lua programs, step through them line
+by
+line, set break points, view call stack, etc.</li>
+<li>The
+<i>File</i>, <i>Edit</i>,
+and <i>Search</i> menus offer typical editor functionality.</li>
+<li>The <i>Debug</i> menu contains the items to
+run and debug your programs</li>
+<ul>
+<li><i>Compile</i>
+- test compilation of your
+program, does not
+run it, but checks the Lua syntax.</li>
+<li><i>Run</i>
+- Run the current program independently in a separate
+process.</li>
+<ul>
+<li>The wxLua program is run
+with the command '$wxLua
+editor_filename' and therefore you need to have saved it to
+disk. </li>
+</ul>
+<li><i>Attach</i>
+- Attach the debugger to a
+process, you must
+start the debuggee process by hand by running another wxLua process as
+"wxLua -dHOSTNAME:PORT program.lua" using the appropriate values for
+HOSTNAME:PORT as shown in the wxLua status window after selecting <i>Attach</i>.
+You can abort the debugging by selecting <i>Stop
+Debugging</i>.</li>
+<li><i>Start Debugging</i>
+- Start debugging
+the
+current program where
+you can then <i>Step, Step Over, Continue, Break</i>.</li>
+<ul>
+<li>A TCP debugger server is started on a port in the
+range 1551-1559 listening for a connection from the localhost.</li>
+<li>A new wxLua process is created (see <span style="font-style: italic;">Attach</span>) as a
+debuggee client and the code in the current editor is sent to the
+debugee to run.</li>
+</ul>
+<li><i>Console</i>
+- Use a dialog with a text
+control to show the output from Lua print statements when
+running or debugging programs.</li>
+<li><i>Stop
+Debugging</i> - Stop debugging and
+close the
+debuggee process.</li>
+<li><i>Step</i> - Take
+one step in debugging
+the program.</li>
+<li><i>Step Over</i> - Step
+over a function
+call.</li>
+<li><i>Step Out</i> - Step out of a
+function
+call.</li>
+<li><i>Continue</i> - Continue
+running the
+program.</li>
+<li><i>Break</i> - Break a
+running program.</li>
+<li><i>View Call Stack</i>
+- View the current
+call stack of a Lua
+program being debugged showing all variables and their values.</li>
+<li><i>View Watches</i> - Set and view watches
+of variables for
+the Lua program being currently debugged.</li>
+<li><i>Show
+Output Window</i> - Show or hide
+the output window for messages during debugging.</li>
+<li><i>Clear
+Output Window</i> - When checked,
+clear the text in the output window when starting to debug.</li>
+</ul>
+<li>This
+program can also run Lua or wxLua programs on the
+command line just like the Lua executable.</li>
+<ul>
+<li>The
+command line switches can be displayed by running
+wxLua -h.</li>
+<li>The editor is run if no parameters are
+given.</li>
+<li>Note that the switches -c (print console),
+-q (don't
+quit if no top level window open), -e (execute Lua code) must be
+specified
+before -d, -o, -r</li>
+<li>The switches -d (run as
+debuggee), -o (open files to
+edit), and -r (run file) are exclusive and you can only use one.</li>
+<li>If -d, -o, or -r are not given but there is at
+least one parameter on the command line, it is interpreted to be a
+program name and wxLua will try to run it, any parameters after the
+program name are pushed into the Lua as a table named 'arg'.</li>
+<ul>
+<li><i>wxLua editor.wx.lua</i> is the
+same as
+just running <i>wxLua</i> itself. You can run the
+editor this way to customize it, but please don't forget to
+post any enhancements to the wxlua-users mailing list so they can be
+incorporated back into wxLua.</li>
+</ul>
+<li>If you
+want to run a program or provide arguments to
+your Lua program that use -X or /X semantics you need to use
+-- to stop the wxLua program from interpreting the args.</li>
+<ul>
+<li>In the example below, we don't want wxLua to
+interpret the second -c or give an error for the -g arg, but
+rather pass the args to myprogram.lua.</li>
+<li><i>wxLua
+-c -e "a = 12; b = 3" -- myprogram.lua
+-c 12 -g</i><br>
+</li>
+<ul>
+<li>The
+wxLua program will display a console window to
+display print statements, run the string "a = 12; b = 3", then
+run myprogram.lua and push into Lua a table named 'arg' with the
+indices </li>
+<li>[-5] = 'd:\wxLua\bin\wxlua.exe', [-4]
+= '-c', [-3]
+= '-e', [-2] = 'a = 12; b = 3', [-1] = '--', [0]
+= '../samples/unittest.wx.lua'</li>
+<li>[1] = '-c', [2] =
+'12', [3]
+= '-g'</li>
+<li>This is the same table the Lua executable
+creates, where arg[0] is the name of the Lua program run and positive
+indices
+are args to the Lua program and the most negative index is the name of
+the executable.</li>
+</ul>
+<li>wxLua -c -e "a = 12;
+b = 3" -r myprogram.lua -- -c 12
+-g</li>
+<ul>
+<li>Gives the same results, but the
+Lua arg
+table starts with [1] = '--' which should probably be ignored.</li>
+</ul>
+</ul>
+</ul>
+</ul>
+<li>
+<h3><a name="wxLuaEdit"></a>wxLuaEdit</h3>
+</li>
+<ul>
+<li>This is another IDE type program written in C++
+that runs
+wxLua
+programs in the main thread and can therefore be "dangerous." However
+it works fairly well and uses wxYield events to keep the editor GUI
+responsive while running, though this does sacrifice speed. It
+does not allow step-by-step debugging of Lua programs. However, it does
+provide a
+Lua shell to try things out very quickly and you can interactively
+manipulate or introspect a program as it runs in the "Output" window. </li>
+<li><i>Run wxLua Program</i> -
+Runs the program
+in the current notebook tab and outputs any print or error messages to
+the "Output" window. A new lua_State is created for each run and is
+accessible in the Output window until a new one is run.</li>
+<li><i>Stop
+wxLua Program</i>
+- Stops the
+currently running wxLua program. This only stops the program if Lua is
+actually running meaning that the Lua parser is running. Once you've
+created a top level window the wxWidgets event system runs in the
+background and calls the wxLuaState as necessary for event handling.
+This is why Lua is considered to be not running even though your
+programing
+is "running."</li>
+<li><i>Stack Tree</i> -
+Show the stack of the
+current lua_State. Current means which output window you're looking at,
+either the Shell or the Output.</li>
+<li><i>Toggle
+Breakpoint</i> - Add a breakpoint
+to the line of code and when the Lua parser reaches it throw an error.
+You can then use the print() statement in the Output window or the
+stack tree to view the current state of Lua. You cannot view local
+variables however and apparently this is a limitation of Lua itself.
+You cannot also continue running the program.</li>
+<li>The
+editor uses
+the wxStEdit library from wxcode.sourceforge.net for the editor. You
+need to download either the newest version or use CVS to get a copy
+from wxcode.sourceforge.net in order to compile this editor.</li>
+</ul>
+<li>
+<h3><a name="wxLuaFreeze"></a>wxLuaFreeze</h3>
+</li>
+<ul>
+<li>This is the simplest incarnation of
+a wxLua program
+that
+makes use of the wxLua library. Once compiled, it can run Lua programs
+on the command line as <i>$wxLuaFreeze program.lua</i>.
+Additionally you can use the <i>wxluafreeze.lua</i> script
+to append a single
+file Lua program to the end of wxLuaFreeze to run. Please
+see <i>readme.txt</i> in <i>apps/wxluafreeze</i>
+and
+also either run <i>wxluafreeze.lua</i> with no arguments
+or read the the
+Usage() function in it. You should give the output of <i>wxluafreeze.lua</i>
+a
+new name so you don't modify the original, though you may do this if
+you like. Once a program has been "frozen" to the end of wxLuaFreeze it
+automatically runs it and any arguments passed to it on the command
+line
+are pushed into Lua as the args table. For MSWindows a program called
+upx can be used to compress the executable to about 1.5 Mb from 4.5 Mb,
+using VC6 in release mode as the compiler.</li>
+</ul>
+</ul>
+<h2><a name="wxLua_Utils"></a><u>wxLua
+Utils</u></h2>
+Utility programs for wxLua are located in the <i>wxLua/util</i>
+directory.
+<ul>
+<li>
+<h3><a name="bin2c.lua"></a>bin2c.lua</h3>
+</li>
+<ul>
+<li>bin2c.lua
+is a Lua program to convert a file into a const
+char* string to be included into a C/C++ program. </li>
+<li>You can then run the
+script in C++ by calling <i>wxLuaState::LuaDoBuffer(string_var,
+string_len, "Lua program")</i>. </li>
+<li>Help is shown if no arguments are
+given when run or you can read its Usage() function.</li>
+</ul>
+<li>
+<h3><a name="wrapmodule.wx.lua"></a>wrapmodule.wx.lua</h3>
+</li>
+<ul>
+<li>This
+is a wrapper program to allow you to use the wx shared library as a Lua
+module (using require) to run the provided samples without having to
+edit them. </li>
+<li>See <a href="#How_to_run_the_samples">How
+to
+Run the Samples</a> for other ways to run the samples.</li>
+<li>The
+search path for the module may need to be specified if it is not in the
+same directory as the sample you want to run.</li>
+<ul>
+<li>You
+can add a line like the one below to the top of wrapmodule.wx.lua
+(adjusted as
+necessary) for your paths.</li>
+<li>The list of paths is a
+semicolon separated list of paths to <span style="font-weight: bold;">?.so</span> (for Unix type
+shared libraries) and <span style="font-weight: bold;">?.dll</span>
+(for MSW) .</li>
+<li>? is equivalent to * meaning match
+anything for typical shells (DOS prompt).</li>
+<li>You
+might
+as well include paths to both unfix and MSW libraries so that the
+script
+can be run on either platform without modification since typically only
+the libraries that work on any given platform will be installed.</li>
+<li>package.cpath
+=
+";;../lib/?.so;../lib/vc_dll/?.dll;../lib/bcc_dll/?.dll;../lib/mingw_dll/?.dll;"</li>
+</ul>
+</ul>
+</ul>
+<h2><a name="wxLua_Sourcecode_Modules"></a><u>wxLua
+Sourcecode Modules</u></h2>
+wxLua is broken up into "modules" that are compiled into libraries so
+that you can choose to link to some or all of them. The directory
+structure of the <i>modules</i> dir is such that in your
+program you need only add the include path to <i>wxLua/modules</i>
+in your compiler settings and then in the code always write <i>#include
+"modulename/include/filename.h"</i>.<br>
+<ul>
+<li><b>Lua</b></li>
+<ul>
+<li>The
+source code of Lua itself. It is the
+original
+unmodified source for the version, with some of the header files copied
+to the
+include directory for the installation routines. </li>
+<li>Patches released for
+the version are applied as they come out, see <span style="font-style: italic;">wxLua/docs/changelog.txt</span>.</li>
+<li>Compilation of this module generates a Lua library and
+two executables, lua.exe and luac.exe.</li>
+</ul>
+<li><b>wxbind</b></li>
+<ul>
+<li>The
+output of the interface files in <i>wxLua/bindings/wxwidgets</i>
+are generated in this directory. They are the wrappers for the
+wxWidgets
+library. </li>
+<li>You do not need to regenerate them unless you have
+edited the interface files themselves. </li>
+<li>You should NOT edit these files
+directly as they will be overwritten if you regenerate the bindings,
+the fix should really go into the interface files themselves. </li>
+<li>To initialize this library in a C++ program and have it
+pushed
+into Lua you should
+have the code <i>"extern bool wxLuaBinding_wxXXX_init();"</i>
+and then somewhere in your app initialization or at least before you
+create a wxLuaState call <i>wxLuaBinding_wxXXX_init()</i>.
+This is because different compilers seem to have problems with the
+various techniques we've tried to automatically initialize the binding
+and may even
+throw out the whole library when linking unless you explicitly use
+something in it. Replace the XXX with the name of the library you want
+installed, see modules/wxbind/include/wxbinddefs.h for a list of them.</li>
+<li>You should preferably use the macros in
+modules/wxbind/include/wxbinddefs.h to make it easy to install a
+standard set of
+them or all of them. They do some simple checks to determine if the
+binding will be available based on the wxWidgets wxUSE_XXX directives.</li>
+<li>Compilation of this module
+generates a number of
+libraries corresponding to the libraries that wxWidgets
+generates, wxadv, wxaui, wxbase, wxcore, wxgl, wxhtml,
+wxmedia, wxnet, wxstc, wxxml, and wxxrc.</li>
+</ul>
+<li><b>wxlua</b></li>
+<ul>
+<li>This
+is the core library of wxLua itself. It contains the
+wxLuaState class and helper functionality. </li>
+<li>You must at least link to
+this library.</li>
+<li>The public C++ side of wxLua is
+almost entirely contained
+in <i>modules/wxlua/include/wxlstate.h</i>.</li>
+<li>This
+library also contains some bindings that are useful
+for debugging and getting information about wxLua.</li>
+<li>To
+initialize this
+library in a C++ program and have it pushed into Lua you should
+have the code <i>"extern bool wxLuaBinding_wxlua_init();"</i>
+and then somewhere in your app initialization or at least before you
+create a wxLuaState call <i>wxLuaBinding_wxlua_init()</i>.</li>
+<li>Compilation of this module generates a wxlua library.</li>
+</ul>
+<li><b>wxluadebug</b></li>
+<ul>
+<li>This
+is a simple debug library for Lua that provides some
+tools and a widget for showing the stack and browsing the locals,
+globals, and registry variables.</li>
+<li>Compilation
+of this module generates a wxluadebug library.</li>
+</ul>
+<li><b>wxluasocket</b></li>
+<ul>
+<li>This is a socket library for one wxLua program to
+communicate with another for debugging purposes. It is currently used
+in
+the wxlua app (samples/editor.wx.lua).</li>
+<li>This lib
+depends on the wxluadebug
+lib.</li>
+<li>To initialize this
+library in a C++ program and have it pushed into Lua you should
+have the code <i>"extern bool wxLuaBinding_wxluasocket_init();"</i>
+and then somewhere in your app initialization or at least before you
+create a wxLuaState call <i>wxLuaBinding_wxluasocket_init()</i>.</li>
+<li>Compilation of this module generates a wxluasocket
+library.</li>
+</ul>
+</ul>
+<h2><a name="wxLua_Programming_in_C"></a><u>wxLua
+C++ Programming
+Guide</u></h2>
+The documentation for the wxLua library is in the header files and
+descriptions are given for each function, enum, etc. Please
+read through them to get a feel for
+what functions wxLua provides. Below is a brief
+synopsis of wxLua for C++ programmers.<br>
+<br>
+Lua uses char strings while wxWidgets uses the wxString class
+which
+uses the wxChar data type. Depending on whether you have compiled
+wxWidgets in Unicode mode or not, wxChar can be either wchar
+or char. Therefore, wxLua uses the functions <i>"wxString
+lua2wx(const char* str)"</i> and <i>"const wxCharBuffer
+wx2lua(const wxString&amp; str)"</i> to translate between the
+two. Note that wxCharBuffer can be used as a const char* string
+directly without any casting.<br>
+<br>
+The core of wxLua is based upon a ref counted wxLuaState
+class
+derived from the wxWidget's wxObject class. The wxLuaState class
+contains as a member of it's ref data the 'C' lua_State struct which is
+the
+heart of Lua. Since the class is ref counted, it should be passed as
+<i>const wxLuaState&amp;</i> and can be used in much
+the same way as a
+wxBitmap, wxPen, or any of the other wxObject derived classes that make
+use of it's ref counting mechanism. What this means for wxLua is that
+instead of
+keeping pointers to the lua_State you have instances of the wxLuaState,
+there is a slight overhead for this, but it is minimal.
+When the lua_State is closed, all the wxLuaStates sharing the ref data
+can check their ref data to see if the lua_State is NULL and
+segfaults from dangling pointers are avoided. The reason why this is a
+good idea is that wxWidgets has delayed wxWindow deletion and
+things can get out of order. Care must be taken for pushed event
+handlers from Lua because if the lua_State is closed, but the window
+hasn't been deleted just yet... It's best to have a way to check and
+the wxLuaState wraps this all up.<br>
+<br>
+When the wxLuaState is Ok() the wxLuaState has it's ref data
+and the lua_State is created. If it's not Ok() then most wxLuaState
+functions will assert in debug mode, so it's always best to compile in
+debug mode until you're sure things are working properly.<br>
+<br>
+The wxLuaState contains all of the Lua 'C' functions, such as
+lua_gettop(lua_State* L), but as member functions named lua_GetTop()
+which use the internal lua_State and check for it's validity before
+use. The functions are capitalized to make them
+easier to find in an editor. If you want the greatest performance just
+use wxLuaState::GetLuaState() and directly manipulate the
+returned pointer to the lua_State. <br>
+<br>
+It is instructive to follow the creation of the wxLuaState by
+looking
+at bool wxLuaState::Create(wxEvtHandler *handler, wxWindowID id) in
+<i>wxLua/modules/wxlua/src/wxlstate.cpp</i>.<br>
+<ol>
+<li>The
+lua_State
+is created using
+lua_open() and then the standard Lua libraries are loaded, base, table,
+string,
+math, and so on using luaL_openlibs(L) as well
+as luaopen_bit(L) to open the bit library we use. </li>
+<li>The
+function wxLuaState::Create(L, wxLUASTATE_USESTATE) is called to finish
+setting up the lua_State.</li>
+<ol>
+<li>The
+wxObject::m_refData is created as a new wxLuaStateRefData(). This ref
+data class contains a pointer to the lua_State struct and to a shared
+wxLuaStateData class that is also created. If a Lua program running in
+this wxLuaState creates coroutines, each will
+have their own wxLuaStateRefData and associated lua_State, but they
+will all share the same wxLuaStateData class.</li>
+<li>The
+C lua_State is added to a
+hash table to allow
+looking up the owner wxLuaStateRefData when Lua calls the C wxLua
+binding functions with the lua_State as the only parameter. A new
+wxLuaState with the wxLuaStateRefData set using wxObject::SetRefData(),
+which does not "ref" the data, but simply sets it, is used since we do
+not want an extra "ref". The
+same wxLuaState is pushed into the
+LUA_REGISTRYINDEX table as a lightuserdata using the
+&amp;wxlua_lreg_wxluastate_key as a secondary means to
+find the
+wxLuaState
+"owner" of the lua_State which will be used for coroutines since there
+is no way to determine when a coroutine (new lua_State) is created and
+then destroyed.</li>
+<li>The tables and values that wxLua uses to store
+information about the bindings or track it's state are pushed into the
+LUA_REGISTYINDEX. Information about these items can be found
+in the next section.</li>
+<li>We
+register a print() function for Lua to get the output of Lua print()
+statements to send messages as wxLuaEvents, see
+wxEVT_LUA_PRINT.</li>
+</ol>
+<li>The bindings are
+registered by calling wxLuaState::RegisterBindings(). </li>
+<ul>
+</ul>
+<ul>
+<li>Each
+binding that is loaded are derived wxLuaBinding
+classes whose member data variables point to structs in each binding. A
+single static instance of each binding class are
+installed
+into a wxList when the
+wxLuaBinding_XXX_init() functions
+are called. The reason behind the need for running the init function
+from the binding libraries is to stop certain compilers from throwing
+out the whole binding library, which happens even if the binding was
+added to the list from within the library.</li>
+</ul>
+<ol>
+<li>Each
+binding has
+wxLuaBinding::RegisterBinding(...) called for it.</li>
+<ul>
+<li>luaI_openlib(L, binding_namespace, fake luaL_Reg, 0) ;
+is called to have Lua create the tables that we will install the
+bindings into. This allows wxLua to look like a standard Lua library
+even though it works a little differently.</li>
+<ul>
+<li>LUA_REGISTRYINDEX["_LOADED"][binding_namespace] =
+table</li>
+<li>LUA_GLOBALSINDEX[binding_namespace] = table</li>
+<li>LUA_GLOBALSINDEX["package"]["loaded"][binding_namespace]
+= table</li>
+</ul>
+<li>wxLuaBinding::DoRegisterBinding(...)
+is called to actually push the bindings into the binding_namespace
+table we've created in Lua.</li>
+</ul>
+</ol>
+<li>At
+the end of creation a wxLuaEvent is sent with the wxEVT_LUA_CREATION
+event type.</li>
+</ol>
+<h3><a name="Data_stored_in_Luas_LUA_REGISTRYINDEX"></a>Data
+stored in Lua's LUA_REGISTRYINDEX table</h3>
+Below are the list of indexes in the LUA_REGISTRYINDEX table
+that the
+wxLuaState creates and uses. The keys are const char* strings with
+its address pushed as a light
+userdata because a
+pushing the string itself requires that it be hashed and it
+was found to take a
+considerable amount of the total time of a function call.<br>
+<br>
+<pre>// ----------------------------------------------------------------------------<br>// Special keys used by wxLua in the LUA_REGISTRYINDEX table.<br>//<br>// Note: We do not push a human readable string for these because Lua always<br>// makes a copy and hashes the string, this takes a considerable amount of<br>// time when benchmarked using valgrind.<br>// ----------------------------------------------------------------------------<br><br>// Light userdata used as keys in the Lua LUA_REGISTRYINDEX table for wxLua.<br>// Note that even though these keys have values, they're not used, just the memory address.<br><br>// The key in the LUA_REGISTRYINDEX table that is a numerically keyed table indexed<br>// on the wxLua types where each item is a userdata metatable for a C++ class.<br>// Note: The wxLua types WXLUA_TXXX that correspond to the Lua LUA_TXXX types<br>// are not stored in this table since they do not use our metatables.<br>// The keys in this table are all &gt; 1. They values are either tables or 0<br>// if the wxLuaBinding containing the wxLua type was not registered.<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_types_key][wxLua type number] = { metatable for a C++ class }<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_types_key;<br>// The key in the LUA_REGISTRYINDEX table that is a numerically keyed table<br>// with references to Lua objects we want to keep a handle to. The object could be<br>// anything, a table, function, number, string, userdata...<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_refs_key][ref number] = Lua object<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_refs_key;<br>// The key in the LUA_REGISTRYINDEX table that is a numerically keyed table<br>// with references to objects the wxLuaDebugData wants to keep a handle to by<br>// storing their value for lookup. It is used only for the wxLuaDebugData.<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_debug_refs_key][ref number] = Lua object<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_debug_refs_key;<br>// The key that in the LUA_REGISTRYINDEX table that is a lookup table of string<br>// C++ classname keys and lightuserdata pointers to the associated wxLuaBindClass struct.<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_debug_refs_key][wxLuaBindClass.name] = lightuserdata(&amp;wxLuaBindClass)<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_classes_key;<br>// The key in the LUA_REGISTRYINDEX table that is a table<br>// of Lua objects/functions assigned to wxLua userdata programatically in Lua.<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_derivedmethods_key][lightuserdata(obj_ptr)] =<br>// {["derived func/value name"] = wxLuaObject(Lua function/value), ...}<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_derivedmethods_key;<br>// The key in the LUA_REGISTRYINDEX table who's value is a lightuserdata<br>// of the wxLuaState for this lua_State.<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_wxluastate_key] = lightuserdata(&amp;wxLuaState)<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_wxluastate_key;<br>// The key in the LUA_REGISTRYINDEX table that is a table of lightuserdata<br>// wxLuaBindings and the ref to the Lua table they were installed into.<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_wxluabindings_key] = {lightuserdata(&amp;wxLuaBinding) = wxlua_lreg_refs_key ref#, ...}<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_wxluabindings_key;<br>// The key in the LUA_REGISTRYINDEX table that is a table of all<br>// objects that we've pushed into Lua using wxluaT_pushuserdatatype().<br>// Note: A single object like a wxWindow may be pushed with multiple wxLua types.<br>// e.g. wxWindow* w = wx.wxWindow() retrieve the window later from wxObject* wxEvent:GetEventObject()<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_weakobjects_key][lightuserdata(obj_ptr)] =<br>// { wxLua type1 = weak fulluserdata, wxLua type2 = weak fulluserdata... }<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_weakobjects_key;<br>// The key in the LUA_REGISTRYINDEX table that is a table of all<br>// objects to delete that were added using wxluaO_addgcobject().<br>// Note that non wxObject classes use wxLUA_DECLARE_ENCAPSULATION so<br>// the key is the object pointer and the value is the wxObject encapsulation.<br>// Both the key and the value are the same if not encapsulated.<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_gcobjects_key][lightuserdata(obj_ptr)] =<br>// lightuserdata(wxObject derived class)<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_gcobjects_key;<br>// The key in the LUA_REGISTRYINDEX table that is a table of all<br>// wxLuaEventCallbacks that we've created.<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_evtcallbacks_key][lightuserdata(&amp;wxLuaEventCallback)] =<br>// lightuserdata(&amp;wxEvtHandler)<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_evtcallbacks_key;<br>// The key in the LUA_REGISTRYINDEX table that is a table of wxWindow keys and<br>// wxLuaWinDestroyCallback values that we've created.<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_windestroycallbacks_key][lightuserdata(&amp;wxWindow)] =<br>// lightuserdata(wxLuaWinDestroyCallback)<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_windestroycallbacks_key;<br>// The key in the LUA_REGISTRYINDEX table that is a table of all<br>// top level wxWindows that we've created and need to destroy when closed.<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_topwindows_key][lightuserdata(&amp;wxWindow)] = 1<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_topwindows_key;<br>// The key in the LUA_REGISTRYINDEX table that has a boolean value<br>// of whether the Lua code has prepended a '_' to function name to indicate<br>// that they want the base class function called.<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_callbaseclassfunc_key] = true/false<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_callbaseclassfunc_key;<br>// The key in the LUA_REGISTRYINDEX table that has a wxEventType (integer) value<br>// of the current wxEvent is that is being run or wxEVT_NULL if not in an event.<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_wxeventtype_key] = wxEventType (wxEVT_NULL)<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_wxeventtype_key;<br>// The key in the LUA_REGISTRYINDEX table that has a wxLuaStateData class<br>// lightuserdata value for the wxLuaState.<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_wxluastatedata_key] = lightuserdata(&amp;wxLuaStateData)<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_wxluastatedata_key;<br>// The key in the LUA_REGISTRYINDEX table that is a weak keyed table of<br>// the tables wxLua pushed into the registry with their keys as values.<br>// This is used by the wxLuaDebugData to know if the table is one of the wxLua<br>// registry tables for better wxLuaStackDialog performance.<br>// LUA_REGISTRYINDEX[&amp;wxlua_lreg_regtable_key][weak {wxlua_lreg_XXX_key table}] =<br>// lightuserdata(&amp;wxlua_lreg_XXX_key)<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_lreg_regtable_key;<br><br>// Light userdata used as keys in the metatables created for the class userdata objects.<br>// Note that even though these keys have values, they're not used, just the memory address.<br><br>// wxLua userdata metatable structure:<br>// {<br>// lightuserdata(&amp;wxlua_metatable_type_key) = wxLua type number in wxlua_lreg_types_key table<br>// lightuserdata(&amp;wxlua_metatable_wxluabindclass_key) = lightuserdata(&amp;wxLuaBindClass)<br>// __gc = function(wxlua_wxLuaBindClass__gc)<br>// __index = function(wxlua_wxLuaBindClass__index)<br>// __newindex = function(wxlua_wxLuaBindClass__newindex)<br>// __tostring = function(wxlua_wxLuaBindClass__tostring)<br>// }<br><br>// The key of a metatable used for wxLua userdata that is the wxLua type number in the<br>// wxlua_lreg_types_key table this metatable is for.<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_metatable_type_key;<br>// The key of a metatable used for wxLua userdata that stores a lightuserdata<br>// of the wxLuaBindClass struct for this class.<br>extern WXDLLIMPEXP_DATA_WXLUA(const char*) wxlua_metatable_wxluabindclass_key;<br><br></pre>
+<h3><a name="Functions_to_Create_a_wxLuaState"></a>Functions
+to
+Create a wxLuaState</h3>
+<ul>
+<li>wxLuaState(bool create = false)</li>
+<ul>
+<li>If create is false, default constructor, you must call
+Create(...) to actually use it.</li>
+<li>If create is
+true, you now have a
+working wxLuaState, i.e. a lua_State, with all the bindings attached.</li>
+</ul>
+<li>wxLuaState(wxEvtHandler *handler, wxWindowID id
+= wxID_ANY)</li>
+<ul>
+<li>Creates a complete
+wxLuaState, but you can
+provide an
+event handler, e.g. a wxApp or wxWindow derived class, to
+get and handle the wxLuaEvents, see also Get/SetEventHandler().</li>
+</ul>
+<li>wxLuaState(lua_State* L, wxLuaState_Type type =
+wxLUASTATE_GETSTATE)</li>
+<ul>
+<li>type = wxLUASTATE_GETSTATE means that the
+lua_State must
+already have been created using a wxLuaState and so this new wxLuaState
+will merely attach to the corresponding ref data.</li>
+<li>type
+= wxLUASTATE_SETSTATE means that this new lua_State
+that you have created will have the wxLua bindings pushed into it if
+wxLUASTATE_OPENBINDINGS is set and
+then be ready for running wxLua programs. The wxLuaState will not close
+the lua_State, but will remove itself from Lua and do cleanup when
+there are no more instances of them if wxLUASTATE_STATICSTATE is set.</li>
+</ul>
+</ul>
+<h3><a name="Using_a_wxLuaState"></a>Using
+a
+wxLuaState</h3>
+<ul>
+<li>int LuaDoString(const wxString &amp;script,
+const
+wxString&amp; name = wxEmptyString)</li>
+<ul>
+<li>Runs
+the script as a string with the given name. The name
+is only used if Lua errors out and then the debug message will contain
+that name. </li>
+<li>Returns Lua's error code LUA_ERRXXX
+or 0 on success</li>
+</ul>
+<li>int
+LuaDoBuffer(const
+char *buffer, size_t len, const char
+*name)</li>
+<ul>
+<li>Run a buffer, perhaps from
+bin2lua.lua, that you've
+compiled with your program.</li>
+<li>Returns Lua's error
+code LUA_ERRXXX or 0 on success</li>
+</ul>
+<li>int
+LuaDoFile(const wxString &amp;filename)</li>
+<ul>
+<li>Run
+a Lua file from disk.</li>
+<li>Returns Lua's error code
+LUA_ERRXXX or 0 on success</li>
+</ul>
+<li>int
+LuaPCall(int narg, int nresults)</li>
+<ul>
+<li>Uses
+lua_call to run a chunk on the stack, but sets
+things up for wxLua first.</li>
+<li>Returns Lua's error
+code LUA_ERRXXX or 0 on success</li>
+</ul>
+<li>There are many
+other functions which are documented in <span style="font-style: italic;">wxLua/modules/wxlua/include/wxlstate.h</span>.</li>
+</ul>
+</body></html>

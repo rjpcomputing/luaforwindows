@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Class Features</title>
+	<style type="text/css" media="all"><!--
+		@import "../loop.css";
+		@import "../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../index.html", title="">Home</a></li>
+	<li><a href="../release/index.html", title="Installation">Install</a></li>
+	<li><a href="index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="intro.html", title="Introduction">Intro</a></li>
+			<li><a href="basics.html", title="Basic Concepts">Basics</a></li>
+			<li><a href="models.html", title="Class Models">Models</a></li>
+			<li><strong>Classes</strong></li>
+			<li><a href="components.html", title="Component Models">Comps</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../library/index.html", title="Class Library">Library</a></li>
+	<li><a href="../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Class Features</h1>
+
+<p>This section presents some advanced features and uses of the LOOP models.</p>
+
+<h2><a name="changes">Class Changes</a></h2>
+
+<p>As stated previously, LOOP models are devised mainly to be dynamic therefore it is possible to apply changes over classes. In fact, every model allows that changes over classes may be reflected over all instances. For example, if a field of a class is changed, the new value is available to all instances automatically. This is particularly true in the cached and scoped model that even though they use caches of inherited fields, the use of class proxies to intercept changes over classes allows that caches can be updated.</p>
+
+<h2><a name="invoking">Class Invocations</a></h2>
+
+<p>Method calls over classes of LOOP models implies function calls with the self parameter set to the class object. This way, changes applied to the self parameter implies changes on the class object and therefore reflects over all class instances. For example, suppose the class <code>Date</code> presented on section <a href="basics.html">Basic Concepts</a>, then the code below
+
+<pre>
+Date:addyears(100) -- changes the default values of
+                   -- field 'year' from 1900 to 2000
+</pre>
+
+will change the default value of the field <code>year</code> to 2000 so any <code>Date</code> instance that does not override the value of field <code>year</code> will reflect this change.</p>
+
+<h2><a name="interop">Interoperability</a></h2>
+
+<p>All LOOP models are interoperable, that is, a class from one model can be used as a base class of another and objects from different models can be mixed together to compose an application. This is possible because a LOOP class is seen as a plain Lua table that is used to retrieve field values.</p>
+
+<p>However there are some drawbacks. For instance, classes from models other than the <code>scoped</code> model only inherits public members from classes of model <code>scoped</code>. Other limitation is that <code>cached</code> and <code>scoped</code> class fields always override the fields of classes from other models, no matter their order in the list of super-classes. For example, consider the following code.</p>
+
+<pre>
+local BaseSuper   = loop.base.class  { modelname = "simple" }
+local CachedSuper = loop.cached.class{ modelname = "cached" }
+local MultipClass = loop.multiple.class({}, BaseSuper, CachedSuper)
+local CachedClass = loop.cached.class  ({}, BaseSuper, CachedSuper)
+
+local nocache = MultipClass()
+local cached  = CachedClass()
+
+print(nocache.modelname) --> simple
+print(cached.modelname)  --> cached
+</pre>
+
+<p>The <code>nocache</code> object does not use a cache of fields, so it looks up the class hierarchy to find the value of field <code>modelname</code> and finds it in the <code>BaseSuper</code> class. However, the <code>cached</code> object uses a cache of inherited fields that only contains fields from cached classes (<i>i.e.</i> <code>cached</code> and <code>scoped</code> models) therefore it finds the value of field <code>modelname</code> provided by class <code>CachedSuper</code> even though it is after the <code>BaseSuper</code> class in the list of super-classes of <code>CachedClass</code>.</p>
+
+<h2><a name="packaged">Packaged Classes</a></h2>
+
+<p>LOOP classes can be packaged using the <code>module</code> function provided by Lua 5.1. The simplest way to pack classes using the module function is using the class constructor as a module option. For example, consider que code below.</p>
+
+<pre>
+local string = require "string"
+local oo = require "loop.base"
+
+module("chrono.Date", oo.class)
+
+day = 1
+month = 1
+year = 1900
+
+function addyears(self, years)
+  self.year = self.year + years
+end
+
+function __tostring(self)
+  return string.format("%d/%d/%d",
+                       self.month,
+                       self.day,
+                       self.year)
+end
+</pre>
+
+<p>However, this approach does not allow to define super-classes. To avoid this, use the module variable <code>_M</code> as the class definition table. For example, consider the following class.</p>
+
+<pre>
+local oo = require "loop.simple"
+
+module "chrono.SumDate"
+
+oo.class(_M, require("chrono.Date"))
+
+function __add(self, other)
+  assert(oo.instanceof(one, _M) and
+         oo.instanceof(other, _M))
+
+  -- missing implementation ...
+end
+
+function __sub(self, other)
+  assert(oo.instanceof(one, _M) and
+         oo.instanceof(other, _M))
+
+  -- missing implementation ...
+end
+</pre>
+
+<p>The classes packaged using the module function can be used like in the following code.</p>
+
+<pre>
+local SimpleDate = require "chrono.Date"
+local AddingDate = require "chrono.SumDate"
+local mydate1 = SimpleDate()
+local mydate2 = AddingDate()
+</pre>
+
+<h2><a name="superclass">Super-Class Access</a></h2>
+
+<p>Most LOOP models provide functions for introspection of the class hierarchy, allowing the application to get the super-class of a particular class. However, the access to super-class in method implementations can be cumbersome in some situations. One main problem is that a class method is usually a plain Lua function and therefore is not bound to a particular class. This way, there is no simple way to determine the class of a method in order to figure out its super-class and the inherited method implementation. The most straightforward solution is to place super-classes in local variables and access the inherited methods using the class stored in that variable, like in the example of the following code.</p>
+
+<pre>
+local Square = oo.class()
+function Square:draw()
+  self.canvas:setcolor(self.color)
+  self.canvas:rect(self.xpos - self.width /2,
+                   self.ypos - self.height/2,
+                   self.xpos + self.width /2,
+                   self.ypos + self.height/2)
+end
+
+local Button = oo.class({}, Square)
+function Button:draw()
+  Square.draw(self) -- calling inherited method
+  self.canvas:setcolor(self.labelcolor)
+  self.canvas:setfontsize(self.labelsize)
+  local tw, th = self.canvas:textdim(self.label)
+  self.canvas:text(self.xpos - tw/2,
+                   self.ypos - th/2,
+                   self.label      )
+end
+</pre>
+
+<p>The first line of method <code>Button:draw()</code> calls the method <code>Square:draw()</code> over the object instance using the value stored in upvalue <code>Square</code> to retrieve the implementation of operation <code>draw</code> available in class <code>Square</code>. However, this explicit reference to the super-class <code>Square</code> may be troublesome in the scenario of maintaining the code in face of changes on the class hierarchy. To avoid such problem the acquisition of the super-class can be done through the <code>Button</code> class stored in variable <code>Button</code>, like in the code below.</p>
+
+<pre>
+local Button = oo.class({}, Square)
+function Button:draw()
+  oo.superclass(Button).draw(self) -- calling inherited method
+  self.canvas:setcolor(self.labelcolor)
+  self.canvas:setfontsize(self.labelsize)
+  local tw, th = self.canvas:textdim(self.label)
+  self.canvas:text(self.xpos - tw/2,
+                   self.ypos - th/2,
+                   self.label      )
+end
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

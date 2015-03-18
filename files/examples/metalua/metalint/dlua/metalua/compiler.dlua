@@ -1,0 +1,402 @@
+module lexer
+  module lexer
+    save;
+    newstream;
+    extract_long_string;
+    extract_word;
+    extract_short_string;
+    clone;
+    free __index;
+    is_keyword;
+    peek;
+    module sym
+    end;
+    extract;
+    next;
+    restore;
+    module extractors
+    end;
+    module alpha
+    end;
+    sync;
+    takeover;
+    module patterns
+      spaces;
+      number_exponant;
+      word;
+      long_string;
+      short_comment;
+      long_comment;
+      module number_mantissa
+      end;
+      final_short_comment;
+    end;
+    extract_symbol;
+    skip_whitespaces_and_comments;
+    check;
+    extract_number;
+    module token_metatable
+    end;
+    add;
+  end;
+  free _M;
+  _NAME;
+  _PACKAGE;
+end;
+
+module gg
+  sequence;
+  _PACKAGE;
+  e;
+  is_parser;
+  with_lexer;
+  optkeyword;
+  onkeyword;
+  make_parser;
+  _NAME;
+  list;
+  expr;
+  free _M;
+  multisequence;
+  parse_error;
+end;
+
+module bytecode
+  MAXPARAMS;
+  metalua_compile;
+  dump_file;
+  dump_string;
+  VARARG_ISVARARG;
+  indexupvalue;
+  MAX_INT;
+  free _M;
+  module luaU
+    LUA_TSTRING;
+    DumpBlock;
+    DumpByte;
+    DumpProtos;
+    DumpCode;
+    LUA_TNIL;
+    endianness;
+    LUA_TBOOLEAN;
+    DumpConstants;
+    DumpInt;
+    DumpDebug;
+    DumpLiteral;
+    DumpNumber;
+    from_int;
+    DumpSize;
+    LUA_TNUMBER;
+    DumpHeader;
+    dump;
+    DumpString;
+    ttype;
+    make_setS;
+    DumpUpvalues;
+    DumpLines;
+    DumpLocals;
+    make_setF;
+    LUA_TNONE;
+    DumpFunction;
+    from_double;
+  end;
+  LUA_MAXPARSERLEVEL;
+  VARARG_NEEDSARG;
+  module luaK
+    infix;
+    codenot;
+    NO_JUMP;
+    indexed;
+    checkstack;
+    dischargejpc;
+    fixline;
+    concat;
+    exp2reg;
+    code;
+    code_label;
+    exp2val;
+    sethvalue;
+    jumponcond;
+    prefix;
+    jump;
+    condjump;
+    ttisnumber;
+    exp2anyreg;
+    exp2RK;
+    setsvalue;
+    setnilvalue;
+    _nil;
+    exp2nextreg;
+    getjump;
+    codeAsBx;
+    addk;
+    need_value;
+    freeexp;
+    posfix;
+    nilK;
+    discharge2reg;
+    storevar;
+    setmultret;
+    setlist;
+    codeABx;
+    MAXSTACK;
+    codeABC;
+    freereg;
+    reserveregs;
+    codecomp;
+    dischargevars;
+    hasjumps;
+    setnvalue;
+    module arith_opc
+      sub;
+      mul;
+      not;
+      len;
+      pow;
+      div;
+      mod;
+      add;
+    end;
+    patchlist;
+    constfolding;
+    getlabel;
+    module test_opc
+      module ne
+        cond;
+        opc;
+      end;
+      module eq
+        cond;
+        opc;
+      end;
+      module ge
+        cond;
+        opc;
+      end;
+      module gt
+        cond;
+        opc;
+      end;
+      module le
+        cond;
+        opc;
+      end;
+      module lt
+        cond;
+        opc;
+      end;
+    end;
+    getjumpcontrol;
+    patchtohere;
+    LUA_MULTRET;
+    codearith;
+    boolK;
+    fixjump;
+    ret;
+    nvalue;
+    goiffalse;
+    isnumeral;
+    patchlistaux;
+    discharge2anyreg;
+    setoneret;
+    patchtestreg;
+    removevalues;
+    getcode;
+    _self;
+    goiftrue;
+    numberK;
+    setcallreturns;
+    invertjump;
+    setreturns;
+    stringK;
+  end;
+  module luaP
+    MAXARG_C;
+    SETARG_C;
+    MAXARG_A;
+    SETARG_sBx;
+    MAXARG_sBx;
+    MAXARG_Bx;
+    GETARG_A;
+    GETARG_C;
+    GETARG_sBx;
+    OpModeT;
+    POS_C;
+    GET_OPCODE;
+    SIZE_B;
+    module OpCode
+      OP_GETTABLE;
+      OP_GETGLOBAL;
+      OP_NOT;
+      OP_MOD;
+      OP_LOADK;
+      OP_TAILCALL;
+      OP_TEST;
+      OP_TESTSET;
+      OP_LE;
+      OP_GETUPVAL;
+      OP_CALL;
+      OP_SETTABLE;
+      OP_LT;
+      OP_POW;
+      OP_ADD;
+      OP_EQ;
+      OP_SETLIST;
+      OP_CONCAT;
+      OP_JMP;
+      OP_SETGLOBAL;
+      OP_CLOSE;
+      OP_SETUPVAL;
+      OP_NEWTABLE;
+      OP_DIV;
+      OP_LEN;
+      OP_CLOSURE;
+      OP_SELF;
+      OP_TFORLOOP;
+      OP_MUL;
+      OP_FORPREP;
+      OP_MOVE;
+      OP_LOADBOOL;
+      OP_FORLOOP;
+      OP_SUB;
+      OP_LOADNIL;
+      OP_RETURN;
+      OP_UNM;
+      OP_VARARG;
+    end;
+    MAXARG_B;
+    SETARG_A;
+    testOpMode;
+    SIZE_OP;
+    OpModeK;
+    module ROpCode
+    end;
+    SET_OPCODE;
+    NO_REG;
+    ISK;
+    module opnames
+    end;
+    MAXINDEXRK;
+    getOpMode;
+    SIZE_C;
+    RKASK;
+    OpModesetA;
+    SETARG_Bx;
+    OpModeCrk;
+    OpModeBrk;
+    OpModeBreg;
+    NUM_OPCODES;
+    LFIELDS_PER_FLUSH;
+    DecodeInst;
+    Instruction;
+    SETARG_B;
+    CREATE_ABC;
+    CREATE_ABx;
+    GETARG_B;
+    module OpMode
+    end;
+    POS_A;
+    POS_B;
+    POS_Bx;
+    module opmodes
+    end;
+    SIZE_A;
+    BITRK;
+    SIZE_Bx;
+    GETARG_Bx;
+  end;
+  _NAME;
+  VARARG_HASARG;
+  MAXUPVALUES;
+  _PACKAGE;
+  MAXVARS;
+  module format
+    number_size;
+    instr_size;
+    header;
+    little_endian;
+    int_size;
+    size_t_size;
+    integral;
+  end;
+end;
+
+module mlc
+
+  luastring_of_luafile;
+  lexstream_of_luafile;
+  ast_of_luafile;
+  proto_of_luafile;
+  luacstring_of_luafile;
+  function_of_luafile;
+
+  lexstream_of_luastring;
+  ast_of_luastring;
+  proto_of_luastring;
+  luacstring_of_luastring;
+  function_of_luastring;
+
+  ast_of_lexstream;
+  proto_of_lexstream;
+  luacstring_of_lexstream;
+  function_of_lexstream;
+
+  proto_of_ast;
+  luacstring_of_ast;
+  function_of_ast;
+
+  luacstring_of_proto;
+  function_of_proto;
+
+  function_of_luacstring;
+
+  luafile_to_luastring;
+  luafile_to_lexstream;
+  luafile_to_ast;
+  luafile_to_proto;
+  luafile_to_luacstring;
+  luafile_to_function;
+
+  luastring_to_lexstream;
+  luastring_to_ast;
+  luastring_to_proto;
+  luastring_to_luacstring;
+  luastring_to_function;
+
+  lexstream_to_ast;
+  lexstream_to_proto;
+  lexstream_to_luacstring;
+  lexstream_to_function;
+
+  ast_to_proto;
+  ast_to_luacstring;
+  ast_to_function;
+
+  proto_to_luacstring;
+  proto_to_function;
+
+  luacstring_to_function;
+
+  luacstring_of_function;
+  function_to_luacstring;
+
+  convert;
+  module order
+    function;
+    luafile;
+    luacstring;
+    proto;
+    lexstream;
+    luastring;
+    ast;
+  end;
+  __index;
+end;
+extension;
+module mlp
+end
+
+module metalua
+  module compiler
+  end
+end

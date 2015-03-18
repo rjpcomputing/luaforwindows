@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Previous Releases</title>
+	<style type="text/css" media="all"><!--
+		@import "../oil.css";
+		@import "../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../index.html", title="">Home</a></li>
+	<li><a href="index.html", title="Installation">Install</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="changes.html", title="Release Notes">Changes</a></li>
+			<li><strong>Previous</strong></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../manual/index.html", title="User Manual">Manual</a></li>
+	<li><a href="../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Previous Releases</h1>
+<a href="http://www.tecgraf.puc-rio.br/~maia/oil/packs/lua51">
+	<h2>Version 0.3.4</h2>
+</a>
+
+<h3>What's new?</h3>
+<dl>
+	<dt>Bug fixes</dt>
+	<dd>
+		Correction of bugs reported from previous versions.
+		<ul>
+			<li>Incorrect parsing of IDL defintions.</li>
+		</ul>
+	</dd>
+</dl>
+
+<hr>
+<a href="http://www.tecgraf.puc-rio.br/~maia/oil/packs/lua51">
+	<h2>Version 0.3.3</h2>
+</a>
+
+<h3>What changed?</h3>
+<dl>
+	<dt>Minor changes for compatibility with new Lua version.</dt>
+	<dd>Changes in the package for conformance with Lua 5.1 and LuaSocket 2.0.</dd>
+</dl>
+
+<hr>
+<a href="http://www.tecgraf.puc-rio.br/~maia/oil/packs/lua51a">
+	<h2>Version 0.3.2</h2>
+</a>
+
+<h3>What changed?</h3>
+<dl>
+	<dt>Fragmented socket stream bug fix (concurrent mode only).</dt>
+	<dd>Correction of bug on handling of stream data received in chunks due to large messages or small network bandwith.</dd>
+</dl>
+
+<hr>
+<a href="http://www.tecgraf.puc-rio.br/~maia/oil/packs/lua51a">
+	<h2>Version 0.3.1</h2>
+</a>
+
+<h3>What's new?</h3>
+<dl>
+	<dt>Naming Service</dt>
+	<dd>An implementation of a Naming Service in Lua using the OiL ORB.</dd>
+	<dt>Support for IDL pre-processor directives</dt>
+	<dd>LuaIDL now provides native support for pre-processor directives. It used to depend on a command-line C pre-processor.</dd>
+</dl>
+
+<h3>What changed?</h3>
+<dl>
+	<dt>Field <code>_anyval</code> for values of type <code>any</code>.</dt>
+	<dd>Values of type <code>any</code> are mapped to a table that stores at field <code>_anyval</code> the actual value of the <code>any</code>.</dd>
+</dl>
+
+<hr>
+<a href="http://www.tecgraf.puc-rio.br/~maia/oil/packs/lua51a">
+	<h2>Version 0.3</h2>
+</a>
+
+<h3>What's new?</h3>
+<dl>
+	<dt>Cooperative Concurrency</dt>
+	<dd>Support for concurrent request handling and method invocation by the use of co-routines implemented by Lua. See demo 'concurrency' for more details.</dd>
+	<dt>Customization</dt>
+	<dd>Better module organization enabling the use of reduced versions of OiL. See demo 'minimal' for more details.</dd>
+	<dt>Dynamic Adaptaion</dt>
+	<dd>Support for ORB adaptation due to changes on interface definitions. See demo 'adapt' for more details.</dd>
+	<dt>Remote Interface Repository</dt>
+	<dd>Support for retrieving interface definitions from a remote IR. Use the operations <code>oil.setIR(ir)</code> and <code>oil.getIR()</code> to define the remote IR to be used.</dd>
+	<dt>Integrated Interface Repository</dt>
+	<dd>All definitions handled by OiL are accessible though the IR interfaces of CORBA. Use operation <code>oil.getLIR()</code> to get a reference for the integrated IR</dd>
+	<dt>Interface Probing Operations</dt>
+	<dd>Objects exported by OiL implement the operations <code>_is_a</code> and <code>_interface</code> for probing object interface definitions.</dd>
+	<dt>Absolute Name Support</dt>
+	<dd>Support for the use of interface absolute name on <code>oil.newproxy</code>, <code>oil.newobject</code> and <code>oil.narrow</code> operations.</dd>
+	<dt>Explicit ORB Initialization</dt>
+	<dd>OiL Main ORB can be explicitly initialized by the operation <code>oil.init(config)</code>. However, it is still implicitly initialized at invocation of oil.newproxy or oil.newobject operations.</dd>
+	<dt>Pre-Compiled Libraries</dt>
+	<dd>Makefiles can create a library with all Lua scripts precompiled, so it can be embedded into applications or dynamically loaded using the package model of Lua 5.1.</dd>
+	<dt>IOR File Operations</dt>
+	<dd>Addition of operations for reading and writing IOR stored in files.</dd>
+	<dt>Lua 5.1 alpha</dt>
+	<dd>Conformance to Lua 5.1 alpha</dd>
+</dl>
+
+<h3>What changed?</h3>
+<dl>
+	<dt>Operation _get_ior</dt>
+	<dd>Changed to _ior to avoid name conflict with a possible attribute named 'ior'.</dd>
+	<dt>Get stringfied IOR</dt>
+	<dd>Should be oil.ior.encode(objref) instead of oil.ior.encode(objref._ior).</dd>
+</dl>
+
+<hr>
+<a href="http://www.tecgraf.puc-rio.br/~maia/oil/packs/lua5x">
+	<h2>Version 0.2</h2>
+</a>
+
+<h3>What's new?</h3>
+<dl>
+	<dt>Bug fixes</dt>
+	<dd>
+		Correction of bugs reported from previous versions.
+		<ul>
+			<li>Alignment of double values</li>
+		</ul>
+	</dd>
+	<dt>Corbaloc references</dt>
+	<dd>Support for object references in the corbaloc format.</dd>
+	<dt>Existency Probing Operation</dt>
+	<dd>Both OiL proxies and objects implement the <code>_non_existent</code> operation (as well as its alias _not_existent).</dd>
+	<dt>IDL from Strings</dt>
+	<dd>Support for loading IDL definitions from strings by operation <code>oil.loadidl(idlcode)</code>.</dd>
+	<dt>Lua 5.1 work6</dt>
+	<dd>Conformance to Lua 5.1 work6</dd>
+</dl>
+
+<h3>What changed?</h3>
+<dl>
+	<dt>Loading IDL Operations</dt>
+	<dd>Operation <code>oil.loadidl(filepath)</code> changed to <code>oil.loadidlfile(filepath)</code>. The operation <code>oil.loadidl(idlcode)</code> is used to load IDL definitions from strings</dd>
+</dl>
+
+<hr>
+<a href="http://www.tecgraf.puc-rio.br/~maia/oil/packs/lua-5.0.2">
+	<h2>Version 0.1</h2>
+</a>
+
+<h3>What's new?</h3>
+<dl>
+	<dt>Installation Package</dt>
+	<dd>Makefiles for compilation of the bit manipulation library and installation of Lua files, both in Unix and Windows systems.</dd>
+	<dt>Verbose Feature</dt>
+	<dd>Debugging messages over different aspects of the ORB.</dd>
+	<dt>Lua Packages</dt>
+	<dd>Implementation in conformance with the new package model for Lua 5.1.</dd>
+</dl>
+
+<h3>What changed?</h3>
+<dl>
+	<dt>Project Name</dt>
+	<dd>Project changes name to OiL. Used to be called O2 and Orbinho.</dd>
+	<dt>Major Review</dt>
+	<dd>Implementation completely revisited. Correction of problems and performance improvement. Gains measure up to 20%.</dd>
+	<dt>Main API</dt>
+	<dd>Major changes on the OiL API. Particularly, all operations are stored in proper namespace tables.</dd>
+	<dt>Type Mapping</dt>
+	<dd>The mapping of CORBA constructed types changed completely to improve marshalling performance.</dd>
+</dl>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

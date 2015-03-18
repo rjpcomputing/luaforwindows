@@ -1,0 +1,22 @@
+digraph G
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  Node1 [label="wxLuaDebuggerCServer::LuaThread",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node2 -> Node1 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="m_pServer",fontname="FreeSans"];
+  Node2 [label="wxLuaDebuggerCServer",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classwxLuaDebuggerCServer.html"];
+  Node3 -> Node2 [dir=back,color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node3 [label="wxLuaDebuggerBase",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classwxLuaDebuggerBase.html"];
+  Node4 -> Node3 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="m_stackDialog",fontname="FreeSans"];
+  Node4 [label="wxLuaStackDialog",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classwxLuaStackDialog.html"];
+  Node5 -> Node4 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="m_wxlState",fontname="FreeSans"];
+  Node5 [label="wxLuaState",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classwxLuaState.html"];
+  Node6 -> Node3 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="m_debuggeeProcess",fontname="FreeSans"];
+  Node6 [label="wxLuaDebuggerProcess",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classwxLuaDebuggerProcess.html"];
+  Node3 -> Node6 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="m_debugger",fontname="FreeSans"];
+  Node1 -> Node2 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="m_pThread",fontname="FreeSans"];
+  Node7 -> Node2 [dir=back,color="darkorchid3",fontsize="10",style="dashed",label="m_acceptedSocket\nm_serverSocket",fontname="FreeSans"];
+  Node7 [label="wxLuaCSocket",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classwxLuaCSocket.html"];
+  Node8 -> Node7 [dir=back,color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node8 [label="wxLuaSocketBase",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classwxLuaSocketBase.html"];
+}

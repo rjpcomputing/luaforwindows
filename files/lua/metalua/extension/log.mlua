@@ -1,0 +1,39 @@
+require 'metalua.dollar'
+
+-{ extension 'match' }
+
+function dollar.log(...)
+   local args   = {...}
+   local ti     = table.insert
+   local code   = { }
+   local nohash = false
+   local width  = 80
+
+   local i=1
+   if args[i].tag=='String' then
+      ti(code, +{print(" [LOG] "..-{args[1]})})
+      i += 1
+   end
+
+   local xtra_args, names, vals = { }, { }, { }
+   for i=i, #args do
+      match args[i] with
+      | +{ 'nohash' } -> nohash = true
+      | `Number{ w }  -> width = w
+      --| `String{...} | `Number{...} -> ti (xtra_args, args[i])
+      | `Id{n} -> ti (names, n); ti (vals, args[i])
+      | x      -> ti (names, table.tostring(x, 'nohash')); ti (vals, x)
+      end
+   end
+
+   for i=1, #names do
+      local msg = string.format(" [LOG] %s = ", names[i])
+      local printer = `Call{ +{table.tostring},
+                              vals[i],
+                              `Number{ width },
+                              `Number{ #msg  } }
+      if nohash then ti(printer, +{'nohash'}) end
+      ti (code, `Call{ +{printf}, +{"%s%s"}, `String{ msg }, printer })
+   end
+   return code
+end

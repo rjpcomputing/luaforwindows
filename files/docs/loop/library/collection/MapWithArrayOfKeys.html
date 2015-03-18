@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Map with Array of Keys</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																															<li><a href="../../index.html", title="">Home</a></li>
+																															<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																															<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																															<li><a href="../index.html", title="Class Library">Library</a>
+																																<div class="outside"><div class="inside"><ul>
+																																	<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																		</li>
+																																		<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																			</li>
+																																			<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																				</li>
+																																				<li><a href="../overview.html#object", title="Objects">object</a>
+																																					</li>
+																																					<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																						</li>
+																																						<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																							</li>
+																																						</ul></div></div>
+																																					</li>
+																																					<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																					<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																				</ul></div></div>
+																																			
+</div>
+
+<div class="content">
+<h1>Map with Array of Keys</h1>
+<h2><code>loop.collection.MapWithArrayOfKeys</code></h2><br>
+<p>Class of objects that store in a single table a mapping of non-integer key values to arbitrary values and a sequence of all the key values currently mapped.
+The array of keys is stored just like the sequence stored by <a href="UnorderedArray.html"><code>UnorderedArray</code></a> instances.
+This class is useful for storing a map of non-integer values and an array of its keys in a single table.</p>
+
+<p>Each non-integer key indexes its mapped value.
+Integer keys are used to store mapped keys as an array.</p>
+
+<h2>Behavior</h2>
+
+<h3>Methods</h3>
+
+<dl>
+
+	<dt><code><b>add</b>(key, value)</code></dt>
+	<dd>
+		Adds the mapping of value <code>key</code> to <code>value</code> to the map.
+	</dd>
+	<dt><code><b>value</b>(key [, value])</code></dt>
+	<dd>
+		If <code>value</code> is provided then the mapped value for key <code>key</code> is replaced by value <code>value</code>.
+		Otherwise, the value mapped by key <code>key</code> is returned.
+	</dd>
+	<dt><code><b>valueat</b>(index [, value])</code></dt>
+	<dd>
+		If <code>value</code> is provided then the mapped value for the key stored at position <code>index</code> is replaced by value <code>value</code>.
+		Otherwise, the value mapped by key stored at position <code>index</code> is returned.
+	</dd>
+	<dt><code><b>remove</b>(key)</code></dt>
+	<dd>
+		Removes the mapping of key from the map and the array.
+	</dd>
+	<dt><code><b>removeat</b>(index)</code></dt>
+	<dd>
+		Removes the mapping of key stored at position <code>index</code> from the map and the array.
+	</dd>
+
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	
+	<li>
+		Instances cannot store integer keys because they are reserved for storage of the key values in an array form.
+	</li>
+	
+	<li>
+		Instances cannot store the name of class members as strings.
+		To do so, use the class operations over an empty table like in the following example:
+		<pre>
+MapWithArrayOfKeys = require "loop.collection.MapWithArrayOfKeys"
+map = {}
+MapWithArrayOfKeys.add(map, "hi", true)
+MapWithArrayOfKeys.add(map, "everybody,", true)
+MapWithArrayOfKeys.add(map, "have", true)
+MapWithArrayOfKeys.add(map, "a", true)
+MapWithArrayOfKeys.add(map, "nice", true)
+MapWithArrayOfKeys.add(map, "day", true)
+print(table.concat(map, " "))
+		</pre>
+	</li>
+	
+</ul>
+<!--
+<h2>Examples</h2>
+
+<h3>$ExampleName</h3>
+
+<pre>
+-- example missing
+</pre>
+-->
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

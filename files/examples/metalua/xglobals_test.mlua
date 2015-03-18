@@ -1,0 +1,40 @@
+-{ extension 'xglobal' }
+
+----------------------------------------------------------------------
+print "1) declare unassigned globals"
+global a, b
+
+----------------------------------------------------------------------
+print "2) declare-and-assign global"
+global c = 3
+
+----------------------------------------------------------------------
+print "3) assign to pre-declared globals"
+a, b = 1, 2
+
+----------------------------------------------------------------------
+print "4) fail when setting an undeclared global"
+local st1, msg1 = pcall(function()
+   a = 4
+   d = 5 -- failure, assignment to undeclared global
+end)
+assert(not st1)
+printf ("   -> This error was expected: %s", msg1)
+
+----------------------------------------------------------------------
+print "5) fail when reading an undeclared global"
+local st2, msg2 = pcall(function()
+   b = c -- OK
+   local _ = d -- failure, try to read undeclared global
+end)
+assert(not st2)
+printf ("   -> This error was expected: %s", msg2)
+
+----------------------------------------------------------------------
+print "6) check the globals' values"
+assert(a==4)
+assert(b==3)
+assert(c==3)
+
+----------------------------------------------------------------------
+print "*) done."

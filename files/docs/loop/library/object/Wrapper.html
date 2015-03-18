@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Object Wrapper</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																																																																																	<li><a href="../../index.html", title="">Home</a></li>
+																																																																																																	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																																																																																	<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																																																																																	<li><a href="../index.html", title="Class Library">Library</a>
+																																																																																																		<div class="outside"><div class="inside"><ul>
+																																																																																																			<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																																																																																				</li>
+																																																																																																				<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																																																																																					</li>
+																																																																																																					<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																																																																																						</li>
+																																																																																																						<li><a href="../overview.html#object", title="Objects">object</a>
+																																																																																																							</li>
+																																																																																																							<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																																																																																								</li>
+																																																																																																								<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																																																																																									</li>
+																																																																																																								</ul></div></div>
+																																																																																																							</li>
+																																																																																																							<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																																																																																							<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																																																																																						</ul></div></div>
+																																																																																																					
+</div>
+
+<div class="content">
+<h1>Object Wrapper</h1>
+<h2><code>loop.object.Wrapper</code></h2><br>
+<p>Class of objects that create a wrapper around an object using an efficient delegation model that allows execution of delegated methods with the state of the delegated object, <i>i.e.</i> by replacing the <code>self</code> parameter.
+This class is useful to implement wrappers that overwrites some of the operations of a object.</p>
+
+<p>Each wrapper may provide specific methods that are executed with the wrapper object as the <code>self</code> reference.
+However, when a method is called that is not provided by the wrapper and but is provided by the wrapped object then a special method is used that replaces the <code>self</code> reference by the wrapped object.
+Only one single special method is used to perform the <code>self</code> replacement for all delegated methods of all wrappers without creating temporary closures or any other kind of structure.
+However, this mechanisms only work for method calls done with the <code>:</code> operator.</p>
+
+<h2>Behavior</h2>
+
+<h3>Fields</h3>
+
+<dl>
+	
+	<dt><code><b>__object</b></code></dt>
+	<dd>
+		Object the missing methods are delegated to.
+		The prefix <code>__</code> is used to avoid name colisions.
+	</dd>
+	
+</dl>
+
+<h3>Meta-Fields</h3>
+
+<dl>
+	
+	<dt><code><b>__index</b></code></dt>
+	<dd>
+		Setup the special delegation method in order to delegate the execution of the method indexed to the object defined by field <code>__object</code>.
+	</dd>
+	
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	<li>Only one single Lua function is used to perform the delegation of all methods indexed in every <code>Wrapper</code> instance.
+	Therefore all indexed methods that are not provided by the <code>Wrapper</code> instance itself are the same function no matter if they are actually delegations of different methods.</li>
+	<li>The <code>:</code> operator guarantees that the method index and execution is an atomic operation thus it is guaranteed that the setup performed by meta-method <code>__index</code> on the delegation function is preserved until the delegation method execution.
+	If the method index and execution are not performed atomically the results are unpredictable because the delegation function settings may change by another method invocation.</li>
+</ul>
+
+<h2>Examples</h2>
+
+<h3><a name="WrappedSocket">File handler that adds line breaks to strings written.</a></h3>
+
+<pre>
+local Wrapper = require "loop.object.Wrapper"
+
+file = Wrapper{ __object = assert(io.open("desc.txt", "w")) }
+
+function file:write(text)
+  return self.__object:write(text, "\n")
+end
+
+
+
+file:write("This text is being written into a file with a method")
+file:write("redefined by a wrapper that adds line breaks to the ")
+file:write("strings written. However this file will be closed by")
+file:write("a method delegated to the original 'userdata' object")
+file:write("that represents the file handler. Since the 'close' ")
+file:write("method of Lua file handlers do not expect to receive")
+file:write("the wrapper object as the 'self' parameter, it must ")
+file:write("be replaced by the original 'userdata' object.")
+
+file:close()
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

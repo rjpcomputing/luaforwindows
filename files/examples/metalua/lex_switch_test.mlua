@@ -1,0 +1,40 @@
+-- This is a simple and somewhat stupid example of how to switch
+-- lexers dynamically. Behind a V, X and Y are the only reserved
+-- keywords. In normal conditions, X and Y aren't keywords and can be
+-- used as variables.
+
+-{ block:
+   require 'lexer'
+   local my_lexer = lexer.lexer:clone() -- no keywords
+   my_lexer:add{"X", "Y"}
+   mlp.lexer:add "V"
+
+   function num(lx)
+      local a = lx:next()
+      assert(a.tag=='Number')
+      return a
+   end
+      
+   my_parser = gg.list{
+      gg.multisequence{
+         { "X", num, builder = |x| `Table{ x[1], +{0} } },
+         { "Y", num, builder = |y| `Table{ +{0}, y[1] } },
+         default = gg.sequence{ mlp.id, builder = |x| `Pair{ `String{x[1][1]},`True } } },
+      separators = { ',', ';' },
+      builder = function(l) l.tag='Table'; return l end }
+
+   mlp.expr:add{ "V", gg.with_lexer(my_lexer, my_parser), builder = unpack } }
+
+-- Use the special lexer:
+foo = V X 1, Y 2, X 3, 
+      for, foo, in, tag, function -- check that these aren't keywords in my_lexer
+
+-- Use X and Y as Id, in the unpolluted lexer:
+print "Vector:"
+X = table.tostring(foo, 60)
+print (X)
+
+print "Sum:" -- Ready for a functional one-liner? :)
+Y = |v| table.ifold (|a,b| table.imap (|c,d| c+d, a, b), {0,0}, v) 
+table.print (Y(foo))
+

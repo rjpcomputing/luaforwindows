@@ -1,0 +1,329 @@
+=================== Lua For Windows ===================
+-=-=-=-  Version 5.1.4-47
+^ Updated stdlib to release 28.
+
+08/07/2012  Version 5.1.4-46
+* Fixes #43 - require('lpeg') -- system error 14001
+^ Updated stdlib to release 25.
+^ Updated the Visual C++ 8.0 run-time to SP1-4053.
+^ Updated lpeg.dll manifest to allow running on older vcredist_x86.
+^ Updated alien/core.dll manifest to allow running on older vcredist_x86.
+^ Updated alien/struct.dll manifest to allow running on older vcredist_x86.
+^ Updated examples/alien/tests/alientest.dll manifest to allow running on older vcredist_x86.
+^ Updated LuaXML_lib.dll manifest to allow running on older vcredist_x86.
+^ Updated w32.dll manifest to allow running on older vcredist_x86.
+^ Updated Penlight to version 1.0.3.
+^ Updated LuaUnit to version 2.0.
++ Added SubLua version 1.7.4 - Subversion binding
+
+06/14/2011  Version 5.1.4-45
+* Fixes #42 - Please update Tecgraf libs (CD, IM, IUP)
+^ Updated IUP to version 3.5.0.
+^ Updated CD to version 5.4.1.
+^ Updated IM to version 3.6.3.
+
+06/08/2011  Version 5.1.4-44
+* Fixed pl.dir so you can use strict module
+
+06/06/2011  Version 5.1.4-43
+* Fixes #1 - LuaSocket example not upto date - cddb.lua.
+* Fixes #24 - Commented-out visible whitespace acquires coment colour.
++ Closed #19 - Added LuaJSON v1.2.2 library.
+^ Closed #41 - Updated Alien to version 0.5.0.
+^ Updated LPeg to version 0.10-1.
+^ Updated stdlib to release 21.
+
+06/01/2011  Version 5.1.4-42
+^ Updated LuaLogging to version 1.2.0.
+^ Updated stdlib to release 20.
+^ Updated Penlight to version 0.9.4.
+
+01/11/2011  Version 5.1.4-41
+* Fixes #34 - LuaXML clib delivered with LuaForWindows causes memory
+  leaks.
+
+07/26/2010  Version 5.1.4-40
+* Fixes #14 - Just a simple mistake in the link to LuaEx.
+* Fixes #18 - Lua tutorial typo.
+* Reverted to wxLua version 2.8.7 because there are issues with the new
+  versions stability. It will get updated later.
+* Fixed pplot examples that ship with IUP.
+^ Closed #20 - Updated IUP to version 3.2.0.
+^ Updated Lanes to version 2.0.4.
++ Added Oil version 0.4-beta.
+
+06/17/2010  Version 5.1.4-39
++ Added LuaRocks version 2.0.2.
+* Fixes #13 - Updated wxLua to version 2.8.10.
+^ Updated stdlib to release 15.
+^ Updated stdlib to release 14.
+^ Updated stdlib to release 13.
+
+05/18/2010  Version 5.1.4-38
+* Fixed #10 - LuaDoc incomplete. Added luadoc_start.bat.
+* Fixed #09 - luanet kill lua.exe
+^ Updated the SciTE .api file. Now includes lfs, bit and pack.
+
+05/04/2010  Version 5.1.4-37
+^ Updated Penlight to version 0.8.4
+
+04/09/2010  Version 5.1.4-36
+^ Updated Penlight to version 0.8.3
+
+04/07/2010  Version 5.1.4-35
+^ Updated lExecutor to version 1.01
+^ Updated Penlight to version 0.8.2
+
+03/18/2010  Version 5.1.4-34
+^ Updated Penlight to version 0.8.1
+
+03/15/2010  Version 5.1.4-33
++ Added LeMock v0.6
+
+03/12/2010  Version 5.1.4-32
++ Added LuaRS232 v1.0.0
++ Added iLua.cmd to easily launch iLua. Also added it to the start menu.
+* Fixed SciTE to properly run interactive Lua session.
+^ Updated the clidebugger to take the same paramaters to allow for debug level.
+^ Updated Penlight to version 0.8.0.
+^ Updated IUP to version 3.0.0.
+^ Updated CD to version 5.3.0.
+^ Updated IM to version 3.6.0.
+
+12/07/2009  Version 5.1.4-31
++ Added markdown v0.32 Lua module.
+* Fixed Issue 4: C Run-Time Error R6034.
+* Fixed LuaInterface manifest loading issue.
+^ Updated luanet.dll to CoInitialize and search in the LUA_CPATH.
+
+09/15/2009  Version 5.1.4-30
++ Added lbase64 version for 5.1 module.
++ Added gzio version 0.9.0 module.
+^ Updated Stdlib to version 12.
+^ Updated the LfW documentation to describe how to add your own modules
+  to the system.
+
+09/02/2009  Version 5.1.4-29
++ Added Penlight v0.7.2 Lua module.
+^ Updated LuaCOM to version 1.4.
+^ Updated LuaGL to version 1.3.
+^ Updated VStruct to version 1.0.2.
+
+06/29/2009  Version 5.1.4-28
+* Fixed SciTE debugger to allow it to debug modules in the same directory
+  as the file using the module.
+^ Updated Stdlib to version 11.
+
+04/27/2009  Version 5.1.4-27 rc4
+* Fixed SciTE debugger looking for the temp file in the %TMP% location.
+* Fixed debugging files with spaces in the filename.
+^ Updated the IM, CD, and IUP examples.
+^ Made SciTE use the lua5.1.dll.
+^ Changed the version number to use a '-' as a build number of the LfW
+  package.
+^ Changed the installer display name to 'Lua For Windows'.
+
+04/23/2009  Version 5.1.4.26 rc3
++ Added an option to start the quickluatour.lua after installation
+  completes.
++ Added a link to the lExecutor documentation in the start menu.
++ Now you can launch quickluatour.lua at the end of the installer
+^ Updated luaforwindows.html to be the right version in the example.
+^ Updated the LuaQuickTour thanks to Dirk Feytons.
+* Fixed SciTE saving a debugger file to the current running scripts
+  directory. Now it saves it to your local temp directory.
+* Fixed SciTE toolbar icons being incorrect.
+
+04/15/2009  Version 5.1.4.25 rc2
+^ Updated lua51.dll manifest to allow running on Windows 64.
+
+04/14/2009  Version 5.1.4.24 rc1
+^ Updated LPeg to version 0.9.
+^ Updated Copas to version 1.1.5.
+^ Updated the Lua executables so they run on Windows 64.
+
+02/06/2009  Version 5.1.4.23
++ Added MetaLua v0.5-rc1.
++ Added the 'strict.lua' file shipped in the Lua in the 'etc' directory.
++ Added Lanes v2.0.3 library.
+^ Updated LuaFileSystem to version 1.4.2.
+
+01/12/2009  Version 5.1.4.22
++ Added LuaBitOp v1.0.1 library.
+* Fixed a bug in lExecutor to properly pass file loading error to the user.
+* Fixed LuaDoc templates a bit for 'tables' and 'functions'.
+* Fixed LuaXML so it actually works. Opps.
+^ Updated Copas to version 1.1.4.
+- Removed BitLib. Use LuaBitOp instead.
+
+12/05/2008  Version 5.1.4.21
+* Fixed a SciTE bug when opening the Lua manual.
++ Added lExecutor. This is a wxLua application that allows users to run console
+  Lua scripts in a simple GUI. Look at the documentation
+  (<LFW root>\docs\lexecutor) for more information.
++ Added *.lexe files to run using lExecutor.
++ Associated *.lexe files to a custom icon.
+
+11/26/2008 Version 5.1.4.20
++ Added lpack (29 Jun 2007 19:27:20) module.
++ Added VStruct v 1.0 beta2 Lua module.
++ Added BitLib release 25 module.
++ Added LuaXML v1.3 module.
+^ Updated IUP to version 2.7.
+^ Updated CD to version 5.1.
+^ Updated IM to version 3.4.
+
+10/08/2008 Version 5.1.4.19
+^ Updated vcredistx86.exe download link in the installer.
+
+09/11/2008 Version 5.1.4.18
+^ Updated Stdlib to version 8.
+^ Updated the quickluatour.lua.
+^ Updated the luaforwindows document.
+* Fixed LuaInterface module.
+
+09/02/2008 Version 5.1.4.17
+* Fixed the readyiss.bat file to work with the new 'lua' directory.
+
+08/29/2008 Version 5.1.4.16 - RC1
++ Added wxLua support.
+^ Updated to Lua v5.1.4.
+^ Changed the 'lualibs' to 'lua' to support the default locations.
+^ Updated SciTE property file to make the help show up correctly.
+- Removed setting the LUA_PATH and LUA_CPATH environment variables.
+
+08/07/2008 Version 5.1.3.15
+* Fixed SciTE install.
+
+08/07/2008 Version 5.1.3.14
++ Added an environment variable called "LUA_DEV" to help C module developers
+  configure their build files. This allows for the paths to be common and
+  easily added to the project settings.
+  (e.g. $(LUA_DEV)/include; $(LUA_DEV)/lib)
++ Added the ability to download the 'vcredist_x86.exe'.
+* Fixed Visual C++ 8.0 run-time problems. There now has to ba a run-time
+  for every dll loaded.
+- Removed 'msvcr80.dll' from the root application directory.
+^ Updated the Visual C++ 8.0 run-time to SP1.
+^ Updated StdLib to version 6.
+
+
+07/16/2008 Version 5.1.3.13
++ Added LOOP Module. NOTE: It does not have any examples.
++ Added IUP simple documentation.
++ Added LuaTask module.
++ Added LuaInterface module.
++ Added Lua's headers and libraries so that you can develope Lua modules.
+- Removed the 'alien/gtk.lua' example. It was Unix only.
+^ Updated LuaCURL with a better supported version.
+^ Updated the LuaCURL example.
+
+07/08/2008 Version 5.1.3.12
++ Added Rings module.
++ Added copas module.
++ Added coxpcall module.
+* Fixed a couple of typos in quickluatour.lua.
+^ Updated to the latest version of luaforwindows.html.
+^ Updated io_ext.lua to handle backslashes as well as forward slashes.
+
+06/27/2008 Version 5.1.3.11 - RC1
++ Added the ability to "self-host" the creation of this installer.
+  That means if INNO Setup is installed on the installers machine they
+  can create the LfW installer. This gives anybody the ability to add or
+  remove items and modules from the installer.
+  See <LfW_Install>\installer\support\readyiss.bat for more information.
++ Added a basic guide to using IUP.
++ Added the ability to completely uninstall the environment variables.
+* Fixed a few typos in quickluatour.lua.
+^ Updated all no-extension files to have a .txt extension.
+^ Updated all the *.lua and *.wlua files to use Windows line endings.
+
+06/24/2008 Version 5.1.3.10 - Alpha 7
++ Added classlib for creating classes in Lua.
++ Added quickluatour.lua.
++ Added SciTE as the default script editor.
+^ Updated to the latest version of luaforwindows.html.
+
+05/27/2008 Version 5.1.3.9 - Alpha 6
++ Added lrexlib
++ Added stdlib
++ Added Lua-Ex
++ Added LuaGL
+^ Updated the luaforwindows.html file with more formatting.
+- Removed "wlua.exe.manifest" because it is now built into 'wlua.exe'.
+
+05/23/2008 Version 5.1.3.8 - Alpha 5
++ Added Lua-GD
++ Added the PN help file.
++ Added Lua file associations for limited users.
+^ Updated the installer to check if PN is running and display a
+  message if it is.
+^ Changed the way it makes web links in the start menu. The icons should
+  now be the machines default icon for the shortcuts.
+^ Switched to html for the LuaForWindows documentation.
+^ Moved the 'Lua On The Web' shortcut to the documentation directory under
+  the start menu.
+- Removed the .lua extention from the PATHEXT environment variable.
+  This was leading to possible application named the same thing not
+  getting called when it has the same name as your lua script.
+  This only changes the need for the .lua on the end of you script
+  name. (e.g. MyScript.lua param1 param2 instead of MyScript param1 param2)
+
+05/21/2008 Version 5.1.3.7 - Alpha 4
++ Added LuaLogging examples and documentation.
++ Added LuaForWindows documentation initial draft.
+* Fixed the Lua file icon not showing up.
+* Fixed the the default color scheme to have a black color
+  for Identifiers.
+
+05/20/2008 Version 5.1.3.6 - Alpha 3
++ Added the ability to install when not an administrator.
+^ Updated the default color scheme to have a slightly different color
+  for Identifiers.
+
+05/17/2008 Version 5.1.3.5 - Alpha 3
+* Internal release only.
++ Added more keywords to the Lua lexer in PN.
+
+05/16/2008 Version 5.1.3.4 - Alpha 2
++ LuaCOM
+
+05/16/2008 Version 5.1.3.3 - Alpha 2
++ LuaUnit
++ LuaZip
++ LuaExpat
++ LuaDate
++ LuaProfiler
++ MD5
++ LuaSQL - Only the SQLite3 driver is tested.
++ LuaCURL
++ Alien
++ LPeg
++ LuaCOM
++ Added a 'utils' directory to hold helpful Lua tools like the
+  LuaProfiler summary tool
++ Added a Start Menu shortcut to the documentation
++ Added the LuaDoc examples
+* Fixed the missing documentation for LuaDoc
+* Fix PN so that it has a profile for wlua.
+
+
+05/14/2008 Version 5.1.3.2 - Alpha 1
+^ First public alpha
++ Programmer Notepad for a simple IDE
++ Registers .lua and .wlua files so they can just be double-clicked on
++ Registers .lua and .wlua files act just like executables
+  (e.g. script param1 param2 NOT script.lua param1 param2)
++ Added the needed paths to the PATH environment variable
++ LuaBiniaries
++ LuaFileSystem
++ LuaSocket
++ LuaLogging
++ LuaDoc
++ IUP
++ w32 - Wrappers for Win32 API functions & constants
+
+_______________________________________________________________
+Legend:
+
+'+' = Addition, '*' = Bug Fix, '-' = Removed, '~' = Move, '^' = Updated

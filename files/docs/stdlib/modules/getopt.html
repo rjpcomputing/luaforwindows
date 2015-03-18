@@ -1,0 +1,477 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>getopt: Module Index</title>
+    <link rel="stylesheet" href="../luadoc.css" type="text/css" />
+	<!--meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/-->
+</head>
+
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+
+
+<h1>LuaDoc</h1>
+<ul>
+	
+	<li><a href="../index.html">Index</a></li>
+	
+</ul>
+
+
+<!-- Module list -->
+
+<h1>Modules</h1>
+<ul>
+
+	<li>
+		<a href="../modules/base.html">base</a>
+	</li>
+
+	<li>
+		<a href="../modules/bin.html">bin</a>
+	</li>
+
+	<li>
+		<a href="../modules/debug.html">debug</a>
+	</li>
+
+	<li>
+		<a href="../modules/fstable.html">fstable</a>
+	</li>
+
+	<li><strong>getopt</strong></li>
+	
+	<li>
+		<a href="../modules/io.html">io</a>
+	</li>
+
+	<li>
+		<a href="../modules/lcs.html">lcs</a>
+	</li>
+
+	<li>
+		<a href="../modules/list.html">list</a>
+	</li>
+
+	<li>
+		<a href="../modules/math.html">math</a>
+	</li>
+
+	<li>
+		<a href="../modules/mbox.html">mbox</a>
+	</li>
+
+	<li>
+		<a href="../modules/object.html">object</a>
+	</li>
+
+	<li>
+		<a href="../modules/package.html">package</a>
+	</li>
+
+	<li>
+		<a href="../modules/parser.html">parser</a>
+	</li>
+
+	<li>
+		<a href="../modules/set.html">set</a>
+	</li>
+
+	<li>
+		<a href="../modules/std.html">std</a>
+	</li>
+
+	<li>
+		<a href="../modules/strbuf.html">strbuf</a>
+	</li>
+
+	<li>
+		<a href="../modules/string.html">string</a>
+	</li>
+
+	<li>
+		<a href="../modules/table.html">table</a>
+	</li>
+
+	<li>
+		<a href="../modules/tree.html">tree</a>
+	</li>
+
+</ul>
+
+
+
+<!-- File list -->
+
+<h1>Files</h1>
+<ul>
+
+	<li>
+		<a href="../files/base.html">base.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/bin.html">bin.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/debug_ext.html">debug_ext.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/debug_init.html">debug_init.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/fstable.html">fstable.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/getopt.html">getopt.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/io_ext.html">io_ext.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/lcs.html">lcs.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/list.html">list.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/math_ext.html">math_ext.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/mbox.html">mbox.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/modules.html">modules.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/object.html">object.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/package_ext.html">package_ext.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/parser.html">parser.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/set.html">set.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/std.html">std.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/strbuf.html">strbuf.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/strict.html">strict.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/string_ext.html">string_ext.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/table_ext.html">table_ext.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/tree.html">tree.lua</a>
+	</li>
+
+	<li>
+		<a href="../files/xml.html">xml.lua</a>
+	</li>
+
+</ul>
+
+
+
+
+
+
+</div><!-- id="navigation" -->
+
+<div id="content">
+
+<h1>Module <code>getopt</code></h1>
+
+<p>Simplified getopt, based on Svenne Panne's Haskell GetOpt.<br> Usage: <ul> <li><code>options = Options {Option {...} ...}</br> getopt.processArgs ()</code></li> <li>Assumes <code>prog = {name[, banner] [, purpose] [, notes] [, usage]}</code></li> <li>Options take a single dash, but may have a double dash.</li> <li>Arguments may be given as <code>-opt=arg</code> or <code>-opt arg</code>.</li> <li>If an option taking an argument is given multiple times, only the last value is returned; missing arguments are returned as 1.</li> </ul> getOpt, usageInfo and usage can be called directly (see below, and the example at the end). Set _DEBUG.std to a non-nil value to run the example. <ul> <li>TODO: Sort out the packaging. getopt.Option is tedious to type, but surely Option shouldn't be in the root namespace?</li> <li>TODO: Wrap all messages; do all wrapping in processArgs, not usageInfo; use sdoc-like library (see string.format todos).</li> <li>TODO: Don't require name to be repeated in banner.</li> <li>TODO: Store version separately (construct banner?).</li> </ul></p>
+
+
+
+
+
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#_G.Options">_G.Options</a>&nbsp;(t)</td>
+	<td class="summary">Options table constructor: adds lookup tables for the option names </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#getOpt">getOpt</a>&nbsp;(argIn, options)</td>
+	<td class="summary">Perform argument processing </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#processArgs">processArgs</a>&nbsp;()</td>
+	<td class="summary">Simple getOpt wrapper.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#usage">usage</a>&nbsp;()</td>
+	<td class="summary">Emit a usage message.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#usageInfo">usageInfo</a>&nbsp;(header, optDesc, pageWidth)</td>
+	<td class="summary">Produce usage info for the given options </td>
+	</tr>
+
+</table>
+
+
+
+
+<h2>Tables</h2>
+<table class="table_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#_G.Option">_G.Option</a></td>
+	<td class="summary">Options table type.</td>
+	</tr>
+
+</table>
+
+
+
+<br/>
+<br/>
+
+
+
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="_G.Options"></a><strong>_G.Options</strong>&nbsp;(t)</dt>
+<dd>
+Options table constructor: adds lookup tables for the option names
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  t: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="getOpt"></a><strong>getOpt</strong>&nbsp;(argIn, options)</dt>
+<dd>
+Perform argument processing
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  argIn: list of command-line args
+	</li>
+	
+	<li>
+	  options: options table
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return values:</h3>
+<ol>
+	
+	<li>table of remaining non-options
+	
+	<li>table of option key-value list pairs
+	
+	<li>table of error messages
+	
+</ol>
+
+
+
+</dd>
+
+
+
+
+<dt><a name="processArgs"></a><strong>processArgs</strong>&nbsp;()</dt>
+<dd>
+Simple getOpt wrapper. Adds <code>-version</code>/<code>-v</code> and <code>-help</code>/<code>-h</code>/<code>-?</code> automatically; stops program if there was an error, or if <code>-help</code> or <code>-version</code> was used.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="usage"></a><strong>usage</strong>&nbsp;()</dt>
+<dd>
+Emit a usage message.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="usageInfo"></a><strong>usageInfo</strong>&nbsp;(header, optDesc, pageWidth)</dt>
+<dd>
+Produce usage info for the given options
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  header: header string
+	</li>
+	
+	<li>
+	  optDesc: option descriptors
+	</li>
+	
+	<li>
+	  pageWidth: width to format to [78]
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+formatted string
+
+
+
+</dd>
+
+
+</dl>
+
+
+
+
+<h2><a name="tables"></a>Tables</h2>
+<dl class="table">
+
+<dt><a name="_G.Option"></a><strong>_G.Option</strong></dt>
+<dd>Options table type.
+
+
+<h3>Fields</h3>
+<ul>
+	
+	<li>
+	  name: list of names
+	</li>
+	
+	<li>
+	  desc: description of this option
+	</li>
+	
+	<li>
+	  type: type of argument (if any): <code>Req</code>(uired), <code>Opt</code>(ional)
+	</li>
+	
+	<li>
+	  var: descriptive name for the argument
+	</li>
+	
+	<li>
+	  func: optional function (newarg, oldarg) to convert argument into actual argument, (if omitted, argument is left as it is)
+	</li>
+	
+</ul>
+
+
+</dd>
+
+
+</dl>
+
+
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->	
+</body>
+</html>

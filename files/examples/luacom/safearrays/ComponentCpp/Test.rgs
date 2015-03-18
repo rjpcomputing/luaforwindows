@@ -1,0 +1,26 @@
+HKCR
+{
+	TestSafeArray.Test.1 = s 'Test Class'
+	{
+		CLSID = s '{EC6D6D8D-2D13-4759-92D8-538DFE1CDAAA}'
+	}
+	TestSafeArray.Test = s 'Test Class'
+	{
+		CLSID = s '{EC6D6D8D-2D13-4759-92D8-538DFE1CDAAA}'
+		CurVer = s 'TestSafeArray.Test.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {EC6D6D8D-2D13-4759-92D8-538DFE1CDAAA} = s 'Test Class'
+		{
+			ProgID = s 'TestSafeArray.Test.1'
+			VersionIndependentProgID = s 'TestSafeArray.Test'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{A330C547-E474-44BC-98A8-BC5089BBA0DA}'
+		}
+	}
+}

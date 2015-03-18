@@ -1,0 +1,624 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>LuaInterface Tutorial</title>
+	<style type="text/css"><!--
+body {
+	padding-left: 2em;
+	}
+pre {
+	background-color: #eeeeff
+	}
+
+--></style>
+</head>
+<body>
+<h1  id="T1">LuaInterface Tutorial</h1>
+
+<ul>
+    <li><a href="#T2">Hello, World, Take One</a></li>
+    <li><a href="#T3">Hello, World, Take Two</a></li>
+    <li><a href="#T4">Exploring the .NET Libraries Interactively</a></li>
+    <li><a href="#T5">Dealing with Arrays and .NET Collections</a></li>
+    <li><a href="#T6">Dealing with Exceptions</a></li>
+    <li><a href="#T7">Showing a Form</a></li>
+    <li><a href="#T8">An Interactive GUI for LuaInterface</a></li>
+    <li><a href="#T9">More Useful Utilities</a>
+    <ul>
+        <li><a href="#T10">Prompting User for Data</a></li>
+        <li><a href="#T11">Stream Layout</a></li>
+        <li><a href="#T12">Menus and Form Classes</a></li>
+        <li><a href="#T13">A useful Form Constructor</a></li>
+    </ul></li>
+</ul>
+
+
+
+<p>LuaInterface is a way for Lua programs to access the CLR (Common Language Runtime), otherwise known as .NET in the Windows world and Mono on Linux. (This version (1.5.3) can be accessed using the standard Lua binaries for Lua 5.1; there is a later version, but it has its own copy of Lua which is run in completely managed code.)  You can also use LuaInterface to easily add Lua scripting abilities to C# programs, for instance, but that is outside the scope of this tutorial and is discussed fully in the LuaInterface documentation.</p>
+
+<h2  id="T2">Hello, World, Take One</h2>
+
+<p>Here is a very simple program which uses the CLR classes to write out the value of the square root of two:</p>
+
+<pre><code>require 'luanet'
+
+luanet.load_assembly "System"
+
+Console = luanet.import_type "System.Console"
+Math = luanet.import_type "System.Math"
+
+Console.WriteLine("sqrt(2) is {0}",Math.Sqrt(2))
+</code></pre>
+
+<p>The first task for any LuaInterface program is to load any assemblies needed, and the second task is to import the types. In this case, the <code>Console</code> and <code>Math</code> classes are loaded explicitly, and we call their static methods <code>WriteLine</code> and <code>Sqrt</code>.  LuaInterface will convert Lua numbers and strings into their .NET equivalents for us.</p>
+
+<p>Like all hello programs, it is basically silly; the equivalent pure Lua program is of course just this one-liner:</p>
+
+<pre><code>print("sqrt(2) is "..math.sqrt(2))
+</code></pre>
+
+<p>But these techniques will be used to bring all the considerable power of the .NET framework into Lua programs, like the ability to easily write good-looking GUI applications, examine running processes, etc.</p>
+
+<h2  id="T3">Hello, World, Take Two</h2>
+
+<p>If you allow for the usual 'public static main' stuff, the equivalent C# program is also a one-liner, thanks to the <code>using</code> statement. This brings a whole namespace into global scope, so if there's a <code>using System;</code> at the top, then any member of that namespace becomes directly available. It would be very convenient to have this available for LuaInterface programs as well. It turns out that this is not difficult at all, using a short utility library:</p>
+
+<pre><code>require 'CLRPackage'
+import "System"
+
+Console.WriteLine("sqrt(2) is {0}",Math.Sqrt(2))
+</code></pre>
+
+<p>Here the <code>import</code> function works very much like C#'s <code>using</code> statement. This program brings in the <code>System.IO</code> namespace, so now useful things like <code>Directory</code> and <code>Path</code> effectively become global.</p>
+
+<pre><code>require 'CLRPackage'
+import "System"
+import "System.IO"
+Console.WriteLine("we are at {0}",Directory.GetCurrentDirectory())
+</code></pre>
+
+<h2  id="T4">Exploring the .NET Libraries Interactively</h2>
+
+<p>The power of interpreted languages is that they usually provide an interactive mode, where you can enter into a question-and-answer game with the system and explore the possibilities of libraries without having to write a host of little programs.  Even if your main development language is C# or C++, having access to an interactive language like Lua is an excellent exploration tool. Since expressions are not statements in Lua, one has to use <code>print</code> to explicitly output expressions, or use the <code>=</code> shortcut:</p>
+
+<pre><code>C:\lang\lua\libraries\Built\console&gt;lua
+Lua 5.1.3  Copyright (C) 1994-2008 Lua.org, PUC-Rio
+&gt; require "CLRPackage"
+&gt; import "System"
+&gt; = Console
+ProxyType(System.Console): 18643596
+&gt; = Environment.CurrentDirectory
+C:\lang\lua\libraries\Built\console
+</code></pre>
+
+<p>Here we get a glimpse into the inner workings of LuaInterface; the actual type of <code>Console</code> is a proxy type which has the job of passing on Lua calls to the underlying .NET class.</p>
+
+<p>A more convenient way to use Lua interactively is <code>ilua</code>; this does not require <code>=</code> and may appear more natural to people used to languages like Python.  (If the default command-line irritates you, then run 'lconsole.wlua' for a proper GUI prompt.)</p>
+
+<pre><code>C:\lang\lua\libraries\Built\console&gt;lua -lilua
+ILUA: Lua 5.1.2  Copyright (C) 1994-2007 Lua.org, PUC-Rio
+"quit" to end
+&gt; require 'CLRPackage'
+true
+&gt; Console
+ProxyType(System.Console): 18643596
+&gt; Console.WriteLine("Hello")
+Hello
+&gt; import "System.IO"
+{packageName='System.IO'}
+&gt; Directory
+ProxyType(System.IO.Directory): 33574638
+&gt; dir = Directory.GetCurrentDirectory()
+&gt; dir
+'C:\lang\lua\libraries\Built\console'
+&gt; Path.GetDirectoryName(dir)
+'C:\lang\lua\libraries\Built'
+&gt; File.Exists "hello1.lua"
+true
+&gt; File.Copy("hello1.lua","backup.lua")
+&gt; f = File.OpenText "hello1.lua"
+&gt; f:ReadLine()
+'require 'luanet''
+&gt; f:Close()
+&gt; fsw = FileSystemWatcher(dir)
+&gt; fsw.Created:Add(print)
+System.IO.FileSystemEventHandler: 17721300
+&gt; fsw.EnableRaisingEvents = true
+&gt; File.Copy("hello1.lua","new-hello.lua")
+System.IO.FileSystemWatcher  System.IO.FileSystemEventArg
+&gt;
+</code></pre>
+
+<p>As you can see, all that very useful functionality in the <code>System.IO</code> namespace is now available for us to browse and explore. Some of these have Lua equivalents, but usually require extra modules (e.g. <code>lfs.currentdir()</code> requires the binary extension <code>lfs</code>). Please note that, as usual, actual non-static methods in Lua are called with the <code>:</code> operator.</p>
+
+<p>In some cases, like <code>FileSystemWatcher</code>, they aren't commonly available in Lua at all. This last example also shows how <em>events</em> can be defined in Lua code. It is this ability which makes Lua into a real .NET-capable language and not just an amusing .NET-aware desktop calculator. There is no <code>+=</code> operator equivalent in Lua, so all exported events like <code>Created</code> export a sepcial method called <code>Add</code> which is passed any Lua function.  Just using <code>print</code> shows us that the <code>Created</code> event passes us the object itself, plus a <code>FileSystemEventArg</code> object.  But do note that we can make any function implement an event callback!</p>
+
+<h2  id="T5">Dealing with Arrays and .NET Collections</h2>
+
+<p>Array values are very common argument types, and are often returned by functions. LuaInterface provides a convenient index notation for accessing the values, but note that the index runs from zero to <code>Length-1</code>!</p>
+
+<pre><code>&gt; args = Environment.GetCommandLineArgs()
+&gt; args.Length
+2
+&gt; args[0]
+'wlua'
+&gt; args[1]
+'lconsole.lua'
+</code></pre>
+
+<p>Creating an array of strings is easy. Use the type name followed by the size in square brackets - this is consistent with the C# syntax.</p>
+
+<pre><code>&gt; ss = String[3]
+&gt; ss[0] = "one"
+&gt; ss[1] = "two"
+&gt; ss[2] = "three"
+</code></pre>
+
+<p>However, note that you can only initialize values in this simple way if you are dealing with objects and not numbers. Then you have to use <code>Array.SetValue</code> explicitly.</p>
+
+<pre><code>&gt; d = Double[4]
+&gt; d[0] = 1.0
+System.InvalidCastException: Unable to cast object of type
+'System.Double[]' to type 'System.Object[]'.
+&gt; d:SetValue(0,1.0)
+</code></pre>
+
+<p>There are no implicit conversions of Lua tables into .NET types, but it is easy to do manually. Here is a useful function for creating an array of doubles from a table:</p>
+
+<pre><code>function make_double_array (tbl)
+    local arr = Double[#tbl]
+    for i,v in ipairs(tbl) do
+        arr:SetValue(v,i-1)
+    end
+    return arr
+end
+</code></pre>
+
+<p>Other collection types are treated similarly; generally, if the object is indexable, Lua will be able to index it naturally as well. Consider this <code>Hashtable</code> of all environment variables:</p>
+
+<pre><code>&gt; vars = Environment.GetEnvironmentVariables()
+&gt; vars
+System.Collections.Hashtable: 7284614
+&gt; vars.Count
+35
+&gt; vars['SystemRoot']
+'C:\WINDOWS'
+&gt; e = vars:GetEnumerator()
+&gt; e
+System.Collections.Hashtable+HashtableEnumerator: 37564172
+&gt; e:MoveNext()
+true
+&gt; e.Current
+System.Collections.DictionaryEntry: 652891594
+&gt; de = _
+&gt; de.Key
+'Path'
+&gt; de.Value
+'C:\WINDOWS\system32;...
+</code></pre>
+
+<p>There is no direct support in Lua for enumerables, as there is in C# with the <code>foreach</code> statement, but it is not difficult to write a function that will allow us to iterate through any such collection using a Lua <code>for</code> statement:</p>
+
+<pre><code>function enum(o)
+   local e = o:GetEnumerator()
+   return function()
+      if e:MoveNext() then
+        return e.Current
+     end
+   end
+end
+
+&gt; for v in enum(args) do print(v) end
+wlua
+lconsole.lua
+</code></pre>
+
+<h2  id="T6">Dealing with Exceptions</h2>
+
+<p>There are some .NET methods which will throw exceptions on error. These are converted into regular Lua errors by LuaInterface, so you need to execute these methods in a <em>protected call</em> to avoid your program crashing. For instance, <code>load_assembly</code> usually loads assemblies from the Global Assembly Cache (GAC) but it will work with your own assemblies if you end them with an explicit '.dll'.</p>
+
+<p>However, it will not load an assembly given an arbitrary path. This is not difficult to get around, but the function we need is one of those that throw exceptions.  Consider this script:</p>
+
+<pre><code>-- load.lua
+require "CLRPackage"
+import "System.Reflection"
+
+function get_assembly_name(name)
+    local res
+    local suc,err = pcall(function()
+        res = AssemblyName.GetAssemblyName(name)
+    end)
+    if suc then
+        return res
+    else
+        return nil,err
+    end
+end
+
+print(get_assembly_name(arg[1]))
+</code></pre>
+
+<p><code>GetAssemblyName</code> returns an object which you can pass to <code>Assembly.Load</code>, but we have to call it using <code>pcall</code>. <code>pcall</code> will usually just return <code>true</code>, but if an error occured it returns <code>false,error</code>.  In effect, this is Lua's <code>try..catch</code> mechanism.</p>
+
+<pre><code>C:\console\test&gt;lua load.lua ..\CSML.dll
+CSML, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null: 3357463
+
+C:\lang\lua\libraries\Built\console\test&gt;lua load.lua ..\CSMLx.dll
+nil     System.IO.FileNotFoundException: Could not load file or ...
+</code></pre>
+
+<p>I have truncated the error message, but the exception type is the first part of this rather long error string!</p>
+
+<h2  id="T7">Showing a Form</h2>
+
+<p>Showing a form is very straightforward, once you have brought in the necessary assembly, and the <code>Form</code> type itself.</p>
+
+<pre><code>-- form1.wlua
+require 'luanet'
+luanet.load_assembly "System.Windows.Forms"
+Form = luanet.import_type "System.Windows.Forms.Form"
+form = Form()
+form.Text = "Hello, World!"
+form:ShowDialog()
+</code></pre>
+
+<p>Since this is a GUI script, I have given it a .wlua extension. The convention is that .lua is associated with the console version lua.exe, and .wlua is associated with the GUI version wlua.exe.  Then, if you run this script from Windows Explorer you will not get the dreaded black console window appearing as well.  (Also, in Lua for Windows .wlua scripts can be properly run and debugged from SciTE.)</p>
+
+<p>Since explicitly bringing in all the required types can be tedious, I will now switch to using <code>CLRPackage/import</code> for the next example:</p>
+
+<pre><code>-- form2.wlua
+require 'CLRPackage'
+import "System.Windows.Forms"
+import "System.Drawing"
+
+form = Form()
+form.Text = "Hello, World!"
+button = Button()
+button.Text = "Click Me!"
+button.Location = Point(20,20)
+button.Click:Add(function()
+    MessageBox.Show("We wuz clicked!",arg[0],MessageBoxButtons.OK)
+end)
+
+form.Controls:Add(button)
+form:ShowDialog()
+</code></pre>
+
+<p>Windows.Forms applications are conceptually very simple; one creates controls of various types, sets their properties, and adds them to the control array of the form, which then can be shown.  One attaches functions to the <em>events</em> of the objects to get feedback from the user or the system.</p>
+
+<p>Unlike IUP, controls are usually given an explicit position. However, controls can be docked to the sides of their <em>container</em>:</p>
+
+<pre><code>-- form3.wlua
+require 'CLRPackage'
+import "System.Windows.Forms"
+import "System.Drawing"
+
+button = Button()
+button.Text = "Click!"
+button.Dock = DockStyle.Top
+edit = RichTextBox()
+edit.Dock = DockStyle.Fill
+
+form = Form()
+form.Text = "Hello, World!"
+form.Controls:Add(edit)
+form.Controls:Add(button)
+form:ShowDialog()
+</code></pre>
+
+<p>In this example, a text box is made to fill all of the form, and then a button is added which is to be docked to the top side of the form.  (The creation order of the text box and the button is not important, but they do have to be added in this order.)</p>
+
+<h2  id="T8">An Interactive GUI for LuaInterface</h2>
+
+<p>The normal interactive Lua prompt does not play nicely with GUI applications, since these typically need to run an event loop. <code>lconsole</code> is an application written using LuaInterface that allows you to type in Lua expressions and statements in a purely GUI environment. Since the console window is based on a rich text box, all the usual clipboard operations are available, and the general black-on-white theme fits better with modern desktops. To run it, double click on 'lconsole.wlua'.</p>
+
+<p><img src="images/lconsole.png" alt="lconsole"/></p>
+
+<p>There are three parts to the <code>lconsole</code> window; the <em>text</em> pane, where you enter commands, the <em>code</em> pane, where you can enter little pieces of code, and the <em>list</em> down the side of the code pane, which shows the currently saved functions and snippets.  The main reason for the code pane is that (like <code>ilua</code> as discussed above) one cannot enter multiline statements like a function definition; <code>lconsole</code> makes a virtue of this limitation, by automatically saving these little code snippets.</p>
+
+<p>You can access the command history by using the <code>Alt+UpArrow</code> and <code>Alt+DownArrow</code> shortcuts.</p>
+
+<p>The first point to note is that the console is very much <em>inside</em> the application. There is an <code>app</code> table which contains the code and text panes, the list box and the form itself.</p>
+
+<pre><code>ILUA: Lua 5.1.1  Copyright (C) 1994-2007 Lua.org, PUC-Rio
+&gt; app.code.Height
+70
+&gt; app.form.Width
+420
+&gt; app.form.Text = "My Console!"
+</code></pre>
+
+<p>(This makes <code>lconsole</code> a very easy application to customize. Tired of the background colour? Change it!)</p>
+
+<p>To create a new function, execute the command <code>fun(name)</code>:</p>
+
+<pre><code>&gt; fun 'sqr'
+</code></pre>
+
+<p>and in the code pane appears:</p>
+
+<pre><code>function sqr()
+
+end
+</code></pre>
+
+<p>which can be edited so:</p>
+
+<pre><code>function sqr(x)
+   return x*x
+end
+</code></pre>
+
+<p>Hit F5 (or <code>Run|Save and Go</code>) to load it into the session. Note that a new item 'sqr' has appeared, and will persist into the next session, since it's actually saved as <code>sqr.lua</code> in your session directory. The code pane is not intended to be a real code editor, there's no attempt at syntax highlighting and the <tab> key doesn't work as expected - but this is intended for small little pieces of code. It is always possible to load an external Lua file using <code>File|Load Lua</code>.</p>
+
+<p>It is very straightforward to bring in an image and put it inside a form using the <code>PictureBox</code> control:</p>
+
+<pre><code>&gt; f = [[C:\Program Files\MP3 CD Converter\skins\jazz_folder.bmp]]
+&gt; im = Image.FromFile(f)
+&gt; im
+System.Drawing.Bitmap: 50048984
+&gt; im.Width
+150
+&gt; f = Form()
+&gt; pic = PictureBox()
+&gt; pic.Dock = DockStyle.Fill
+&gt; f.Controls:Add(pic)
+&gt; f:show()
+method not found (or no indexer): show
+&gt; f:Show()
+&gt; pic.Image = im
+&gt; f.ClientSize = Size(im.Width,im.Height)
+</code></pre>
+
+<p>If you get bored typing something repeatedly, then a function is your friend. In this case I got bored adding dock styles, so:</p>
+
+<pre><code>function dock(c,s)
+   s = s or 'Fill'
+   c.Dock = DockStyle[s]
+   return c
+end
+</code></pre>
+
+<p>Now it's possible to do this:</p>
+
+<pre><code>&gt; f.Controls:Remove(pic)  -- got bored of the picture!
+&gt; e = dock(ListBox())
+&gt; f.Controls:Add(e)
+</code></pre>
+
+<p>And indeed, a list box fills the form!</p>
+
+<p>People new to Lua may find the first two lines of this little function a bit puzzling. The key to the first line is that the <code>or</code> operator works with any type, and returns the value used - it doesn't always return a boolean value, as in most languages.  Values are considered false in Lua either if they have the value <code>false</code> or if they are <code>nil</code>, so if we don't pass a second argument to this function, it will be given the default value 'Fill'. The second line comes from the fact that <code>a.x</code> and <code>a['x']</code> are completely equivalent; they are both table lookups (JavaScript works like this as well, and it is a very useful feature.)</p>
+
+<h2  id="T9">More Useful Utilities</h2>
+
+<p>The <code>CLRForm</code> module contains some very useful utilties for doing Windows Forms programming in Lua. <code>lconsole</code> is built using <code>CLRForm</code>,  so all of these utilities can be tested in this environment.</p>
+
+<h3  id="T10">Prompting User for Data</h3>
+
+<p>A common need is to ask the user for a single string:</p>
+
+<pre><code>require "CLRForm"
+if PromptForString("MyApp","Give your name","") then
+    MessageBox.Show("Name!",arg[0],MessageBoxButtons.OK)
+end
+</code></pre>
+
+<p>People however get irritated by being asked tiny questions, so in true bureaucratic style we would like her to fill in a form.  This is a very common thing in GUI applications, and generally requires far too much coding. Some of that coding may be generated by the wizards that lurk in your IDE, but sometimes the ideal amount of code is zero.  Consider this:</p>
+
+<pre><code>-- auto1.wlua
+require "CLRForm"
+
+data = {
+    firstname = "",
+    lastname = "",
+    age = 0,
+    title = "",
+    phone = "",
+    email = ""
+}
+
+form = AutoVarDialog { Text = "Please Supply Details", Object = data;
+    "First Name:","firstname",
+    "Last Name:","lastname",
+    "Age:","age",
+    "Title:","title",
+    "Phone number:","phone",
+    "E-mail Address:","email"
+}
+
+if form:ShowDialogOK() then
+   print 'ok'
+end
+
+os.exit(0)
+</code></pre>
+
+
+<p>The call to <code>AutoVarDialog</code> automatically generates a dialog based on a template, which maps descriptive labels to the actual fieldnames.  This kind of trick is possible in highly dynamic languages like Lua, where the actual type at runtime of any object is easy to determine.  So by default we will try to edit numbers and strings with text boxes, and boolean values with checkboxes.  At this level, some input validation is already possible; <code>age</code> was a number, so whatever gets typed into the 'Age:' box must be convertable to a number and the user will not be allowed to proceed successfully until this is fixed.</p>
+
+<p>But the general problem of validation remains. It's a bad idea to let bogus data into your system, and it should be caught as soon as possible. Also, fields like 'Title' are profoundly confusing. People will put in what their interpretation tells them, rather than your interpretation. So the next example shows an extra (optional) validation field that can follow the field name:</p>
+
+<pre><code>-- auto1.wlua
+require "CLRForm"
+
+data = {
+    firstname = "steve",
+    lastname = "donovan",
+    age = 16,
+    title = "Mr",
+    phone = "+27116481212",
+    email = "steve.j.donovan@gmail.com"
+}
+
+form = AutoVarDialog { Text = "Please Supply Details", Object = data;
+    "First Name:","firstname",NonBlank,
+    "Last Name:","lastname",NonBlank,
+    "Age:","age",Range(16,120),
+    "Title:","title",{"Mr","Ms","Dr","Prof"},
+    "Phone number:","phone",Match ('^%+%d+$',"Not a valid phone no."),
+    "E-mail Address:","email",Match ("%S+@%S+","Not valid email")
+}
+
+if form:ShowDialogOK() then
+   print 'ok'
+end
+
+os.exit(0)
+</code></pre>
+
+<p>Notice that by making 'title' to be explicitly a list of items, we can now deduce that a drop-down list is the appropriate way to present the choice to the user.  As for 'age', numerical values nearly always have a valid range. Text fields require more complicated validation - here phone numbers must be entered in international format, and email addresses must have a '@' somewhere. (They can still be utterly bogus, but at least they are well-formed rubbish ;))</p>
+
+<p>Here is a more complete example, showing off file entry fields and booleans.</p>
+
+<pre><code>-- autoform.wlua
+require "CLRForm"
+
+tbl = {
+    x = 2.3,
+    y = 10.2,
+    z = "two",
+    t = -1.0,
+    file = "c:\\lang\\lua\\ilua.lua",
+    outfile = "",
+    res = true,
+}
+
+form = AutoVarDialog { Text = "Test AutoVar", Object = tbl;
+    "First variable:","x", Range(0,4),
+    "Second Variable:","y",
+    "Domain name:","z", {"one","two","three"; Editable=true},
+    "Blonheim's Little Adjustment:","t",
+    "Input File:","file",FileIn "Lua (*.lua)|C# (*.cs)",
+    "Output File:","outfile",FileOut "Text (*.txt)",
+    "Make a Note?","res",
+}
+
+if form:ShowDialogOK() then
+    print(tbl.x,tbl.z,tbl.res,tbl.file)
+end
+</code></pre>
+
+<p><img src="images/autovar.png" alt="autovar"/></p>
+
+<h3  id="T11">Stream Layout</h3>
+
+<p>Generally, Windows Forms controls are positioned absolutely <em>within</em> their parent control.  Other frameworks use explicit <em>layout</em> strategies, which can be very useful. For instance, the <code>AutoVarDialog</code> form uses automatic control layout. <code>CLRForm</code> defines a useful <code>StreamLayout</code> class, which works rather like writing to a file; each new control is placed after the last, until there's an explicit request for a 'new line'.</p>
+
+<p>This example attaches a rough-and-ready toolbar to a form. A <code>Panel</code> control is a useful tool in composing forms; by default it does not have a border. It is easy to attach it to the top of the form with <code>DockStyle.Top</code>. The <code>StreamLayout</code> is used to put the controls in a nice row:</p>
+
+<pre><code>-- layout1.wlua
+require 'CLRForm'
+
+panel = Panel()
+layout = StreamLayout(panel)
+b = Button()
+b.Text = "One"
+layout:Add(b)
+b = Button()
+b.Text = "Two"
+layout:Add(b)
+t = TextBox()
+layout:Add(t)
+layout:Finish()
+
+form = Form()
+form.Text = "Hello, World!"
+panel.Dock = DockStyle.Top
+
+form.Controls:Add(panel)
+form:ShowDialog()
+</code></pre>
+
+<p><img src="images/layout1.png" alt="layout1"/></p>
+
+
+<h3  id="T12">Menus and Form Classes</h3>
+
+<p>Object-oriented style is particularly appropriate for GUI applications. Although Lua does not have a formal concept of 'class', it is not difficult to add a class mechanism.  Then our forms can be self-contained objects, as is obligatory in C#.  The classes described here are not proper derived classes of the .NET Form class, rather they use <em>delegation</em>; if our form object cannot find a method or property within itself, it calls the delegate object, which <em>is</em> a Form object.</p>
+
+<pre><code>-- menuform.lua
+require "CLRForm"
+
+MenuForm = class()
+
+function MenuForm:_init ()
+    self.form = Form()
+    self.name = "Dolly"
+    -- this method can only be called once we've set up our own fields!
+    self:delegate(self.form)
+    self.Text = "A Simple Form Class"
+    self.FormBorderStyle = FormBorderStyle.FixedDialog
+    self.MaximizeBox = false
+    self.MinimizeBox = false
+    self.ContextMenu = popup_menu {
+        "First",method(self,self.first),
+        "Second",method(self,self.second),
+    }
+end
+
+function MenuForm:first()
+    local name = PromptForString(arg[0],"Give the dog a name",self. name)
+    if name then self.name = name end
+end
+
+function MenuForm:second()
+    ShowMessageBox (self.name)
+end
+
+form = MenuForm()
+form:ShowDialog()
+</code></pre>
+
+<p>Notice the useful <code>popup_menu</code> function, which takes some of the tedium out of defining menus. (A more complete example can be found in the source for <code>lconsole.lua</code>, where shortcuts are defined, etc.) The little function <code>method</code> has a simple definition; it creates a callback function which actually does the function call, passing the object as the first parameter (the <em>self</em> object):</p>
+
+<pre><code>function method (obj,fun)
+    return function()
+        fun(obj)
+    end
+end
+</code></pre>
+
+<p>Main menus are also easy to construct; here is how <code>lconsole.wlua</code> does its menu:</p>
+
+<pre><code>local menu = main_menu {
+    "File",{
+        "Load Lua(CtrlO)",load_lua,
+        "Save Session(CtrlS)",save_session,
+        "Save As Text",save_text,
+        "E&amp;xit(CtrlX)",function() os.exit(0) end,
+    },
+    "Run",{
+        "Save and Go(F5)",save_and_go,
+        "Create Function",function() fun() end,
+        "Delete Item",delete_list_item,
+        "Clear Code Pane",clear_code,
+    },
+    "History", {
+        "Last(AltUpArrow)", function() get_history(true) end,
+        "Previous(AltDownArrow)", function() get_history(false) end
+    }
+}
+</code></pre>
+
+<p>If an item string contains '(...)', then it's interpreted as a name from the <code>System.Windows.Forms.Shortcut</code> enumeration; see the .NET documentation for all available constants.</p>
+
+<h3  id="T13">A useful Form Constructor</h3>
+
+<p><code>LuaForm</code> makes creating form objects easier.  You feed <code>LuaForm</code> wiith a table; the array-like part of the table contains the controls, and the map-like part contains any properties you wish to assign to the control. If there is only one control to be added, then it's assumed that we want it to fill the whole client area of the form.</p>
+
+<pre><code>&gt; txt = RichTextBox()
+&gt; f = LuaForm{txt;Text="hello"}
+&gt; f:Show()
+</code></pre>
+
+<p>If multiple controls are added, then one can provide their dock styles:</p>
+
+<pre><code>&gt; txt = RichTextBox()
+&gt; list = ListBox()
+&gt; f = LuaForm{'Fill',txt,'Left',list; Text = "Test!"}
+&gt; f:Show()
+</code></pre>
+
+</body></html>

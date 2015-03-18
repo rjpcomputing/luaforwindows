@@ -1,0 +1,332 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Value Matcher</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																																																									<li><a href="../../index.html", title="">Home</a></li>
+																																																																									<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																																																									<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																																																									<li><a href="../index.html", title="Class Library">Library</a>
+																																																																										<div class="outside"><div class="inside"><ul>
+																																																																											<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																																																												</li>
+																																																																												<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																																																													</li>
+																																																																													<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																																																														</li>
+																																																																														<li><a href="../overview.html#object", title="Objects">object</a>
+																																																																															</li>
+																																																																															<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																																																																</li>
+																																																																																<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																																																																	</li>
+																																																																																</ul></div></div>
+																																																																															</li>
+																																																																															<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																																																															<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																																																														</ul></div></div>
+																																																																													
+</div>
+
+<div class="content">
+<h1>Value Matcher</h1>
+<h2><code>loop.debug.Matcher</code></h2><br>
+<p>Class of objects used to compare pairs of values according to some criteria of similarity.
+By default, it matches pairs of same values or structurally isomorphic tables (including their meta-tables).
+Functions with same bytecodes, upvalue contents and isomorphic environments also match.
+However, such matching criteria may be redefined.
+This class is useful for implementing automated test mechanisms for Lua applications.</p>
+
+<p>Each object provides a set of methods for comparison of values passed as parameters.
+The function must return <code>true</code> if the values match or <code>false</code> otherwise.
+When a pair of distinct values are matched their correspondence is stored in the object instance.
+Therefore, such correspondence is maintained in all further comparisons made by the same instance.</p>
+
+<h2>Behavior</h2>
+
+<h3>Fields</h3>
+
+<dl>
+	
+	<dt><code><b>boolean</b></code></dt>
+	<dd>
+		Field that defines the method implementation used to compare two different boolean values passed as parameters.
+		The function must return <code>true</code> if the values match or <code>false</code> otherwise.
+		If this field evaluates to <code>false</code> then boolean values are compared for equality only.
+		The default value for this field is <code>nil</code>.
+	</dd>
+	
+	<dt><code><b>envkey</b></code></dt>
+	<dd>
+		Special value used to identify a function environment retrieval.
+		See method <code>error</code> for further information.
+	</dd>
+	
+	<dt><code><b>environment</b></code></dt>
+	<dd>
+		Field that defines the function used to retrieve the environment of a function.
+		If this field evaluates to <code>false</code> then function environments are ignored during matching.
+		The default value for this field is function <code>getfenv</code> of the Lua library.
+	</dd>
+	
+	<dt><code><b>isomorphic</b></code></dt>
+	<dd>
+		If this field evaluates to <code>true</code> then table matching should be isomorphic, <i>i.e.</i> there is a one to one relation of each field of the first table to the second.
+		However, if its value evaluates to <code>false</code> then table matching just guarantee that all fields of the first table have a matching field in the second.
+		The default value for this field is <code>true</code>.
+	</dd>
+	
+	<dt><code><b>metakey</b></code></dt>
+	<dd>
+		Special value used to identify a meta-table retrieval.
+		See method <code>error</code> for further information.
+	</dd>
+	
+	<dt><code><b>metatable</b></code></dt>
+	<dd>
+		Field that defines the method implementation used to compare meta-tables of matching values passed as parameters.
+		The function must return <code>true</code> if the values match or <code>false</code> otherwise.
+		If this field evaluates to <code>false</code> then meta-tables are ignored during matching.
+		The default value for this field is method <code>match</code> provided by the class.
+	</dd>
+	
+	<dt><code><b>function</b></code></dt>
+	<dd>
+		Field that defines the method implementation used to compare two different function values passed as parameters.
+		The function must return <code>true</code> if the values match or <code>false</code> otherwise.
+		If this field evaluates to <code>false</code> then function values are compared for equality only.
+		The default value for this field is method <code>matchfunction</code> provided by the class.
+	</dd>
+	
+	<dt><code><b>number</b></code></dt>
+	<dd>
+		Field that defines the method implementation used to compare two different number values passed as parameters.
+		The function must return <code>true</code> if the values match or <code>false</code> otherwise.
+		If this field evaluates to <code>false</code> then number values are compared for equality only.
+		The default value for this field is <code>nil</code>.
+	</dd>
+	
+	<dt><code><b>string</b></code></dt>
+	<dd>
+		Field that defines the method implementation used to compare two different string values passed as parameters.
+		The function must return <code>true</code> if the values match or <code>false</code> otherwise.
+		If this field evaluates to <code>false</code> then string values are compared for equality only.
+		The default value for this field is <code>nil</code>.
+	</dd>
+	
+	<dt><code><b>table</b></code></dt>
+	<dd>
+		Field that defines the method implementation used to compare two different table values passed as parameters.
+		The function must return <code>true</code> if the values match or <code>false</code> otherwise.
+		If this field evaluates to <code>false</code> then table values are compared for equality only.
+		The default value for this field is method <code>matchtable</code> provided by the class.
+	</dd>
+	
+	<dt><code><b>thread</b></code></dt>
+	<dd>
+		Field that defines the method implementation used to compare two different thread values passed as parameters.
+		The function must return <code>true</code> if the values match or <code>false</code> otherwise.
+		If this field evaluates to <code>false</code> then thread values are compared for equality only.
+		The default value for this field is <code>nil</code>.
+	</dd>
+	
+	<dt><code><b>upvalue</b></code></dt>
+	<dd>
+		Field that defines the function used to retrieve the contents of function upvalues.
+		If this field evaluates to <code>false</code> then upvalues contents are ignored during matching.
+		The default value for this field is function <code>debug.getupvalue</code> of the Lua debug library if it is loaded at the moment this class is required.
+	</dd>
+	
+	<dt><code><b>userdata</b></code></dt>
+	<dd>
+		Field that defines the method implementation used to compare two different userdata values passed as parameters.
+		The function must return <code>true</code> if the values match or <code>false</code> otherwise.
+		If this field evaluates to <code>false</code> then userdata values are compared for equality only.
+		The default value for this field is <code>nil</code>.
+	</dd>
+	
+</dl>
+
+<h3>Methods</h3>
+
+<dl>
+	
+	<dt><code><b>error</b>(reason)</code></dt>
+	<dd>
+		Method that creates a matching error message.
+		The parameter <code>reason</code> is a string with a message describing the error reason.
+		Whenever this method is called, the object instance stores as an array (<i>i.e.</i> using integer keys) the sequence of values that identifies the path to the mismatched field.
+		However, indexes 0 and 1 are used to store the values being compared, that are respectively the values of parameters <code>other</code> and <code>value</code> that are passed to method <code>match</code>.
+		Fields <code>metakey</code> and <code>envkey</code> hold special values that are used to identify a meta-table or function environment retrival, respectively.
+	</dd>
+	
+	<dt><code><b>match</b>(value, other)</code></dt>
+	<dd>
+		Method that tries to match values <code>value</code> and <code>other</code>.
+		If they match then it returns <code>true</code>.
+		Otherwise, it return <code>false</code> and an error message.
+		The error message format is created by method <code>error</code>.
+		The default format is "<i>&lt;path&gt;</i>: <i>&lt;reason&gt;</i>", where <i>&lt;path&gt;</i> is a string identifying which part doesn't match.
+		Upvalues are represented as table fields, for example if <code>value</code> is a table which field <code>func</code> is a function which upvalue <code>up</code> differ then the path informed will be <code>value.func.up</code>.
+		The <i>&lt;reason&gt;</i> is one of the following messages:
+		<table>
+			<tr><td><code>"no match found"</code>       </td><td>no similar field key found</td></tr>
+			<tr><td><code>"missing"</code>              </td><td>missing field found in <code>other</code> table</td></tr>
+			<tr><td><code>"bytecodes not matched"</code></td><td>bytecodes of two different function differ</td></tr>
+			<tr><td><code>"wrong match"</code>          </td><td>other value (<i>e.g.</i> previously bound) was expected</td></tr>
+			<tr><td><code>"not matched"</code>          </td><td>different objects found</td></tr>
+		</table>
+	</dd>
+	
+	<dt><code><b>matchfunction</b>(value, other)</code></dt>
+	<dd>
+		Method that compares two different functions informed as parameters <code>value</code> and <code>other</code> according to their bytecodes and the criteria defined by fields <code>environment</code>, <code>upvalue</code> and <code>metatable</code>.
+		If the two values matches, then it returns <code>true</code>, otherwise it returns <code>false</code> and an error message.
+	</dd>
+	
+	<dt><code><b>matchtable</b>(value, other)</code></dt>
+	<dd>
+		Method that compares two different tables informed as parameters <code>value</code> and <code>other</code> according to their contents and the criteria defined by field <code>metatable</code>.
+		If the two values matches, then it returns <code>true</code>, otherwise it returns <code>false</code> and an error message.
+	</dd>
+	
+</dl>
+
+<h3>Meta-Fields</h3>
+
+<dl>
+	
+	<dt><code>__<b>mode</b> = "k"</code></dt>
+	<dd>
+		Defines that matched values are weak references thus if other references to those values are lost then they becomes garbage.
+	</dd>
+	
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	<li>Each object instance keeps a mapping of the matched objects, therefore to restart comparisons without previous mapping you should create another object instance.</li>
+	<li>Since it is only possible to check upvalue contents, matched functions are not guaranteed to produce the same effects since the upvalue variables may be actually different even though they store the same value.</li>
+	<li>Since <code>string.dump</code> produces an error instead of returning an error message silently, values with unmatched C functions raises the error produced by <code>string.dump</code>.
+	To handle such situation, you should use a <code>pcall</code>.
+	But be warned that this function is somewhat restricted since it can't be used with yielding co-routines.</li>
+	<li>Methods used to compare two different values (<i>i.e.</i> fields <code>boolean</code>, <code>number</code>, <code>string</code>, <code>function</code>, <code>thread</code> and <code>userdata</code>) may store in the object instance a mapping of each machted pairs so that <code>self[value] == other and self[other] == value</code> in order to avoid further evaluation of the same pair and that they are matched to other values.
+	However, for positive integer numbers this should be avoided because these values are used to store the sequence of values that identifies the current path of the values being compared.</li>
+	<li>Non-isomorphic comparisions of tables that have other tables as key values does not work well due to ambiguities when trying to find the corresponding match for each key-value pair.</li>
+</ul>
+
+<h2>Examples</h2>
+
+<h3><a name="TestSuite">Feedback-loop test suite for pull-parsers.</a></h3>
+
+<pre>
+local Viewer  = require "loop.debug.Viewer"
+local Matcher = require "loop.debug.Matcher"
+
+local message = "Testcase %d failed: %s\n"
+
+function compare(file, cases)
+  local previous = io.open(file)
+  if previous then
+    previous:close()
+    previous = dofile(file)
+  else
+    previous = {}
+  end
+  
+  local results = {}
+  for index, source in ipairs(cases) do
+    local expected = previous[index]
+    local actual = parser:evaluate(source)
+    if expected then
+      local matcher = Matcher{ metatable = false }
+      local success, errmsg = matcher:match(expected, actual)
+      if not success then
+        io.stderr:write(message:format(index, errmsg))
+      end
+    else
+      expected = actual
+    end
+    results[index] = expected
+  end
+  
+  local serializer = Viewer{
+    output = assert(io.open(file, "w")),
+    maxdepth = -1,
+  }
+  serializer.output:write("return ")
+  serializer:write(results)
+end
+
+
+
+local oo         = require "loop.base"
+local Expression = require "loop.compiler.Expression"
+
+List   = oo.class()
+Label  = oo.class()
+Lambda = oo.class()
+Apply  = oo.class()
+
+parser = Expression{
+  values = {
+    number = "(%-?%d+)",
+    variable = "([%a_][%w_]*)",
+  },
+  operators = {
+    list   = " , ",
+    label  = "' = ",
+    lambda = "\ . ",
+    apply  = "  ",
+  },
+  precedence = { {"list"},{"label"},{"lambda"},{"apply"} },
+}  
+function parser:number(value)      return tonumber(value) end
+function parser:variable(value)    return value end
+function parser:label(name, def)   return Label{ name = name, def = def } end
+function parser:lambda(args, body) return Lambda{ args = args, body = body } end
+function parser:apply(func, args)  return Apply{ func = func, args = args } end
+function parser:list(a, d)
+  if oo.classof(a) == List then
+    a[#a+1] = d
+    return a
+  else
+    return List{ a, d }
+  end
+end
+
+compare("results.lua", {
+  "'fat=\x.if(eq(x,0),1,mul(x,fat(sub(x,-1))))",
+  "'addto=\(x,y).cons(sum(car x,y),addto(cdr x,y))",
+  -- TODO: add more testcases here
+})
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

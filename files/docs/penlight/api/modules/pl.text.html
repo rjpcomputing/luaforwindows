@@ -1,0 +1,346 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Penlight Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Penlight</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/pl.html">pl</a></li>
+  <li><a href="../modules/pl.Date.html">pl.Date</a></li>
+  <li><a href="../modules/pl.List.html">pl.List</a></li>
+  <li><a href="../modules/pl.Map.html">pl.Map</a></li>
+  <li><a href="../modules/pl.MultiMap.html">pl.MultiMap</a></li>
+  <li><a href="../modules/pl.OrderedMap.html">pl.OrderedMap</a></li>
+  <li><a href="../modules/pl.Set.html">pl.Set</a></li>
+  <li><a href="../modules/pl.app.html">pl.app</a></li>
+  <li><a href="../modules/pl.array2d.html">pl.array2d</a></li>
+  <li><a href="../modules/pl.class.html">pl.class</a></li>
+  <li><a href="../modules/pl.comprehension.html">pl.comprehension</a></li>
+  <li><a href="../modules/pl.config.html">pl.config</a></li>
+  <li><a href="../modules/pl.data.html">pl.data</a></li>
+  <li><a href="../modules/pl.dir.html">pl.dir</a></li>
+  <li><a href="../modules/pl.file.html">pl.file</a></li>
+  <li><a href="../modules/pl.func.html">pl.func</a></li>
+  <li><a href="../modules/pl.input.html">pl.input</a></li>
+  <li><a href="../modules/pl.lapp.html">pl.lapp</a></li>
+  <li><a href="../modules/pl.lexer.html">pl.lexer</a></li>
+  <li><a href="../modules/pl.luabalanced.html">pl.luabalanced</a></li>
+  <li><a href="../modules/pl.operator.html">pl.operator</a></li>
+  <li><a href="../modules/pl.path.html">pl.path</a></li>
+  <li><a href="../modules/pl.permute.html">pl.permute</a></li>
+  <li><a href="../modules/pl.pretty.html">pl.pretty</a></li>
+  <li><a href="../modules/pl.seq.html">pl.seq</a></li>
+  <li><a href="../modules/pl.sip.html">pl.sip</a></li>
+  <li><a href="../modules/pl.strict.html">pl.strict</a></li>
+  <li><a href="../modules/pl.stringio.html">pl.stringio</a></li>
+  <li><a href="../modules/pl.stringx.html">pl.stringx</a></li>
+  <li><a href="../modules/pl.tablex.html">pl.tablex</a></li>
+  <li><a href="../modules/pl.template.html">pl.template</a></li>
+  <li><a href="../modules/pl.test.html">pl.test</a></li>
+  <li><strong>pl.text</strong></li>
+  <li><a href="../modules/pl.utils.html">pl.utils</a></li>
+  <li><a href="../modules/pl.xml.html">pl.xml</a></li>
+</ul>
+<h2>Topics</h2>
+<ul>
+  <li><a href="../topics/01-introduction.md.html">01-introduction.md</a></li>
+  <li><a href="../topics/02-arrays.md.html">02-arrays.md</a></li>
+  <li><a href="../topics/03-strings.md.html">03-strings.md</a></li>
+  <li><a href="../topics/04-paths.md.html">04-paths.md</a></li>
+  <li><a href="../topics/05-dates.md.html">05-dates.md</a></li>
+  <li><a href="../topics/06-data.md.html">06-data.md</a></li>
+  <li><a href="../topics/07-functional.md.html">07-functional.md</a></li>
+  <li><a href="../topics/08-additional.md.html">08-additional.md</a></li>
+  <li><a href="../topics/09-discussion.md.html">09-discussion.md</a></li>
+</ul>
+<h2>Examples</h2>
+<ul>
+  <li><a href="../examples/seesubst.lua.html">seesubst.lua</a></li>
+  <li><a href="../examples/sipscan.lua.html">sipscan.lua</a></li>
+  <li><a href="../examples/symbols.lua.html">symbols.lua</a></li>
+  <li><a href="../examples/test-cmp.lua.html">test-cmp.lua</a></li>
+  <li><a href="../examples/test-data.lua.html">test-data.lua</a></li>
+  <li><a href="../examples/test-listcallbacks.lua.html">test-listcallbacks.lua</a></li>
+  <li><a href="../examples/test-pretty.lua.html">test-pretty.lua</a></li>
+  <li><a href="../examples/test-symbols.lua.html">test-symbols.lua</a></li>
+  <li><a href="../examples/testapp.lua.html">testapp.lua</a></li>
+  <li><a href="../examples/testclone.lua.html">testclone.lua</a></li>
+  <li><a href="../examples/testconfig.lua.html">testconfig.lua</a></li>
+  <li><a href="../examples/testglobal.lua.html">testglobal.lua</a></li>
+  <li><a href="../examples/testinputfields.lua.html">testinputfields.lua</a></li>
+  <li><a href="../examples/testinputfields2.lua.html">testinputfields2.lua</a></li>
+  <li><a href="../examples/testxml.lua.html">testxml.lua</a></li>
+  <li><a href="../examples/which.lua.html">which.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>pl.text</code></h1>
+
+<p>Text processing utilities.</p>
+<p> This provides a Template class (modeled after the same from the Python
+ libraries, see string.Template). It also provides similar functions to those
+ found in the textwrap module.</p>
+
+<p> See  <a href="../topics/03-strings.md.html#String_Templates">the Guide</a>.</p>
+
+<p> Calling <code>text.format_operator()</code> overloads the % operator for strings to give Python/Ruby style formated output.
+ This is extended to also do template-like substitution for map-like data.</p>
+
+<pre><code>&gt; require 'pl.text'.format_operator()
+&gt; = '%s = %5.3f' % {'PI',math.pi}
+PI = 3.142
+&gt; = '$name = $value' % {name='dog',value='Pluto'}
+dog = Pluto
+</code></pre>
+
+<p> Dependencies: <a href="../modules/pl.utils.html#">pl.utils</a> </p>
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#indent">indent&nbsp;(s, n, ch)</a></td>
+	<td class="summary">indent a multiline string.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#dedent">dedent&nbsp;(s)</a></td>
+	<td class="summary">dedent a multiline string by removing any initial indent.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#wrap">wrap&nbsp;(s, width)</a></td>
+	<td class="summary">format a paragraph into lines so that they fit into a line width.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#fill">fill&nbsp;(s, width)</a></td>
+	<td class="summary">format a paragraph so that it fits into a line width.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Template:substitute">Template:substitute&nbsp;(tbl)</a></td>
+	<td class="summary">substitute values into a template, throwing an error.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Template:safe_substitute">Template:safe_substitute&nbsp;(tbl)</a></td>
+	<td class="summary">substitute values into a template.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Template:indent_substitute">Template:indent_substitute&nbsp;(tbl)</a></td>
+	<td class="summary">substitute values into a template, preserving indentation.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#format_operator">format_operator&nbsp;()</a></td>
+	<td class="summary">Python-style formatting operator &mdash;&mdash;&mdash;
+ (see <a href="http://lua-users.org/wiki/StringInterpolation">the lua-users wiki</a>) &mdash;</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "indent"></a>
+    <strong>indent&nbsp;(s, n, ch)</strong>
+    </dt>
+    <dd>
+    indent a multiline string. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  the string</li>
+       <li><code><em>n</em></code>:  the size of the indent</li>
+       <li><code><em>ch</em></code>:  the character to use when indenting (default &lsquo; &rsquo;)</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        indented string
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "dedent"></a>
+    <strong>dedent&nbsp;(s)</strong>
+    </dt>
+    <dd>
+    dedent a multiline string by removing any initial indent. 
+ useful when working with [[..]] strings.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  the string</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        a string with initial indent zero.
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "wrap"></a>
+    <strong>wrap&nbsp;(s, width)</strong>
+    </dt>
+    <dd>
+    format a paragraph into lines so that they fit into a line width. 
+ It will not break long words, so lines can be over the length
+ to that extent.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  the string</li>
+       <li><code><em>width</em></code>:  the margin width, default 70</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        a list of lines
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "fill"></a>
+    <strong>fill&nbsp;(s, width)</strong>
+    </dt>
+    <dd>
+    format a paragraph so that it fits into a line width. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  the string</li>
+       <li><code><em>width</em></code>:  the margin width, default 70</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        a string
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/pl.text.html#wrap">wrap</a>
+    </ul>
+</dd>
+    <dt>
+    <a name = "Template:substitute"></a>
+    <strong>Template:substitute&nbsp;(tbl)</strong>
+    </dt>
+    <dd>
+    substitute values into a template, throwing an error. 
+ This will throw an error if no name is found.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>tbl</em></code>:  a table of name-value pairs.</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Template:safe_substitute"></a>
+    <strong>Template:safe_substitute&nbsp;(tbl)</strong>
+    </dt>
+    <dd>
+    substitute values into a template. 
+ This version just passes unknown names through.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>tbl</em></code>:  a table of name-value pairs.</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Template:indent_substitute"></a>
+    <strong>Template:indent_substitute&nbsp;(tbl)</strong>
+    </dt>
+    <dd>
+    substitute values into a template, preserving indentation.  <br>
+ If the value is a multiline string <em>or</em> a template, it will insert
+ the lines at the correct indentation. <br>
+ Furthermore, if a template, then that template will be subsituted
+ using the same table.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>tbl</em></code>:  a table of name-value pairs.</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "format_operator"></a>
+    <strong>format_operator&nbsp;()</strong>
+    </dt>
+    <dd>
+    Python-style formatting operator &mdash;&mdash;&mdash;
+ (see <a href="http://lua-users.org/wiki/StringInterpolation">the lua-users wiki</a>) &mdash; 
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

@@ -1,0 +1,637 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Value Mapping</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="../basics/index.html", title="Basic Concepts">Basics</a></li>
+			<li><a href="index.html", title="CORBA Support">CORBA</a>
+				<div class="outside"><div class="inside"><ul>
+					<li><a href="config.html", title="Configuration Options">Config</a></li>
+					<li><a href="loadidl.html", title="Loading IDL">IDL</a></li>
+					<li><strong>Mapping</strong></li>
+					<li><a href="features.html", title="Additional Features">Features</a></li>
+					<li><a href="intercept.html", title="Intercepting Invocations">Intercept</a></li>
+				</ul></div></div>
+			</li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="../arch/index.html", title="Internal Architecture">Arch</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Value Mapping</h1>
+<p>CORBA defines a type set much larger than Lua.
+Therefore, many different IDL types are mapped to a single Lua type, for example all compound IDL types are mapped to Lua tables with different structures.
+This provides a higher degree of flexibility because a single Lua value may be a valid <code>struct</code> and <code>exception</code> value at the same time.
+But, this also brings problems since sometimes OiL cannot infer the correct IDL type a Lua value must be encoded when it is sent through the network.
+In this section, we describe the mapping OiL uses to convert IDL types to Lua types and vice-versa.</p>
+
+<h3>Index</h3>
+
+<ol>
+	<li><a href="#basic">Basic Types</a></li>
+	<li><a href="#enum">Enumerations</a></li>
+	<li><a href="#struct">Structures</a></li>
+	<li><a href="#sequence">Sequences</a></li>
+	<li><a href="#array">Arrays</a></li>
+	<li><a href="#union">Unions</a></li>
+	<li><a href="#interface">Interfaces</a>
+		<ul>
+			<li><a href="#operation">Operations</a></li>
+			<li><a href="#attribute">Attributes</a></li>
+			<li><a href="#exception">Exceptions</a></li>
+		</ul>
+	</li>
+	<li><a href="#TypeCode">TypeCodes</a></li>
+	<li><a href="#any">Anys</a></li>
+</ol>
+
+<h2><a name="basic">Basic Types</a></h2>
+
+<p>All CORBA numeric types are mapped into the <code>number</code> type of Lua.
+Usually, the number type of Lua has the same precision of the <code>double</code> of C, but this can be changed when Lua is compiled.
+<!-- Since all CORBA numeric types are mapped into the same type in Lua, then the information of the actual CORBA type is lost, for example, if a number is used as an <code>any</code>, then it is marshaled as a CORBA double regardless its original type. --></p>
+
+<p>All CORBA string types are mapped to the <code>string</code> type of Lua. Therefore, there are no constrains about the size of string values inside Lua.
+The <code>char</code> type is also mapped into the <code>string</code> type of Lua, but <code>char</code> values are strings with a single character.
+<!-- Again, the actual string type is lost when the value is mapped into Lua. By default all Lua strings are mapped to the unbounded CORBA string type. --></p>
+
+<p>The CORBA <code>boolean</code> type is mapped into the <code>boolean</code> type of Lua. However, when a value of type other than <code>boolean</code> is marshaled into a CORBA boolean it is mapped into <code>true</code>, except for <code>nil</code> that is mapped into <code>false</code>.</p>
+
+<h2><a name="enum">Enumerations</a></h2>
+
+<p>Enumeration values are mapped into a string containing the name of the enum value.
+For example, consider the following IDL definition:</p>
+
+<pre>
+enum WeekDay{ sun, mon, tue, wed, thu, fri, sat };
+interface Calendar {
+  void setday(in WeekDay day);
+  void nextday();
+  WeekDay today();
+};
+</pre>
+
+<p>Then the following code tests whether the result of operation <code>today</code> returns the enumeration value <code>sun</code></p>
+
+<pre>
+if calendar:today() == "sun" then
+  print "Go home and rest!"
+end
+</pre>
+
+<p>On the other hand, both strings and numbers can be marshaled into enum values if they match the name or the numeric value of an enumeration.
+For example, the following lines produce the same results.</p>
+
+<pre>
+calendar:setday("sun")
+calendar:setday(0)
+</pre>
+
+<h2><a name="struct">Structures</a></h2>
+
+<p>Structure values are mapped to a Lua table that maps all the name of the fields defined in the IDL definition into their proper values.
+For example, consider the following IDL definition.</p>
+
+<pre>
+struct Book {
+  long   isbn;
+  string title;
+  string author;
+  string publisher;
+  long   year;
+};
+interface Library {
+  Book get_book(in long isbn);
+  void add_book(in Book book);
+};
+</pre>
+
+<p>Then, the following code prints the fields of the <code>Book</code> structure.</p>
+
+<pre>
+book = library:get_book(book_id)
+print("ISBN:"     , book.isbn     )
+print("Title:"    , book.title    )
+print("Author:"   , book.author   )
+print("Publisher:", book.publisher)
+print("Year:"     , book.year     )
+</pre>
+
+<p>In order to marshal a <code>struct</code> value, you must provide a value (<i>e.g.</i> a table) that index all the <code>struct</code> fields to its proper values.
+For instance, to marshal a structure of type <code>Book</code> you could use one of the following possibilities.</p>
+
+<pre>
+-- table containing the actual values
+library:add_book({
+  isbn      = 8590379817,
+  title     = "Programming in Lua",
+  author    = "Roberto Ierusalimschy",
+  publisher = "Lua.org",
+  year      = 2003,
+})
+
+-- userdata that index field values into its proper values
+local books = database:query([[
+  SELECT isbn, title, author, publisher, year
+  FROM Books
+  WHERE year > 2000
+]])
+for _, book in ipairs(books) do
+  -- book is a userdata used to get
+  -- values from a database query
+  library:add_book(book)
+end
+</pre>
+
+<h2><a name="sequence">Sequences</a></h2>
+
+<p>Sequence values are mapped to Lua arrays containing the values of the sequence.
+Actually, Lua arrays are tables mapping values at integer indices ranging from 1 to the number of elements in the array.
+In order to marshal sequences, you must create a Lua array that contains the values of the sequence.
+For example, suppose the following IDL definition.</p>
+
+<pre>
+interface NumberCompare {
+  double max(in sequence&lt;long&gt; numbers);
+};
+</pre>
+
+<p>Then, the following code invokes <code>max</code> with a sequence of <code>long</code> values.</p>
+
+<pre>
+print("Maximum is:", compare:max({64,33,52,15,29}))
+</pre>
+
+<p>If a sequence contains <code>nil</code> values then it must define field <code>n</code> that contains the number of elements of the sequence.
+All sequences creates by OiL provides this field <code>n</code>.</p>
+
+<p>For better performance, sequences of octets are mapped to a string containing the character value corresponding to each octet of the sequence.
+This is possible because Lua strings can contain any character value, including the NULL character.</p>
+
+<h2><a name="array">Arrays</a></h2>
+
+<p>Array values are mapped similarly to the way sequences are.
+However, Lua arrays marshaled as CORBA arrays must have the exact number of elements as defined by the CORBA array type.</p>
+
+<p>Again, for better performance, arrays of octets are mapped to a string containing the character values corresponding to each octet of the array.</p>
+
+<h2><a name="union">Unions</a></h2>
+
+<p>Union values are mapped to tables containing information about the discriminator and the actual union value.
+Union tables contain the following fields:</p>
+
+<pre>
+_switch = &lt;value of the discriminator&gt;
+_value = &lt;value of the selected union field&gt;
+_field = &lt;name of the selected union field&gt;
+</pre>
+
+<p>Additionally, union values offer shortcuts to its value: you can access the value of the union by the selected union field name, for example, suppose the following IDL union definition:</p>
+
+<pre>
+union MyUnion switch(short) {
+      case 1: string onechoice;
+      case 2: long otherchoice;
+      case 3: double anotherchoice;
+}
+</pre>
+
+<p>Then you can access the union value like the following:</p>
+
+<pre>
+local union = myobject:get_unionvalue()
+if union._switch == 1 then
+      print(union.onechoice)
+elseif union._switch == 2 then
+      print(union.otherchoice)
+elseif union._switch == 3 then
+      print(union.anotherchoice)
+end
+</pre>
+
+<p>In order to marshal some union value you must create a table that matches one of the following options:</p>
+
+<pre>
+_switch = &lt;value of the discriminator&gt;
+_value = &lt;value of the selected union field&gt;
+
+_field = &lt;name of the selected union field&gt;
+_value = &lt;value of the selected union field&gt;
+</pre>
+
+<p>You can also use the union shortcuts to create union values, so it is possible to place the union value at the union field name, so OiL will assume the corresponding discriminator. For example, suppose the IDL union described above, than you could create a matching union value using one of the following options (the formats are presented in order of precedence):</p>
+
+<pre>
+union = { _switch = 0 }
+union = { _switch = 2, _value = 1024 }
+union = { _switch = 3, anotherchoice = 0.625 }
+union = { _field = "otherchoice", _value = 1024 }
+union = { _field = "anotherchoice", anotherchoice = 0.625 }
+union = { onechoice = "my string value" }
+</pre>
+
+<h2><a name="interface">Interfaces</a></h2>
+
+<p>Unlike other IDL types, when an object is transfered through the network it is not copied.
+Instead, only a reference for the object is sent through the network.
+Therefore, interface types actually denote object references, which are mapped to Lua as tables that have an opaque structure.
+Both servants and proxies are object references, but the former is a reference for a local object and the later is typically a reference for a remote one.
+Additionally, both servants and proxies provide methods matching the attributes and methods of the interface they implement, which can be called to perform invocation on the referenced object.
+The following sections, describe the mappings of operations, attributes and exceptions defined in IDL interfaces.</p>
+
+<!--
+Therefore, to create a reference for a local object you shall register it as a servant using method <a href="../basics/brokers.html#newservant"><code>newservant</code></a><code>(impl [, key, type])</code>.
+However, this operation on CORBA brokers require that the parameter <code>type</code> is provided, which must denote the IDL interface implemented by the object.</p>
+
+<p>The object supplied must provide the attributes and operations defined in the interface.
+Since OiL is a dynamic ORB, the implementation object does not have to implement the attributes and operations until they are accessed by CORBA clients.
+Furthermore, OiL implies no additional restrictions on the implementation of servant besides the fact that it must map attribute and operation names to their values and implementation.
+Therefore, an implementation object may be any indexable value of Lua, including an <code>userdata</code>.</p>
+-->
+
+<h3><a name="operation">Operations</a></h3>
+
+<p>Operations are mapped to methods that receive as parameters the values of all <code>in</code> and <code>inout</code> parameters of the operation.
+The values of these parameters are in the same relative order as in the IDL definition.
+Furthermore, these methods return the value returned by the IDL operation followed by the output values of each <code>out</code> and <code>inout</code> parameters.
+Again, the values of these parameters are returned in the same relative order as defined in the IDL definition.
+Operations, which return type is <code>void</code>, does not return an additional value before the output value of the <code>out</code> and <code>inout</code> parameters.</p>
+
+<p>For example, suppose the following IDL interface, which defines an operation to connect a channel to a given host defined by parameter <code>host</code>.</p>
+
+<pre>
+broker:loadidl[[
+  interface Channel {
+    boolean connect(in string host, inout long attempts, out long port);
+  };
+]]
+</pre>
+
+<!-- p>Parameter <code>attempts</code> is used to define the max number of attempts to establish the connection, and also informs the actual number of attempts until the successful or failed connection.
+Parameter <code>port</code> is used to inform the port actually used (from a previously defined set of port numbers) in the successful attempt to establish the connection.
+The returned value indicates the success or failure of the connection.</p -->
+
+<p>The code below invokes operation <code>connect</code> on a proxy that implements the <code>Channel</code> interface.
+The value of parameter <code>host</code> is the string <code>"localhost"</code>,  the value of parameter <code>attempts</code> is number 3.
+The returned value is stored in variable <code>success</code>.
+The resulting values of <code>inout</code> parameter <code>attempts</code> and <code>out</code> parameter <code>port</code> are stored in the local variables <code>attempts</code> and <code>port</code>, respectively.</p>
+
+<pre>
+local proxy = broker:newproxy(oil.readIOR("channel.ior"), "Channel")
+
+local success, attempts, port = proxy:connect("localhost", 3)
+
+if success then
+  io.write("successfully connect to host ", host,
+           " at port ", port,
+           " after ", attempts, " attempts.")
+else
+  io.write("unable to connect to a port of host ", host,
+           " after 3 attempts.")
+end
+</pre>
+
+<p>The same mappings is valid for implementation of servants.
+Therefore, a possible implementation for the interface above would be</p>
+
+<pre>
+local impl = {}
+function impl:connect(host, max)
+  for actual = 1, max do
+    local port = self:getnextport()
+    conn = socket.connect(host, port)
+    if conn then
+      self.conn = conn
+      return true,   -- returned value
+             actual, -- value of attempts parameter
+             port    -- value of port parameter
+    end
+  end
+  return false, -- returned value
+         max,   -- value of parameter 'attempts'
+         -1     -- value of parameter 'port'
+end
+
+broker:newobject(impl, nil, "Channel")
+</pre>
+
+<h3><a name="attribute">Attributes</a></h3>
+
+<p>Generally, attributes in an IDL are mapped as a pair of <code>_get_</code> and <code>_set_</code> methods of the Lua object.
+For example, suppose the following IDL definition.</p>
+
+<pre>
+broker:loadidl[[
+  interface Hello {
+    attribute long count;
+    void say_hello_to(in string name);
+  };
+]]
+</pre>
+
+<p>Then, all references to objects (<em>e.g.</em> proxies) of interface <code>Hello</code> provides operations <code>_get_count()</code> and <code>_set_count(value)</code>, which are used to get and change the value of the attribute <code>count</code>, respectively.
+This is illustrated in the example below.</p>
+
+<pre>
+local proxy = broker:newproxy(oil.readIOR("hello.ior"), "Hello")
+
+print("Value of count is:", proxy:_get_count())
+proxy:_set_count(0)
+</pre>
+
+<p>Similarly, an object that is registered as a servant with interface <code>Hello</code> could provide the following implementation.</p>
+
+<pre>
+local impl = { names = {} }
+function impl:_get_count()
+  return #self.names
+end
+function impl:_set_count(value)
+  if value < #self.names then
+    for i = value+1, #self.names do
+      self.names[i] = nil
+    end
+  end
+end
+function impl:say_hello_to(name)
+  self.names[#self.names+1] = name
+  print("Hello "..name.."!")
+end
+
+broker:newobject(impl, nil, "Hello")
+</pre>
+
+<p>Alternatively, an attribute is also mapped as a field of the Lua object.
+However, this is only valid for the implementation object of a servant.
+This means that attributes cannot be accessed as fields of proxies.
+The example below, shows an alternative implementation for a servant with interface <code>Hello</code>.</p>
+
+<pre>
+local impl = { count = 0 }
+function impl:say_hello_to(name)
+  self.count = self.count + 1
+  print("Hello "..name.."!")
+end
+
+broker:newobject(impl, nil, "Hello")
+</pre>
+
+<h3><a name="exception">Exceptions</a></h3>
+
+<p>Exceptions are mapped to Lua errors, but instead of a textual message, exceptions are errors that carry a table as the error value.
+Like structures, this table maps the name of fields defined in the IDL to their values.
+However, it contains an additional field at index 1 that contains the repository ID of the exception.
+For example, suppose the following IDL exception definition.</p>
+
+<pre>
+broker:loadidl[[
+  exception CompilationError {
+    string script;
+    string message;
+  };
+  exception ExecutionError {
+    string script;
+    string message;
+  };
+
+  interface RemoteLua {
+    void run_script(in string path)
+      raises (CompilationError, ExecutionError);
+  };
+]]
+</pre>
+
+<p>A valid exception value for this definition would be</p>
+
+<pre>
+local impl = {}
+function impl:run_script(path)
+  local chunk, errmsg = loadfile(path)
+  if not chunk then
+    -- raise CompilationError exception
+    error{ "IDL:CompilationError:1.0",
+      script = path,
+      message = errmsg,
+    }
+  end
+  local success, errmsg = pcall(chunk)
+  if not success then
+    -- raise ExecutionError exception
+    error{ "IDL:ExecutionError:1.0",
+      script = path,
+      message = errmsg,
+    }
+  end
+end
+
+broker:newobject(impl, nil, "RemoteLua")
+</pre>
+
+<p>Therefore, to catch an exception you shall use the same mechanisms used to catch Lua errors, as illustrated in the example below.</p>
+
+<pre>
+local remoteLua = broker:newproxy(oil.readfrom("ref.ior"), "RemoteLua")
+
+local success, errmsg = oil.pcall(remoteLua.run_script, remoteLua, "/usr/lua/scripts/error.lua")
+if not success then
+  print("Caught an exception with repID:", errmsg[1])
+  print("  Failed scrpt:", errmsg.script)
+  print("  Error message:", errmsg.message)
+end
+</pre>
+
+<p>The use of <code>oil.pcall</code> instead of the ordinary <code>pcall</code> is due to current limitations of the OiL implementation, as discussed in section <a href="../basics/threads.html#limitations">Cooperative Multithreading</a>.</p>
+
+<h2><a name="TypeCode">TypeCodes</a></h2>
+
+<p>TypeCode values are mapped to a table containing the fields that describes the type accordingly to its representation in CORBA's CDR.
+Basic types are represented by pre-defined tables exported by module <code>oil.corba.idl</code>, as listed below.</p>
+
+<table align="center">
+	<!--<caption>Basic type IDL descriptors</caption>-->
+	<thead>
+		<tr><th>Descriptor</th><th>CORBA type</th></tr>
+	</thead>
+	<tbody>
+		<tr><td><code>oil.corba.idl.void    </code></td><td>void          </td></tr>
+		<tr><td><code>oil.corba.idl.short   </code></td><td>short         </td></tr>
+		<tr><td><code>oil.corba.idl.long    </code></td><td>long          </td></tr>
+		<tr><td><code>oil.corba.idl.ushort  </code></td><td>unsigned short</td></tr>
+		<tr><td><code>oil.corba.idl.ulong   </code></td><td>unsigned long </td></tr>
+		<tr><td><code>oil.corba.idl.float   </code></td><td>float         </td></tr>
+		<tr><td><code>oil.corba.idl.double  </code></td><td>double        </td></tr>
+		<tr><td><code>oil.corba.idl.boolean </code></td><td>boolean       </td></tr>
+		<tr><td><code>oil.corba.idl.char    </code></td><td>char          </td></tr>
+		<tr><td><code>oil.corba.idl.octet   </code></td><td>octet         </td></tr>
+		<tr><td><code>oil.corba.idl.any     </code></td><td>any           </td></tr>
+		<tr><td><code>oil.corba.idl.TypeCode</code></td><td>TypeCode      </td></tr>
+		<tr><td><code>oil.corba.idl.string  </code></td><td>string        </td></tr>
+		<tr><td><code>oil.corba.idl.object  </code></td><td>CORBA::Object </td></tr>
+	</tbody>
+</table>
+
+<p>Constructed types descriptors must present a pre-defined structure.
+Module <code>oil.corba.idl</code> provides constructors for creating descriptors for these types.
+Below, there are examples of how to use these construtors to create descriptors that can be used as TypeCodes.</p>
+
+<h3>Enumeration</h3>
+<pre>
+local MyEnum = oil.corba.idl.enum{
+  -- typedef information
+  repID = "IDL:MyEnum:1.0",
+  name = "MyEnum",
+  -- list of enumeration values
+  "text", "number", "logic",
+}
+</pre>
+
+<h3>Structure</h3>
+<pre>
+local MyStruct = oil.corba.idl.struct{
+  -- typedef information
+  repID = "IDL:MyStruct:1.0",
+  name = "MyStruct",
+  -- list of struct fields
+  { type = oil.corba.idl.string , name = "text"   },
+  { type = oil.corba.idl.double , name = "number" },
+  { type = oil.corba.idl.boolean, name = "logic"  },
+}
+</pre>
+
+<h3>Sequence</h3>
+<pre>
+local MyStringSeq  = oil.corba.idl.sequence{ oil.corba.idl.string }
+local MyBoundedSeq = oil.corba.idl.sequence{ oil.corba.idl.string, maxlength = 100 }
+</pre>
+
+<h3>Array</h3>
+<pre>
+local MyStringArray = oil.corba.idl.array{ oil.corba.idl.string, length = 100 }
+</pre>
+
+<h3>Union</h3>
+<pre>
+local MyUnion = oil.corba.idl.union{
+  -- typedef information
+  repID = "IDL:MyUnion:1.0",
+  name = "MyUnion",
+  -- union discriminant definition
+  switch = oil.corba.idl.short,
+  default = 0, -- first option is the default
+  -- list of union options
+  { label = 1, type = oil.corba.idl.string , name = "text"   },
+  { label = 2, type = oil.corba.idl.double , name = "number" },
+  { label = 3, type = oil.corba.idl.boolean, name = "logic"  },
+}
+</pre>
+
+<h3>Exception</h3>
+<pre>
+local MyExcept = oil.corba.idl.union{
+  -- typedef information
+  repID = "IDL:MyExcept:1.0",
+  name = "MyExcept",
+  -- list of exception members
+  { type = oil.corba.idl.string, name = "message" },
+  { type = oil.corba.idl.string, name = "file"    },
+  { type = oil.corba.idl.long  , name = "line"    },
+}
+</pre>
+
+<h3>Object</h3>
+<pre>
+local HelloObjectRef = oil.corba.idl.Object{
+  repID = "IDL:Hello:1.0",
+  name = "Hello",
+}
+</pre>
+
+<h2><a name="any">Anys</a></h2>
+
+<p><code>any</code> values are mapped as a table containing the actual value at field <code>_anyval</code>.
+The descriptor of the actual CORBA type of a <code>any</code> is the metatable of this container table.
+This way, unmashaled <code>any</code> values can be used forward as the value of function arguments of type <code>any</code> and be marshaled with the proper CORBA type.
+The same approach is used to marshal values as <code>any</code> values, that is, the metatable of these values must be the descriptor of its actual CORBA type.
+Every unmarshaled value created by OiL that is mapped into a table (e.g. struct, union, sequence, arrays, etc) already defines its metatable as the related IDL type descriptor.</p>
+
+<p>In order to marshal some value as an <code>any</code> you must set its meta-table to the type descritor of its proper CORBA type.
+For values mapped to Lua types other than table, OiL defines a default mapping to allow these values to be marshaled as <code>any</code>s.
+These default mapping is illustrated in the table below.</p>
+
+<table align="center" width="300">
+	<!--<caption>Basic type IDL descriptors</caption>-->
+	<thead>
+		<tr><th><center>Type of Lua Value</center></th><th><center>Default Type of Any</center></th></tr>
+	</thead>
+	<tbody align="center">
+		<tr><td><code>nil    </code></td><td><code>null   </code></td></tr>
+		<tr><td><code>number </code></td><td><code>double </code></td></tr>
+		<tr><td><code>string </code></td><td><code>string </code></td></tr>
+		<tr><td><code>boolean</code></td><td><code>boolean</code></td></tr>
+	</tbody>
+</table>
+
+<p>To marshal values of these types as <code>any</code>s with a CORBA type different from the default one, you must create a table that contains a field <code>_anyval</code> with the actual value of the <code>any</code> and then set the metatable of this wrapping table to the proper CORBA type.
+Alternatively, the application may create values with custom metatables.
+In that case, the actual CORBA type is defined by the field <code>__type</code> of the custom metatable.
+For illustrative purpose, the code below can be used to create <code>any</code>s with values of different types.</p>
+
+<pre>
+-- any value containing a long
+local longany = setmetatable({ _anyval = 4 }, oil.corba.idl.long)
+
+-- any value containing a struct
+local mystruct = { ... }
+local structany1 = setmetatable(mystruct, oil.corba.idl.struct{ ... })
+
+-- any value containing a struct with a custom metatable
+local mystruct = setmetatable({ ... }, {
+       __index = function(tab, key) ... end,
+       __type  = oil.corba.idl.struct{ ... },
+})
+local structany2 = mystruct
+
+-- any value containing a sequence of anys
+local myanyseq = { longany, structany1, structany2 }
+local seqany = setmetatable(myanyseq, oil.corba.idl.sequence{ oil.corba.idl.any })
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

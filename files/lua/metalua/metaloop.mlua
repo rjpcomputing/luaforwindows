@@ -1,0 +1,72 @@
+require 'metalua.compiler'
+
+module ('metaloop', package.seeall)
+
+PRINT_AST  = true
+LINE_WIDTH = 60
+PROMPT     = "M> "
+PROMPT2    = ">> "
+
+do -- set readline() to a line reader, either editline otr a default
+   local status, _ = pcall(require, 'editline')
+   if status then
+      local rl_handle = editline.init 'metalua'
+      readline = |p| rl_handle:read(p) 
+   else
+      readline = |p| io.write(p) and io.read '*l'
+   end
+end
+
+function reached_eof(lx, msg)
+   return lx:peek().tag=='Eof' or msg:find "token `Eof"
+end
+
+printf ("Metalua, interactive REPLoop.\n"..
+        "(c) 2006-2008 <metalua@gmail.com>")
+
+function run()
+   local lines = { }
+   while true do
+      local src, lx, ast, f, results, success
+      repeat
+         local line = readline(next(lines) and PROMPT2 or PROMPT)
+         if not line then print(); os.exit(0) end -- line==nil iff eof on stdin
+         if not next(lines) then
+            line = line:gsub('^%s*=', 'return ')
+         end
+         table.insert(lines, line)
+         src = table.concat (lines, "\n")
+      until #line>0
+      
+      lx  = mlc.lexstream_of_luastring(src) 
+      success, ast = pcall(mlc.ast_of_lexstream, lx)
+      if success then
+         success, f = pcall(mlc.function_of_ast, ast, '=stdin')
+         if success then
+            results = { pcall(f) }
+            success = table.remove (results, 1)
+            if success then
+               -- Success!
+               table.iforeach(|x| table.print(x, LINE_WIDTH), results)
+               lines = { }
+            else
+               print "Evaluation error:"
+               print (results[1])
+               lines = { }
+            end
+         else
+            print "Can't compile into bytecode:"
+            print (f)
+            lines = { }
+         end
+      else
+         -- If lx has been read entirely, try to read another
+         -- line before failing.
+         if not reached_eof(lx, ast) then
+            print "Can't compile source into AST:"
+            print (ast)
+            lines = { } 
+         end
+      end
+   end
+end

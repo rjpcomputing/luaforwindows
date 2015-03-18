@@ -1,0 +1,313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Copas - Coroutine Oriented Portable Asynchronous Services for Lua</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+		<img alt="Copas logo" src="copas.png"/>
+	</a></div>
+	<div id="product_name"><big><strong>Copas</strong></big></div>
+	<div id="product_description">Coroutine Oriented Portable Asynchronous Services for Lua</div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+<div id="navigation">
+<h1>Copas</h1>
+<ul>
+    <li><a href="index.html">Home</a>
+        <ul>
+            <li><a href="index.html#over">Overview</a></li>
+            <li><a href="index.html#status">Status</a></li>
+            <li><a href="index.html#download">Download</a></li>
+            <li><a href="index.html#dependencies">Dependencies</a></li>
+            <li><a href="index.html#history">History</a></li>
+            <li><a href="index.html#credits">Credits</a></li>
+            <li><a href="index.html#contact">Contact us</a></li>
+        </ul>
+    </li>
+    <li><strong>Manual</strong>
+        <ul>
+            <li><a href="manual.html#install">Installing</a></li>
+            <li><a href="manual.html#introduction">Introduction</a></li>
+            <li><a href="manual.html#why">Why use Copas?</a></li>
+            <li><a href="manual.html#using">Using Copas</a></li>
+            <li><a href="manual.html#control">Controlling Copas</a></li>
+        </ul>
+    </li>
+    <li><a href="reference.html">Reference</a></li>
+    <li><a href="http://luaforge.net/projects/copas/">Project</a>
+        <ul>
+            <li><a href="http://luaforge.net/tracker/?group_id=100">Bug Tracker</a></li>
+            <li><a href="http://luaforge.net/scm/?group_id=100">CVS</a></li>
+        </ul>
+    </li>
+    <li><a href="license.html">License</a></li>
+</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+<h2><a name="install"></a>Installing</h2>
+
+<p>You can install Copas using <a href="http://www.luarocks.org">LuaRocks</a>:</p>
+
+<pre class="example">
+luarocks install copas
+</pre>
+
+<h2><a name="introduction"></a>Introduction to Copas</h2>
+
+<p>
+Copas is a dispatcher that can help a lot in the creation of servers based on
+<a href="http://www.cs.princeton.edu/~diego/professional/luasocket/">LuaSocket</a>.
+Here we present a quick introduction to Copas and how to implement a server with it.
+</p>
+
+<p>
+Assuming you know how to implement the desired server protocol, the first thing you have
+to do in order to create a Copas based server is create a server socket to receive the
+client connections. To do this you have to bind a host and a port using LuaSocket:
+</p>
+
+<pre class="example">
+server = socket.bind(host, port)
+</pre>
+
+<p>Then you have to create a handler function that implements the server protocol.
+The handler function will be called with a socket for each client connection
+and you can use <code>copas.send()</code> and <code>copas.receive()</code> on that socket to
+exchange data with the client.</p>
+
+<p>For example, a simple echo handler would be:</p>
+
+<pre class="example">
+function echoHandler(skt)
+  while true do
+    local data = copas.receive(skt)
+    if data == "quit" then
+      break
+    end
+    copas.send(skt, data)
+  end
+end
+</pre>
+
+<p>If all you will do with the socket is send and receive data, you may alternatively use
+<code>copas.wrap()</code> to let your code more close to a standard LuaSocket use:</p>
+
+<pre class="example">
+function echoHandler(skt)
+  skt = copas.wrap(skt)
+  while true do
+    local data = skt:receive()
+    if data == "quit" then
+      break
+    end
+    skt:send(data)
+  end
+end
+</pre>
+
+<p>
+To register the server socket with Copas and associate it with the corresponding
+handler we do:
+</p>
+
+<pre class="example">
+copas.addserver(server, echoHandler)
+</pre>
+
+<p>Finally, to start Copas and all the registered servers we just call:</p>
+
+<pre class="example">
+copas.loop()
+</pre>
+
+<p>As long as every handler uses Copas's <code>send</code> and <code>receive</code>,
+simultaneous connections will be handled transparently by Copas for every registered
+server.</p>
+
+<p>
+Since Copas is coroutine based, using it within a Lua <code>pcall</code> or
+<code>xpcall</code> context does not work with Lua 5.1 yielding. If you need to use 
+any of those functions in your handler we strongly suggest using  
+<a href="http://coxpcall.luaforge.net/">coxpcall</a>, a coroutine safe
+version of the Lua 5.1 protected calls. For an example of this usage please check Xavante.
+</p>
+
+<h2><a name="why"></a>Why use Copas?</h2>
+
+<p>
+For those who already have a server implemented, here is an explanation of why and
+how to migrate to Copas. In a typical LuaSocket server usually there is a dispatcher
+loop like the one below:
+</p>
+
+<pre class="example">
+server = socket.bind(host, port)
+while true do
+  skt = server:accept()
+  handle(skt)
+end
+</pre>
+
+<p>Here <code>handle</code> is a function that implements the server protocol using LuaSocket's
+socket functions:</p>
+
+<pre class="example">
+function handle(skt)
+  ...
+  -- gets some data from the client - "the request"
+  reqdata = skt:receive(pattern)
+  ...
+  -- sends some data to the client - "the response"
+  skt:send(respdata)
+  ...
+end
+</pre>
+
+<p>
+The problem with that approach is that the dispatcher loop is doing a busy wait
+and can handle just one connection at a time. To solve the busy waiting we can
+use LuaSocket's <code>socket.select()</code>, like in:</p>
+
+<pre class="example">
+server = socket.bind(host, port)
+reading = {server}
+while true do
+  input = socket.select(reading)
+  skt = input:accept()
+  handle(skt)
+end
+</pre>
+
+<p>
+While this helps our CPU usage, the server is still accepting only one client
+connection at a time. To handle more than one client the server must be able to
+multitask, and the solution usually involves some kind of threads.</p>
+<p>The dispatcher loop then becomes something like:</p>
+
+<pre class="example">
+server = socket.bind(host, port)
+reading = {server}
+while true do
+  input = socket.select(reading)
+  skt = input:accept()
+  newthread(handle(skt))
+end
+</pre>
+
+<p>
+where <code>newthread</code> is able to create a new thread that executes
+independently the handler function.</p>
+
+<p>
+The use of threads in the new loop solves the multitasking problem but may
+create another. Some platforms does not offer multithreading or maybe you
+don't want to use threads at all.
+</p>
+
+<p>
+If that is the case, using Lua's coroutines may help a lot, and that's
+exactly what Copas does. Copas implements the dispatcher loop using coroutines
+so the handlers can multitask without the use of threads.</p>
+
+<h2><a name="using"></a>Using Copas with an existing server</h2>
+
+<p>
+If you already have a running server using some dispatcher like the previous
+example, migrating to Copas is quite simple, usually consisting of just three
+steps.
+</p>
+
+<p>
+First each server socket and its corresponding handler function have to be registered
+with Copas:</p>
+
+<pre class="example">
+server = socket.bind(host, port)
+copas.addserver(server, handle)
+</pre>
+
+<p>Secondly the server handler has to be adapted to use Copas. One solution
+is to use Copas <code>send</code> and <code>receive</code> functions to receive
+and send data to the client:</p>
+
+<pre class="example">
+function handle(skt)
+  ...
+  -- gets some data from the client - "the request"
+  reqdata = copas.receive(skt, pattern)
+  ...
+  -- sends some data to the client - "the response"
+  copas.send(skt, respdata)
+   ...
+end
+</pre>
+
+<p>The other alternative is to wrap the socket in a Copas socket. This
+allows your handler code to remain basically the same:</p>
+
+<pre class="example">
+function handle(skt)
+  -- this line may suffice for your handler to work with Copas
+  skt = copas.wrap(skt)
+  -- now skt behaves like a LuaSocket socket but uses Copas'
+  ...
+  -- gets some data from the client - "the request"
+  reqdata = skt:receive(pattern)
+  ...
+  -- sends some data to the client - "the response"
+  skt:send(respdata)
+   ...
+end
+</pre>
+
+<p>Finally, to run the dispatcher infinite loop you just call:</p>
+
+<pre class="example">
+copas.loop()
+</pre>
+
+<p>During the loop Copas' dispatcher accepts connections from clients and
+automatically calls the corresponding handler functions.</p>
+
+<h2><a name="control"></a>Controlling Copas</h2>
+
+<p>
+If you do not want copas to simply enter an infinite loop (maybe you have to
+respond to events from other sources, such as an user interface), you should
+have your own loop and just call <code>copas.step()</code> at each iteration of
+the loop:
+</p>
+
+<pre class="example">
+while condition do
+  copas.step()
+  -- processing for other events from your system here
+end
+</pre>
+
+
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
+	<p><small>$Id: manual.html,v 1.19 2009/03/24 22:04:26 carregal Exp $</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+</body>
+</html>

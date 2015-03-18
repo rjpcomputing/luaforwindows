@@ -1,0 +1,54 @@
+-{ extension 'xmatch' }
+
+WIDTH=60
+function p(msg) io.write(msg..' ':rep(WIDTH-#msg)) end
+
+----------------------------------------------------------------------
+p "match as an expression"
+print(match 1 with 1 -> 'ok' | 2 -> 'KO')
+
+----------------------------------------------------------------------
+p "global match function"
+match function g
+| x if x<10 -> return 'o'
+| _         -> return 'k'
+end
+print(g(1)..g(11))
+
+----------------------------------------------------------------------
+p "global match function, multi-args"
+match function cmp
+| x, y if x<y -> return 'increasing'
+| _, _        -> return 'decreasing'
+      end
+
+if cmp(1,2)=='increasing' and cmp(2,1)=='decreasing' then
+   print "ok" else print "KO"
+end
+
+----------------------------------------------------------------------
+p "local match function"
+do
+   local match function x
+   | 1 -> print 'ok'
+   end
+   x(1)
+end
+assert(not x)
+
+----------------------------------------------------------------------
+p "global bind assignment"
+bind {a, b} = {'o', 'k'}
+print(a..b)
+
+----------------------------------------------------------------------
+p "local bind assignment"
+c, d = 'k', 'o'
+do
+   local bind {c, {d}} = {'o', {'k'}}
+   print(c..d)
+end
+
+----------------------------------------------------------------------
+p "local bind assignment scope"
+print(d..c)

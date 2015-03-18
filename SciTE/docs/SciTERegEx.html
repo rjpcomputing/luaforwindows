@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="SciTE" />
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>
+      SciTE Regular Expressions
+    </title>
+<style type="text/css">
+        h3 {
+            background-color: #FEC;
+        }
+        .ref {
+            color: #80C;
+        }
+        code {
+            font-weight: bold;
+        }
+        dt {
+            margin-top: 15px;
+        }
+ </style>
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    <table bgcolor="#000000" width="100%" cellspacing="0" cellpadding="0" border="0">
+      <tr>
+        <td>
+          <img src="SciTEIco.png" border="3" height="64" width="64" alt="Scintilla icon" />
+        </td>
+        <td>
+          <a href="index.html" style="color:white;text-decoration:none"><font size="5">
+          Regular Expressions</font></a>
+        </td>
+      </tr>
+    </table>
+    <h2>
+       Regular Expressions in SciTE
+    </h2>
+    <h3>Purpose</h3>
+    <p>
+      Regular expressions can be used for searching for patterns
+      rather than literals. For example, it is possible to
+      search for variables in SciTE property files,
+      which look like $(name.subname) with the regular expression:<br />
+      <code>\$([a-z.]+)</code> (or <code>\$\([a-z.]+\)</code> in posix mode).
+    </p>
+    <p>
+      Replacement with regular expressions allows complex
+      transformations with the use of tagged expressions.
+      For example, pairs of numbers separated by a ',' could
+      be reordered by replacing the regular expression:<br />
+      <code>\([0-9]+\),\([0-9]+\)</code> (or <code>([0-9]+),([0-9]+)</code>
+      in posix mode, or even <code>(\d+),(\d+)</code>)<br />
+      with:<br />
+      <code>\2,\1</code>
+    </p>
+    <h3>Syntax</h3>
+    <p>
+      Regular expression syntax depends on a parameter:  find.replace.regexp.posix<br />
+      If set to 0, syntax uses the old Unix style where <code>\(</code> and <code>\)</code>
+      mark capturing sections while <code>(</code> and <code>)</code> are themselves.<br />
+      If set to 1, syntax uses the more common style where <code>(</code> and <code>)</code>
+      mark capturing sections while <code>\(</code> and <code>\)</code> are plain parentheses.
+    </p>
+    <dl><dt><span class="ref">[1]</span> char</dt>
+    <dd>matches itself, unless it is a special character
+    (metachar): <code>. \ [ ] * + ^ $</code> and <code>( )</code> in posix mode.
+    </dd><dt><span class="ref">[2]</span> <code>.</code></dt>
+    <dd>matches any character.
+    </dd><dt><span class="ref">[3]</span> <code>\</code></dt>
+    <dd>matches the character following it, except:
+    <ul><li><code>\a</code>, <code>\b</code>, <code>\f</code>,
+    <code>\n</code>, <code>\r</code>, <code>\t</code>, <code>\v</code>
+    match the corresponding C escape char,
+    respectively BEL, BS, FF, LF, CR, TAB and VT;<br />
+    Note that <code>\r</code> and <code>\n</code> are never matched because in Scintilla,
+    regular expression searches are made line per line (stripped of end-of-line chars).
+    </li><li>if not in posix mode, when followed by a left or right round bracket (see <span class="ref">[7]</span>);
+    </li><li>when followed by a digit 1 to 9 (see <span class="ref">[8]</span>);
+    </li><li>when followed by a left or right angle bracket (see <span class="ref">[9]</span>);
+    </li><li>when followed by d, D, s, S, w or W (see <span class="ref">[10]</span>);
+    </li><li>when followed by x and two hexa digits (see <span class="ref">[11]</span>);
+    </li></ul>
+    Backslash is used as an escape character for all other meta-characters, and itself.
+    </dd><dt><span class="ref">[4]</span> <code>[</code>set<code>]</code></dt>
+    <dd>matches one of the characters in the set.
+    If the first character in the set is <code>^</code>, it matches the characters NOT in the set,
+    i.e. complements the set. A shorthand <code>S-E</code> (start dash end) is
+    used to specify a set of characters S up to E, inclusive. The special characters <code>]</code> and
+    <code>-</code> have no special meaning if they appear as the first chars in the set. To include both,
+    put - first: <code>[-]A-Z]</code> (or just backslash them).
+    <table><tr><td>example</td><td>match</td></tr>
+      <tr><td><code>[-]|]</code></td><td>matches these 3 chars,</td></tr>
+      <tr><td><code>[]-|]</code></td><td>matches from ] to | chars</td></tr>
+      <tr><td><code>[a-z]</code></td><td>any lowercase alpha</td></tr>
+      <tr><td><code>[^-]]</code></td><td>any char except - and ]</td></tr>
+      <tr><td><code>[^A-Z]</code></td><td>any char except uppercase alpha</td></tr>
+      <tr><td><code>[a-zA-Z]</code></td><td>any alpha</td></tr>
+    </table>
+    </dd><dt><span class="ref">[5]</span> <code>*</code></dt>
+    <dd>any regular expression form <span class="ref">[1]</span> to <span class="ref">[4]</span>
+    (except <span class="ref">[7]</span>, <span class="ref">[8]</span> and <span class="ref">[9]</span>
+    forms of <span class="ref">[3]</span>),
+    followed by closure char (<code>*</code>) matches zero or more matches of that form.
+    </dd><dt><span class="ref">[6]</span> <code>+</code></dt>
+    <dd>same as <span class="ref">[5]</span>, except it matches one or more.
+    Both <span class="ref">[5]</span> and <span class="ref">[6]</span> are greedy (they match as much as possible).
+    </dd><dt><span class="ref">[7]</span></dt>
+    <dd>a regular expression in the form <span class="ref">[1]</span> to <span class="ref">[12]</span>, enclosed
+    as <code>\(<i>form</i>\)</code> (or <code>(<i>form</i>)</code> with posix flag) matches
+    what <i>form</i> matches.
+    The enclosure creates a set of tags, used for <span class="ref">[8]</span> and for
+    pattern substitution. The tagged forms are numbered starting from 1.
+    </dd><dt><span class="ref">[8]</span></dt>
+    <dd>a <code>\</code> followed by a digit 1 to 9 matches whatever a
+    previously tagged regular expression (<span class="ref">[7]</span>) matched.
+    </dd><dt><span class="ref">[9]</span> <code>\&lt; \&gt;</code></dt>
+    <dd>a regular expression starting with a <code>\&lt;</code> construct
+    and/or ending with a <code>\&gt;</code> construct, restricts the
+    pattern matching to the beginning of a word, and/or
+    the end of a word. A word is defined to be a character
+    string beginning and/or ending with the characters
+    A-Z a-z 0-9 and _. Scintilla extends this definition
+    by user setting. The word must also be preceded and/or
+    followed by any character outside those mentioned.
+    </dd><dt><span class="ref">[10]</span> <code>\l</code></dt>
+    <dd>a backslash followed by d, D, s, S, w or W,
+    becomes a character class (both inside and outside sets []).
+    <ul><li>d: decimal digits
+    </li><li>D: any char except decimal digits
+    </li><li>s: whitespace (space, \t \n \r \f \v)
+    </li><li>S: any char except whitespace (see above)
+    </li><li>w: alphanumeric &amp; underscore (changed by user setting)
+    </li><li>W: any char except alphanumeric &amp; underscore (see above)
+    </li></ul>
+    </dd><dt><span class="ref">[11]</span> <code>\xHH</code></dt>
+    <dd>a backslash followed by x and two hexa digits,
+    becomes the character whose Ascii code is equal
+    to these digits. If not followed by two digits,
+    it is 'x' char itself.
+    </dd><dt><span class="ref">[12]</span></dt>
+    <dd>a composite regular expression xy where x and y
+    are in the form <span class="ref">[1]</span> to <span class="ref">[10]</span> matches the longest
+    match of x followed by a match for y.
+    </dd><dt><span class="ref">[13]</span> <code>^ $</code></dt>
+    <dd>a regular expression starting with a ^ character
+    and/or ending with a $ character, restricts the
+    pattern matching to the beginning of the line,
+    or the end of line. [anchors] Elsewhere in the
+    pattern, ^ and $ are treated as ordinary characters.
+    </dd></dl>
+    <h3>Acknowledgments</h3>
+    <p>
+    Most of this documentation was originally written by Ozan S. Yigit.<br />
+    Additions by Neil Hodgson and Philippe Lhoste.<br />
+    All of this document is in the public domain.
+    </p>
+  </body>
+</html>
+
+

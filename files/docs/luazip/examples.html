@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>LuaZip: Reading files inside zip files</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div id="container">
+	
+<div id="product">
+	<div id="product_logo">
+        <a href="http://www.keplerproject.org"><img alt="LuaZip logo" src="luazip-128.png"/></a>
+    </div>
+	<div id="product_name"><big><strong>LuaZip</strong></big></div>
+	<div id="product_description">Reading files inside zip files</div>
+</div> <!-- id="product" -->
+
+<div id="main">
+	
+<div id="navigation">
+<h1>LuaZip</h1>
+	<ul>
+		<li><a href="index.html">Home</a>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+				<li><a href="index.html#history">History</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact</a></li>
+			</ul>
+		</li>
+		<li><a href="manual.html">Manual</a>
+			<ul>
+				<li><a href="manual.html#introduction">Introduction</a></li>
+				<li><a href="manual.html#installation">Installation</a></li>
+				<li><a href="manual.html#reference">Reference</a></li>
+			</ul>
+		</li>
+		<li><strong>Examples</strong></li>
+        <li><a href="http://luaforge.net/projects/luazip/">Project</a>
+            <ul>
+                <li><a href="http://luaforge.net/tracker/?group_id=8">Bug Tracker</a></li>
+                <li><a href="http://luaforge.net/scm/?group_id=8">CVS</a></li>
+            </ul>
+        </li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+
+<h2><a name="examples"></a>Example</h2>
+
+<p>
+Suppose we have the following file hierarchy:
+</p>
+
+<pre class="example">
+/a
+    /b
+        c.zip
+/a2
+    b2.ext2
+/a3.ext3
+/luazip.zip
+</pre>
+
+<ul>
+<li>c.zip contains the file 'd.txt'</li>
+<li>b2.ext2 is a zip file containing the file 'c2/d2.txt'</li>
+<li>a3.ext3 is a zip file containing the file 'b3/c3/d3.txt'</li>
+<li>luazip.zip contains the files 'luazip.h', 'luazip.c', 'Makefile', 'README'</li>
+</ul>
+
+Below is a small sample code displaying the basic use of the library.
+
+<pre class="example">
+require "zip"
+
+local zfile, err = zip.open('luazip.zip')
+
+-- print the filenames of the files inside the zip
+for file in zfile:files() do
+	print(file.filename)
+end
+
+-- open README and print it
+local f1, err = zfile:open('README')
+local s1 = f1:read("*a")
+print(s1)
+
+f1:close()
+zfile:close()
+
+-- open d.txt inside c.zip
+local d, err = zip.openfile('a/b/c/d.txt')
+assert(d, err)
+d:close()
+
+-- open d2.txt inside b2.ext2
+local d2, err = zip.openfile('a2/b2/c2/d2.txt', "ext2")
+assert(d2, err)
+d2:close()
+
+-- open d3.txt inside a3.ext3
+local d3, err = zip.openfile('a3/b3/c3/d3.txt', {"ext2", "ext3"})
+assert(d3, err)
+d3:close()
+</pre>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+	<p><small>$Id: examples.html,v 1.5 2007/06/18 18:47:05 carregal Exp $</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+
+</body>
+</html> 

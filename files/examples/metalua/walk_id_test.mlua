@@ -1,0 +1,26 @@
+-{ extension 'match' }
+
+require 'metalua.walk.id'
+
+ast = +{ block:
+         y = type(1)
+         function foo(x)
+            local type = 'number'
+            assert(x==type or not x)
+         end
+         foo(x) }
+
+disp = |msg,ast| printf("\n%s:\n%s", msg, table.tostring(ast, 80, 'nohash'))
+disp('initial term', ast)
+
+do -- Make globals explicit:
+   local ast = table.deep_copy(ast)
+   local cfg = { id = { } }
+   function cfg.id.free(i) 
+      i <- `Index{ `Id '_G', `String{i[1]} } 
+      return 'break'
+   end   
+   walk_id.block(cfg, ast)
+   disp('Globals made explicit', ast)
+end
+

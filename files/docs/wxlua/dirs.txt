@@ -1,0 +1,141 @@
+5/31/2007
+
+This is a description of the directory structure of wxLua.
+
+-------------------------------------------------------------------------------
+Directory structure of wxLua
+-------------------------------------------------------------------------------
+
+
+/apps/          - C/C++ application code is here
+    /build/     - Build files for all libraries and applications
+    /wxlua/     - wxLua the main IDE for wxLua (the "Standalone" program)
+    /wxluaedit/ - wxLuaEdit IDE
+    /wxluafreeze/ - A program to execute wxLua code
+    /wxluacan/  - A sample of how to write your own bindings
+
+/art/           - Images and icons are here, preferably in XPM format
+
+/bin/           - Output executables are built here
+
+/bindings/      - Input *.i files to make the "wrappers"
+    genwxluabind.lua - Binding generator, converts *.i to *.cpp
+    /wxwidgets/ - Wrapper files for wxWidgets
+    /wxstc/     - Wrapper files for the wxStyledTextCtrl
+    /wxluasocket/ - Wrapper files for bindings for wxluasocket
+
+/build/         - Build files to compile wxLua
+    /autoconf/  - Files for generating the configure script
+    /bakefiles/ - Bakefile files to generate the build files
+    /kdevelop/  - KDevelop project files
+    /msvc6/     - MS Visual Studio 6 build files
+    /msw/       - Makefiles for Bcc, Gcc, Vc, Watcom
+
+/distrib/       - Files to make a wxLua distribution with
+    /autopackage/
+    /innosetup/
+    /macbundle/
+
+/docs/          - Docs for wxLua
+    /doxygen/   - Output dir for doxygen using doxygen.cfg file.
+
+/lib/           - Output libs are built here
+
+/modules/           - C/C++ code for wxlua libraries
+    /build/         - build files for modules
+    /lua/           - lua itself
+        /include/   - headers from src copied here for install routine
+        /src/
+        /the rest of lua.../
+    /luamodule/     - A lua module, shared library, to load using require.
+        /include/
+        /src/
+    /wxbind/        - Output from /bindings/wxwidgets
+        /include/
+        /src/
+    /wxbindstc/     - Output from /bindings/wxstc
+        /include/
+        /src/
+    /wxlua/         - the main wxlua library itself
+        /include/   -
+        /src/       -
+    /wxluadebug/    - Debug code, to show stack, and variables
+        /include/   -
+        /src/       -
+    /wxluasocket/   - Remote debugging over TCP code
+        /include/   -
+        /src/       -
+
+/samples/           - Sample wxlua programs
+
+/util/              - Utilility programs
+    /bin2c/         - A lua program to convert files to an unsigned char array
+    /wrapmodule/    - A lua script to "wrap" the sample to allow them to run
+                      using the /modules/luamodule by properly initializing
+                      wxWidgets after running the lua code.
+
+------------------------------------------------------------------------------
+Original wxLua distribution directory structure
+-------------------------------------------------------------------------------
+
+wxLua/
+    Embedded/    - moved to apps/wxluaedit
+    Examples/    - moved to samples
+    Import/      - moved to bindings/wxwidgets
+    Library/     - moved to modules wxlua, wxluadebug, wxluasocket
+    Standalone/  - moved to apps/wxlua
+
+-------------------------------------------------------------------------------
+File name mapping from the original wxLua
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+These header files were in wxLua/Library
+
+wxLua/modules/wxlua
+    wxlstate.h    wxLuaInternals.h
+    wxlcallb.h    wxLuaCallback.h
+    wxlstate.h    wxLuaInterpreter.h
+    wxlua.h       wxLua.h
+
+wxLua/modules/wxluadebug
+    wxldebug.h    wxLuaDebug.h
+    removed       wxLuaSplitTree.h
+    wxlstack.h    wxLuaStackTree.h
+
+wxLua/modules/wxluasocket
+    removed       wxLuaDebuggerService.h
+    wxlsock.h     wxLuaDebugIO.h
+    wxldserv.h    wxLuaDebugServer.h
+    removed       wxLuaLibrary.h - debugger is a wxEvtHandler now
+    wxlsock.h     wxLuaSocket.h
+    wxldtarg.h    wxLuaDebugTarget.h   moved from wxLua/Standalone
+
+wxLua/modules/wxbind
+    wxlhtmlwin.h  wxLuaHtmlWindow.h
+    wxlprinting.h wxLuaPrinting.h
+
+-------------------------------------------------------------------------------
+These source files were in wxLua/Library
+
+wxLua/modules/wxlua
+    wxlstate.cpp    wxLuaInternals.cpp
+    wxlstate.cpp    wxLuaInterpreter.cpp
+    wxlcallb.cpp    taken out of wxLuaInternals.cpp
+
+wxLua/modules/wxluadebug
+    wxldebug.cpp    wxLuaDebug.cpp
+    removed         wxLuaSplitTree.cpp
+    wxlstack.cpp    wxLuaStackTree.cpp
+
+wxLua/modules/wxluasocket
+    removed         wxLuaDebuggerService.cpp
+    wxlsock.cpp     wxLuaDebugIO.cpp
+    wxldserv.cpp    wxLuaDebugServer.cpp
+    removed         wxLuaLibrary.cpp
+    wxlsock.cpp     wxLuaSocket.cpp
+    wxldtarg.cpp    wxLuaDebugTarget.cpp moved from wxLua/Standalone
+
+wxLua/modules/wxbind
+    wxlhtmlwin.cpp  wxLuaHtmlWindow.cpp
+    wxlprinting.cpp wxLuaPrinting.cpp

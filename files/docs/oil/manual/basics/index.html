@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Basic Concepts</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><strong>Basics</strong>
+				<div class="outside"><div class="inside"><ul>
+					<li><a href="module.html", title="The oil Module">Module</a></li>
+					<li><a href="brokers.html", title="Initializing Brokers">Brokers</a></li>
+					<li><a href="servants.html", title="Registering Servants">Servants</a></li>
+					<li><a href="proxies.html", title="Using Remote Servants">Proxies</a></li>
+					<li><a href="threads.html", title="Cooperative Multithreading">Threads</a></li>
+				</ul></div></div>
+			</li>
+			<li><a href="../corba/index.html", title="CORBA Support">CORBA</a></li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="../arch/index.html", title="Internal Architecture">Arch</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Basic Concepts</h1>
+<p>OiL is an extensible component-based architecture for object request brokers (ORB).
+An ORB provides an infrastructure to perform remote method invocations (RMI) on objects residing in separated processes, possibly through a network.
+The use of an ORB is one of the most common ways to develop distributed object-oriented applications.
+OiL is available though the <a href="module.html">The oil Module</a>.</p>
+
+<p>OiL is a very flexible ORB and almost every one of its aspects can be changed by replacement of its components (see the <a href="../arch/index.html">Internal Architecture</a>).
+Nevertheless, OiL relies on three fundamental concepts that define the programming model supported:</p>
+
+<dl>
+	<dt><a href="brokers.html">Broker</a></dt>
+	<dd>
+		Is the medium remote invocations are sent through.
+		To perform remote invocations, it is necessary to create at least one broker.
+		Multiple brokers can be used to define multiple ways to perform or receive invocations.
+	</dd>
+	<dt><a href="servants.html">Servant</a></dt>
+	<dd>
+		Is an object registered in a broker to receive remote invocations.
+		The services provided by a servant can be accessed by remote clients.
+	</dd>
+	<dt><a href="proxies.html">Proxy</a></dt>
+	<dd>
+		Is a local object that represents a remote servant.
+		All method invocations on a proxy perform as a direct invocation on the remote servant it represents.
+	</dd>
+</dl>
+
+<h2>Multithreading</h2>
+
+<p>An essential feature common in almost every ORB is the support for multithreading.
+OiL supports a cooperative multithreading model which is implemented over the coroutines provided by Lua.
+This model of multithreading is considerably different from preemptive multithreading, which is supported by most modern platforms.
+For a complete discussion about the multithreading model supported by standard OiL see section <a href="threads.html">Cooperative Multithreading</a>.</p>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

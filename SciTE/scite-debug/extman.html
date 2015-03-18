@@ -1,0 +1,165 @@
+<head>
+<title>SciTE Extman Documentation</title>
+</head>
+<html> 
+<body>
+
+<H2>Extman: Making Scripts Play Nicely Together</H2>
+
+The SciTE Lua interface is very powerful, but presently there is no way to make non-trivial scripts 'play nice' with each other. Consider SciteBufferSwitch; the handlers <code>OnOpen</code>,<code>OnSwitchFile</code> and <code>OnUserListSelection</code> are all overriden to keep track of buffer changes and present a drop-down list of buffers. Such a script would interfere with any other script that had a need to watch these events.
+<p>
+It is also awkward to package scripts for use by other people, since they must edit their property files. Extman scripts are self-contained; you simply drop them into your scite_lua directory and restart SciTE. (They may still of course override a shortcut you are already using, but this is easy to fix). For example, here is a script which surrounds the current selection with code HTML tags:
+<p>
+<pre>
+    scite_Command 'Surrond with code|do_code|Ctrl+J'
+
+    function do_code()
+        local txt = editor:GetSelText()
+        if txt then
+            editor:ReplaceSel('<code>'..txt..'</code>')
+        end
+    end
+</pre>
+Internally, extman keeps handler lists. For instance, <code>scite_OnOpen</code> will add a function to the list of handlers called by the <code>OnOpen event</code>. It is now perfectly possible for another script to listen to the <code>OnOpen</code> event, without causing conflict. In a similar fashion, there is <code>scite_OnChar</code>, <code>scite_OnSave</code>, etc - except for <code>OnUserListSelection</code>, which is handled differently.
+<p>
+
+<H3>Extended Events</H3>
+
+In addition to the standard SciTE Lua events, extman provides <code>OnWord</code>, <code>OnEditorLine</code> and <code>OnOutputLine</code>. They are built on the basic events, and are included for convenience.
+<p>
+A simple example is <code>scite_OnOpenSwitch</code>, which is called when a file is made active, either by opening or by switching buffers. (Have a look at the switch_buffers.lua example)
+<p>
+
+Here is a 'lazy' word substitution script. The <code>OnWord</code> handler receives a table, which has fields word, startp, ch which are respectively the word found, its initial position, the final position, and the character found immediately after the word. You can now have your dyslexic typing automatically corrected!
+<p>
+<pre>
+    local substitutions = {teh='the',wd='would',cd='could'}
+	
+    function word_substitute (w)
+        local subst = substituions[w]
+        if subst then return subst 
+        else return w end
+    end
+	
+    function on_word(w)
+      local subst = word_substitute(w.word)
+      if subst ~= w.word then
+             editor:SetSel(w.startp-1,w.endp-1)
+             local was_whitespace = string.find(w.ch,'%s')
+             if was_whitespace then
+                subst = subst..w.ch
+             end
+             editor:ReplaceSel(subst)
+             local word_end = editor.CurrentPos
+             if not was_whitespace then
+                editor:GotoPos(word_end + 1)
+             end
+          end
+    end  
+
+    scite_OnWord(on_word)
+</pre>
+
+<code>OnOutputLine</code> only fires when a line is typed into the output pane. Here is a simple but effective Lua console for SciTE:
+<pre>
+     local prompt = '> '
+     print 'Scite/Lua'
+     trace(prompt)
+      
+     scite_OnOutputLine (function (line)
+       local sub = string.sub
+       if sub(line,1,2) == prompt then
+            line = sub(line,3)
+        end	
+        if sub(line,1,1) == '=' then
+            line = 'print('..sub(line,2)..')'
+        end    
+        local f,err = loadstring(line,'local')
+        if not f then 
+          print(err)
+        else
+          local ok,res = pcall(f)
+          if ok then
+             if res then print('result= '..res) end
+          else
+             print(res)
+          end      
+        end
+        trace(prompt)
+        return true
+    end)
+</pre>
+<code>OnEditorLine<code> is a similar event, except it happens when the user enters a line in the editor pane. One key difference is that it never interferes with normal character processing. One could use it to keep track of any declarations typed, etc. The following example is fairly strange, but shows how one can bind a shortcut followed by a letter to an operation.
+<pre>
+     scite_Command 'AltX|do_altx_commands|Alt+X'
+	 
+     local function handle_line(line)
+        editor:EndUndoAction()
+        editor:Undo()
+        scite_OnEditorLine(handle_line,'remove')
+        scite.Open(line)	  
+     end
+	 
+     function do_altx_commands()
+        editor:BeginUndoAction()
+        scite_OnChar('once',function (ch)
+           editor:EndUndoAction()
+           editor:Undo()
+           if ch == 's' then
+              print('ess')
+           elseif ch == 'f' then
+              editor:BeginUndoAction()
+              scite_OnEditorLine(handle_line)
+            end
+           return true
+        end)
+      end
+</pre>
+After you type Alt+X, this function installs a run-once <code>OnChar handler</code>. It's only interested in 's' or 'f', but always 'eats up' the next character pressed. Emacs users may find such key combinations fairly natural, and they're probably easier to type than Alt+Ctrl+Shift combinations. <code>OnChar</code> will not see special characters, so one is limited to letters and punctuation. (My fingers still remember the Ctrl+Q followed by a digit to move to a marker in the Borland environments - see borland.lua in the examples).
+<p>
+Alt+X followed by 'f' is meant to allow a user to enter a filename in the buffer! The filename is immediately removed by <code>editor:Undo</code> and the file opened.
+
+<H3>Utility Functions</H3>
+
+extman also supplies some useful utility functions. In some cases (like file access) they make up for missing functionality in the Lua library. If (for instance) SciTE includes the lfs (Lua File System), then users can continue to use <code>scite_Files</code> even although the implementation changes.
+<p>
+<code>scite_UserListShow(list,start,fn)</code> is a simplified way to access Scintilla userlists - it will construct a properly separated string, etc. You can specify a start index for the list.
+<p>
+<code>scite_GetProp(key,default)</code> is a simple wrapper around the props pseudo-table. If a property key doesn't exist, then props[key] returns an empty string, not nil; if default isn't specified, then this function will indeed return nil if the property doesn't exist.
+<p>
+<code>scite_Files(mask)</code> returns all the files in the supplied path+mask (e.g. "d:/downloads/scite_lua/*.lua" - forward slashes are accepted on Windows as well). If the SciteOther library is found, then it will use the quiet Execute, otherwise os.execute.
+<p>
+<code>scite_FileExists(f)</code> returns true if the file can be opened for reading.
+<p>
+<code>scite_dofile(f)</code> is like dofile, except that it always loads files relative to SciTE's default home, and fails quietly.
+<p>
+<code>scite_Command(cmds)</code> is a very useful function for associating a Lua function with a Tools menu item and key shortcut. You either pass it a string, or a list of strings; the string is of the <code>form name|function|shortcut</code>, where <code>shortcut</code> is optional.
+<p>
+<H3>Installation and Initialization</H3>
+
+Unzip the files in your SciTE directory, remembering to preserve folder names. Extman is meant to be the main Lua startup script (you can of course put it somewhere else)
+<pre>
+    ext.lua.startup.script=$(SciteDefaultHome)/extman.lua
+</pre>
+On startup, it will look for all files with a .lua extension inside the scite_lua directory, which by default is in the default home directory. You can force it elsewhere with ext.lua.directory.
+<p>
+These files will be loaded, so you should <b>not</b> put extman.lua in that directory! They will have a chance to call <code>scite_Command</code> to register their functions. They may well need other scripts loaded in advance, so <code>scite_require()</code> has been added. If a file has been loaded explicitly with this function, then extman will consider it loaded.
+<p>
+<H3>Enabling Scripts to Optionally Use extman</H3>
+
+The snippet of code below allows a Lua extension to optionally use extman for <code>OnChar</code>, enabling extman-capable scripts to still work without extman.
+<p>
+It first checks to see if a handler already exists. Next, if an extman function is missing, say <code>scite_OnChar</code>, a very simple replacement is created. Of course, this test for extman is not foolproof. The rest of the code can then utilize extman functions as if everything is normal. The simple <code>scite_OnChar</code> function can only handle one handler; anything much more complex and you might as well force the user to install extman.
+<pre>
+    if OnChar and not scite_OnChar then
+      error("Please use extman if you want to run more than one handler")
+    elseif not scite_OnChar then
+      local _OnChar
+      scite_OnChar = function(f, remove)
+        if remove then _OnChar = nil else _OnChar = f end
+      end
+      OnChar = function(c) if _OnChar then return _OnChar(c) end end
+    end
+</pre>
+</body>
+</html> 

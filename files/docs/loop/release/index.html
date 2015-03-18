@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Installation</title>
+	<style type="text/css" media="all"><!--
+		@import "../loop.css";
+		@import "../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../index.html", title="">Home</a></li>
+	<li><strong>Install</strong>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="changes.html", title="Release Notes">Changes</a></li>
+			<li><a href="previous.html", title="Previous Releases">Previous</a></li>
+			<li><a href="preload.html", title="Pre-Loading Script Libraries">Preload</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../manual/index.html", title="User Manual">Manual</a></li>
+	<li><a href="../library/index.html", title="Class Library">Library</a></li>
+	<li><a href="../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Installation</h1>
+
+<a name="rock"><h2>Rock</h2></a>
+
+<p>You can install LOOP through <a href="http://www.luarocks.org/">LuaRocks</a> using the following command.</p>
+
+<pre>   luarocks install loop</pre>
+
+<a name="source"><h2>Source</h2></a>
+
+<p>LOOP is provided as free software under the terms of the <a href="http://www.opensource.org/licenses/mit-license.html">MIT license</a>, which are the same terms of the <a href="http://www.lua.org/license.html">Lua's license</a>.
+You can download the LOOP package from the following link. See below for installation instructions.</p>
+
+<ul>
+	<li>
+		LOOP 2.3 beta
+		[<a href="http://luaforge.net/frs/download.php/????/loop-2.3-beta.tar.gz">tar.gz</a>]
+		[<a href="http://luaforge.net/frs/download.php/????/loop-2.3-beta.zip">zip</a>]
+	</li>
+</ul>
+
+<strong>See also:</strong>
+<ul>
+	<li><a href="changes.html">Release Notes</a></li>
+	<li><a href="previous.html">Previous Releases</a></li>
+</ul>
+
+<p>To make the LOOP packages available for any Lua application you may simply execute it in the folder you unpacked LOOP.
+Therefore, to give it a try, just execute the Lua stand-alone interpreter in the directory you unpacked LOOP.
+However, to properly install LOOP in your environment you must unpack it in the Lua package directory, which is defined by the <code>luaconf.h</code> file during the compilation of Lua. The default values for this directory are listed below:</p>
+
+<dl>
+	<dt>Unix</dt>
+	<dd>/usr/local/share/lua/5.1/</dd>
+	<dt>Windows</dt>
+	<dd>Directory where the application (<i>e.g.</i> stand-alone interpreter) is installed.
+	Therefore, to use LOOP in Windows you may simply unpack the <code>loop</code> package in the same folder the Lua stand-alone interpreter (or other Lua application) is installed.</dd>
+</dl>
+
+<p>You can also define the directories Lua searches for packages by setting the <code>LUA_PATH</code> environment variable.
+For further information check the <a href="http://www.lua.org/manual/5.1/manual.html#pdf-package.path">Lua manual</a>.</p>
+
+<br>
+<strong>See also:</strong>
+<ul>
+	<li><a href="preload.html">Pre-loading your script libraries into binary applications</a>.</a></li>
+</ul>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

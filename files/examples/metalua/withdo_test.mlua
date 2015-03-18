@@ -1,0 +1,13 @@
+-{ extension 'withdo' }
+
+local original_close = io.close
+
+function x()
+   with f1, f2 = io.open 'withdo_test.mlua', io.open 'trycatch_test.mlua' do
+      local t1 = f1:read '*a'
+      local t2 = f2:read '*a'
+      return #t1, #t2
+   end
+end
+
+print(x())

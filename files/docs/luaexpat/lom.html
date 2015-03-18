@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+	<title>LuaExpat: XML Expat parsing for the Lua programming language</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div id="container">
+	
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+        <img alt="LuaExpat logo" src="luaexpat.png"/>
+	</a></div>
+	<div id="product_name"><big><strong>LuaExpat</strong></big></div>
+	<div id="product_description">XML Expat parsing for the Lua programming language</div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+<h1>LuaExpat</h1>
+	<ul>
+		<li><a href="index.html">Home</a>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+				<li><a href="index.html#history">History</a></li>
+				<li><a href="index.html#references">References</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact</a></li>
+			</ul>
+		</li>
+		<li><a href="manual.html">Manual</a>
+			<ul>
+				<li><a href="manual.html#introduction">Introduction</a></li>
+				<li><a href="manual.html#installation">Installation</a></li>
+				<li><a href="manual.html#parser">Parser Objects</a></li>
+			</ul>
+		</li>
+		<li><a href="examples.html">Examples</a></li>
+		<li><strong>Lua Object Model</strong></li>
+        <li><a href="http://luaforge.net/projects/luaexpat/">Project</a>
+            <ul>
+                <li><a href="http://luaforge.net/tracker/?group_id=13">Bug Tracker</a></li>
+                <li><a href="http://luaforge.net/scm/?group_id=13">CVS</a></li>
+            </ul>
+        </li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+<h2><a name="introduction"></a>Introduction</h2>
+
+<p>Lua Object Model (LOM) is a representation of XML elements
+through Lua data types. Currently it is not supposed to be 100%
+complete, but simple.</p>
+
+<p>LuaExpat's distribution provides an implementation of LOM that
+gets an XML documenta (a string) and transforms it to a Lua table.
+The only function exported is <strong><code>lxp.lom.parse</code></strong>.</p>
+
+ 
+<h2><a name="characteristics"></a>Characteristics</h2>
+
+<p>The model represents each XML element as a Lua table. A LOM
+table has three special characteristics:</p>
+
+<ul>
+    <li>a special field called <strong><code>tag</code></strong> that holds the
+    element's name;</li>
+
+    <li>an optional field called <strong><code>attr</code></strong> that stores
+    the element's attributes (see <a href="#attributes">attribute's
+    section</a>); and</li>
+    
+    <li>the element's children are stored at the <em>array-part</em> of
+    the table. A child could be an ordinary string or another XML
+    element that will be represented by a Lua table following these
+    same rules.</li>
+</ul>
+
+
+<h3><a name="attributes"></a>Attributes</h3>
+
+<p>The special field <strong><code>attr</code></strong> is a Lua table that
+stores the XML element's attributes as pairs
+<em>&lt;key&gt;=&lt;value&gt;</em>. To assure an order (if
+necessary), the sequence of <em>key</em>s could be placed at the
+<em>array-part</em> of this same table.</p>
+
+
+<h2><a name="examples"></a>Examples</h2>
+
+<p>For a simple string like</p>
+
+<pre class="example">
+    s = [[&lt;abc a1="A1" a2="A2"&gt;inside tag `abc'&lt;/abc&gt;]]
+</pre>
+
+<p>A call like</p>
+
+<pre class="example">
+    tab = lxp.lom.parse (s))
+</pre>
+
+<p>Would result in a table equivalent to</p>
+
+<pre class="example">
+tab = {
+        ["attr"] = {
+                [1] = "a1",
+                [2] = "a2",
+                ["a2"] = "A2",
+                ["a1"] = "A1",
+        },
+        [1] = "inside tag `abc'",
+        ["tag"] = "abc",
+}
+</pre>
+
+<p>Now an example with an element nested inside another element</p>
+
+<pre class="example">
+tab = lxp.lom.parse(
+[[&lt;qwerty q1="q1" q2="q2"&gt;
+    &lt;asdf&gt;some text&lt;/asdf&gt;
+&lt;/qwerty&gt;]]
+)
+</pre>
+
+<p>The result would have been a table equivalent to</p>
+
+<pre class="example">
+tab = {
+        [1] = "\
+        ",
+        [2] = {
+                ["attr"] = {
+                },
+                [1] = "some text",
+                ["tag"] = "asdf",
+        },
+        ["attr"] = {
+                [1] = "q1",
+                [2] = "q2",
+                ["q2"] = "q2",
+                ["q1"] = "q1",
+        },
+        [3] = "\
+",
+        ["tag"] = "qwerty",
+}
+</pre>
+
+<p>Note that even the <em>new-line</em> and <em>tab</em> characters are stored 
+on the table.</p>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+	<p><small>
+	$Id: lom.html,v 1.6 2006/03/20 22:26:00 carregal Exp $
+	</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+
+</body>
+</html> 

@@ -1,0 +1,121 @@
+﻿ body { 
+   margin-left: 1em; 
+   margin-right: 1em; 
+   font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif;
+   background-color:#ffffff;
+ }
+ p {
+   margin-left: 1em;
+   line-height: 130%;
+ }
+ h2 {
+   color: #3366CC;
+ }
+ h3 {
+   padding: 4px;
+   background-color: #E1E1E1;
+   border: 1px solid #808080;
+   color: #5C5C5C;
+ }
+ pre {
+   background-color: #CEE7FF;
+   border: 1px solid #62A0FF;
+   padding: 10px;
+   font-family: 'Monotype.com', "Courier New", Courier, monospace;
+   font-size: 90%;
+   line-height: 125%;
+   margin-left: 3em;
+   margin-right: 3em;
+ }
+ p.info {
+   margin-left: 3em;
+ }
+ ul {
+   margin-left: 2em;
+ }
+ h4 {
+   background-color: #E1E1E1;
+   padding: 3px;
+   margin-right: 2em;
+   margin-left: 2em;
+ }
+ h1 {
+   text-align: center;
+ }
+ table {
+	border-collapse: collapse;
+ }
+ td {
+	padding: 5px;
+	border: 1px solid #808080;
+ }
+ th {
+	padding: 5px;
+	border: 2px solid #808080;
+	background-color: #C0C0C0;
+ }
+ .homeTitle {
+   font-family: Arial, Helvetica, sans-serif;
+   font-size: 36pt;
+   font-weight: bold;
+   color: #003399;
+   text-align: center;
+ }
+ .homeDescription {
+   font-family: Arial, Helvetica, sans-serif;
+   font-size: 20pt;
+   color: #003399;
+   text-align: center;
+ }
+ .homeVersion {
+   margin: 10px;
+   font-family: Arial, Helvetica, sans-serif;
+   font-size: 16pt;
+   color: #003399;
+   text-align: center;
+ }
+.bg_winxp {
+	text-align: center;
+	background-color: #ECE9D8;
+}
+.bg_gtk {
+	text-align: center;
+	background-color: #EFEBE7;
+}
+.bg_mot {
+	text-align: center;
+	background-color: #ADB1C2;
+}
+.bg_win2k {
+	text-align: center;
+	background-color: #D4D0C8;
+}
+ #navigation {
+   position: fixed;
+   top: 0;   
+   right: 0;
+   background-color: #E1E1E1;
+ }
+ #navigation ul {
+   list-style-type: none;
+   margin: 0;
+   padding: 0;
+ }
+ #navigation li {
+   float: left;
+ }
+ #navigation a {
+   color: #5C5C5C;
+   text-decoration: none;
+   display: block;
+   padding: 3px;
+   border: 1px solid #808080;
+   background-color: #E1E1E1;
+   font-size: small;
+ }
+ #navigation a:hover {
+   color: #E1E1E1;
+   text-decoration: none;
+   border: 1px solid #808080;
+   background-color: #5C5C5C;
+ }

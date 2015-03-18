@@ -1,0 +1,540 @@
+<h1>Alien &ndash; Pure Lua extensions</h1>
+
+<h2>Status</h2>
+
+<p>This is Alien version 0.5.0.</p>
+
+<h2>Changelog</h2>
+
+<ul>
+<li>0.5.0
+
+<ul>
+<li>new functions alien.memcpy and alien.memset</li>
+<li>new type &ldquo;p&rdquo; for alien.struct.pack and unpack, to pack pointers</li>
+<li>new alien.struct.offset function to get the offset of a given record</li>
+<li>buf:tostring now has optional &ldquo;offset&rdquo; argument</li>
+<li>buf:topointer now has optional &ldquo;offset&rdquo; argument</li>
+<li>added unsigned numbers: uint, ulong, ushort, and &ldquo;ref uint&rdquo;</li>
+<li>basic support for declarative strucutures</li>
+<li>unified treatment of funcitons and callbacks in the source</li>
+<li>fixed segfault when collecting 0-arg functions</li>
+</ul>
+</li>
+<li>0.4.1
+
+<ul>
+<li>fixes bug where Alien was always using cdecl abi for Windows (except in callbacks)</li>
+<li>fixes build on PPC OSX.</li>
+</ul>
+</li>
+<li>0.4.0
+
+<ul>
+<li>Windows support &ndash; stdcall ABI, including stdcall callbacks</li>
+<li>alternative syntax for defining types</li>
+<li>mutable buffers, wrapping lightuserdata in a buffer</li>
+<li>alien.to<em>type</em> functions take optional length argument</li>
+<li>callbacks are callable from Lua</li>
+<li>alien.funcptr turns a function pointer into an alien function</li>
+<li>improved library finding on Linux/FreeBSD, using ldconfig</li>
+<li>alien.table utility function (wrapper for lua_createtable, useful for extensions)</li>
+<li>alien.align utility function to get data structure alignment</li>
+<li>arrays built on mutable buffers, with bounds checking</li>
+<li>fixed a build bug on Linux ARM</li>
+</ul>
+</li>
+<li>0.3.2 &ndash; fixes callback bug on NX-bit platforms</li>
+<li>0.3.1 &ndash; initial release with libffi</li>
+<li>0.3 &ndash; retracted due to license conflict</li>
+</ul>
+
+
+<h2>What is Alien</h2>
+
+<p><em>Alien</em> is a Foreign Function Interface (FFI) for Lua. An FFI lets you
+call functions in dynamic libraries (.so, .dylib, .dll, etc.) from Lua
+code without having to write, compile and link a C binding from the
+library to Lua. In other words, it lets you write extensions that call
+out to native code using just Lua.</p>
+
+<p>Be careful when you use Alien, I tried to make it as safe as possible,
+but it is still very easy to crash Lua if you make a mistake. Alien
+itself is not as robust as a standard Lua extension, but you can use
+it to write extensions that won&rsquo;t crash if you code them well.</p>
+
+<p>Alien works on Unix-based systems and Windows. It has been tested on Linux x86,
+Linux x64, Linux ARM, FreeBSD x86, Windows x86, OSX x86, and OSX PPC. The Windows
+binary uses MSVCR80.DLL for compatibility with LuaBinaries.</p>
+
+<h2>Installing Alien</h2>
+
+<p>The best way to install Alien is through
+<a href="http://luarocks.org">LuaRocks</a>. Just do <code>luarocks install alien</code>. You may need
+root permissions to do this, depending on your LuaRocks configuration.</p>
+
+<p>Go to the Alien rock directory to see local copies of this
+documentation, as well as the test suite. If you are in the path of
+the test suite (<code>tests</code>) you can run the suite with:</p>
+
+<pre><code>lua -l luarocks.require test_alien.lua
+</code></pre>
+
+<p>If everything is ok you should see no output.</p>
+
+<p>Alien installs to modules, <code>alien</code> and <code>alien.struct</code>. The latter is a
+slightly modified version of Roberto Ierusalimschy&rsquo;s <a href="http://www.inf.puc-rio.br/~roberto/struct">struct
+library</a> that can unpack
+binary blobs (userdata) instead of just strings.</p>
+
+<h2>Basic Usage</h2>
+
+<p>Loading a dynamic library is very simple; Alien by default assumes a
+naming scheme of lib<em>name</em>.dylib for OSX and lib<em>name</em>.so for other
+Unix systems. If <em>name</em> is not one of the
+functions the <code>alien</code> module exports then you can get a reference to
+the library with <code>alien.</code><em><code>name</code></em>. Otherwise (for example, to load a
+library called <em>libwrap.so</em>) you have to use <code>alien.load("wrap")</code>.</p>
+
+<p>You can also specify the full name of the library by calling
+<code>alien.load</code> with a path or with the appropriate extension, such as
+<code>alien.load("mylibs/libfoo.so")</code> or <code>alien.load("libfoo.so")</code>.
+Either way you get back a reference
+to the library that you will use to access its functions.</p>
+
+<p>You can also get a reference to the currently running module using
+<code>alien.default</code>, this lets you get references to any function exported
+by the module and its transitive dependencies on ELF and Mach-O systems.</p>
+
+<p>Once you have a reference to a library you can get a reference to an
+exported function with <em>libref.funcname</em>. For example:</p>
+
+<pre><code>&gt; def=alien.default
+&gt; =def.puts
+alien function puts, library defaults
+&gt;
+</code></pre>
+
+<p>To use a function you first have to tell Alien the function prototype,
+using <em>func:types(ret_type, arg_types&hellip;)</em>, where the types are one of
+the following strings: &ldquo;void&rdquo;, &ldquo;int&rdquo;, &ldquo;uint&rdquo;, &ldquo;double&rdquo;, &ldquo;char&rdquo;, &ldquo;string&rdquo;,
+&ldquo;pointer&rdquo;, &ldquo;ref int&rdquo;, &ldquo;ref uint&rdquo;, &ldquo;ref double&rdquo;, &ldquo;ref char&rdquo;, &ldquo;callback&rdquo;, &ldquo;short&rdquo;, &ldquo;ushort&rdquo;,
+&ldquo;byte&rdquo;, &ldquo;long&rdquo;, &ldquo;ulong&rdquo;, and &ldquo;float&rdquo;. Most correspond directly to C types;
+<em>byte</em> is a signed char, <em>string</em> is <em>const char*</em>, <em>pointer</em> is <em>void*</em>,
+<em>callback</em> is a generic function pointer, and <em>ref char</em>, <em>ref int</em>
+and <em>ref double</em> are by reference versions of the C types. Continuing
+the previous example:</p>
+
+<pre><code>&gt; def.puts:types("int", "string")
+&gt; def.puts("foo")
+foo
+&gt;
+</code></pre>
+
+<p>As you can see, after defining the prototype you can call the function
+just as a Lua function. Alien converts Lua numbers to the C numeric
+types, converts <em>nil</em> to <em>NULL</em> and Lua strings to <em>const char*</em> for
+<em>string</em>, and converts <em>nil</em> to <em>NULL</em> and userdata to <em>void*</em> for
+<em>pointer</em>. The conversions work in reverse for the return value (with
+the <em>pointer</em> type converted to a light userdata).</p>
+
+<p>By reference types are special; Alien allocates space on the stack for
+the argument, copies the Lua number you passed to it (converting
+appropriately), then calling the function with the address of this
+space. Then the value is converted back to a Lua number and returned
+after the function normal return value. An example, using <em>scanf</em>:</p>
+
+<pre><code>&gt; scanf = alien.default.scanf
+&gt; scanf:types("int", "string", "ref int", "ref double")
+&gt; _, x, y = scanf("%i %lf", 0, 0)
+23 42.5
+&gt; =x
+23
+&gt; =y
+42.5
+</code></pre>
+
+<p>You have to pass a value even if the function does not use it, as you
+can see above.</p>
+
+<p>Another way to specify types is by passing a table to <em>func:types</em>. The array
+part of this table shoudl have one item for each parameter, and you can also pass
+two hash keys, <em>ret</em>, the function&rsquo;s return type (defaults to <code>int</code> as usual), and
+<em>abi</em>, the function&rsquo;s calling convention (useful for Windows, where you can specify &ldquo;stdcall&rdquo; as the
+ABI for <code>__stdcall</code> functions. The default ABI is always &ldquo;default&rdquo;, and all systems
+also support &ldquo;cdecl&rdquo;, the usual C calling convention. On systems that don&rsquo;t have the
+stdcall convention &ldquo;stdcall&rdquo; is the same as &ldquo;default&rdquo;.</p>
+
+<p>This is the previous example using this alternate definition:</p>
+
+<pre><code>&gt; scanf = alien.default.scanf
+&gt; scanf:types{ ret = "int", "string", "ref int", "ref double" }
+&gt; _, x, y = scanf("%i %lf", 0, 0)
+23 42.5
+&gt; =x
+23
+&gt; =y
+42.5
+</code></pre>
+
+<p>If you get raw function pointer (returned from a function, for example, or
+passed to a callback), you can turn it into an Alien function with <code>alien.funcptr(fptr)</code>.
+This returns an Alien function object that you can type and call function normally.</p>
+
+<h2>Buffers</h2>
+
+<p>The basic usage is enough to do a lot of interfacing with C code,
+specially with well-behaved libraries that handle their own memory
+allocation (the Lua C API is a good example of such an API). But there
+are libraries that do not export such a well-behaved API, and require
+you to allocate memory that is mutated by the library. This prevents
+you from passing Lua strings to them, as Lua strings have to be
+immutable, so Alien provides a <em>buffer</em> abstraction. The function
+<code>alien.buffer</code> allocates a new buffer. If you call it with no
+arguments it will allocate a buffer with the standard buffer size for
+your platform. If call it with a number it will allocate a buffer with
+this number of bytes. If you pass it a string it will allocate a
+buffer that is a copy of the string. If you pass a light userdata
+it will use this userdata as the buffer (be careful with that).</p>
+
+<p>After making a buffer you can pass it in place of any argument of
+<em>string</em> or <em>pointer</em> type. To get back the contents of the buffer you
+use <code>buf:tostring</code>, and again you can either pass the number of
+characters to read from the buffer or don&rsquo;t pass anything, which treat
+the buffer as a C string (read until finding a <em>\0</em>). You can also
+call <code>buf:len</code>, which calls <em>strlen</em> on the buffer. Finally,
+<code>tostring(buf)</code> is the same as <code>buf:tostring()</code>.</p>
+
+<p>An example of how to use a buffer:</p>
+
+<pre><code>&gt; gets = alien.default.gets
+&gt; gets:types("pointer", "string")
+&gt; buf = alien.buffer()
+&gt; gets(buf)
+Foo bar
+&gt; =tostring(buf)
+Foo bar
+&gt;
+</code></pre>
+
+<p>You can access the i-th character of a buffer with <code>buf[i]</code>, and you can
+set its value with <code>buf[i] = v</code>. Notice that these are C characters (bytes),
+not Lua 1-character strings, so you need to use <code>string.char</code> and <code>string.byte</code>
+to convert between Lua characters and C characters. <strong>Access to Alien buffers
+from Lua is 1-based instead of 0-based</strong>.</p>
+
+<p>You can also get and set other values by using <em>buf:get(offset, type)</em>, and
+set it by <em>buf:set(offset, val, type)</em>. The offset is in bytes, <em>not</em> in elements, so
+if <em>buf</em> has three &ldquo;int&rdquo; values their offsets are 1, 5 and 9, respectively, assuming
+each &ldquo;int&rdquo; is four bytes long.</p>
+
+<p>All get and set operations do no bounds-checking, so be extra careful, or use the
+safer alien.array abstraction that is built on top of buffers.</p>
+
+<h2>Arrays</h2>
+
+<p>Arrays are buffers with an extra layer of safety and sugar on top. You create an array
+with <code>alien.array(type, length)</code>, where <em>type</em> is the Alien type of the array&rsquo;s elements,
+and length is how many elements the array has. After creating an array <em>arr</em> you can get the
+type of its elements with <em>arr.type</em>, how many elements it has with <em>arr.length</em>, and the
+size (in bytes) of each element with <em>arr.size</em>. The underlying buffer is <em>arr.buffer</em>.</p>
+
+<p>You can access the i-th element with <em>arr[i]</em>, and set it with <em>arr[i] = val</em>. Type
+conversions are the same as with buffers, or function calls. Storing a string or userdata
+in an array pins it so it won&rsquo;t be collected while it is in the array.</p>
+
+<p>For convenience <code>alien.array</code> also accepts two other forms: <code>alien.array(type, tab)</code> creates
+an array with the same length as <em>tab</em> and initializes it with its values;
+<code>alien.array(type, length, buf)</code> creates an array with <em>buf</em> as the underlying buffer. You can
+also iterate over the array&rsquo;s contents with <code>arr:ipairs()</code>.</p>
+
+<p>The following example shows an use of arrays:</p>
+
+<pre><code>local function sort(a, b)
+  return a - b
+end
+local compare = alien.callback(sort, "int", "ref int", "ref int")
+
+local qsort = alien.default.qsort
+qsort:types("void", "pointer", "int", "int", "callback")
+
+local nums = alien.array(t, { 4, 5, 3, 2, 6, 1 })
+qsort(nums.buffer, nums.length, nums.size, compare)
+for i, v in nums:ipairs() do print(v) end
+</code></pre>
+
+<p>This prints numbers one to six on the console.</p>
+
+<h2>Structs</h2>
+
+<p>Alien also has basic support for declarative structs that is also implemented as a layer of sugar
+on the basic buffers. The <code>alien.defstruct(description)</code> function creates a struct type with the
+given description, which is a list of pairs with the name and type of each field, where the type is any
+basic alien type (no structs inside structs yet). For example:</p>
+
+<pre><code>rect = alien.defstruct{
+  { "left", "long" },
+  { "top", "long" },
+  { "right", "long" },
+  { "bottom", "long" }
+}
+</code></pre>
+
+<p>This creates a new struct type with four fields of type &ldquo;long&rdquo;, and stores it in <code>rect</code>. To create an
+instance of this structure (backed by a buffer) call <code>rect:new()</code>. You can then set the fields of the
+struct just like you do on a Lua table, like <code>r.left = 3</code>. To get the underlying buffer (to pass it
+to a C function, for example) you have to call the instance, <code>r()</code>. Continuing the example:</p>
+
+<pre><code>r = rect:new()
+r.left = 2
+doubleleft = alien.rectdll.double_left
+doubleleft:types("void", "pointer")
+doubleleft(r()))
+assert(r.left == 4)
+</code></pre>
+
+<p>You can also pass a buffer or other userdata to the <code>new</code> method of your struct type, and in this case this will
+be the backing store of the struct instance you are creating. This is useful for unpacking a foreign struct that
+a C function returned.</p>
+
+<h2>Pointer Unpacking</h2>
+
+<p>Alien also provides three convenience functions that let you
+dereference a pointer and convert the value to a Lua type:</p>
+
+<ul>
+<li><code>alien.tostring</code> takes a userdata (usually returned from a function
+that has a <em>pointer</em> return value), casts it to <em>char*</em>, and
+returns a Lua string. You can supply an optional size argument (if
+you don&rsquo;t Alien calls <em>strlen</em> on the buffer first).</li>
+<li><code>alien.toint</code> takes a userdata, casts it to <em>int*</em>,
+dereferences it and returns it as a number. If you pass it a number
+it assumes the userdata is an array with this number of elements.</li>
+<li><code>alien.toshort</code>, <code>alien.tolong</code>, <code>alien.tofloat</code>, and
+<code>alien.todouble</code> are like <code>alien.toint</code>, but works with
+with the respective typecasts. Unsigned versions are also available.</li>
+</ul>
+
+
+<p>The numeric alien.to<em>type</em> functions take an optional second argument that
+tells how many items to unpack from the userdata. For example, if ptr is
+a pointer to an array of four floats, the following code unpacks this array:</p>
+
+<pre><code>&gt; fs = alien.tofloat(ptr, 4)
+&gt; =#fs
+4
+&gt;
+</code></pre>
+
+<p>Use these functions with extra care, they don&rsquo;t make any safety
+checks. For more advanced unmarshaling use the <code>alien.struct.unpack</code>
+function.</p>
+
+<h2>Tags</h2>
+
+<p>A common pattern when wrapping objects from C libraries is to put a
+pointer to this object inside a full userdata, then associate this userdata
+with a metatable that is associated with a string tag. This tag is
+used to check if the userdata is a valid userdata in each function
+that uses it. As the userdata is a full userdata it also can have a
+<code>__gc</code> metamethod for resource reclamation.</p>
+
+<p>Alien has three functions that let you replicate this pattern on your
+extensions:</p>
+
+<ul>
+<li><code>alien.tag(*tagname*)</code> creates a new metatable with tag <em>tagname</em> if one
+does not exist, or returns the metatable with this tag. The
+namespace for tags is global, so a good pattern is to prefix the tag
+name with the name of your module (such as <em>mymod_mytag</em>).</li>
+<li><code>alien.wrap(*tagname*, ...)</code> creates a full userdata, tags it with
+the metatable associated with <em>tagname</em>, stores the values
+you passed, then returns the full userdata. Valid values are <em>nil</em>,
+integers and other userdata.</li>
+<li><code>alien.unwrap(*tagname*, obj)</code> tests if <em>obj</em> is tagged with
+<em>tagname</em>, throwing an error if it is not, then returns the values
+previously stored in it.</li>
+<li><code>alien.rewrap(*tagname*, obj, ...)</code> replaces the elements on <em>obj</em> with
+new values. If you pass more values than <em>obj</em> had previously the extra
+values are silently ignored. If you pass less tehn <em>obj</em> is filled with
+<em>nil</em>.</li>
+</ul>
+
+
+<p>For example, suppose <em>libfoo</em> has a <code>create_foo</code> function that returns
+a <code>Foo*</code> object. These objects have to be properly disposed by calling
+<code>destroy_foo</code> when they are not used anymore. This is easy to
+implement:</p>
+
+<pre><code>local tag_foo = alien.tag("libfoo_foo")
+alien.foo.create_foo:types("pointer")
+alien.foo.destroy_foo_types("void", "pointer")    
+
+function new_foo()
+  local foo = alien.foo.create_foo()
+  return alien.wrap("libfoo_foo", foo)
+end
+
+tag_foo = {
+  __gc = function (obj)
+           local foo = alien.unwrap("libfoo_foo", obj)
+           alien.foo.destroy_foo(foo)
+         end
+}
+</code></pre>
+
+<p>Then on any function that operates on <code>Foo*</code> types you first unwrap to
+get the pointer, then pass it to the function in <em>libfoo</em>.</p>
+
+<h2>Error Codes</h2>
+
+<p>Several operating system functions return errors on a special variable
+called <em>errno</em>. To get the value of <em>errno</em> with Alien call
+<code>alien.errno()</code>.</p>
+
+<h2>Callbacks</h2>
+
+<p>Some libraries have functions that take <em>callbacks</em>, functions that
+get called by the library. Most GUI libraries use callbacks, but even
+the C library has <em>qsort</em>. Alien lets you create a callback from a Lua
+function with <code>alien.callback</code>. You pass the function and the callback
+prototype that the library expects. Alien will return a callback
+object that you can pass in any argument of <em>callback</em> type. A simple
+example, using <em>qsort</em>:</p>
+
+<pre><code>local function cmp(a, b)
+  return a - b
+end
+local cmp_cb = alien.callback(sort, "int", "ref char", "ref char")
+
+local qsort = alien.default.qsort
+qsort:types("void", "pointer", "int", "int", "callback")
+
+local chars = alien.buffer("spam, spam, and spam")
+qsort(chars, chars:len(), alien.sizeof("char"), cmp_cb)
+assert(chars:tostring() == "   ,,aaaadmmmnpppsss")
+</code></pre>
+
+<p>The <em>qsort</em> function sorts an array in-place, so we have to use a
+buffer.</p>
+
+<p>Callbacks are callable from Lua just like any other Alien function, and you can freely
+change their types with their &ldquo;types&rdquo; method.</p>
+
+<h2>Magic Numbers</h2>
+
+<p>C libraries are full of symbolic constants that are in truth magic
+numbers, as they are replaced by the preprocessor before even the C
+compiler has a chance to see them. This means that all these constants
+are on header files. This also includes things such as the layout and
+size of strucutres the library depends on. All this information can
+change from version to version of the library, or from platform to
+platform.</p>
+
+<p>Alien provides a utility script called <em>constants</em> that makes it
+easier to work with these numbers. This utility takes three arguments
+on the command line: a <em>definitions file</em>, the name of the C file you
+want it to generate, and the name of a Lua file that the C file will
+generate when compiled and run. The definitions file can contain
+preprocessor directives, blank lines, and lines with definitions
+either of the form <em>identifier</em> or <em>lua_identifier</em> = <em>c_identifier</em>. The first
+form is equivalent to <em>identifier</em> = <em>identifier</em>. It is best to
+explain by example (from a libevent binding):</p>
+
+<pre><code>#include &lt;sys/types.h&gt;
+#include &lt;event.h&gt;
+
+EV_SIZE = sizeof(struct event)
+EV_READ
+EV_WRITE
+EV_TIMEOUT
+EVLOOP_NONBLOCK
+EVLOOP_ONCE
+</code></pre>
+
+<p>Lines with preprocessor directives are copied verbatim to the C file
+<em>constants generates</em>. The above definitions file generates this C
+file:</p>
+
+<pre><code>/* Generated by Alien constants */
+
+#include &lt;stdio.h&gt;
+
+#include &lt;sys/types.h&gt;
+#include &lt;event.h&gt;
+#define LUA_FILE "event_constants.lua"
+int main() {
+  FILE *f = fopen(LUA_FILE, "w+");
+  fprintf(f, "-- Generated by Alien constants\n\n");
+  fprintf(f, "%s = %i\n", "EV_SIZE ",  sizeof(struct event));
+  fprintf(f, "%s = %i\n", "EV_READ", EV_READ);
+  fprintf(f, "%s = %i\n", "EV_WRITE", EV_WRITE);
+  fprintf(f, "%s = %i\n", "EV_TIMEOUT", EV_TIMEOUT);
+  fprintf(f, "%s = %i\n", "EVLOOP_NONBLOCK", EVLOOP_NONBLOCK);
+  fprintf(f, "%s = %i\n", "EVLOOP_ONCE", EVLOOP_ONCE);
+  fclose(f);
+}
+</code></pre>
+
+<p>Which, when compile and run, generates this file on a Linux/Intel
+system:</p>
+
+<pre><code>-- Generated by Alien constants
+
+EV_SIZE  = 84
+EV_READ = 2
+EV_WRITE = 4
+EV_TIMEOUT = 1
+EVLOOP_NONBLOCK = 2
+EVLOOP_ONCE = 1
+</code></pre>
+
+<p>These steps (generating the C file, compiling, generating the Lua
+file) are best done in the build step of your extension.</p>
+
+<h2>Miscellanea</h2>
+
+<p>You can query what platform your extension is running on with
+<code>alien.platform</code>. Right now this can be either &ldquo;unix&rdquo; or &ldquo;osx&rdquo;. Other
+platforms will be added as they are tested. You can use this
+information for conditional execution in your extensions.</p>
+
+<p>You can get the sizes of the types Alien supports using
+<code>alien.sizeof(*typename*)</code>, as the <em>qsort</em> example in the Callbacks
+section shows. You can also get strucutre aligment information
+with <code>alien.align(*typename*)</code>.</p>
+
+<p>Several extensions may need to create Lua tables with preallocated
+array and/or hash parts, for performance reasons (implementing a circular queue, for
+example). Alien exposes the <code>lua_createtable</code> function as <code>alien.table(narray, nhash)</code>.</p>
+
+<h2>Credits</h2>
+
+<p>Alien is designed and implemented by Fabio Mascarenhas. It uses the
+great <a href="http://sources.redhat.com/libffi">libffi</a>
+library by Anthony Green (and others) to do the heavy lifting of calling to and from C. The
+name is stolen from Common Lisp FFIs.</p>
+
+<h2>License</h2>
+
+<p>Alien&rsquo;s uses the MIT license, reproduced below:</p>
+
+<p>Copyright &copy; 2008-2009 Fabio Mascarenhas</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &ldquo;Software&rdquo;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED &ldquo;AS IS&rdquo;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.</p>

@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Argument Processor</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																																	<li><a href="../../index.html", title="">Home</a></li>
+																																																	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																																	<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																																	<li><a href="../index.html", title="Class Library">Library</a>
+																																																		<div class="outside"><div class="inside"><ul>
+																																																			<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																																				</li>
+																																																				<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																																					</li>
+																																																					<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																																						</li>
+																																																						<li><a href="../overview.html#object", title="Objects">object</a>
+																																																							</li>
+																																																							<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																																								</li>
+																																																								<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																																									</li>
+																																																								</ul></div></div>
+																																																							</li>
+																																																							<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																																							<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																																						</ul></div></div>
+																																																					
+</div>
+
+<div class="content">
+<h1>Argument Processor</h1>
+<h2><code>loop.compiler.Arguments</code></h2><br>
+<p>Class of objects that work as functions that takes string arguments passed as <em>varargs</em> and process them as command-line arguments to extract possible command-line options that may precede the actual arguments.
+This class is useful to process command-line arguments passed to a Lua script.</p>
+
+<p>Each object is created as a table that maps the name of each valid command-line option to its default value.
+The type of the default value also defines which values are valid for each command-line option.
+For example, a command-line option with a numeric default value will only accepts values that denote numbers.
+These objects behave like functions that take as parameter a sequence of strings and process them as command-line options.</p>
+
+<h2>Behavior</h2>
+
+<h3>Initialization</h3>
+
+<dl>
+	
+	<dt><code><b>Arguments</b>([object])</code></dt>
+	<dd>
+		Creates an argument processor from <code>object</code> that accepts options which names that are defined in the <code>object</code>.
+	</dd>
+	
+</dl>
+
+<h3>Fields</h3>
+
+<dl>
+	
+	<dt><code><b>_alias</b></code></dt>
+	<dd>
+		Optional table that maps command-line option name aliases to the actual command-line option name.
+		These aliases may be used as command-line option names but the value is stored using the actual option name.
+		By default this field is not defined.
+	</dd>
+	
+	<dt><code><b>_badnumber</b></code></dt>
+	<dd>
+		String that defines the format of the error message generated when an command-line option cannot be converted to a number.
+		The default value for this field is <code>"invalid value for option '%s', number excepted but got '%s'"</code>.
+	</dd>
+	
+	<dt><code><b>_boolean</b></code></dt>
+	<dd>
+		Table that maps strings that are alias of boolean values to its corresponding boolean value.
+		These aliases may be used as the value of boolean command-line options.
+		If the value of a boolean command-line option is not defined in this table then it is registered in the processor under the boolean option's name.
+		The default value for this field is a table that defines <code>"true"</code> and <code>"yes"</code> as aliases of <code>true</code> and <code>"false"</code> and <code>"no"</code> as aliases if <code>false</code>.
+	</dd>
+	
+	<dt><code><b>_missing</b></code></dt>
+	<dd>
+		String that defines the format of the error message generated when an command-line option is provided without value.
+		The default value for this field is <code>"no value defined for option '%s'"</code>.
+	</dd>
+
+	<dt><code><b>_norepeat</b></code></dt>
+	<dd>
+		String that defines the format of the error message generated when a same command-line option is provided more than once.
+		If this field evaluates to false then repeated command-line option are processed and the last value is the one that remains in the processor.
+		The default value for this field is <code>"option '%s' was already defined"</code>.
+	</dd>
+	
+	<dt><code><b>_optpat</b></code></dt>
+	<dd>
+		String that defines the pattern that command-line option must match.
+		The pattern must define three captures, in the following order:
+		<ol>
+			<li><code>name</code>: name of the command-line option.</li>
+			<li><code>assign</code>: assignment expression that indicates the value of the option was provided with the option name. If this capture contains any character then the following capture is used as the option's value, otherwise the next argument is used as the option value if necessary.</li>
+			<li><code>value</code>: command-line option value. This capture is only processed if the previous capture evaluates to a non-empty string.</li>
+		</ol>
+		The default value for this field is <code>"^%-(%w+)(=?)(.-)$"</code>.
+	</dd>
+	
+	<dt><code><b>_unknown</b></code></dt>
+	<dd>
+		String that defines the format of the error message generated when an command-line option is provided that is not defined in the processor.
+		If this field evaluates to false then any command-line option provided that match the option pattern (see field <code>_optpat</code>) and is not defined is processed as a string option.
+		The default value for this field is <code>"unknown option '%s'"</code>.
+	</dd>
+</dl>
+
+<h3>Meta-Fields</h3>
+
+<dl>
+	
+	<dt><code><b>__call</b></code></dt>
+	<dd>
+		Receives as arguments a sequence of string values that shall be processed as command-line options by the processor.
+		The values of the processed options are stored in the processor using the option name as key thus replacing the default values initially provided.
+		This function returns the index of the last string processed or <code>nil</code> and an error message if some error was detected during the command-line option processing.
+	</dd>
+	
+</dl>
+
+<h2><a name="Remarks">Remarks</a></h2>
+
+<ul>
+	<li>Option names shall not match the name of members defined by this class.</li>
+	<li>Options which default value are boolean never get their value from a following argument like in <code>--boolopt true</code>.
+	The only way to explicitly set the value of a boolean option is using the assignment expression defined by the second capture of pattern defined by field <code>_optpat</code> like in <code>--boolopt=false</code>.
+	When the assignment expression is not present in the definition of a boolean option then the option received the value <code>true</code> by default.</li>
+	<li>Options which default value are tables may appear many times (even when field <code>_norepeat</code> is defined) and each option's value is inserted in the table thus resulting in a array of all values provided for the option.</li>
+	<li>Options which default value are functions may also appear many times (even when field <code>_norepeat</code> is defined).
+	In such case, the function is invoked for each time the option is processed and receives as parameters the processor object, the option's name, and option's value.
+	If the function returns a value then the options processing fails and the returned value is used as error message.</li>
+</ul>
+
+<h2>Examples</h2>
+
+<h3><a name="CommandLineServer">Server with Command-Line Options</a></h3>
+
+<pre>
+local Arguments = require "loop.compiler.Arguments"
+local Verbose   = require "loop.debug.Verbose"
+
+local verbose = Verbose()
+
+local args = Arguments{
+  _optpat = "^%-%-(%w+)([=:]?)(.-)$"
+  port = 0
+  verb = {}
+}
+function args:log(optname, optvalue)
+  local file, errmsg = io.open(optvalue, "w")
+  if file
+    then verbose:output(file)
+    else return errmsg
+  end
+end
+
+print("Fake Server 1.0  Copyright (C) 0000")
+local argidx, errmsg = args(...)
+if not argidx or argidx >= select("#", ...) then
+  io.stderr:write([[
+ERROR: ]],errmsg,[[ 
+Usage:  fakeserver.lua [options] &lt;files&gt;
+Options:
+  --verb &lt;flag&gt;
+  --log &lt;file&gt;
+  --port &lt;number&gt;
+
+]])
+  os.exit(1)
+end
+
+for _, flag in ipairs(args.verb) do
+  verbose:flag(flag, true)
+end
+
+if args.port == 0 then
+  args.port = nil -- no port was defined
+end
+
+initserver(args, select(argidx, ...))
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

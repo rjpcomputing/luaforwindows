@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Copas - Coroutine Oriented Portable Asynchronous Services for Lua</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+		<img alt="Copas logo" src="copas.png"/>
+	</a></div>
+	<div id="product_name"><big><strong>Copas</strong></big></div>
+	<div id="product_description">Coroutine Oriented Portable Asynchronous Services for Lua</div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+<h1>Copas</h1>
+<ul>
+    <li><a href="index.html">Home</a>
+        <ul>
+            <li><a href="index.html#over">Overview</a></li>
+            <li><a href="index.html#status">Status</a></li>
+            <li><a href="index.html#download">Download</a></li>
+            <li><a href="index.html#dependencies">Dependencies</a></li>
+            <li><a href="index.html#history">History</a></li>
+            <li><a href="index.html#credits">Credits</a></li>
+            <li><a href="index.html#contact">Contact us</a></li>
+        </ul>
+    </li>
+    <li><a href="manual.html">Manual</a>
+        <ul>
+            <li><a href="manual.html#install">Installing</a></li>
+            <li><a href="manual.html#introduction">Introduction</a></li>
+            <li><a href="manual.html#why">Why use Copas?</a></li>
+            <li><a href="manual.html#using">Using Copas</a></li>
+            <li><a href="manual.html#control">Controlling Copas</a></li>
+        </ul>
+    </li>
+    <li><strong>Reference</strong></li>
+    <li><a href="http://luaforge.net/projects/copas/">Project</a>
+        <ul>
+            <li><a href="http://luaforge.net/tracker/?group_id=100">Bug Tracker</a></li>
+            <li><a href="http://luaforge.net/scm/?group_id=100">CVS</a></li>
+        </ul>
+    </li>
+    <li><a href="license.html">License</a></li>
+</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+<h2>Reference</h2>
+
+<p>
+Copas functions are separated in two groups.</p>
+<p>
+The first group is relative to the use of the dispatcher itself and
+are used to register servers and to execute the main loop of Copas:</p>
+
+<dl class="reference">
+    <dt><strong><code>copas.addserver(server, handler[, timeout])</code></strong></dt>
+    <dd>Adds a new <code>server</code> and its <code>handler</code> to the dispatcher
+        using an optional <code>timeout</code>.<br />
+        <code>server</code> is a LuaSocket server socket created using
+        <code>socket.bind()</code>.<br />
+        <code>handler</code> is a function that receives a LuaSocket client socket
+        and handles the communication with that client.<br />
+        <code>timeout</code> is the timeout for blocking I/O in seconds.
+        The handler will be executed in parallel with other threads and the
+        registered handlers as long as it uses the Copas socket functions.
+    </dd>
+
+    <dt><strong><code>copas.addthread(thrd[, ...])</code></strong></dt>
+    <dd>Adds a new thread to the dispatcher using optional parameters.<br />
+        The thread will be executed in parallel with other threads and the
+        registered handlers as long as it uses the Copas socket functions.
+    </dd>
+
+    <dt><strong><code>copas.loop(timeout)</code></strong></dt>
+    <dd>Starts the Copas infinite loop accepting client connections for the 
+        registered servers and handling those connections with the corresponding
+        handlers. Every time a server accepts a connection, Copas calls the
+        associated handler passing the client socket returned by
+        <code>socket.accept()</code>. The <code>timeout</code> parameter is optional.
+    </dd>
+    
+    <dt><strong><code>copas.step(timeout)</code></strong></dt>
+    <dd>Executes one copas iteration accepting client connections for the 
+        registered servers and handling those connections with the corresponding
+        handlers. When a server accepts a connection, Copas calls the
+        associated handler passing the client socket returned by
+        <code>socket.accept()</code>. The <code>timeout</code> parameter is optional.
+    </dd>
+</dl>
+
+<p>The second group is used by the handler functions to exchange data with
+the clients, and by threads registered with <code>addthread</code> to
+exchange data with other services.</p>
+
+<dl class="reference">
+    <dt><strong><code>copas.flush(skt)</code></strong></dt>
+    <dd>Flushes a client write buffer. <code>copas.flush()</code> is called from time
+    to time by <code>copas.loop()</code> but it may be necessary to call it from
+    the handler function or one of the threads.
+    </dd>
+    
+    <dt><strong><code>copas.receive(skt, pattern)</code></strong></dt>
+    <dd>Reads data from a client socket according to a pattern just like LuaSocket
+    <code>socket:receive()</code>. The Copas version does not block and allows
+    the multitasking of the other handlers and threads.
+    </dd>
+    
+    <dt><strong><code>copas.send(skt, data)</code></strong></dt>
+    <dd>Sends data to a client socket just like <code>socket:send()</code>. The Copas version
+    is buffered and does not block, allowing the multitasking of the other handlers and threads.
+    </dd>
+    
+    <dt><strong><code>copas.wrap(skt)</code></strong></dt>
+    <dd>Wraps a LuaSocket socket and returns a Copas socket that implements LuaSocket's API
+    but use Copas' methods <code>copas.send()</code> and <code>copas.receive()</code>
+    automatically.
+    </dd>
+</dl>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
+	<p><small>$Id: reference.html,v 1.16 2009/04/07 21:34:52 carregal Exp $</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+</body>
+</html>

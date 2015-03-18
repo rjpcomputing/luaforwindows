@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <meta name="generator" content="SciTE" />
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>
+      Download Scintilla and SciTE
+    </title>
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    <table bgcolor="#000000" width="100%" cellspacing="0" cellpadding="0" border="0">
+      <tr>
+        <td>
+          <img src="SciTEIco.png" border="3" height="64" width="64" alt="Scintilla icon" />
+        </td>
+        <td>
+          <a href="index.html" style="color:white;text-decoration:none"><font size="5">
+	  Add a lexer to Scintilla and SciTE</font></a>
+        </td>
+      </tr>
+    </table>
+    <h2>
+       Lexer addition.
+    </h2>
+     <p>The process of adding a new lexer to both Scintilla and SciTE
+is fairly long. Here is my response when asked how to add a lexer for
+Apache CONF files to SciTE. There is more information on writing the
+lexer code (steps 4 and 5, here) in the documentation for Scintilla.</p>
+<p>
+Don't bother about steps which are for configurations you don't
+use all 6 makefiles - I'll patch them up later if you want to
+contribute the lexer.</p>
+    <ol>
+<li>
+In scintilla/include/Scintilla.iface, add a lexer ID value:<br />
+val SCLEX_CONF=17
+</li>
+<li>
+And any lexical class IDs:<br />
+val SCE_CONF_DEFAULT=0<br />
+val SCE_CONF_COMMENT=1
+</li>
+<li>
+In the scintilla/include directory run HFacer.py to regenerate the
+SciLexer.h file. Alternatively (if you don't want to run a Python script)
+just add these values to SciLexer.h as #defines and I'll put them in
+Scintilla.iface.
+</li>
+<li>
+In the scintilla/src/LexOthers.cxx write a ColouriseConfDoc function
+similar to one of the other functions such as ColouriseLatexDoc.<br />
+static void ColouriseConfDoc (unsigned int startPos, int length, int
+initStyle, WordList *[], Accessor &amp;styler) {
+</li>
+<li>
+At the end of the file associate the lexer ID and name with the function:<br />
+LexerModule lmConf(SCLEX_CONF, ColouriseConfDoc, "conf");
+</li>
+<li>
+If this is a complex lexer then it may be better off in its own file, in
+which case clone one of the current files and then add the file to all of
+the make files where LexOthers is currently referenced -
+scintilla/win32/makefile, scintilla/win32/scintilla.mak,
+scintilla/gtk/makefile, scite/win32/makefile, and scite/win32/scite.mak.
+</li>
+<li>
+To the scite/src/others.properties add an entry to associate the file
+extension with the lexer:<br />
+lexer.*.conf=conf<br />
+   If a new lexer file was created instead of adding to LexOthers, then a
+new properties file should be created by cloning scite/src/others.properties
+and modifying that file in the following steps.
+</li>
+<li>
+Set up the styles:<br />
+# Default<br />
+style.conf.0=fore:#FF0000,bold<br />
+# Comment<br />
+style.conf.1=fore:#007F7F,$(font.comment)<br />
+</li>
+<li>
+If on Windows (someday this may work on GTK+ too), a filter should be
+added for conf files in scite/src/others.properties:
+filter.conf=Configuration (.conf)|*.conf|
+</li>
+<li>
+In scite/src/SciTEGlobal.properties add $(filter.conf) to the definition
+of open.filter.
+</li>
+<li>
+To add this language to the Language menu of SciTE, add an entry to the menu.language
+property including the name of the language and the file extension used most commonly
+for it.
+</li>
+<li>
+Build both Scintilla and SciTE.
+</li>
+<li>
+Share and enjoy
+</li>
+</ol>
+<p>
+For more extensive information on building lexers, see the
+<a href ="http://www.scintilla.org/ScintillaDoc.html#BuildingScintilla">
+instructions in the Scintilla documentation</a>.
+</p>
+  </body>
+</html>
+

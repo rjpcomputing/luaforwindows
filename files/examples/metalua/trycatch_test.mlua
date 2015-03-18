@@ -1,0 +1,107 @@
+-{ extension 'trycatch' }
+
+
+----------------------------------------------------------------------
+print "1) no error"
+try
+   print("   Hi")
+end
+
+
+----------------------------------------------------------------------
+print "2) caught error"
+try
+   error "some_error"
+catch x then
+   printf("   Successfully caught %q", x)
+end
+
+
+-- [[
+----------------------------------------------------------------------
+print "3) no error, with a finally"
+try
+   print "   Hi"
+finally
+   print "   Finally OK"
+end
+
+
+----------------------------------------------------------------------
+print "4) error, with a finally"
+try
+   print "   Hi"
+   error "bang"
+catch "bang"/{_} then
+   print "   Bang caught"
+finally
+   print "   Finally OK"
+end
+
+
+----------------------------------------------------------------------
+print "5) nested catchers"
+try
+   try
+      error "some_error"
+   catch "some_other_error" then
+      assert (false, "mismatch, this must not happen")
+   end
+   catch "some_error"/{x} then
+   printf("   Successfully caught %q across a try that didn't catch", x)
+catch x then
+   assert (false, "We shouldn't reach this catch-all")
+end
+
+
+----------------------------------------------------------------------
+print "6) nested catchers, with a 'finally in the inner one"
+try
+   try
+      error "some_error"
+   catch "some_other_error" then
+      assert (false, "mismatch, this must not happen")
+   finally
+      print "   Leaving the inner try-catch"
+   end
+catch "some_error"/{x} then
+   printf("   Successfully caught %q across a try that didn't catch", x)
+catch x then
+   assert (false, "We shouldn't reach this catch-all")
+end
+
+
+----------------------------------------------------------------------
+print "7) 'finally' intercepts a return from a function"
+function f()
+   try
+      print "   into f:"
+      return "F_RESULT"
+      assert (false, "I'll never go there")
+   catch _ then
+      assert (false, "No exception should be thrown")
+   finally
+      print "   I do the finally before leaving f()"
+   end
+end
+local fr = f()
+printf("   f returned %q", fr)
+
+
+----------------------------------------------------------------------
+print "8) don't be fooled by nested functions"
+function f()
+   try
+      local function g() return "from g" end
+      printf("   g() returns %q", g())
+      return "from f"
+   catch _ then
+      assert (false, "No exception should be thrown")
+   end
+end
+local fr = f()
+printf("   f returned %q", fr)
+
+----------------------------------------------------------------------
+print "*) done."
+

@@ -1,0 +1,25 @@
+                        Stdlib's contributors
+                        ---------------------
+
+This file lists major contributors to stdlib. If you think you should
+be on it, please tell the mailing list (see README for the address).
+Thanks also to all those who have contributed bug fixes, suggestions
+and support.
+
+
+Reuben Thomas started and maintains the standard libraries project,
+wrote many of the libraries, and integrated code from other authors.
+
+John Belmonte helped set the project up on lua-users, and contributed
+to the early organisation of the libraries.
+
+The call trace debugging code is based on test/trace-calls.lua from
+the Lua 5.0 distribution.
+
+Jamie Webb contributed several miscellaneous functions from his
+private standard library.
+
+Johann Hibschman supplied the code on which math.floor and math.round
+were based.
+
+Diego Nehab wrote the original version of the mbox parser module.

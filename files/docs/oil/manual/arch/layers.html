@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Defining Layers</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="../basics/index.html", title="Basic Concepts">Basics</a></li>
+			<li><a href="../corba/index.html", title="CORBA Support">CORBA</a></li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="index.html", title="Internal Architecture">Arch</a>
+				<div class="outside"><div class="inside"><ul>
+					<li><strong>Layers</strong></li>
+					<li><a href="flavors.html", title="Using Flavors">Flavors</a></li>
+					<li><a href="core.html", title="Core Architecture">Core</a></li>
+					<li><a href="rmi.html", title="RMI Architecture">RMI</a></li>
+				</ul></div></div>
+			</li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Defining Layers</h1>
+<p>OiL's architectural layers are defined as two Lua modules.
+The first one is an <em>architectural module</em>, whose name is prefixed by <code>oil.arch</code>.
+Generally, this module defines an abstract architecture that describe a set of components and their connections.
+The other module is a <em>builder module</em>, whose name is prefixed by <code>oil.builder</code>.
+This module defines how to create and initialize the components of an architectural module.
+Generally, the builder module defines how the components of the abstract architecture provided by the architectural module are implemented.
+A layer may be defined only by an architectural module that simply defines new connections.
+Moreover, a layer may be defined by a single builder module that replaces component implementations.</p>
+
+<h2>Architectural Modules</h2>
+
+<p>An architectural module must provide function <code>assemble(components)</code> to connect the components defined in the layer.
+Parameter <code>components</code> is a table that maps the name of each component to the instance that must be assembled.
+Ideally, the <code>assemble</code> function should connect only the components provided and should not fail if some components are missing.
+This is useful to allow the use of the module to build partial assemblies.</p>
+
+<p>Although OiL does not impose any restriction on the way the components are implemented, the standard implementation is entirely developed using the support provided by <a href="http://loop.luaforge.net/manual/components.html">LOOP's component models</a>.
+In particular, standard architectural modules additionally provide <a href="http://loop.luaforge.net/manual/components.html#templates">component templates</a> for the components defined in the layer.
+These templates are useful in creation of component factories as will be illustrated in the following sections.
+The code below shows the definition of a fictional architectural module.
+See files <code>lua/oil/arch/*.lua</code> from the OiL's standard distribution for other examples of architectural modules using LOOP.</p>
+
+<pre>
+local component = require "oil.component" -- component model
+local port      = require "oil.port"      -- port model
+local arch      = require "oil.arch"      -- helper module
+
+module "oil.arch.base.client" -- layer name is 'base.client'
+
+ClientBroker = component.Template{
+  broker     = port.Facet,
+  proxies    = port.Receptacle,
+  references = port.Receptacle,
+}
+ObjectProxies = component.Template{
+  proxies = port.Facet,
+  invoker = port.Receptacle,
+}
+OperationInvoker = component.Template{
+  invoker   = port.Facet,
+  requester = port.Receptacle,
+}
+
+function assemble(components)
+  -- avoids the 'components.' prefix and errors
+  -- when some component instances are missing.
+  arch.start(components)
+  
+  OperationInvoker.requester = OperationRequester.requests
+  ObjectProxies.invoker      = OperationInvoker.invoker
+  ClientBroker.proxies       = ObjectProxies.proxies
+  ClientBroker.references    = ObjectReferrer.references
+  
+  arch.finish(components)
+end
+</pre>
+
+<h2>Builder Modules</h2>
+
+<p>The modules cited above just define a skeleton where component implementations are filled to complete the assembly defined by the layer.
+The definition of the actual component implementations is defined by builder modules.
+A builder module must provide function <code>create([components])</code> that returns a table with instances of the components defined in the layer properly initialized.
+Optional parameter <code>components</code> is a table with component instances from other layers.
+Ideally, function <code>create</code> should not replace the instances from table <code>components</code> by other instances.</p>
+
+<p>Standard modules use the support provided by LOOP to define <a href="http://loop.luaforge.net/manual/components.html#factories">component factories</a> using the templates defined by standard architectural modules.
+The component implementations provided for factories are <a href="http://loop.luaforge.net/manual/basics.html#classes">LOOP classes</a>.
+Such classes are <a href="http://loop.luaforge.net/manual/classops.html#packaged">packaged as Lua modules</a>.
+Below, there is the definition of a builder module that defines a set of factories of components for the architecture exemplified above and uses function <code>oil.builder.create</code> to create component instances.
+See files <code>lua/oil/builder/*.lua</code> from OiL's standard distribution for examples of other builder modules using LOOP.</p>
+
+<pre>
+local arch    = require "oil.arch.base.client" -- arch module
+local builder = require "oil.builder"          -- helper module
+
+module "oil.builder.base.client" -- layer name is 'base.client'
+
+ClientBroker = arch.ClientBroker{
+  require "oil.kernel.base.Client"  -- packaged LOOP class
+}
+ObjectProxies = arch.ObjectProxies{
+  require "oil.kernel.base.Proxies" -- packaged LOOP class
+}
+OperationInvoker = arch.OperationInvoker{
+  require "oil.kernel.base.Invoker" -- packaged LOOP class
+}
+
+function create(components)
+  -- create one instance from each factory provided
+  -- unless the instance already exists in 'components'.
+  return builder.create(_M, components)
+end
+</pre>
+
+<h2>Assembler Procedure</h2>
+
+<p>Component assemblies are created by function <code>oil.builder.build(flavor [, components])</code>.
+The parameter <code>flavor</code> is the flavor that defines the layers to be used in the creation.
+For each layer, the function <code>oil.builder.build</code> checks for the existence of a builder with that name in namespace <code>oil.builder.*</code>.
+If the builder module is found then its <code>create</code> function is called to create component instances in table <code>components</code>.
+After all builder modules found are executed, a similar procedure is performed for architectural modules.
+In other words, for each architecture module found, its function <code>assemble</code> is called to establish the proper connections between components created.</p>
+
+<p>The described assemble construction method allows us to define new architectural modules that define new connections between components as well as builder modules that might provide alternative component implementations for those provided by OiL's standard distribution.
+This model for extension of the OiL architecture and implementation allied to the possibility to reuse the standard classes provided by means of inheritance or composition, and all the flexibility provided by the Lua language makes OiL easily customizable for different needs and applications.</p>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

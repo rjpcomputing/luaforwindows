@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Registering Servants</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="index.html", title="Basic Concepts">Basics</a>
+				<div class="outside"><div class="inside"><ul>
+					<li><a href="module.html", title="The oil Module">Module</a></li>
+					<li><a href="brokers.html", title="Initializing Brokers">Brokers</a></li>
+					<li><strong>Servants</strong></li>
+					<li><a href="proxies.html", title="Using Remote Servants">Proxies</a></li>
+					<li><a href="threads.html", title="Cooperative Multithreading">Threads</a></li>
+				</ul></div></div>
+			</li>
+			<li><a href="../corba/index.html", title="CORBA Support">CORBA</a></li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="../arch/index.html", title="Internal Architecture">Arch</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Registering Servants</h1>
+<p>A servant is an local object that is registered in the broker to be invoked by remote clients.
+In other words, a servant is an object publicly available through the network.
+To create servants, it is necessary to have an initialized broker.
+See section <a href="brokers.html">Initializing Brokers</a>.</p>
+
+<h2><a name="creation">Creation</a></h2>
+
+<p>Servants are created by method <a href="brokers.html#newservant"><code>newservant</code></a><code>(object [, key, type])</code> of a broker.
+It returns an objet that represents the new servant registered.
+Parameter <code>object</code> is the local object that will receive the invocations destined to the servant being created.
+This object only have to implement the methods when they are actually invoked by a remote client.
+Therefore, a servant's invocations are very late bound.</p>
+
+<p>Every servant has an unique name in a broker.
+This name is called the <code>key</code>, which can be provided as the second parameter of operation <a href="brokers.html#newservant"><code>newservant</code></a>.
+If no key is provided, an automatic one is generated based on the memory position the object is allocated.
+Furthermore, keys starting with the null character (<code>'\0'</code>) are reserved for internal use.
+Keys are necessarily string values.
+If two servants are created with the same key, an error is raised.
+A single object can be used as the implementation of multiple servants.
+But, in such case, the key of each additional servant must be provided.
+The code below is a complete implementation of a OiL server using the <a href="../ludo.html">LuDO</a> RMI protocol.</p>
+
+<pre>
+require "oil"
+
+oil.main(function()
+  -- create an object to be exported via OiL
+  local hello = {}
+  function hello:sayto(name)
+    print(string.format("Hello, %s!", name))
+  end
+  
+  -- initialize a LuDO ORB
+  local broker = oil.init{flavor="ludo;base"}
+  
+  -- registers a servant and save a textual
+  -- reference for it in a file 'hello.ref'.
+  oil.writeto("hello.ref",
+    broker:tostring(
+      broker:newservant(hello)))
+  
+  -- starts processing remote invocations
+  broker:run()
+end)
+</pre>
+
+<p>Some RMI protocols supported by OiL rely on typing information to perform invocations correctly, <i>e.g.</i> <a href="../corba/index.html">CORBA</a>.
+When one of these protocols is the one used by the broker, it is necessary to inform the type of each servant being created.
+In such cases, the type shall be defined by the optional parameter <code>type</code> of method <a href="brokers.html#newservant"><code>newservant</code></a>.
+The possible values for this parameter depends on the RMI protocol being used.
+The code below is a implementation of the server above using a CORBA ORB.</p>
+
+<pre>require "oil"
+
+oil.main(function()
+  -- create an object to be exported via OiL
+  local hello = {}
+  function hello:sayto(name)
+    print(string.format("Hello, %s!", name))
+  end
+  
+  -- get the default, which is a CORBA ORB
+  local broker = oil.init()
+  
+  -- load an IDL definition
+  broker:loadidl[[
+    interface Hello {
+      void sayto(in string name);
+    };
+  ]]
+  
+  -- registers a servant with interface 'Hello'
+  -- and save a textual reference for it in a
+  -- file 'hello.ref'.
+  oil.writeto("hello.ref",
+    broker:tostring(
+      broker:newservant(hello, nil, "Hello")))
+  
+  -- starts processing remote invocations
+  broker:run()
+end)</pre>
+
+<h2>Behavior</h2>
+
+<p>The servant object behaves like its implementation object.
+This means, that any method call performed on the servant results in the same call on its implementation object.
+Furthermore, every field provided by the implementation object is also provided by the servant.
+However, the servant provides additional fields that are described below.</p>
+
+<dl>
+	<dt><code>_key</code></dt>
+	<dd>The string value that identifies the servant in its broker.</dd>
+	
+	<dt><code>_deactivate()</code></dt>
+	<dd>Method that unregister the servant from its broker.</dd>
+</dl>
+
+<h2><a name="references">References</a></h2>
+
+<p>Prior to invoke a method on a remote servant, the client process must get a reference to the servant.
+The easiest way to get a reference to a servant is to provide the servant as the return value of a method of another servant that the client already has a reference, as described in the example below.</p>
+
+<pre>local Factory
+function Factory:create()
+  local hello = { say = function() print("Hello") end }
+  return broker:newservant(hello)
+end</pre>
+
+<p>On the other hand, this approach is not feasible to get the first reference to a remote servant.
+The alternative approach is to use a textual reference, which is a string value contained the information necessary to generate a reference to a servant.
+Textual references are created by method <a href="brokers.html#tostring"><code>tostring</code></a><code>(servant)</code> of brokers.
+Such references can be stored in files (see auxiliary operation <a href="module.html#writeto"><code>oil.writeto</code></a>) or passed as command-line parameters to applications.</p>
+
+<h2>Deactivation</h2>
+
+<p>Lua relies on automatic memory management by means of garbage collection.
+However, it is very difficult to build a reliable garbage collection mechanism over a distributed environment.
+OiL does not impose that its underlying RMI protocol provide this kind of support.
+Instead, OiL provides means for the application to manage explicitly the release of memory used by servants by means of deactivation.</p>
+
+<p>A servant is deactivated by method <a href="brokers.html#deactivate"><code>deactivate</code></a><code>(servant)</code> of its broker.
+After this call, the servant is removed from its broker and all resources associated to it are released.
+In particular, after a servant is deactivated its key becomes free, so another object can be used to create a servant with this key.</p>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: CORBA Support</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		@import "../../table.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="../basics/index.html", title="Basic Concepts">Basics</a></li>
+			<li><strong>CORBA</strong>
+				<div class="outside"><div class="inside"><ul>
+					<li><a href="config.html", title="Configuration Options">Config</a></li>
+					<li><a href="loadidl.html", title="Loading IDL">IDL</a></li>
+					<li><a href="mapping.html", title="Value Mapping">Mapping</a></li>
+					<li><a href="features.html", title="Additional Features">Features</a></li>
+					<li><a href="intercept.html", title="Intercepting Invocations">Intercept</a></li>
+				</ul></div></div>
+			</li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="../arch/index.html", title="Internal Architecture">Arch</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>CORBA Support</h1>
+<p>The CORBA support provided by OiL is restricted to interoperability with other ORBs.
+In particular, OiL does not embrace the programming interfaces defined by the CORBA specification.
+Instead, it uses a different programming interface specifically designed for Lua.
+This interface is described in section <a href="../basics/index.html">Basic Concepts</a>.</p>
+
+<p>On the other hand, OiL follows the specification of the underlying GIOP protocol and its mapping to TCP/IP (<em>a.k.a.</em> IIOP) to interoperate with other CORBA ORBs.
+However, many features defined by CORBA are not implemented by OiL.
+See the table at the end of this page for a list of some of the CORBA features currently provided by OiL and also some of those that are not provided.</p>
+
+<p>When a broker is created with CORBA support, an additional API is enabled.
+Basically, this API is necessary to provide support for the typing information required by CORBA, as it is described in the following sections.</p>
+
+<dl>
+	<dt><a href="config.html">Configuration Options</a></dt>
+	<dd>
+		Describes the configuration options for initialization of CORBA brokers.
+	</dd>
+	<dt><a href="loadidl.html">Loading IDL</a></dt>
+	<dd>
+		Describes the API provided to load into the broker type definitions described in CORBA's IDL or stored in remote CORBA Interface Repositories.
+	</dd>
+	<dt><a href="mapping.html">Value Mapping</a></dt>
+	<dd>
+		Describes how IDL types are mapped to Lua values, and how to define new types programmatically.
+	</dd>
+	<dt><a href="features.html">Additional Features</a></dt>
+	<dd>
+		Describes additional features provided by CORBA brokers, like implicit servant creation, local reference resolution, etc.
+	</dd>
+	<dt><a href="intercept.html">Intercepting Invocations</a></dt>
+	<dd>
+		Describes the support for interception of CORBA invocations.
+	</dd>
+</dl>
+
+<hr>
+
+<a name="supported"></a>
+<table summary="List of features currently supported by OiL">
+	<caption>Supported features</caption>
+	<thead>
+		<tr>	
+ 			<th>Feature
+ 			<th>Tested
+ 			<th>Since
+ 			<th>Limitations
+		</tr>	
+	</thead>
+
+	<tbody> <tr><td class="title" colspan=4>Types and marshalling
+	<tr>
+		<td>Commom primitive IDL types
+			<UL>
+				<LI>Numeric types
+				<LI>Structs
+				<LI>Unions
+				<LI>Sequences
+				<LI>Arrays
+				<LI>String
+			</UL>
+		<td>Partial
+		<td>O2
+	<tr>
+		<td>Advanced primitive IDL types
+			<UL>
+				<LI>long long
+				<LI>unsigned long long
+				<LI>long double
+		<td>Partial
+		<td>0.4
+	<tr>
+		<td>Object references
+		<td>Yes
+		<td>O2
+	<tr>
+		<td>TypeCodes for supported types
+		<td>Partial
+		<td>O2
+		<td>
+	<tr>
+		<td>CORBA's Any
+		<td>Yes
+		<td>O2
+
+	<tbody> <tr><td class="title" colspan=4> Protocols
+	<tr>
+		<td>GIOP 1.0
+		<td>Yes
+		<td>O2
+	<tr>
+		<td>IIOP 1.0
+		<td>Yes
+		<td>O2
+
+	<tbody> <tr><td class="title" colspan=4> Object references
+	<tr>
+		<td>Stringfied IOR's
+		<td>Yes
+		<td>O2
+	<tr>
+		<td>corbaloc URLs
+		<td>Yes
+		<td>0.2
+
+	<tbody> <tr><td class="title" colspan=4> ORB and servants
+	<tr>
+		<td><code>_non_existent</code> basic operation
+		<td>Yes
+		<td>0.2
+	<tr>
+		<td><code>_is_a</code> basic operation
+		<td>Yes
+		<td>0.3
+	<tr>
+		<td><code>_interface</code> basic operation
+		<td>Yes
+		<td>0.3
+	<tr>
+		<td>ORB net interface and port definition
+		<td>No
+		<td>O2
+	<tr>
+		<td>Definition of host and port for IOR generation
+		<td>No
+		<td>0.1
+	<tr>
+		<td>Multiple ORB instances
+		<td>Yes
+		<td>0.1
+	<tr>
+		<td>Attribute implementation as servant fields
+		<td>Yes
+		<td>O2
+	<tr>
+		<td>Attribute implementation by _set_ and _get_ operations
+		<td>Yes
+		<td>0.1
+	<tr>
+		<td>Concurrent request handling
+		<td>Yes
+		<td>0.3
+	<tr>
+		<td>Absolute interface names
+		<td>Yes
+		<td>0.3
+	<tr>
+		<td>Shutdown operation
+		<td>Yes
+		<td>0.4
+	<tr>
+		<td>Operation invocation and dispatch interception
+		<td>Yes
+		<td>0.4
+
+	<tbody> <tr><td class="title" colspan=4>CORBA Services
+	<tr>
+		<td>Integrated interface repository
+		<td>Yes
+		<td>0.3
+	<tr>
+		<td>Naming service
+		<td>Yes
+		<td>0.3.1
+
+	<tbody> <tr><td class="title" colspan=4> Dynamic proxies
+	<tr>
+		<td><code>_non_existent</code> basic operation
+		<td>Yes
+		<td>0.2
+	<tr>
+		<td><code>_interface</code> basic operation
+		<td>Yes
+		<td>O2
+	<tr>
+		<td><code>_is_a</code> basic operation
+		<td>Yes
+		<td>0.3
+	<tr>
+		<td><code>_is_equivalent</code> basic operation
+		<td>Yes
+		<td>0.4
+	<tr>
+		<td>oneway operations
+		<td>No
+		<td>0.1
+	<tr>
+		<td>deferred invocations (futures)
+		<td>Yes
+		<td>0.4
+
+</table>
+<br>	
+<br>	
+<br>	
+<a name="unsupported"></a>
+<table summary="List of features currently not supported by OiL">
+	<caption>Not supported features</caption>
+	<thead>
+		<th>Feature
+		<th>Priority
+		<th>Assigned
+		<th>Requirements
+
+	<tbody> <tr><td class="title" colspan=4>Types and marshalling
+	<tr>
+		<td>Advanced primitive IDL types
+			<UL>
+				<LI>wide char
+				<LI>wide string
+				<LI>fixed decimals
+	<tr>
+		<td>Value types
+		<td>medium (maia)
+		<td>Maia
+		<td>LuaIDL support
+	<tr>
+		<td>Other IDL types
+			<UL>
+				<LI>Principal
+				<LI>Abstract interfaces
+				<LI>Native
+
+	<tbody> <tr><td class="title" colspan=4> Protocols
+	<tr>
+		<td>IIOP 1.1 - 1.2 support
+		<td>medium (IME-USP)
+		<td>Theóphilo
+	<tr>
+		<td>Firewall bypass support
+		<td>medium (IME-USP)
+		<td>Theóphilo
+
+	<tbody> <tr><td class="title" colspan=4> Object references
+	<tr>
+		<td>Initial References
+	<tr>
+		<td>corbaname URLs
+	<tr>
+		<td>FTP URLs (optional)
+	<tr>
+		<td>HTTP URLs (optional)
+
+	<tbody> <tr><td class="title" colspan=4> ORB and servants
+	<tr>
+		<td>POA manament and policies
+
+	<tbody> <tr><td class="title" colspan=4>CORBA Services
+	<tr>
+		<td>Trading service
+	<tr>
+		<td>Event service
+	<tr>
+		<td>Notification service
+
+	<tbody> <tr><td class="title" colspan=4> Dynamic proxies
+	<tr>
+		<td><code>_is_nil</code> basic operation
+</table>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

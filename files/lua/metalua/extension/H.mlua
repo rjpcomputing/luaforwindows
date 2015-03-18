@@ -1,0 +1,22 @@
+require 'metalua.walk.id'
+-{ extension 'log' }
+
+mlp.expr.prefix:add{ '!', prec = 5,
+   builder = function(_,x)
+                local v = mlp.gensym()
+                return `Stat{ +{ block:
+                                 local -{v} = -{x};
+                                 (-{v}).h_boundary=true },
+                              v }
+             end }
+
+mlp.stat:add{ '!', mlp.expr, builder = |x| +{stat: (-{x[1]}).h_boundary=true } }
+
+-- * if there's no boundary in it, is there a need to rename vars?
+--   ==> first pass to mark binders which contain boundaries,
+--       then 2nd pass only touched those which have a splice
+--       in them.
+
+return +{ require (-{ `String{ package.metalua_extension_prefix .. 'H-runtime' } }) }
+
+

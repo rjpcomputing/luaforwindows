@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Additional Features</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="../basics/index.html", title="Basic Concepts">Basics</a></li>
+			<li><a href="index.html", title="CORBA Support">CORBA</a>
+				<div class="outside"><div class="inside"><ul>
+					<li><a href="config.html", title="Configuration Options">Config</a></li>
+					<li><a href="loadidl.html", title="Loading IDL">IDL</a></li>
+					<li><a href="mapping.html", title="Value Mapping">Mapping</a></li>
+					<li><strong>Features</strong></li>
+					<li><a href="intercept.html", title="Intercepting Invocations">Intercept</a></li>
+				</ul></div></div>
+			</li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="../arch/index.html", title="Internal Architecture">Arch</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Additional Features</h1>
+<p>CORBA brokers make use of typing information to provide additional features, which facilitate some aspects of distributed programming using ORBs.
+Basically, these features help to reduce the interference of the broker in the application.
+Additionally, CORBA brokers also provide an additional API for manipulation of typing information, as described further in this section.</p>
+
+<h2><a name="implicit">Implicit Servants</a></h2>
+
+<p>CORBA brokers allow that plain objects be used whenever an object reference is required.
+For example, suppose the server below that create file objects, which are used to access files locally stored in the host the server is running.</p>
+
+<pre>
+local oo = require "loop.base"
+local oil = require "oil"
+
+oil.main(function()
+  local broker = oil.init()
+  broker:loadidl[[
+    interface File {
+      typedef sequence<octet> Contents;
+      enum AccessMode { read, write };
+      exception AccessError { string error; };
+    
+      Contents read(in long size) raises (AccessError);
+      void write(in Contents data) raises (AccessError);
+      void close();
+    };
+    interface FileSystem {
+      File open(in string path, in File::AccessMode mode)
+        raises (File::AccessError);
+    };
+  ]]
+  
+  File = oo.class()
+  function File:read(size)
+    local data, err = self.handler:read(size)
+    if data==nil then error{"IDL:File/AccessError:1.0",error=err} end
+    return data
+  end
+  function File:write(data)
+    local ok, err = self.handler:write(data)
+    if ok==nil then error{"IDL:File/AccessError:1.0",error=err} end
+  end
+  function File:close()
+    self.handler:close()
+  end
+  
+  system = {} -- singleton object, no need for a class
+  function system:open(path, mode)
+    local file, err = io.open(self.path, mode:sub(1, 1))
+    if file then error{"IDL:File/AccessError:1.0",error=err} end
+    file = File{ handler = file }
+    return file -- implicitly created servant
+  end
+  
+  oil.writeto("fs.ior",
+    broker:tostring(
+      broker:newservant(system, "FileSystem")))
+  broker:run()
+end)
+</pre>
+
+<p>Note that IDL operation <code>FileSystem::open</code> returns an object reference that implements interface <code>File</code>.
+However, its implementation returns a simple object instead of a servant (<em>i.e.</em>, an object reference).
+In this case, the CORBA broker implicitly registers the returned object as a servant with interface <code>File</code>, which is the interface of the returned value.</p>
+
+<p>Implicitly created servants reduce the need for additional code related to CORBA issues.
+However, there are some drawback that must be observed.
+First, implicitly created servants are registered with automatic keys and the interface they implement is the type of the formal parameter they are being coerced to.
+In the example above, this means that the object returned by method <code>open</code> will be registered with interface <code>File</code> regardless whether the object implements a more specific interface.</p>
+
+<p>To solve this problem, each object that may be used in the implicit creation of a servant may provide either field <code>__objkey</code> or <code>__type</code> to informs the object key and the interface name or ID of the servant, respectively.
+Alternatively, the field may also be provided by the object's metatable.
+The example below, illustrates this.</p>
+
+<pre>
+local oo = require "loop.base"
+local oil = require "oil"
+
+oil.main(function()
+  local broker = oil.init()
+  broker:loadidl[[
+    interface Element { readonly attribute path; };
+    
+    interface File : Element {
+      typedef sequence<octet> Contents;
+      enum AccessMode { read, write };
+      exception AccessError { string error; };
+      interface Handler {
+        Contents read(in long size) raises (AccessError);
+        void write(in Contents data) raises (AccessError);
+        void close();
+      };
+      Handler open(in AccessMode size) raises (AccessError);
+    };
+    sequence<File> FileSeq;
+    
+    interface Directory : Element {
+      FileSeq contents();
+    }
+    
+    interface FileSystem {
+      Element search(in string path);
+    };
+  ]]
+  
+  File = oo.class{
+    -- implementation of interface 'File'
+  }
+  Directory = oo.class{
+    -- implementation of interface 'Directory'
+  }
+  
+  system = {} -- singleton object, no need for a class
+  function system:search(path)
+    local kind, errmsg = lfs.attributes(path, "mode")
+    if kind == "file" then
+      return File{ -- implicitly created servant
+        path = path,
+        __type = "File",
+      }
+    elseif kind == "directory" then
+      return Directory{ -- implicitly created servant
+        path = path,
+        __type = "Directory",
+      }
+    end
+  end
+  
+  oil.writeto("fs.ior",
+    broker:tostring(
+      broker:newservant(system, "FileSystem")))
+  broker:run()
+end)
+</pre>
+
+<p>In the example above, method <code>FileSystem::search</code> return an object reference of "abstract" interface <code>Element</code>.
+However, the actual objects referenced supports either interface <code>File</code> or <code>Directory</code>.
+Therefore, they define field <code>__type</code> to tell OiL which interface they should be registered with.</p>
+
+<p>A second observation with implicitly created servants is that if the same object is used twice implicitly create a servant, only one servant is created.
+This is because, whenever the same object is registered with the same key (automatic or nor) and interface, OiL reuses the previous servant.</p>
+
+<h2><a name="resolution">Reference Resolution</a></h2>
+
+<p>A complementary feature for implicit servant creation is local reference resolution, which means that any object reference received by a broker that actually refers to a local servant currently registered is automatically resolved to the servant's implementation object.
+This means that the application receives the object originally registered as servant instead of the servant or proxy.
+To illustrate this feature consider a server like the one below.</p>
+
+<pre>
+require "oil"
+
+oil.main(function()
+  local broker = oil.init()
+  broker:loadidl[[
+    interface MyObject {};
+    interface RefHolder {
+      attribute MyObject reference;
+    };
+    interface RefHolderFactory {
+      RefHolder create();
+    };
+  ]]
+  
+  Factory = {}
+  function Factory:create()
+    return {} -- implicitly created servant
+  end
+  
+  oil.writeto("factory.ior",
+    broker:tostring(
+      broker:newservant(Factory, "RefHolderFactory")))
+  broker:run()
+end)
+</pre>
+
+<p>The server above is used to create objects that can hold an object reference.
+Now, the following application creates a <code>RefHolder</code> object to store a reference to a local object.
+When the reference is retrieved the original object is restored.</p>
+
+<pre>
+require "oil"
+
+oil.main(function()
+  local broker = oil.init()
+  
+  local factory = broker:newproxy(oil.readfrom("factory.ior"))
+  local holder = factory:create()
+  
+  local original = {}
+  
+  holder:_set_reference(original)          -- implicitly created servant
+  local restored = holder:_get_reference() -- automatically resolved reference
+  
+  assert(rawequal(original, restored))
+end)
+</pre>
+
+<h2><a name="narrow">Interface Discovery and Narrowing</a></h2>
+
+<p>Each CORBA proxy is associated to an IDL interface.
+Only operations declared in this interface can be invoked using the proxy.
+CORBA brokers provide method <a href="../basics/brokers.html#narrow"><code>narrow</code></a><code>(proxy [, interface])</code> to create another proxy to the same object represented by <code>proxy</code>, but with interface defined as parameter <code>interface</code>.
+For an example, see the code below that access the file server described in a previous example.</p>
+
+<pre>
+require "oil"
+
+oil.main(function()
+  local broker = oil.init()
+  local filesys = broker:newproxy(oil.readfrom("fs.ior"))
+  
+  local file = filesys:search("/usr/bin/lua") -- returns a 'Element'
+  file = broker:narrow(file, "File")          -- narrow to a 'File'
+  file:open("read")
+  ...
+end)
+</pre>
+
+<p>If <a href="../basics/brokers.html#narrow"><code>narrow</code></a> is used without a second parameter, then OiL uses operation <code>_interface</code> of CORBA object references to figure out its most specific interface and uses it.
+Additionally, if this interface is not known, then the broker automatically imports the interface from the remote servant.
+The same is true for when method <a href="../basics/brokers.html#newproxy"><code>newproxy</code></a> is called without the second parameter, as illustrated in the examples above.
+If you look back the previous examples, you will notice that only servers load IDL specifications, while client applications just call <a href="../basics/brokers.html#newproxy"><code>newproxy</code></a> without specifying an interface, which causes the broker to import the interface definition using basic operation <code>_interface</code> of CORBA object references.</p>
+
+<p>Unfortunately, operation <code>_interface</code> is optional and therefore it is not supported by every servant.
+Additionally, the process of importing the entire IDL definition can be quite slow for some applications.
+In these cases, the alternative is to load the IDL in the client and use the second parameter of methods <a href="../basics/brokers.html#newproxy"><code>newproxy</code></a> and <a href="../basics/brokers.html#narrow"><code>narrow</code></a>.</p>
+
+<h3><a name="typedexcept">Exception Support</a></h3>
+
+<p>CORBA brokers provide two additional operations that helps the use of exceptions.
+First, you can create exceptions using exception's absolute name instead of repository ID using method <a href="../basics/brokers.html#newexcept"><code>newexcept</code></a>, as illustrated in the example below.</p>
+
+<pre>
+File = oo.class()
+function File:read(size)
+  local data, err = self.handler:read(size)
+  if data==nil then
+    error(broker:newexcept{ "File::AccessError",
+      error = err,
+    })
+  end
+  return data
+end
+function File:write(data)
+  local ok, err = self.handler:write(data)
+  if ok==nil then
+    error(broker:newexcept{ "File::AccessError",
+      error = err
+    })
+  end
+end
+function File:close()
+  self.handler:close()
+end
+</pre>
+
+<p>Other feature is that exception handlers can be defined for proxies of a specific interface with method <a href="../basics/brokers.html#setexcatch"><code>setexcatch</code></a>(handler [, interface]).
+To do so, just inform the interface's absolute name or repository ID.</p>
+
+<h3><a name="accessIR">Internal Interface Repository</a></h3>
+
+<p>Finally, CORBA brokers provide field <a href="../basics/brokers.html#types"><code>types</code></a> containing an object that implements the CORBA Interface Repository and provides access to all the IDL descriptions currently loaded in the broker.</p>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

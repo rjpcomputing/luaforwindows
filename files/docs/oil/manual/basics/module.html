@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: The oil Module</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="index.html", title="Basic Concepts">Basics</a>
+				<div class="outside"><div class="inside"><ul>
+					<li><strong>Module</strong></li>
+					<li><a href="brokers.html", title="Initializing Brokers">Brokers</a></li>
+					<li><a href="servants.html", title="Registering Servants">Servants</a></li>
+					<li><a href="proxies.html", title="Using Remote Servants">Proxies</a></li>
+					<li><a href="threads.html", title="Cooperative Multithreading">Threads</a></li>
+				</ul></div></div>
+			</li>
+			<li><a href="../corba/index.html", title="CORBA Support">CORBA</a></li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="../arch/index.html", title="Internal Architecture">Arch</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>The oil Module</h1>
+<p>OiL is provided as a Lua module that can be required by the following command (for further information about Lua modules, see the <a href="http://www.lua.org/manual/5.1/manual.html#pdf-require">Lua's manual</a>):</p>
+
+<pre>  require "oil"</pre>
+
+<p>The application must first load this module to use OiL.
+It provides a set of helper functions that are used to <a href="brokers.html">create brokers</a>, <a href="threads.html">control multithreading</a> and other miscellaneous helper operations that provides features of the underlying operating system, as described below:</p>
+
+<h3>Fields</h3>
+<dl>
+	<dt><a href="#tasks"><b><code>oil.tasks</code></b></a></dt> 
+	<dd>Internal coroutine scheduler used by OiL.</dd>
+</dl>
+
+<h3>Functions</h3>
+<dl>
+	<dt><a href="#init"><b><code>oil.init</code></b></a><code>([config])</code></dt>
+	<dd>Initialize a broker.</dd>
+	<dt><a href="#main"><b><code>oil.main</code></b></a><code>(function)</code></dt>
+	<dd>Function executes the main function of the application.</dd>
+	<dt><a href="#newthread"><b><code>oil.newthread</code></b></a><code>(function, ...)</code></dt>
+	<dd>Creates and starts the execution of a new the thread.</dd>
+	<dt><a href="#pcall"><b><code>oil.pcall</code></b></a><code>(function, ...)</code></dt>
+	<dd>Function that must be used to perform protected calls in applications.</dd>
+	<dt><a href="#readfrom"><b><code>oil.readfrom</code></b></a><code>(filename)</code></dt>
+	<dd>Read the contents of a file.</dd>
+	<dt><a href="#sleep"><b><code>oil.sleep</code></b></a><code>(delay)</code></dt>
+	<dd>Suspends the execution of the current thread for some time.</dd>
+	<dt><a href="#time"><b><code>oil.time</code></b></a><code>()</code></dt>
+	<dd>Get the current system time.</dd>
+	<dt><a href="#writeto"><b><code>oil.writeto</code></b></a><code>(filename, text)</code></dt>
+	<dd>Writes a text into file.</dd>
+</dl>
+
+<h3>Definitions</h3>
+
+	<dt><a name="tasks"><b><code>oil.tasks</code></b></a></dt>
+	<dd>
+	<p>
+		<b>Internal coroutine scheduler used by OiL.</b>
+		This field holds a reference to the object that implement the API described in <a href="http://loop.luaforge.net/library/thread/Scheduler.html">loop.thread.Scheduler</a>.<br>
+	<p>
+		<i>Usage:</i>
+		<pre>
+oil.tasks:register(coroutine.create(function() return broker:run() end))
+oil.tasks:run()
+    </pre>
+	</dd>
+	
+	<dt><a name="main"><b><code>oil.main</code></b></a><code>(func)</code></dt>
+	<dd>
+	<p>
+		<b>Executes the main function of the application.</b>
+		The application's main function is executed in a new thread if the current assembly provides thread support.
+		This may only return when the application terminates.<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>func</code></td>
+			<td valign="top"><b>function</b></td>
+			<td valign="top"></td>
+			<td>Application's main function.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+oil.main(function() oil.init():run() end)
+    </pre>
+	</dd>
+	
+	<dt><a name="newthread"><b><code>oil.newthread</code></b></a><code>(func, ...)</code></dt>
+	<dd>
+	<p>
+		<b>Creates and starts the execution of a new the thread.</b>
+		Creates a new thread to execute the function <code>func</code> with the extra parameters provided.
+		This function imediately starts the execution of the new thread and the original thread is only resumed again acordingly to the the scheduler's internal policy.
+		This function can only be invocated from others threads, including the one executing the application's main function (see <code>main</code>).<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>func</code></td>
+			<td valign="top"><b>function</b></td>
+			<td valign="top"></td>
+			<td>Function that the new thread will execute.</td>
+		</tr>
+		<tr>
+			<td valign="top"><code>...</code></td>
+			<td valign="top"><b>any</b></td>
+			<td valign="top"></td>
+			<td>Additional parameters passed to the <code>func</code> function.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+oil.newthread(broker.run, broker) -- runs in another thread
+    </pre>
+	<p>
+		<i>See also:</i> <a href="#main"><b><code>oil.main</code></b></a>
+	</dd>
+	
+	<dt><a name="sleep"><b><code>oil.sleep</code></b></a><code>(time)</code></dt>
+	<dd>
+	<p>
+		<b>Suspends the execution of the current thread for some time.</b>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>time</code></td>
+			<td valign="top"><b>number</b></td>
+			<td valign="top"></td>
+			<td>Delay in seconds that the execution must be resumed.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+oil.sleep(5.5)
+    </pre>
+	</dd>
+	
+	<dt><a name="time"><b><code>oil.time</code></b></a><code>()</code></dt>
+	<dd>
+	<p>
+		<b>Get the current system time.</b>
+	<p>
+		<i>Return values:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>timestamp</code></td>
+			<td valign="top"><b>number</b></td>
+			<td valign="top"></td>
+			<td>Number of seconds since a fixed point in the past.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+local start = oil.time(); oil.sleep(3); print("I slept for", oil.time() - start)
+    </pre>
+	</dd>
+	
+	<dt><a name="pcall"><b><code>oil.pcall</code></b></a><code>(func, ...)</code></dt>
+	<dd>
+	<p>
+		<b>Function that must be used to perform protected calls in applications.</b>
+		It is a "coroutine-safe" version of the <code>pcall</code> function of the Lua standard library.<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>func</code></td>
+			<td valign="top"><b>function</b></td>
+			<td valign="top"></td>
+			<td>Function to be executed in protected mode.</td>
+		</tr>
+		<tr>
+			<td valign="top"><code>...</code></td>
+			<td valign="top"><b>any</b></td>
+			<td valign="top"></td>
+			<td>Additional parameters passed to protected function.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Return values:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>success</code></td>
+			<td valign="top"><b>boolean</b></td>
+			<td valign="top"></td>
+			<td><code>true</code> if function execution did not raised any errors or <code>false</code> otherwise.</td>
+		</tr>
+		<tr>
+			<td valign="top"><code>...</code></td>
+			<td valign="top"><b>any</b></td>
+			<td valign="top"></td>
+			<td>Values returned by the function or an the error raised by the function.</td>
+		</tr>
+		</table>
+	</dd>
+	
+	<dt><a name="writeto"><b><code>oil.writeto</code></b></a><code>(filepath, text)</code></dt>
+	<dd>
+	<p>
+		<b>Writes a text into file.</b>
+		Utility function for writing stringfied IORs into a file.<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>filepath</code></td>
+			<td valign="top"><b>string</b></td>
+			<td valign="top"></td>
+			<td>Path of the file that should be create with the text provided.</td>
+		</tr>
+		<tr>
+			<td valign="top"><code>text</code></td>
+			<td valign="top"><b>string</b></td>
+			<td valign="top"></td>
+			<td>Text that shall be written into the file.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Return values:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>success</code></td>
+			<td valign="top"><b>file handler</b></td>
+			<td valign="top"></td>
+			<td>If the file was properly created with the provided content then the closed file handler is returned or <code>nil</code> is returned if some error was found.</td>
+		</tr>
+		<tr>
+			<td valign="top"><code>error</code></td>
+			<td valign="top"><b>string</b></td>
+			<td valign="top">[occasional]</td>
+			<td>Error message returned by function 'io.open' of Lua IO library if the file could not be opened for write.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+    </pre>
+	</dd>
+	
+	<dt><a name="readfrom"><b><code>oil.readfrom</code></b></a><code>(filepath)</code></dt>
+	<dd>
+	<p>
+		<b>Read the contents of a file.</b>
+		Utility function for reading stringfied IORs from a file.<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>success</code></td>
+			<td valign="top"><b>file handler</b></td>
+			<td valign="top"></td>
+			<td>Path of the file to be read.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Return values:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>contents</code></td>
+			<td valign="top"><b>string</b></td>
+			<td valign="top"></td>
+			<td>Contents of the file read or <code>nil</code> if some error was found.</td>
+		</tr>
+		<tr>
+			<td valign="top"><code>error</code></td>
+			<td valign="top"><b>string</b></td>
+			<td valign="top">[occasional]</td>
+			<td>Error message returned by function 'io.open' of Lua IO library if the file could not be opened for read.</td>
+		</tr>
+		</table>
+	</dd>
+	
+	<dt><a name="init"><b><code>oil.init</code></b></a><code>([config])</code></dt>
+	<dd>
+	<p>
+		<b>Initialize a broker.</b>
+		Initialize an ORB instance with the provided configurations.
+		The actual configuration options varies accordingly to the <a href="../arch/flavors.html">ORB flavor</a>.
+		For more information about broker initialization, see section <a href="brokers.html">Initializing Brokers</a>.
+		If the parameter <code>config</code> is not provide, the same ORB is returned, which is initialized with default configurations.
+		To create other ORBs with the default configurations, use an empty table as parameter <code>config</code>.<br>
+	<p>
+		<i>Parameters</i>
+		<table>
+		<tr>
+			<td valign="top"><code>config</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top">[optional]</td>
+			<td>Configuration used to initialize the ORB.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Return values</i>
+		<table>
+		<tr>
+			<td valign="top"><code>broker</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top"></td>
+			<td>ORB instance properly initialized.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+oil.init{ host = "middleware.inf.puc-rio.br" }
+oil.init{ host = "10.223.10.56", port = 8080 }
+print("ORB post:", oil.init().port)
+    </pre>
+	</dd>
+	
+</dl>	
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

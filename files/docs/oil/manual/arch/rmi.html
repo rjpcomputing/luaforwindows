@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: RMI Architecture</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="../basics/index.html", title="Basic Concepts">Basics</a></li>
+			<li><a href="../corba/index.html", title="CORBA Support">CORBA</a></li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="index.html", title="Internal Architecture">Arch</a>
+				<div class="outside"><div class="inside"><ul>
+					<li><a href="layers.html", title="Defining Layers">Layers</a></li>
+					<li><a href="flavors.html", title="Using Flavors">Flavors</a></li>
+					<li><a href="core.html", title="Core Architecture">Core</a></li>
+					<li><strong>RMI</strong></li>
+				</ul></div></div>
+			</li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>RMI Architecture</h1>
+<p>The RMI architecture implements the support for some RMI technology, such as CORBA, ICE or SOAP.
+The following sections describe the core architectures defined by layers defined in OiL's standard distribution.</p>
+
+<h2>CORBA Support</h2>
+
+<table>
+	<tr>
+		<td>Layer:</td>
+		<td><strong><code>corba</code></strong></td>
+	</tr>
+	<tr>
+		<td>Classes:</td>
+		<td>
+			<strong><code>oil.corba.idl.*</code></strong><br>
+			<strong><code>oil.corba.giop.*</code></strong><br>
+			<strong><code>oil.corba.iiop.*</code></strong>
+		</td>
+	</tr>
+</table>
+
+<p>The CORBA support layer defines a series of components that provide the support for OiL to interoperate with other CORBA ORBs.
+This layer complements the core layer extended with support for typing (<a href="core.html#typed">typed</a>).
+Below, there is an image that illustrates the architecture defined by this layer, followed by a brief description of each component.
+Components in light gray are provided by the core layer extended with typing support.</p>
+
+<center><img src="corbaarch.jpg"></center>
+
+<dl>
+	<dt>Interface Repository</dt>
+	<dd>Component that implements a repository of CORBA's IDL typing information.
+	It provides access to this information through facets <code>registry</code> and <code>types</code>, but the former only informs types stored locally, while the later can import definition from a remote CORBA Interface Repository (receptacle <code>remote</code>).
+	Moreover, it provides facet <code>compiler</code> to interpret IDL specification and load the information into the repository.
+	Facet <code>indexer</code> provide information about the members provided by each interface, including reference basic operations and <code>_get_*</code> and <code>_set_*</code> attribute access methods.
+	Multiple receptacle <code>observers</code> is used to notify about changes in the information stored in the repository.</dd>
+	
+	<dt>Proxy Indexer</dt>
+	<dd>Component used to find out the interface of proxies and which methods are available for each interface.
+	It basically use receptacle <code>types</code> to resolve interface information when it is provided or receptacle <code>invoker</code> to invoke operation <code>_interface</code> of CORBA to discover the interface of the remote servant.
+	This component also allows indexing of methods declared in the IDL of the proxy interface (receptacle <code>members</code>) as well as implicit operations, such as CORBA's reference operations: <code>_interface</code>, <code>_is_a</code>, <code>_non_existent</code>, <code>_is_equivalent</code>, etc.</dd>
+	
+	<dt>Servant Indexer</dt>
+	<dd>Component used to store interface information of each servant and which methods are available for remote invocation of servant.
+	If provides facet <code>mapper</code> for registration of interface information of servants.
+	This component also allows indexing of methods declared in the IDL of the proxy interface (receptacle <code>members</code>) as well as implicit operations, such as CORBA's reference operations: <code>_interface</code>, <code>_is_a</code>, <code>_non_existent</code>, <code>_is_equivalent</code>, etc.</dd>
+	
+	<dt>Object Referrer</dt>
+	<dd>Component that provides support for encoding and decoding of CORBA's textual references like stringfied IOR or <code>corbaloc</code> URL.
+	Receptacle <code>types</code> is used to find out the interface of servants for generation of references.
+	Multiple receptacle <code>profilers</code> is used to create IOR profiles that identify the access points provided to reach the servant when a reference for it is created.
+	Receptacle <code>codec</code> is used to encode reference information in a byte stream, <em>i.e.</em> a string.</dd>
+	
+	<dt>Reference Profiler</dt>
+	<dd>Component that provides support to encode and decode some IOR profile (facet <code>profiler</code>) using receptacle <code>codec</code>.
+	Currently, OiL's standard distribution provides only one component for encoding/decoding of IIOP IOR profiles.</dd>
+	
+	<dt>Operation Requester</dt>
+	<dd>Component that provides a service (facet <code>requests</code>) to create channels to remote ORBs (receptacle <code>channels</code>) using information provided in IOR profiles, which are decoded using services provided by multiple receptacle <code>profilers</code>.
+	Additionally, the provided service also allows to send invocation requests and receive replies returned, which are encoded and decoded through receptacle <code>messenger</code>.
+	If receptacle <code>mutex</code> is connected, them it is used to request exclusive access to channels before attempts to access it.</dd>
+	
+	<dt>Request Listener</dt>
+	<dd>Component that provides a service (facet <code>listener</code>) to accept channels from remote ORBs (receptacle <code>channels</code>).
+	Additionally, the provided service also allows to receive invocation requests and send replies, which are encoded and decoded through receptacle <code>messenger</code>.
+	If receptacle <code>mutex</code> is connected, them it is used to request exclusive access to channels before attempts to access it.
+	Furthermore, receptacle <code>indexer</code> is used to retrieve typing information about each method invoked, because such information is necessary to extract the parameter values from GIOP messages.</dd>
+	
+	<dt>Message Marshaler</dt>
+	<dd>Component that provides support to encode and decode GIOP messages (facet <code>messenger</code>) using receptacle <code>codec</code>.</dd>
+	
+	<dt>Value Encoder</dt>
+	<dd>Component that provides support for CORBA's CDR encoding (facet <code>codec</code>).
+	If receptacle <code>proxies</code> is connected then it is used to automatically create proxies for each object reference decoded.
+	If receptacle <code>profiles</code> is connected then it is used to compare IOR profiles of object references decoded to find out whether they are references to local servants or not.
+	It receptacle <code>objects</code> is connected then it is used to create implicit servants (see section <a href="../corba/features.html#implicit">Implicit Servants</a>) and to retrieve servant implementation of local object references (see section <a href="../corba/features.html#resolution">Reference Resolution</a>).</dd>
+	
+	<dt>Client Channels</dt>
+	<dd>Component that provides support to create channels to remote hosts.
+	Channels are implemented using sockets provided through receptacle <code>sockets</code>.</dd>
+	
+	<dt>Server Channels</dt>
+	<dd>Component that provides support to create channels initiated by remote hosts.
+	Channels are implemented using sockets provided through receptacle <code>sockets</code>.</dd>
+</dl>
+
+<h2>CORBA Interception Extension</h2>
+
+<table>
+	<tr>
+		<td>Layer:</td>
+		<td><strong><code>intercepted</code></strong></td>
+	</tr>
+	<tr>
+		<td>Classes:</td>
+		<td><strong><code>oil.corba.interceptors.*</code></strong></td>
+	</tr>
+</table>
+
+<p>This layer extends the CORBA base layer to redefine some components to use the template and port model provided by LOOP that supports <a href="http://loop.luaforge.net/manual/basics.html#intercept">port interception</a>.
+This way, interceptors can be registered at specific ports of the architecture to implement invocation interception in CORBA brokers.</p>
+
+<h2>CORBA Code Generation Extension</h2>
+
+<table>
+	<tr>
+		<td>Layer:</td>
+		<td><strong><code>gencode</code></strong></td>
+	</tr>
+	<tr>
+		<td>Classes:</td>
+		<td><strong><code>oil.corba.giop.CodecGen</code></strong></td>
+	</tr>
+</table>
+
+<p>This layer simply redefine component <code>ValueEncoder</code> to use an alternative implementation based on dynamic generation of marshaling code for better performance of value encoding and decoding.</p>
+
+<h2>LuDO Support</h2>
+
+<table>
+	<tr>
+		<td>Layer:</td>
+		<td><strong><code>ludo</code></strong></td>
+	</tr>
+	<tr>
+		<td>Classes:</td>
+		<td>
+			<strong><code>oil.ludo.*</code></strong><br>
+			<strong><code>oil.corba.iiop.*</code></strong>
+		</td>
+	</tr>
+</table>
+
+<p>The LuDO support layer defines five components that provide the support for a very simple protocol designed for use within Lua.
+This layer is a comprehensible example of the implementation of a RMI protocol in OiL.
+Below, there is a brief description of each component provided by this layer.</p>
+
+<!-- <center><img src="ludoarch.jpg"></center> -->
+
+<dl>
+	<dt>Object Referrer</dt>
+	<dd>Provides support for encoding and decoding of textual references.</dd>
+	
+	<dt>Operation Requester</dt>
+	<dd>Component that provides a service (facet <code>requests</code>) to create channels to remote ORBs (receptacle <code>channels</code>), and send invocation requests and receive replies returned.</dd>
+	
+	<dt>Request Listener</dt>
+	<dd>Component that provides a service (facet <code>listener</code>) to accept channels from remote ORBs (receptacle <code>channels</code>), and receive invocation requests and send replies.</dd>
+	
+	<dt>Value Encoder</dt>
+	<dd>Component that provides support for serialization of values as Lua code (facet <code>encoder</code>).</dd>
+	
+	<dt>Client Channels</dt>
+	<dd>Component that provides support to create channels to remote hosts.
+	Channels are implemented using sockets provided through receptacle <code>sockets</code>.</dd>
+	
+	<dt>Server Channels</dt>
+	<dd>Component that provides support to create channels initiated by remote hosts.
+	Channels are implemented using sockets provided through receptacle <code>sockets</code>.</dd>
+</dl>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

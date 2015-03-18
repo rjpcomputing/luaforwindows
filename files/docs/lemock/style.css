@@ -1,0 +1,120 @@
+                body {
+                        color:            #181818;
+                        background-color: #E0E4F0;
+                        font:             normal 10pt sans-serif;
+                        max-width:        30em;
+                        margin:           25pt;
+                }
+                .body h1 {
+                        margin:           2em 0em 0em 0em;
+                        font-size:        14pt;
+                }
+                .body h2 {
+                        margin:           1.5em 0em 0em 0em;
+                        font-size:        12pt;
+                }
+                .body h3 {
+                        margin:           1em 0em 0em 0em;
+                        font-size:        10pt;
+                }
+                .body p, .body ul, .body ol {
+                        margin-top:       0.5em;
+                }
+                .body li {
+                        margin-top:       0.5em;
+                }
+                a {
+                        text-decoration:  none;
+                }
+                hr {
+                        margin-top:       3em;
+                }
+
+                .header h1 {
+                        text-align:       center;
+                        padding:          0.3em;
+                        border:           1pt solid black;
+                }
+
+                code, pre {
+                        font-family:      fixed;
+                        font-style:       normal;
+                        font-size:        9pt;
+                        line-height:      9pt;
+                        background-color: #E8ECF8;
+                }
+                pre {
+                        padding:          2pt;
+                }
+
+                div.toc {
+                        margin-top:       3em;
+                        line-height:      6pt;
+                }
+                .toc ul {
+                        padding-left:     1.6em;
+                        margin:           0em;
+                        line-height:      10pt;
+                }
+                .toc li {
+                        margin:           0em;
+                        padding:          0em;
+                        list-style-type:  none;
+                }
+                .toc a {
+                        color:            #091;
+                }
+
+                #page-HISTORY DL DT {
+                        font-weight:      bold;
+                        margin-top:       2em;
+                }
+                #page-HISTORY DL DD UL {
+                        margin-top:       0pt;
+                        padding-left:     0pt;
+                }
+
+        #main_menu {
+                margin:  0;
+                padding: 0;
+        }
+        #main_menu li {
+                margin:  0;
+                padding: 0;
+                display: inline;
+        }
+        #main_menu a {
+                padding:    3px 3px 2px 4px;
+                text-decoration:none;
+                font:bold 8pt/8pt Arial, Helvetica, sans-serif;
+                border:       1px solid #000;
+        }
+        #main_menu a:link,
+        #main_menu a:visited {
+                color:      #fff;
+                background: #777;
+        }
+        #main_menu a:hover {
+                color:      #000;
+                background: #777;
+        }
+        #page-README    #main_menu-README    a,
+        #page-COPYRIGHT #main_menu-COPYRIGHT a,
+        #page-userguide #main_menu-userguide a,
+        #page-HISTORY   #main_menu-HISTORY   a,
+        #page-DEVEL     #main_menu-DEVEL     a {
+                color:      #000;
+                background: #aaa;
+        }
+        #page-README    #main_menu-README    a:hover,
+        #page-COPYRIGHT #main_menu-COPYRIGHT a:hover,
+        #page-userguide #main_menu-userguide a:hover,
+        #page-HISTORY   #main_menu-HISTORY   a:hover,
+        #page-DEVEL     #main_menu-DEVEL     a:hover {
+                color:      #000;
+                background: #aaa;
+        }
+        #nav a:active {
+                color:      #000;
+                background: #aaa;
+        }

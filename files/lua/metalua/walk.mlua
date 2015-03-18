@@ -1,0 +1,273 @@
+--------------------------------------------------------------------------------
+-- Code walkers
+--      "Make everything as simple as possible, but not simpler".
+--
+-- This library offers a generic way to write AST transforming
+-- functions. Macros can take bits of AST as parameters and generate a
+-- more complex AST with them; but modifying an AST a posteriori is
+-- much more difficult; typical tasks requiring code walking are
+-- transformation such as lazy evaluation or Continuation Passing
+-- Style, but more mundane operations are required in more macros than
+-- one would thing, such as "transform all returns which aren't inside
+-- a nested function into an error throwing".
+--
+-- AST walking is an intrinsically advanced operation, and the
+-- interface of this library, although it tries to remain as simple as
+-- possible, is not trivial. You'll probably need to write a couple of
+-- walkers with it before feeling comfortable.
+--
+--
+-- We deal here with 3 important kinds of AST: statements, expressions
+-- and blocks. Code walkers for these three kinds for AST are called
+-- [walk.stat (cfg, ast)], [walk.expr (cfg, ast)] and [walk.block
+-- (cfg, ast)] respectively. the [cfg] parameter describes what shall
+-- happen as the AST is traversed by the walker, and [ast] is the tree
+-- itself. 
+--
+-- An aparte to fellow functional programmers: although Lua has
+-- got all the features that constitute a functional language, its
+-- heart, and in particular it table data, is imperative. It's often
+-- asking for trouble to work against the host language's nature, so
+-- code walkers are imperative, cope with it. Or use table.deep_copy()
+-- if you don't want issues with shared state.
+--
+-- Since walkers are imperative (i.e. they transform the tree in
+-- place, rather than returning a fresh variant of it), you'll often
+-- want to override a node, i.e. keep its "pointer identity", but
+-- replace its content with a new one; this is done by
+-- table.override(), and is conveniently abbreviated as
+-- "target <- new_content".
+--
+-- So, [cfg] can contain a series of sub-tables fields 'expr', 'stat',
+-- 'block'. each of them can contain a function up() and/or a function
+-- down(). 
+--
+-- * down() is called when the walker starts visiting a node of the
+--   matching kind, i.e. before any of its sub-nodes have been
+--   visited.  down() is allowed to return either the string "break",
+--   which means "don't go further down this tree, don't try to walk
+--   its children", or nil, i.e. "please process with the children
+--   nodes". 
+--
+--   There are two reasons why you might want down() to return
+--   "break": either because you really weren't interested into the
+--   children nodes,or because you wanted to walk through them in a
+--   special way, and down() already performed this special walking.
+--
+-- * up() is called just before the node is left, i.e. after all of
+--   its children nodes have been completely parsed, down and up. This
+--   is a good place to put treatments which rely on sub-nodes being
+--   already treated. Notice that if down() returned 'break', up() is
+--   run immediately after.
+--
+-- In previous versions of this library, there were plenty of fancy
+-- configurable ways to decide whether an up() or down() functions
+-- would be triggered or not. Experience suggested that the best way
+-- is to keep it simpler, as done by the current design: the functions
+-- in sub-table expr are run on each expression node, and ditto for
+-- stat and block; the user is expected to use the pattern matching
+-- extension to decide whether to act or not on a given node.
+--
+-- Advanced features
+-- =================
+--
+-- The version above is a strict subset of the truth: there are a
+-- couple of other, more advanced features in the library.
+--
+-- Paths in visitor functions
+-- --------------------------
+-- First, up() and down() don't take only one node as a parameter, but
+-- a series thereof: all the nested expr/stat/block nodes on the way
+-- up to the ast's root. For instance, when a walker works on
+-- +{ foo(bar*2+1) } an is on the node +{2}, up() and down() are called
+-- with arguments (+{bar*2}, +{bar*2+1}, +{foo(bar*2+1)}).
+--
+-- `Call and `Invoke as statements
+-- -------------------------------
+-- `Call and `Invoke are normally expressions, but they can also
+-- appear as statements. In this case, the cfg.expr.xxx() visitors
+-- aren't called on them. Sometimes you want to consider tham as
+-- expressions, sometimes not, and it's much easier to add a special
+-- case in cfg.stat.xxx() visitors than to determine whether we're in
+-- a statament's context in cfg.expr.xxx(),
+--
+-- Extra walkers
+-- -------------
+-- There are some second class walkers: walk.expr_list() and walk.guess(). 
+--
+-- * The first one walks through a list of expressions. Although used
+--   internally by the other walkers, it remains a second class
+--   citizen: the list it works on won't appear in the path of nested
+--   ASTs that's passed to up() and down(). This design choice has
+--   been made because there's no clear definition of what is or isn't
+--   an expr list in an AST, and anyway such lists are probably not
+--   part of metacoders' mental image of an AST, so it's been thought
+--   best to let people pretend they don't exist.
+--
+-- * walk.guess() tries to guess the type of the AST it receives,
+--   according to its tag, and runs the appropriate walker. Node which
+--   can be both stats and exprs (`Call and `Invoke) are considered as
+--   expr.
+--
+-- These three walkers, although used internally by the other walkers,
+-- remain second class citizens: the lists they work on won't appear
+-- in the path of nested ASTs that's passed to up() and down().
+--
+-- Tag dictionaries
+-- ----------------
+-- There are two public dictionaries, walk.tags.stat and
+-- walk.tags.expr, which keep the set of all tags that can start a
+-- statement or an expression AST. They're used by walk.guess, and
+-- users sometimes need them as well, so they've been kept available.
+--
+-- Binder visitor
+-- --------------
+-- Finally, there's one last field in [cfg]: binder(). This function
+-- is called on identifiers in a binder position, i.e. `Id{ } nodes
+-- which create a scoped local variable, in `Function, `Fornum, `Local
+-- etc. The main use case for that function is to keep track of
+-- variables, captures, etc. and perform alpha conversions. In many
+-- cases that work is best done through the library 'walk.id', which
+-- understands the notions of scope, free variable, bound variable
+-- etc. 
+--
+-- Binder visitors are called just before the variable's scope starts,
+-- e.g. they're called after the right-hand-side has been visited in a
+-- `Local node, but before in a `Localrec node.
+--
+--------------------------------------------------------------------------------
+
+-{ extension "match" }
+
+walk = { traverse = { }; tags = { }; debug = false }
+
+--------------------------------------------------------------------------------
+-- Standard tags: can be used to guess the type of an AST, or to check
+-- that the type of an AST is respected.
+--------------------------------------------------------------------------------
+walk.tags.stat = table.transpose{ 
+   'Do', 'Set', 'While', 'Repeat', 'Local', 'Localrec', 'Return',
+   'Fornum', 'Forin', 'If', 'Break', 'Goto', 'Label',
+   'Call', 'Invoke' }
+walk.tags.expr = table.transpose{
+   'Paren', 'Call', 'Invoke', 'Index', 'Op', 'Function', 'Stat',
+   'Table', 'Nil', 'Dots', 'True', 'False', 'Number', 'String', 'Id' }
+
+--------------------------------------------------------------------------------
+-- These [walk.traverse.xxx()] functions are in charge of actually going through
+-- ASTs. At each node, they make sure to call the appropriate walker.
+--------------------------------------------------------------------------------
+function walk.traverse.stat (cfg, x, ...)
+   if walk.debug then printf("traverse stat %s", table.tostring(x)) end
+   local log = {...}
+   local B  = |y| walk.block       (cfg, y, x, unpack(log))
+   local S  = |y| walk.stat        (cfg, y, x, unpack(log))
+   local E  = |y| walk.expr        (cfg, y, x, unpack(log))
+   local EL = |y| walk.expr_list   (cfg, y, x, unpack(log))
+   local I  = |y| walk.binder_list (cfg, y, x, unpack(log))
+   match x with
+   | {...} if x.tag == nil -> for y in ivalues(x) do walk.stat(cfg, y, ...) end
+                              -- no tag --> node not inserted in the history log
+   | `Do{...}                    -> B(x)
+   | `Set{ lhs, rhs }            -> EL(lhs); EL(rhs)
+   | `While{ cond, body }        -> E(cond); B(body)
+   | `Repeat{ body, cond }       -> B(body); E(cond)
+   | `Local{ lhs }               -> I(lhs)
+   | `Local{ lhs, rhs }          -> EL(rhs); I(lhs)
+   | `Localrec{ lhs, rhs }       -> I(lhs); EL(rhs)
+   | `Fornum{ i, a, b, body }    -> E(a); E(b); I{i}; B(body)
+   | `Fornum{ i, a, b, c, body } -> E(a); E(b); E(c); I{i}; B(body)
+   | `Forin{ i, rhs, body }      -> EL(rhs); I(i); B(body)
+   | `If{...}                    -> for i=1, #x-1, 2 do E(x[i]); B(x[i+1]) end
+                                    if #x%2 == 1 then B(x[#x]) end
+   | `Call{...}|`Invoke{...}|`Return{...} -> EL(x)
+   | `Break | `Goto{ _ } | `Label{ _ }    -> -- nothing
+   | {...} if walk.tags.stat[x.tag]-> 
+      printf("Warning: walk: malformed %s stat node: %s", x.tag, table.tostring(x,80))
+   | {...} -> print("Warning: walk: unknown stat node: "..table.tostring(x,80))
+   | _     -> print("Warning: walk: unexpected stat node of type "..type(x)
+                    ..": "..table.tostring(x,80))
+   end
+end
+
+function walk.traverse.expr (cfg, x, ...)
+   if walk.debug then printf("traverse expr %s", table.tostring(x)) end
+   local log = {...}
+   local B  = |y| walk.block       (cfg, y, x, unpack(log))
+   local S  = |y| walk.stat        (cfg, y, x, unpack(log))
+   local E  = |y| walk.expr        (cfg, y, x, unpack(log))
+   local EL = |y| walk.expr_list   (cfg, y, x, unpack(log)) 
+   local I  = |y| walk.binder_list (cfg, y, x, unpack(log))
+   match x with
+   | `Paren{ e }               -> E(e)
+   | `Call{...} | `Invoke{...} -> EL(x)
+   | `Index{ a, b }            -> E(a); E(b)
+   | `Op{ opid, ... }          -> E(x[2]); if #x==3 then E(x[3]) end
+   | `Function{ params, body } -> I(params); B(body)
+   | `Stat{ b, e }             -> B(b); E(e)
+   | `Table{ ... }             ->
+      for i = 1, #x do match x[i] with
+         | `Pair{ k, v } -> E(k); E(v)
+         | v            -> E(v)
+      end end
+   |`Nil|`Dots|`True|`False|`Number{_}|`String{_}|`Id{_} -> -- nothing 
+   | {...} if walk.tags.expr[x.tag]-> 
+      printf("Warning: walk: malformed %s expr node: %s", x.tag, table.tostring(x,80))
+   | {...} -> print("Warning: walk: unknown expr node: "..table.tostring(x,80))
+   | _     -> print("Warning: walk: unexpected expr node of type "..type(x)
+                    ..": "..table.tostring(x,80))
+   end
+end
+
+function walk.traverse.block (cfg, x, ...)
+   assert(type(x)=='table', "traverse.block() expects a table")
+   for y in ivalues(x) do walk.stat(cfg, y, x, ...) end
+end
+
+function walk.traverse.expr_list (cfg, x, ...)
+   assert(type(x)=='table', "traverse.expr_list() expects a table")
+   -- x doesn't appear in the log
+   for y in ivalues(x) do walk.expr(cfg, y, ...) end
+end
+
+----------------------------------------------------------------------
+-- Generic walker generator.
+----------------------------------------------------------------------
+local walker_builder = |cfg_field, traverse| function (cfg, x, ...)
+   local sub_cfg  = cfg[cfg_field] or { }
+   local broken   = false
+   if sub_cfg.down then
+      if sub_cfg.down=='break' then broken='break'
+      else broken = sub_cfg.down (x, ...) end
+      assert(not broken or broken=='break', 
+             "Map functions must return 'break' or nil")
+   end
+   if not broken then traverse (cfg, x, ...) end
+   if sub_cfg.up then sub_cfg.up (x, ...) end
+end
+
+----------------------------------------------------------------------
+-- Declare [walk.stat], [walk.expr], [walk.block] and [walk.expr_list]
+----------------------------------------------------------------------
+for w in values{ "stat", "expr", "block", "expr_list" } do
+   walk[w] = walker_builder (w, walk.traverse[w])
+end
+
+----------------------------------------------------------------------
+-- Walk a list of `Id{...} (mainly a helper function actually).
+----------------------------------------------------------------------
+function walk.binder_list (cfg, x, ...)
+   local f = cfg.binder 
+   if f then for v in ivalues(x) do f(v, ...) end end
+end
+
+----------------------------------------------------------------------
+-- Tries to guess the type of the AST then choose the right walkker.
+----------------------------------------------------------------------
+function walk.guess (cfg, x, ...)
+   assert(type(x)=='table', "arg #2 in a walker must be an AST")
+   if walk.tags.expr[x.tag] then return walk.expr(cfg, x, ...)  end
+   if walk.tags.stat[x.tag] then return walk.stat(cfg, x, ...)  end
+   if not x.tag             then return walk.block(cfg, x, ...) end
+   error ("Can't guess the AST type from tag "..(x.tag or '<none>')) 
+end

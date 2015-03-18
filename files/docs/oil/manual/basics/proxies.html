@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Using Remote Servants</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="index.html", title="Basic Concepts">Basics</a>
+				<div class="outside"><div class="inside"><ul>
+					<li><a href="module.html", title="The oil Module">Module</a></li>
+					<li><a href="brokers.html", title="Initializing Brokers">Brokers</a></li>
+					<li><a href="servants.html", title="Registering Servants">Servants</a></li>
+					<li><strong>Proxies</strong></li>
+					<li><a href="threads.html", title="Cooperative Multithreading">Threads</a></li>
+				</ul></div></div>
+			</li>
+			<li><a href="../corba/index.html", title="CORBA Support">CORBA</a></li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="../arch/index.html", title="Internal Architecture">Arch</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Using Remote Servants</h1>
+<p>Remote servants are represented in the local application by objects called proxies.
+Proxies behave as the implementation of the remote servants they represent, thus whenever a method is called on the proxy, a corresponding method is called in the remote object.
+The use of proxies is the standard way to perform remote invocations in OiL.</p>
+
+<h2>Creation</h2>
+
+<p>Proxies are implicitly created whenever a remotely invoked method returns an servant.
+In such cases, the invoker receives a proxy to the servant instead of the servant itself.
+Therefore, the application usually does not deal with creation of proxies when servants are provided by methods of other proxies.</p>
+
+<p>However, sometimes it is necessary to explicitly create a proxy for a remote servant.
+This usually is the case when the application starts up and the first proxy is created, because it cannot be obtained from a remote invocation.
+The solution for this case is to create a proxy from textual references using method <a href="brokers.html#newproxy"><code>newproxy</code></a><code>(reference [, type])</code> of a broker.
+See section about <a href="servants.html#references">servant references</a> for information about how textual references are created.
+Textual references can be read from files (see auxiliary operation <a href="module.html#readfrom"><code>oil.readfrom</code></a>) or passed as command-line parameters to applications.
+The code below is the complete implementation of a client application that access the LuDO server in section <a href="servants.html#creation">Registering Servants</a>.</p>
+
+<pre>
+require "oil"
+
+oil.main(function()
+  -- initialize a LuDO ORB                     
+  local broker = oil.init{flavor="ludo;base"}
+  
+  -- create a proxy for remote servant
+  local hello = broker:newproxy(oil.readfrom("hello.ref"))
+  
+  -- invoke remote method
+  hello:sayto("World")
+end)
+</pre>
+
+<p>Some RMI protocols supported by OiL (<i>e.g.</i> <a href="../corba/index.html">CORBA</a>) rely on typing information.
+When such protocols are used, it may be necessary to inform the interface of the referenced servant as the parameter <code>type</code> of operation <a href="brokers.html#newproxy"><code>newproxy</code></a>.
+The possible values for this parameter depends on the RMI protocol being used.</p>
+
+<h2>Invocation</h2>
+
+<p>With respect to methods, the proxy behaves much like its referenced servant.
+That means that when a proxy method is called, the method with the same same is invoked on the servant.
+Additionally, every argument passed to the called method is available to the servant's method.
+Similarly, all the values returned by the servant's method are returned by the proxy method.
+It is worth stressing that the nature of some values used as parameter or returned values of remote invocations are suitable to subtle changes accordingly to the data transmission semantics defined by the underlying RMI protocol used by the broker.</p>
+
+<p>An important feature is that proxy invocations are performed synchronously.
+Therefore, the invoker's execution is suspended until the results of remote method's execution are ready.
+However, it is possible to perform asynchronous invocations as well.
+This is done by a specialized proxy available as field <code>_deferred</code> of standard proxies.
+The deferred proxy behaves like a standard proxy, but every invocation immediately returns a single object denominated future.
+A future is an object that is used to retrieve the results of the asynchronous invocation that might only be available in a future moment.
+A future is an simple object that provides the following interface, which is used to access the results of an asynchronous invocation</p>
+
+<dl>
+	<dt><code>ready()</code></dt>
+	<dd>Method that returns <code>true</code> if the results are already available or <code>false</code> otherwise.</dd>
+	
+	<dt><code>results()</code></dt>
+	<dd>Method that waits for the completion of the remote invocation if it is not completed already, and returns the results of the asynchronous invocation.
+	The first returned value is either <code>true</code> to indicated that no errors were raised or <code>false</code> otherwise.
+	The other returned values are either the values returned by the remote invocation, in case of an invocation that did not raise errors, or the error raised by the remote servant.
+	This method should never raise errors.</dd>
+	
+	<dt><code>evaluate()</code></dt>
+	<dd>Method that waits for the completion of the remote invocation if it is not completed already, and returns the values returned by the remote invocation if no errors were raised during the execution of the remote method.
+	If the servant raised an error during the execution of the remote invocation, then this method raises the same error in the local context.</dd>
+</dl>
+
+<h2>Exceptions</h2>
+
+<p>The way errors are catch in Lua is by the use of function <a href="http://www.lua.org/manual/5.1/manual.html#pdf-pcall"><code>pcall</code></a><code>(func, ...)</code>.
+However, this function was designed to catch errors in functions thus it provides a signature that is cumbersome to use to catch errors in method calls.
+As illustrated in the example below.</p>
+
+<pre>local ok, err = pcall(proxy.invoked_method, proxy)</pre>
+
+<p>One way to avoid this is to use method <code>results()</code> of futures, because it never raises errors.
+In this approach, the example above would become.</p>
+
+<pre>local ok, err = proxy._deferred:invoked_method():results()</pre>
+
+<p>One last alternative is to use the specialized proxy available in field <code>_try</code> denominated protected proxy.
+These proxy behaves like a standard proxy, but every invocation returns an additional value that indicates whether the remote method raised an error or not.
+Additionally, if the remote method raises somfe error, this error is returned as the second returned value, just after the <code>false</code> indicating that the error was raised.
+Using this last approach, the example above would become.</p>
+
+<pre>local ok, err = proxy._try:invoked_method()</pre>
+
+<p>OiL also supports the definition exception handling functions for proxies.
+An exception handler is a function that receives the following parameters:</p>
+
+<dl>
+	<dt>proxy</dt>
+	<dd>object proxy that performed the operation.<dd>
+	<dt>exception</dt>
+	<dd>exception/error raised.<dd>
+	<dt>operation</dt>
+	<dd>descriptor of the operation that raised the exception.<dd>
+</dl>
+
+<p>The definition of exception handlers avoids that exceptions be raised.
+Therefore, if the handler do not want to consume the exception, it must re-raise it.
+Otherwise, the values returned by the exception handler is used as the results of the operation that raised the exception originally.
+The exception handler of a proxy is identified by field <code>__exceptions</code>.
+Additionally, a single exception handler can be defined to all proxies of a given broker by method <a href="brokers.html#setexcatch"><code>setexcatch</code></a><code>(hander [, type])</code>.
+When the broker provides support for typing (<i>e.g.</i> <a href="../corba/index.html">CORBA</a>), the parameter <code>type</code> is used to restrict the use of the handler to proxies of that type.</p>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

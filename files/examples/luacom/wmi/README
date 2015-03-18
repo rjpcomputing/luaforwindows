@@ -1,0 +1,31 @@
+Description:
+Using LuaCOM to access the Windows Management Infrastructure.
+
+Files:
+  - test_wmi.lua: uses WMI to enumerate network interfaces.
+  - wmi_obj.lua: a more comprehensive example, contributed
+    by Michael Cumming.
+
+How to run:
+Just execute test_wmi.lua or wmi_obj.lua. The results will vary
+from computer to computer. An example run of test_wmi.lua:
+
+init
+close
+init
+GetNetworkInterface
+item
+item
+memory: 72
+close
+
+An example run of wmi_obj.lua
+
+2600.0000
+13
+102
+0       0       0       110000000
+10509   52
+0       notepad.exe     nil     nil     2520
+2
+2

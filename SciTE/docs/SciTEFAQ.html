@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <meta name="generator" content="SciTE" />
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>
+      SciTE FAQ
+    </title>
+<style type="text/css">
+        table {
+            border: 1px solid #1F1F1F;
+            border-collapse: collapse;
+        }
+        td {
+            border: 1px solid #1F1F1F;
+            padding: 1px 5px 1px 5px;
+        }
+        th {
+            border: 1px solid #1F1F1F;
+            padding: 1px 5px 1px 5px;
+        }
+        h4 {
+            background-color: #000000;
+            color: #FFFFFF;
+            padding: 2px 6px;
+        }
+        .example {
+            color: #00A000;
+            font-weight: bold;
+        }
+        DIV.example {
+            background: #F7FCF7;
+            border: 1px solid #C0D7C0;
+            margin: 0.3em 3em;
+            padding: 0.3em 0.6em;
+            font-size: 80%;
+        }
+ </style>
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    <table bgcolor="#000000" width="100%" cellspacing="0" cellpadding="0" border="0"  summary="banner">
+      <tr>
+        <td>
+          <img src="SciTEIco.png" border="3" height="64" width="64" alt="Scintilla icon" />
+        </td>
+        <td>
+          <a href="index.html" style="color:white;text-decoration:none"><font size="5">
+          SciTE</font></a>
+        </td>
+      </tr>
+    </table>
+    <h2>
+       SciTE Frequently Asked Question
+    </h2>
+    <ul>
+    <li><a class="toc" href="#FixedWidth">
+    	How do I use a fixed width font for all text?</a></li>
+    <li><a class="toc" href="#Monospaced">
+    	What happened to <span class="example">use.monospaced</span>?</a></li>
+    <li><a class="toc" href="#LineNumbers">
+    	Why doesn't my <span class="example">line.numbers</span> setting work?</a></li>
+    <li><a class="toc" href="#BlackBackground">
+    	How do I change SciTE to use black as the background colour?</a></li>
+    <li><a class="toc" href="#OutputColour">
+    	How do I change the colours of the output pane?</a></li>
+    <li><a class="toc" href="#HorizontalScrollBar">
+    	How do I make the horizontal scroll bar adjust to the width of text?</a></li>
+    <li><a class="toc" href="#TabbedMode">
+    	How do I enable tabbed window mode in SciTE?</a></li>
+    <li><a class="toc" href="#Autocomplete">
+    	How do I enable autocomplete?</a></li>
+    <li><a class="toc" href="#CannotFindFile">
+    	When I try to compile/build/run my [some language] source files, I get the following error:
+        'The system cannot find the file specified'.</a></li>
+    <li><a class="toc" href="#ToolsMenu">
+    	How can I add [some external application] to the Tools menu on SciTE?</a></li>
+    <li><a class="toc" href="#ToolsNoMenu">
+    	How can I add a keyboard command without adding it to the Tools menu?</a></li>
+    <li><a class="toc" href="#ReplaceInFiles">
+    	Is there a command to replace a string in multiple files together?</a></li>
+    <li><a class="toc" href="#SpeedUpGTK">
+    	How do I make SciTE run faster on GTK+?</a></li>
+    <li><a class="toc" href="#NewlineInRegEx">
+    	Is it possible to use the newline character (\n) in a regular expression?</a></li>
+    <li><a class="toc" href="#CompilerErrors">
+    	How do I get SciTE to understand the error messages from my compiler?</a></li>
+    <li><a class="toc" href="#GCCUTF8">
+    	Why do GCC error messages include ugly characters?</a></li>
+    <li><a class="toc" href="#WindowsSpaces">
+    	How do I make Windows open a file associated with SciTE when its path contains spaces?</a></li>
+    </ul>
+    <h4 id="FixedWidth">
+       How do I use a fixed width font for all text?
+    </h4>
+    <p>
+       Use these properties:<div class="example">
+	font.base=$(font.monospace)<br />
+	font.small=$(font.monospace)<br />
+	font.comment=$(font.monospace)<br />
+	font.text=$(font.monospace)<br />
+	font.text.comment=$(font.monospace)<br />
+	font.embedded.base=$(font.monospace)<br />
+	font.embedded.comment=$(font.monospace)<br />
+	font.vbs=$(font.monospace)</div>
+    </p>
+    <h4 id="Monospaced">
+       What happened to <span class="example">use.monospaced</span>?
+    </h4>
+    <p>
+       The <span class="example">use.monospaced</span> property was removed as
+       people were using it to ask for fixed width fonts and then
+       requiring support to cope with its limitations. The correct way to
+       set fixed width fonts is <a class="toc" href="#FixedWidth">here</a>.
+    </p>
+    <h4 id="LineNumbers">
+       Why doesn't my <span class="example">line.numbers</span> setting work?
+    </h4>
+    <p>
+       <span class="example">line.numbers</span> has been replaced with two properties: <span class="example">line.margin.visible</span>
+       and <span class="example">line.margin.width</span> which are explained earlier in <a href="SciTEDoc.html">
+       the main SciTE document</a>.
+    </p>
+    <h4 id="BlackBackground">
+       How do I change SciTE to use black as the background colour?
+    </h4>
+    <p>
+       You need to change the style settings. The main change is in the user
+       options file to the global default style and caret colour but you may have
+       to change other style settings to make this work well:<div class="example">
+	style.*.32=$(font.base),back:#000000,fore:#ffffff<br />
+	style.*.33=back:#C0C0C0,$(font.base)<br />
+	style.*.37=fore:#939393<br />
+	caret.fore=#FFFFFF<br />
+	selection.alpha=75<br />
+	selection.back=#FFFFFF<br />
+	colour.keyword=fore:#649bff<br />
+	colour.operator=fore:#727272</div>
+    </p>
+    <h4 id="OutputColour">
+       How do I change the colours of the output pane?
+    </h4>
+    <p>
+       The output pane often lists error and warning messages and
+       is styled by the "errorlist" lexer. The default errorlist styles are found
+       in others.properties. To change the output pane background to black
+       and the default text to white set<div class="example">
+       style.errorlist.32=$(font.small),back:#000000<br />
+       style.errorlist.0=fore:#FFFFFF</div>
+    </p>
+    <h4 id="HorizontalScrollBar">
+       How do I make the horizontal scroll bar adjust to the width of text?
+    </h4>
+    <p>
+       To avoid slow performance the horizontal scroll bar does not automatically adjust.
+       You can use the <span class="example">horizontal.scroll.width</span> property to change the horizontal scroll range.
+    </p>
+    <h4 id="TabbedMode">
+        How do I enable tabbed window mode in SciTE?
+    </h4>
+    <p>
+        Multiple buffers must be allocated by setting, for example, <span class="example">buffers=10</span>
+        in your SciTEGlobal.properties. To have the tab bar visible upon starting
+        SciTE, set <span class="example">tabbar.visible=1</span>.
+        You can also set <span class="example">tabbar.hide.one=0</span> to always show tabs,
+        or 1 to hide when only one file is open.
+        <span class="example">tabbar.multiline=1</span> splits tabs across various lines if necessary.
+    </p>
+    <h4 id="Autocomplete">
+        How do I enable autocomplete?
+    </h4>
+    <p>
+        Goto Options | Open Global Options File and uncomment
+        <div class="example">autocompleteword.automatic=1</div>
+    </p>
+    <h4 id="CannotFindFile">
+        When I try to compile/build/run my [some language] source files, I get the following error:
+        'The system cannot find the file specified'.
+    </h4>
+    <p>
+        Make sure that the path to your compiler is set correctly on your system.
+        Try to execute from console the same command you get in SciTE and see if it works.
+        You can also search in your [language].properties for the compile
+        commands used. If you have a different compiler or use different arguments,
+        edit the commands to suit your needs.
+        The lines to look for:<div class="example">
+        command.compile.filepattern=<br />
+        command.build.filepattern=<br />
+        command.go.filepattern=</div>
+    </p>
+    <h4 id="ToolsMenu">
+       How can I add [some external application] to the Tools menu on SciTE?
+    </h4>
+    <p>
+In your properties file, you'll need to add some lines:
+    </p>
+    <p>
+<span class="example">command.name.number.filepattern</span><br />
+(e.g.: <span class="example">command.name.1.$(file.patterns.web)=HTML Tidy</span>)<br />
+This defines the Text that will appear on the Tools Menu.
+    </p>
+    <p>
+<span class="example">command.number.filepattern</span><br />
+(e.g.: <span class="example">command.1.$(file.patterns.web)=tidy -i -wrap 0 -m $(FilePath)</span> )<br />
+This is the actual command that SciTE executes. You should provide the appropriate paths, options and parameters as you would from a command line. See SciTEDoc.html for more information on parameters and how to make SciTE prompt a Parameters Dialog.
+    </p>
+    <p>
+<span class="example">command.is.filter.number.filepattern</span><br />
+(e.g.: <span class="example">command.is.filter.1.$(file.patterns.web)=1</span>)<br />
+The external application may have modified your file, so setting this to true makes SciTE reload the file after execution of the command.
+    </p>
+    <p>
+<span class="example">command.subsystem.number.filepattern</span><br />
+(e.g.: <span class="example">command.subsystem.1.$(file.patterns.web)=2</span>)<br />
+This is for Windows and defines the subsystem through which the program is called. See SciTEDoc.html for more information on this.
+    </p>
+    <p>
+You can set a command for all files using * as a file pattern. Up to 10 commands (0 - 9) can be defined in the Tools Menu at any time. Commands also get executed with Ctrl+number.
+    </p>
+    <h4 id="ToolsNoMenu">
+       How can I add a keyboard command without adding it to the Tools menu?
+    </h4>
+    <p>
+	This is similar to <a href="#ToolsMenu">adding to the tools menu</a> except that you set the name to be empty.
+	Then the command is included in <span class="example">user.shortcuts</span> by adding 1100 to produce its command ID. For example,
+	<div class="example">
+command.name.21.*.properties=<br />
+command.21.*.properties=cmd /c echo $(FileNameExt)<br />
+user.shortcuts=\<br />
+Ctrl+Shift+V|1121|<br />
+	</div>
+    </p>
+    <h4 id="ReplaceInFiles">
+       Is there a command to replace a string in multiple files together?
+    </h4>
+    <p>
+     It is possible to replace a string in all opened buffers with the Replace in Buffers
+     button in the Replace dialog.
+     However this button is hidden by default, it can be displayed with
+     <span class="example">find.replace.advanced=1</span>.
+    </p>
+    <h4 id="SpeedUpGTK">
+       How do I make SciTE run faster on GTK+?
+    </h4>
+    <p>
+     The default settings for SciTE were changed in version 1.63 to use the Pango font
+     system and antialiased fonts. You can return to using X core fonts which are faster
+     with these settings:<div class="example">
+	font.base=font:lucidatypewriter,size:12<br />
+	font.small=font:lucidatypewriter,size:10<br />
+	font.comment=font:new century schoolbook,size:12<br />
+	font.code.comment.box=$(font.comment)<br />
+	font.code.comment.line=$(font.comment)<br />
+	font.code.comment.doc=$(font.comment)<br />
+	font.text=font:times,size:14<br />
+	font.text.comment=font:lucidatypewriter,size:10<br />
+	font.embedded.base=font:lucidatypewriter,size:12<br />
+	font.embedded.comment=font:lucidatypewriter,size:12<br />
+	font.monospace=font:courier,size:12<br />
+	font.vbs=font:new century schoolbook,size:12<br />
+     </div>
+     Line wrapping also slows SciTE down and this can be turned off with <span class="example">wrap=0</span>.
+    </p>
+    <h4 id="NewlineInRegEx">
+       Is it possible to use the newline character (\n) in a regular expression?
+    </h4>
+    <p>
+     No.
+    </p>
+    <p>
+	 The "Transform backslash expressions" option allows using \n and \r but that option does
+	 not work with regular expressions.
+    </p>
+    <h4 id="CompilerErrors">
+       How do I get SciTE to understand the error messages from my compiler?
+    </h4>
+    <p>
+     The set of error message formats is embedded in the Scintilla and SciTE code.
+     To add support for another compiler, you will need to add a new style to
+     scintilla/include/Scintilla.iface after the other SCE_ERR_* values, run HFacer.py,
+     edit RecogniseErrorListLine in scintilla/src/LexOthers.cxx to recognise the error message,
+     and edit DecodeMessage in scite/src/SciTEBuffers.cxx to extract the file name and line
+     number.
+    </p>
+    <h4 id="GCCUTF8">
+       Why do GCC error messages include ugly characters?
+    </h4>
+    <p>
+	Linux distributions now often set the locale to UTF-8 by, for
+	example, setting LANG=en_US.UTF-8. gcc takes this as an indication
+	that it can use any Unicode character encoded as UTF-8 so quotes using
+	&lsquo;these&rsquo; rather than ASCII. To see these as intended, set
+	<div class="example">
+	output.code.page=65001</div>
+    </p>
+    <h4 id="WindowsSpaces">
+       How do I make Windows open a file associated with SciTE when its path contains spaces?
+    </h4>
+    <p>
+	On some versions of Windows, associating a particular file type
+	with SciTE does not allow paths containing spaces to work.
+	To fix this, the path variable %1 needs to be surrounded by double quotes.
+	This is done either directly in the registry or through the Explorer in
+	Tools | Folder Options | File Types | (Select type) | Advanced | open | Edit.
+	Change the "Application used to perform action" field to be similar to
+	<div class="example">"C:\bin\SciTE\SciTE.exe" "%1"</div>
+    </p>
+  </body>
+</html>
+

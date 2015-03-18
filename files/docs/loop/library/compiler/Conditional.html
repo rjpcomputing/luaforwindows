@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Conditional Compiler</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																																							<li><a href="../../index.html", title="">Home</a></li>
+																																																							<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																																							<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																																							<li><a href="../index.html", title="Class Library">Library</a>
+																																																								<div class="outside"><div class="inside"><ul>
+																																																									<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																																										</li>
+																																																										<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																																											</li>
+																																																											<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																																												</li>
+																																																												<li><a href="../overview.html#object", title="Objects">object</a>
+																																																													</li>
+																																																													<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																																														</li>
+																																																														<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																																															</li>
+																																																														</ul></div></div>
+																																																													</li>
+																																																													<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																																													<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																																												</ul></div></div>
+																																																											
+</div>
+
+<div class="content">
+<h1>Conditional Compiler</h1>
+<h2><code>loop.compiler.Conditional</code></h2><br>
+<p>Class of objects that executes selected pieces of a chunk of Lua code.
+This class is useful for generating optimized functions that avoids condition tests or other constructions when such actions can be previously identified as unecessary.
+Since the execution of the selected pieces of the code chunk may be relatively slow, this approach is preferable for creation of optmized function that are generated rarely but are evaluated constantly.</p>
+
+<p>Each object contains a list of pairs that contain a chunk of Lua code and a Lua expression that defines whether the chunk should be executed or not, <i>e.g.</i> used in the generation of a customized function.
+When the conditional code is executed, a table is provided containing the options used to select the appropriate pieces of the chunk.</p>
+
+<h2>Behavior</h2>
+
+<h3>Fields</h3>
+
+<dl>
+
+	<dt><code><b>name</b></code> [optional]</dt>
+	<dd>
+		Name of the compiled conditional code that is used in error messages (this name is used in the call of function <code>loadstring</code> that compiles the conditional code).
+	</dd>
+
+</dl>
+
+<h3>Methods</h3>
+
+<dl>
+	
+	<dt><code><b>source</b>(options)</code></dt>
+	<dd>
+		Generate the source containing only selected pieces of the chunk that are identified by the evaluation of each associated conditional expressions with the values provided by <code>options</code>.
+	</dd>
+	
+	<dt><code><b>execute</b>(options, ...)</code></dt>
+	<dd>
+		Compiles and executes the selected pieces of the chunk that are identified by the evaluation of each associated conditional expressions with the values provided by <code>options</code>.
+		The aditional parameters are passed to the conditional code being executed.
+		All the values returned by the conditional code is retured by this function.
+	</dd>
+	
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	<li>The creation of customized functions implies in compilation and evaluation of each conditional expression as well as chunk concatenation, compilation and execution, therefore it results in a very expensive operation.</li>
+</ul>
+
+<h2>Examples</h2>
+
+<h3><a name="IndexableClass">Classes with <code>__index</code> meta-method.</a></h3>
+
+<pre>
+local oo          = require "loop.base"
+local Conditional = require "loop.compiler.Conditional"
+
+local indexer = Conditional{
+  { [[local class = ...                     ]]                            },
+  { [[local index = class.__index           ]], "indextype ~= 'nil'"      },
+  { [[local super = select(2, ...)          ]], "supercount > 0"          },
+  { [[return function(self, field)          ]]                            },
+  { [[  local value                         ]]                            },
+  { [[    = index[field]                    ]], "indextype == 'table'"    },
+  { [[    = index(self, field)              ]], "indextype == 'function'" },
+  { [[  if value == nil then                ]], "indextype ~= 'nil'"      },
+  { [[    value = class[field]              ]]                            },
+  { [[    if value == nil then              ]], "supercount > 0"          },
+  { [[      value = super[field]            ]], "supercount == 1"         },
+  { [[      for _, super in ipairs(super) do]], "supercount > 1"          },
+  { [[        value = super[field]          ]], "supercount > 1"          },
+  { [[        if value ~= nil then break end]], "supercount > 1"          },
+  { [[      end                             ]], "supercount > 1"          },
+  { [[    end                               ]], "supercount > 0"          },
+  { [[  end                                 ]], "indextype ~= 'nil'"      },
+  { [[  return value                        ]]                            },
+  { [[end                                   ]]                            },
+}
+
+function class(class, ...)
+  local options = {
+    supercount = select("#", ...),
+    indextype = type(class.__index),
+  }
+  local super
+  if options.supercount <= 1
+    then super =   ...
+    else super = { ... }
+  end
+  class.__index = indexer:execute(options, class, super)
+  return oo.class(class)
+end
+
+
+
+Class = class(
+  -- class fields
+  {
+    classfield = "classfield",
+    __index = function(_, field)
+      if field == "dynamicfield" then
+        return field
+      end
+    end,
+  },
+  -- superclasses
+  { inherited1 = "inherited1" },
+  { inherited2 = "inherited2" }
+)
+
+Object = Class{ objectfield = "objectfield" }
+
+print("Object.objectfield  = "..Object.objectfield )
+print("Object.classfield   = "..Object.classfield  )
+print("Object.dynamicfield = "..Object.dynamicfield)
+print("Object.inherited1   = "..Object.inherited1  )
+print("Object.inherited2   = "..Object.inherited2  )
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

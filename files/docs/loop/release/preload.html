@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Pre-Loading Script Libraries</title>
+	<style type="text/css" media="all"><!--
+		@import "../loop.css";
+		@import "../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../index.html", title="">Home</a></li>
+	<li><a href="index.html", title="Installation">Install</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="changes.html", title="Release Notes">Changes</a></li>
+			<li><a href="previous.html", title="Previous Releases">Previous</a></li>
+			<li><strong>Preload</strong></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../manual/index.html", title="User Manual">Manual</a></li>
+	<li><a href="../library/index.html", title="Class Library">Library</a></li>
+	<li><a href="../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Pre-Loading Script Libraries</h1>
+
+<p>If you plan to embed a Lua script library like LOOP in a C/C++ application you may prefer to generate a C library with your library's script files already pre-compiled.
+To do so, you may use the scripts <code>precompiler.lua</code> and <code>preloader.lua</code> provided in the LOOP package.
+Such scripts work as a sort of replacement for the old <code>bin2c</code> application that used to be included in the Lua distribution, however they are primarily intended to pre-compile and pre-load scripts that implement modules following the Lua 5.1 package model.
+For pre-compilation of ordinary scripts check out <a href="http://lua-users.org/wiki/BinTwoCee">bin2c</a> or other implementations of the old <code>bin2c</code> application.
+Anyway, the scripts provided in the LOOP package are very general and may be used to generate pre-compiled libraries for any set of Lua scripts.</p>
+
+<dl>
+	<dt><strong>WARNING:</strong></dt>
+	<dd>
+		The current version of these scripts require class <a href="../library/compiler/Arguments.html">Argument Processor</a> to handle command-line options.
+		So it might be necessary to make the LOOP library available in the <code>LUA_PATH</code>.
+		Alternatively, you may simply redefine your commands as:
+		<pre>lua -epackage.path=[[&lt;LOOP_HOME&gt;/?.lua]] &lt;LOOP_HOME&gt;/precompiler.lua</pre>
+		<pre>lua -epackage.path=[[&lt;LOOP_HOME&gt;/?.lua]] &lt;LOOP_HOME&gt;/preloader.lua</pre>
+		Anyway, these scripts are very easy to read and modify, so feel free to change them in any way to better fit your demands.<br>
+		<br>
+		On the other hand, these concerns are not valid if you installed LOOP's <a href="index.html#rock">rock</a> through <a href="http://www.luarocks.org/">LuaRocks</a>.
+		In such case, you can use these scripts simply through commands <code>precompiler.lua</code> and <code>preloader.lua</code>.
+	</dd>
+</dl>
+
+<a name="precomp"><h2>Pre-Compilation</h2></a>
+
+<p>To generate pre-compiled libraries, first select the script files that should be included in the library.
+Next, use the <code>precompiler.lua</code> script to generate the C source file that includes the pre-compiled scripts.
+This script receives a list of optional parameters and the path of all the script files that should be pre-compiled.
+The path to these script files must follow the same hierarchy of the packages that they implement so the package name shall be correctly inferred from the provided Lua path.
+The options <code>precompiler.lua</code> script accepts are the following:</p>
+
+<dl>
+	
+	<dt>-b, -bytecodes</dt>
+	<dd>
+		Flag that indicates the provided arguments are file paths containing bytecodes (e.g. instead of source code), like the output of the <code>luac</code> compiler. When this flag is used no compilation is performed by this script.
+	</dd>
+	
+	<dt>-d, -directory</dt>
+	<dd>
+		Directory where the output files should be generated. Its default is the current directory.
+	</dd>
+	
+	<dt>-l, -luapath</dt>
+	<dd>
+		Sequence os path templates used to infer package names from file paths and vice versa. These templates follows the same format of the <code>package.path</code> field of Lua. Its default is the value of <code>package.path</code>.
+	</dd>
+	
+	<dt>-n, -names</dt>
+	<dd>
+		Flag that indicates provided input names are actually package names and the real file path should be inferred from the path defined by -luapath option. This flag can be used in conjunction with the -bytecodes flag to indicate that inferred file paths contains bytecodes instead of source code.
+	</dd>
+	
+	<dt>-o, -output</dt>
+	<dd>
+		Name used to form the name of the files generated.
+		Two files are generated: a source code file with the sufix <code>.c</code> with the pre-compiled scripts and a header file with the suffix <code>.h</code> with function signatures. Its default is <code>precompiled</code>.
+	</dd>
+	
+	<dt>-p, -prefix</dt>
+	<dd>
+		Prefix added to the signature of the functions generated.
+		Its default is LUAOPEN_API.
+	</dd>
+</dl>
+
+<h3>Example</h3>
+<pre>> lua precompiler.lua -o loop -l lua/?.lua                       \
+                     lua/loop/base.lua                          \
+                     lua/loop/cached.lua                        \
+                     lua/loop/multiple.lua                      \
+                     lua/loop/scoped.lua                        \
+                     lua/loop/simple.lua                        \
+                     lua/loop/table.lua                         \
+                     lua/loop/collection/MapWithArrayOfKeys.lua \
+                     lua/loop/collection/ObjectCache.lua        \
+                     lua/loop/collection/OrderedSet.lua         \
+                     lua/loop/collection/PriorityQueue.lua      \
+                     lua/loop/collection/UnorderedArray.lua     \
+                     lua/loop/collection/UnorderedArraySet.lua  \
+                     lua/loop/compiler/Arguments.lua            \
+                     lua/loop/compiler/Conditional.lua          \
+                     lua/loop/compiler/Expression.lua           \
+                     lua/loop/debug/Inspector.lua               \
+                     lua/loop/debug/Matcher.lua                 \
+                     lua/loop/debug/Verbose.lua                 \
+                     lua/loop/debug/Viewer.lua                  \
+                     lua/loop/object/Exception.lua              \
+                     lua/loop/object/Wrapper.lua                \
+                     lua/loop/serial/FileStream.lua             \
+                     lua/loop/serial/Serializer.lua             \
+                     lua/loop/serial/SocketStream.lua           \
+                     lua/loop/serial/StringStream.lua           \
+                     lua/loop/thread/CoSocket.lua               \
+                     lua/loop/thread/IOScheduler.lua            \
+                     lua/loop/thread/Scheduler.lua              \
+                     lua/loop/thread/SocketScheduler.lua        \
+                     lua/loop/thread/Timer.lua</pre>
+
+<p>The package name is inferred by matching the provided path with the Lua path patterns defined with option <code>-luapath</code> and no path expansion is performed.
+Therefore <code>precompiler.lua</code> won't be able to figure out the package name of file <code>mypacks/loop/base.lua</code> if the provided Lua path is <code>/home/user/mypacks/?.lua</code> even though the current directory is <code>/home/user</code>.
+However if the Lua path is set to <code>mypacks/?.lua</code> the inferred package name would be <code>loop.base</code>.
+When the Lua path defines multiple patterns, the last (<i>i.e.</i> rightmost) that matches the file path is used to define the package name.</p>
+
+<p>Alternatively, you shall provide the flag <code>-names</code> to <code>precompiler.lua</code> and provide package names instead of file paths.
+In such case, the provided Lua path is used to figure out the file that contains the actual package implementation.
+This is useful when package name cannot be correctly inferred from the file path like in case-insensitive file systems.
+Therefore the above example could be rewritten like below:</p>
+
+<h3>Example</h3>
+<pre>> lua precompiler.lua -o loop -l lua/?.lua -n            \
+                     loop.base                          \
+                     loop.cached                        \
+                     loop.multiple                      \
+                     loop.scoped                        \
+                     loop.simple                        \
+                     loop.table                         \
+                     loop.collection.MapWithArrayOfKeys \
+                     loop.collection.ObjectCache        \
+                     loop.collection.OrderedSet         \
+                     loop.collection.PriorityQueue      \
+                     loop.collection.UnorderedArray     \
+                     loop.collection.UnorderedArraySet  \
+                     loop.compiler.Arguments            \
+                     loop.compiler.Conditional          \
+                     loop.compiler.Expression           \
+                     loop.debug.Inspector               \
+                     loop.debug.Matcher                 \
+                     loop.debug.Verbose                 \
+                     loop.debug.Viewer                  \
+                     loop.object.Exception              \
+                     loop.object.Wrapper                \
+                     loop.serial.FileStream             \
+                     loop.serial.Serializer             \
+                     loop.serial.SocketStream           \
+                     loop.serial.StringStream           \
+                     loop.thread.CoSocket               \
+                     loop.thread.IOScheduler            \
+                     loop.thread.Scheduler              \
+                     loop.thread.SocketScheduler        \
+                     loop.thread.Timer</pre>
+
+<p>Additionally, if the flag <code>-bytecodes</code> is used with the <code>precompiler.lua</code> script then it assumes that the provided files contain bytecodes instead of source code.
+This is useful to create source files with scripts pre-compiled with <code>luac</code> in platforms other than the one where the application is being written.</p>
+
+<p>Finally, if no additional parameter is provided other than the options listed above, then the file paths or package names are read from the standard input.
+Therefore, if the list of package to be compiled is stored in file <code>loop.lpk</code> and they are already compiled in directory <code>compiled</code> in files with extension <code>.lo</code> that follow the same hierarchy of the packages then the compilation command could be:</p>
+
+<h3>Example</h3>
+<pre>> lua precompiler.lua -o loop -l compiled/?.lo -n -b < loop.lpk</pre>
+
+<p>As a result of the examples above you will get the files <code>loop.c</code> and <code>loop.h</code> that can be compiled to produce a library that offers functions that load each one of the scripts pre-compiled.
+Such functions follow the pattern defined by the Lua package model.
+Examples are:</p>
+
+<pre>int luaopen_loop_base(lua_State*);
+int luaopen_loop_simple(lua_State*);
+int luaopen_loop_collection_ObjectCache(lua_State*);
+int luaopen_loop_collection_OrderedSet(lua_State*);</pre>
+
+<p><strong>Note:</strong> Since these function signatures comply with the standard defined by Lua package model then <code>loop.c</code> can be used to generate a dynamic C library that exports all functions defined in <code>loop.h</code> and is able to load all LOOP packages if properly installed in the  directory for C packages (see field <code><a href="http://www.lua.org/manual/5.1/manual.html#pdf-package.cpath">package.cpath</a></code>).</p>
+
+<h2>Pre-Loading</h2>
+
+<p>However, to effectively load such scripts in an application, you have to call these operations provided by the library in the right loading sequence that respects each package dependencies.
+Alternatively, you may pre-load such scripts by registering these functions in the <code>package.preload</code> table so they are executed when each package is first required.
+This can be automatically done by the code generated with script <code>preloader.lua</code>.
+This script receives a list of optional parameters and the path of the headers of libraries that should be pre-loaded.
+The options <code>preloader.lua</code> script accepts are the following:</p>
+
+<dl>
+	<dt>-d, -directory</dt>
+	<dd>
+		Directory where the output files should be generated. Its default is the current directory.
+	</dd>
+	
+	<dt>-I, -i, -includes</dt>
+	<dd>
+		Adds a directory to the list of paths where the header files of pre-compiled libraries are searched.
+	</dd>
+	
+	<dt>-f, -funcname</dt>
+	<dd>
+		Name of the generated function that pre-loads all library modules.
+		Its default is <code>luapreload_</code> plus the name defined by option <code>-output</code>.
+	</dd>
+	
+	<dt>-n, -names</dt>
+	<dd>
+		Flag that indicates provided input names are actually package names and not header files.
+	</dd>
+	
+	<dt>-o, -output</dt>
+	<dd>
+		Name used to form the name of the files generated.
+		Two files are generated: a source code file with the sufix <code>.c</code> with the pre-loading code and a header file with the suffix <code>.h</code> with the function that pre-loads the scripts.
+		Its default is <code>preload</code>.
+	</dd>
+	
+	<dt>-p, -prefix</dt>
+	<dd>
+		Prefix added to the signature of the functions generated.
+		Its default is LUAPRELOAD_API.
+	</dd>
+</dl>
+
+<h3>Example</h3>
+<pre>> lua preloader.lua -o looplib -f luapreload_loop loop.h</pre>
+
+<p>As a result you will get the files <code>looplib.c</code> and <code>looplib.h</code> that can be compiled with the files <code>loop.c</code> and <code>loop.h</code> to produce a library that offers a function with the following signature:</p>
+
+<pre>int luapreload_loop(lua_State*);</pre>
+
+<p>This function registers all the functions defined by <code>loop.h</code> header with the names of the corresponding packages.
+This way, function <code>luapreload_loop</code> can be used to pre-load all scripts previously compiled in <code>loop.c</code> so they are automatically loaded when required.</p>
+
+<p>The <code>preloader.lua</code> script also works with header files of Lua 	libraries written in C/C++.
+For example, to generate a library that pre-loads the full <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library, including its script files you can use the following commands.</p>
+
+<pre>> lua precompiler.lua -o luasocketscripts -l "?.lua" \
+                     socket.lua                     \
+                     socket/ftp.lua                 \
+                     socket/http.lua                \
+                     socket/smtp.lua                \
+                     socket/tp.lua                  \
+                     socket/url.lua</pre>
+
+<pre>> lua preloader.lua -o fullluasocket -I &lt;LUASOCKET_HOME&gt;/include \
+                   luasocket.h                                  \
+                   luasocketscripts.h</pre>
+
+<p>These commands produces files <code>luasocketscripts.c</code>, <code>luasocketscripts.h</code>, <code>fullluasocket.c</code>, and  <code>fullluasocket.h</code> that shall be compiled with the C source files of the LuaSocket library to produce a library that provides operation <code>int luapreload_fullluasocket(lua_State*)</code> that may be used to pre-load into the provided Lua state the full LuaSocket library, including its script files.</p>
+
+<p>Alternatively, you can provide the names of the packages that should be pre-loaded instead of header files that contains signature of the package opening functions.
+To do so, just provide the flag <code>-names</code> to the <code>preloader.lua</code> script.
+This is useful when package name cannot be inferred correctly from the <code>luaopen_*</code> function.
+For example a package named <code>my_lib.my_package</code> is loaded by function <code>luaopen_my_lib_my_package</code> that <code>preloader.lua</code> script would register under the name <code>my.lib.my.package</code>.
+To avoid this, use the package name like in the example below.</p>
+
+<pre>> lua preloader.lua -o mylib -n my_lib.my_package</pre>
+
+<p>Similar to the <code>precompiler.lua</code> script, if no additional argument is provided then the list of header files or package names is read from the standard input.</p>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

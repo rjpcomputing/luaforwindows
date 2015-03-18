@@ -1,0 +1,16 @@
+digraph G
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  Node1 [label="/mnt/share/devel/lua/wxLua/modules/wxluasocket/include/wxldserv.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node2 [dir=back,color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="/mnt/share/devel/lua/wxLua/modules/wxluasocket/include/wxluasocket_bind.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$wxluasocket__bind_8h.html"];
+  Node2 -> Node3 [dir=back,color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node3 [label="/mnt/share/devel/lua/wxLua/modules/wxluasocket/src/wxluasocket_bind.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$wxluasocket__bind_8cpp.html"];
+  Node1 -> Node4 [dir=back,color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node4 [label="/mnt/share/devel/lua/wxLua/modules/wxluasocket/src/wxldserv.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$wxldserv_8cpp.html"];
+  Node1 -> Node5 [dir=back,color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node5 [label="/mnt/share/devel/lua/wxLua/modules/wxluasocket/src/wxldtarg.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$wxldtarg_8cpp.html"];
+  Node1 -> Node6 [dir=back,color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node6 [label="/mnt/share/devel/lua/wxLua/modules/wxluasocket/src/wxlsock.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$wxlsock_8cpp.html"];
+}

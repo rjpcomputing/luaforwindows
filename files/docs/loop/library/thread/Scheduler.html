@@ -1,0 +1,328 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Thread Scheduler</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																																																																																																																					<li><a href="../../index.html", title="">Home</a></li>
+																																																																																																																																					<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																																																																																																																					<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																																																																																																																					<li><a href="../index.html", title="Class Library">Library</a>
+																																																																																																																																						<div class="outside"><div class="inside"><ul>
+																																																																																																																																							<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																																																																																																																								</li>
+																																																																																																																																								<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																																																																																																																									</li>
+																																																																																																																																									<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																																																																																																																										</li>
+																																																																																																																																										<li><a href="../overview.html#object", title="Objects">object</a>
+																																																																																																																																											</li>
+																																																																																																																																											<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																																																																																																																												</li>
+																																																																																																																																												<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																																																																																																																													</li>
+																																																																																																																																												</ul></div></div>
+																																																																																																																																											</li>
+																																																																																																																																											<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																																																																																																																											<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																																																																																																																										</ul></div></div>
+																																																																																																																																									
+</div>
+
+<div class="content">
+<h1>Thread Scheduler</h1>
+<h2><code>loop.thread.Scheduler</code></h2><br>
+<p>Class of objects that provides a scheduling policy for management of a collection of co-routines that represent independent threads of execution.
+This class also provides some basic operations for synchronization of the scheduled threads.
+This class is useful for implementation of multi-threading support in Lua applications.</p>
+
+<p>Each class maintains two lists of threads, one for the ones ready for execution (<i>i.e.</i> running) and another for those suspended for some time (<i>i.e.</i> sleeping).
+The scheduling policy is round-robin, resuming all threads ready for running one after the other.
+When a thread finishes it is removed from the scheduler and an optional trap function is called to handle its last results or any error raised during its execution.
+The scheduler also automatically moves threads from the list of sleeping threads to the running list when their sleeping time are finished.</p>
+
+<h2>Behavior</h2>
+
+<h3>Initialization</h3>
+
+<dl>
+	
+	<dt><code><b>Scheduler</b>([object])</code></dt>
+	<dd>
+		Creates a new instance using the table <code>object</code> adding to it all proper data strucutures used to store the lists of running and sleeping threads and the set of optional trap functions of each scheduled thread.
+		Additionally, it also initialize the internal state of the new scheduler instance.
+		If no <code>object</code> is provided then a new table is used.
+	</dd>
+	
+</dl>
+
+<h3>Fields</h3>
+
+<dl>
+	
+	<dt><code><b>current</b></code></dt>
+	<dd>
+	Co-routine of the thread that currenly holds the right to execute.
+	This co-routine is not always the result of <code>coroutine.running()</code> because in some circustances other internal co-routines related to it are acctually executing.
+	That is the case when a thread executes the <code>pcall</code> function.
+	</dd>
+	
+	<dt><code><b>pcall</b></code></dt>
+	<dd>
+	Function that behaves like <code>pcall</code> function of the Lua base library but allows calls of <code>coroutine.yield()</code>.
+	</dd>
+<!--	
+	<dt><code><b>running</b></code></dt>
+	<dd>
+		<code><a href="../collection/OrderedSet.html">OrderedSet</a></code> instance that holds all threads ready for execution.
+		The order they are stored is the order they are scheduled in a resuming cycle (see method <code>step()</code>).
+		This field should not be changed directly by the application, instead use the methods provided by the class.
+	</dd>
+	
+	<dt><code><b>sleeping</b></code></dt>
+	<dd>
+		<code><a href="../collection/PriorityQueue.html">PriorityQueue</a></code> instance that holds all threads suspended for a given time.
+		Their priorities are the time when they should be resumed.
+		This field should not be changed directly by the application, instead use the methods provided by the class.
+	</dd>
+-->	
+	<dt><code><b>traps</b></code></dt>
+	<dd>
+		Table that maps registered co-routine to its trap function.
+		A trap function is a function called when a co-routine finishes.
+		The trap function receives a boolean value indicating if the call ended normally or not, <i>i.e.</i> due to an error raised.
+		As additional argument, the trap function receives the results of the co-routine.
+		However, if the co-routine ended with an error, the error message is the only additional parameter of the trap function.
+	</dd>
+	
+</dl>
+
+<h3>Methods</h3>
+
+<dl>
+	
+	<dt><code><b>error</b>(coroutine, error)</code></dt>
+	<dd>
+		Method used to handle the error message <code>error</code> of co-routine <code>coroutine</code>.
+		By default, this method raises an ordinary Lua error with message <code>error</code>.
+		If the <code>debug.traceback</code> function is available at the time this class is first required, then the error message raised contains the original stack of the error produced.
+		This method may be redefined for produce better error messages.
+	</dd>
+	
+	<dt><code><b>halt</b>()</code></dt>
+	<dd>
+		Method used to stop the scheduling loop performed by method <code>run</code>.
+		The scheduling then may be resumed by future calls to <code>step</code> or <code>run</code>.
+	</dd>
+	
+	<dt><code><b>idle</b>([timeout])</code></dt>
+	<dd>
+		Method called when there are no running threads available for scheduling for until the moment specified by <code>timeout</code>.
+		If no <code>timeout</code> is available, then the this method should return immediatly.
+		By default this method execute a busy waiting at least until the moment <code>timeout</code> is reached.
+		It is strongly recommended that such implementation be replaced by a more efficient one, like the following code in Linux environments:
+		<pre>funtion scheduler:idle(timeout)
+  if timeout then
+    os.execute("sleep "..(timeout - self:time()))
+  end
+end</pre>
+	</dd>
+	
+	<dt><code><b>register</b>(coroutine)</code></dt>
+	<dd>
+		Register a co-routine to be scheduled for execution.
+		This method simply inserts the co-routine <code>co-routine</code> at the end of the running list of the scheduler and return <code>true</code>.
+		However, if the co-routine is already registered then this method has no effect and returns no value.
+	</dd>
+	
+	<dt><code><b>remove</b>(coroutine)</code></dt>
+	<dd>
+		Removes a co-routine from the scheduler, therefore it is no more scheduled for execution.
+		This method simply removes the co-routine <code>co-routine</code> from the lists of the scheduler (<i>i.e.</i> running or sleeping) and return the removed co-routine plus the time it was scheduled to be waken if it was sleeping.
+		However, if the co-routine is not registered then this method has no effect and returns no value.
+	</dd>
+	
+	<dt><code><b>resume</b>(coroutine, ...)</code></dt>
+	<dd>
+		This method can only be called inside a scheduled co-routine.
+		It immediatetly switches the execution to the co-routine <code>coroutine</code>.
+		The calling co-routine is suspended until the next resuming cycle (see method <code>step()</code>).
+		All its extra arguments are returned by the operation that suspended the co-routine <code>coroutine</code>.
+		Such suspending operations are the methods <code>start</code>, <code>resume</code>, <code>suspend</code> and the function <code>coroutine.yield</code> of the Lua Base Library.
+		If the resumed co-routine is already scheduled for execution then its execution is advanced in the running thread list but it is not scheduled again until the next resuming cycle.
+		If the resumed co-routine was already executed in the current resuming cycle, then it is executed once more in the same cycle.
+		This operation simulates an API for symetric co-routines using the asymetric co-routines of Lua.
+	</dd>
+	
+	<dt><code><b>run</b>([timeout])</code></dt>
+	<dd>
+		Starts to schedule registered co-routines until the moment given by <code>timeout</code> is reached by performing continuous resuming cycles (see method <code>step()</code>).
+		If no <code>timeout</code> is provided, it schedules all co-routines until they all finish.
+		If there are no registered co-routines, the call has no effect.
+	</dd>
+	
+	<dt><code><b>start</b>(function, ...)</code></dt>
+	<dd>
+		This method can only be called inside a scheduled co-routine.
+		It creates a new co-routine for execution of function <code>function</code> with the arguments provided and immediatetly starts it.
+		The calling co-routine is suspended until the next resuming cycle (see method <code>step()</code>).
+	</dd>
+	
+	<dt><code><b>step</b>()</code></dt>
+	<dd>
+		Performs a resuming cycle that consists of executing each scheduled co-routine ready for execution (<i>i.e.</i> running) at least once.
+		Since, each co-routine is responsible to notify the moment for execution switch, a resuming cycle may last for an arbitrary long time, even forever.
+		Additionally, a co-routine may be resumed more than once if resumed by method <code>resume</code>.
+		Specifically, two co-routines may alternate execution forever inside a single resuming cycle if they resume each other mutually indefinetly.
+		In such case, no other co-routine is resumed.
+	</dd>
+	
+	<dt><code><b>suspend</b>([time])</code></dt>
+	<dd>
+		This method can only be called inside a scheduled co-routine.
+		It suspends the execution of the current co-routine for at least <code>time</code> seconds.
+		If no <code>time</code> is provided, the co-routine is suspended until it is registered again in the scheduler by operation <code>register</code> or resumed by method <code>resume</code>.
+	</dd>
+	
+	<dt><code><b>time</b>()</code></dt>
+	<dd>
+		Method used to get the number of seconds counted by the system.
+		This counting may be relative to any point in the past.
+		This method is used to check the current moment of the system and therefore percieve time slapses.
+		To define relative timouts use the formula <code>scheduler:time() + seconds</code>.
+		By default, this method is based in the <code>os.time</code> function of Lua and therefore has only precision of seconds.
+		To use the scheduler with a higher precision, redefine this method.
+	</dd>
+	
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	<li>This class can be used as an instance of itself, therefore all methods can be executed over the class itself.</li>
+	<li>
+		Since standard Lua does not provide operations to suspend execution for some time, the behavior of method <code>idle</code> is to perform a busy-waiting until the time specifield.
+		This is extremelly undesired in time-shared systems.
+		Therefore, it is strongly recommended to replace this implementation for a more efficient one.
+		For example, using the <code>socket.sleep</code> function provided by <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> package.
+<pre>function scheduler:idle(timeout)
+  socket.sleep(timeout - self:time())
+end</pre>
+	</li>
+	<li>
+		This class provides a verbose message manager (instance of <code><a href="../debug/Verbose.html">Verbose</a></code>) in field <code>verbose</code> that offers the following flags that can be activated to generate messages about the internal actions performed by the scheduler.
+		<p>
+			<dl>
+				<dt><code><b>concurrency</b></code></dt>
+				<dd>
+					Group of all message flags described below.
+				</dd>
+				<dt><code><b>copcall</b></code></dt>
+				<dd>
+					Messages describing the actions related to the management of the co-routine-compatiable pcall implementation.
+				</dd>
+				<dt><code><b>threads</b></code></dt>
+				<dd>
+					Messages describing the actions related to the management of scheduled threads, <i>e.g.</i> resuming, suspending, registration, etc.
+				</dd>
+				<dt><code><b>scheduler</b></code></dt>
+				<dd>
+					Messages describing the actions related to the internal control of the scheduling mechanism, <i>e.g.</i> resuming cycles, idle time, etc.
+				</dd>
+			</dl>
+		</p>
+		The verbose messages are very useful to understand the behavior of the scheduler as well as for debugging multi-threaded applications, however it is very expensive for some performance-critical applications.
+		In order to remove the verbose support and improve performance, remove all the code after the occurences of <code>--[[VERBOSE]]</code> in the implementation of this class.
+		An easy way to turn the verbose support on or off is to replace all occourences of "<code>--[[VERBOSE]]</code>" by "<code>-- [[VERBOSE]]</code>" and vice-versa.
+	</li>
+</ul>
+
+<h2>Examples</h2>
+
+<h3><a name="LightControl">Light control system</a></h3>
+
+<pre>
+local scheduler = require "loop.thread.Scheduler"
+
+function control(room)
+  local c = 0
+  while true do
+    if room.light and not room.presence then
+      c = c + 1
+      if c > 5 then
+        c = 0
+        room.light = false
+      else
+        scheduler:suspend(1)
+      end
+    else
+      c = 0
+      scheduler:suspend(6)
+    end
+  end
+end
+
+function person(rooms)
+  local room = 0
+  while true do
+    room = 1 + (room + math.random(#rooms-1)) % #rooms
+    rooms[room].presence = true
+    rooms[room].light = true
+    scheduler:suspend(math.random(6))
+    rooms[room].presence = false
+  end
+end
+
+function printer(rooms)
+  while true do
+    for _, room in ipairs(rooms) do
+      io.write("  ", room.presence and "*" or room.light and "." or  " ")
+    end
+    print()
+    scheduler:suspend(1)
+  end
+end
+
+scheduler:register(coroutine.create(function()
+  local rooms = {}
+  for i = 1, 9 do rooms[i] = {} end
+  
+  scheduler:start(printer, rooms)
+  scheduler:start(person, rooms)
+  scheduler:suspend(60)
+  
+  print "starting light control ..."
+  for _, room in ipairs(rooms) do
+    scheduler:start(control, room)
+  end
+end))
+
+scheduler:run()
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

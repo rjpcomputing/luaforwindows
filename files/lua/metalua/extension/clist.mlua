@@ -1,0 +1,149 @@
+----------------------------------------------------------------------
+-- Metalua samples:  $Id$
+--
+-- Summary: Lists by comprehension
+--
+----------------------------------------------------------------------
+--
+-- Copyright (c) 2006-2007, Fabien Fleutot <metalua@gmail.com>.
+--
+-- This software is released under the MIT Licence, see licence.txt
+-- for details.
+--
+--------------------------------------------------------------------------------
+--
+-- This extension implements list comprehensions, similar to Haskell and
+-- Python syntax, to easily describe lists.
+--
+--------------------------------------------------------------------------------
+
+-{ extension "match" }
+
+local function dots_builder (x) return `Dots{ x } end
+
+local function for_builder (x, h)
+   match x with
+   | `Comp{ _, acc } -> table.insert (acc, h[1]); return x
+   | `Pair{ _, _ }   -> error "No explicit key in a for list generator"
+   |  _              -> return `Comp{ x, {h[1]} }
+   end
+end
+
+local function if_builder (x, p)
+   match x with
+   | `Comp{ _, acc } -> table.insert (acc, `If{ p[1] }); return x
+   | `Pair{ _, _ }   -> error "No explicit key in a list guard"
+   |  _              -> return `Comp{ x, p[1] }
+   end
+end
+   
+local function comp_builder(core, list, no_unpack)
+   -- [ti] = temp var holding table.insert
+   -- [v]  = variable holding the table being built
+   -- [r]  = the core of the list being built
+   local ti, v, r = mlp.gensym "table_insert", mlp.gensym "table"
+
+   -----------------------------------------------------------------------------
+   -- 1 - Build the loop's core: if it has suffix "...", every elements of the
+   --     multi-return must be inserted, hence the extra [for] loop.
+   -----------------------------------------------------------------------------
+   match core with
+   | `Dots{ x } -> 
+      local w = mlp.gensym()
+      r = +{stat: for -{w} in values( -{x} ) do -{ `Call{ ti, v, w } } end }
+   | `Pair{ k, w } ->
+      r = `Set{ { `Index{ v, k } }, { w } }
+   |  _ -> r = `Call{ ti, v, core }
+   end
+
+   -----------------------------------------------------------------------------
+   -- 2 - Stack the if and for control structures, from outside to inside.
+   --     This is done in a destructive way for the elements of [list].
+   -----------------------------------------------------------------------------
+   for i = #list, 1, -1 do
+      table.insert (list[i], {r})
+      r = list[i]
+   end
+   if no_unpack then
+      return `Stat{ { `Local{ {ti, v}, { +{table.insert}, `Table} }, r }, v }
+   else
+      return +{ function() 
+                   local -{ti}, -{v} = table.insert, { }
+                   -{r}; return unpack(-{v}) 
+                end () }
+   end
+end
+
+local function table_content_builder (list)
+   match list with
+   | { `Comp{ y, acc } } -> return comp_builder( y, acc, "no unpack")
+   | _ ->
+      local tables = { `Table }
+      local ctable = tables[1]
+      local function flush() ctable=`Table; table.insert(tables, ctable) end
+      for x in values(list) do
+         match x with
+         | `Comp{ y, acc } -> table.insert(ctable, comp_builder(y, acc)); flush()
+         | `Dots{ y }      -> table.insert(ctable, y); flush()
+         |  _              -> table.insert (ctable, x); 
+         end
+      end
+      match tables with
+      | { x } | { x, { } } -> return x
+      | _ ->
+         if #tables[#tables]==0 then table.remove(tables) end --suppress empty table      
+         return `Call{ +{table.cat}, unpack(tables) }
+      end
+   end
+end
+
+mlp.table_field = gg.expr{ name="table cell",
+   primary = mlp.table_field,
+   suffix  = { name="table cell suffix",
+      { "...",                 builder = dots_builder },
+      { "for", mlp.for_header, builder = for_builder  },
+      { "if",  mlp.expr,       builder = if_builder   } } }
+
+mlp.table_content.builder = table_content_builder
+
+--[[
+mlp.stat:add{ "for", gg.expr {
+      primary = for_header,
+      suffix = {
+         { "for", mlp.for_header, builder = for_builder  },
+         { "if",  mlp.expr,       builder = if_builder   } } }, 
+   "do", mlp.block, "end", builder = for_stat_builder }
+--]]
+
+--------------------------------------------------------------------------------
+-- Back-end for improved index operator.
+--------------------------------------------------------------------------------
+local function index_builder(a, suffix)
+   match suffix[1] with
+   -- Single index, no range: keep the native semantics
+   | { { e, false } } -> return `Index{ a, e }
+   -- Either a range, or multiple indexes, or both
+   | ranges ->
+      local r = `Call{ +{table.isub}, a }
+      local function acc (x,y) table.insert (r,x); table.insert (r,y) end
+      for seq in ivalues (ranges) do
+         match seq with
+         | { e, false } -> acc(e,e)
+         | { e, f }     -> acc(e,f)
+         end
+      end
+      return r
+   end
+end
+
+--------------------------------------------------------------------------------
+-- Improved "[...]" index operator:
+--  * support for multi-indexes ("foo[bar, gnat]")
+--  * support for ranges ("foo[bar ... gnat]")
+--------------------------------------------------------------------------------
+mlp.expr.suffix:del '['
+mlp.expr.suffix:add{ name="table index/range",
+   "[", gg.list{
+      gg.sequence { mlp.expr, gg.onkeyword{ "...", mlp.expr } } , 
+      separators = { ",", ";" } }, 
+   "]", builder = index_builder }

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+LUA=lua
+
+echo "Starting client and wait for 5 secs."
+$LUA client.lua &
+pids="$pids $!"
+trap "kill $pids > /dev/null 2> /dev/null" 0
+sleep 5
+
+echo "Starting server and wait for 3 sec."
+$LUA server.lua &
+pids="$pids $!"
+trap "kill $pids > /dev/null 2> /dev/null" 0
+sleep 3
+
+echo "Demo finished."

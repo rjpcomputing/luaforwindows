@@ -1,0 +1,86 @@
+-{extension 'match'}
+
+WIDTH = 50
+function p(msg)
+   io.write(msg, ' ':rep(WIDTH-#msg))
+   io.flush()
+end
+
+p "Basic match"
+match 1 with 1 -> print 'ok' end
+
+p "Sequence match"
+match 3, 4 with 
+| 1, 2 -> print 'KO'
+| 3, 4 -> print 'ok' 
+end
+
+p "Id binding"
+match 3, 4 with 
+| 1, 2 -> print 'KO'
+| x, y -> print 'ok' 
+end
+
+p "Table destructuring & non-litteral tested term"
+match {1, 2} with
+|{a, 2} -> assert(a==1); print 'ok'
+end
+
+p "Pattern group"
+match {'?'} with
+|1|2|3 -> print 'KO'
+|{...} -> print 'ok'
+end
+
+p "Multi-level destructuring"
+match {{1000}} with
+|{{2000}} -> print 'KO'
+|{{3000}} -> print 'KO'
+|{{1000}} -> print 'ok'
+end
+
+p "Guard"
+match 1 with
+| 1 if false -> print 'KO'
+| 1 -> print 'ok'
+end
+
+p "Guard with bound var"
+match 1 with
+| a if a ~= 1 -> print 'KO'
+| a if a == 1 -> print 'ok'
+end
+
+p "Non linear var & destructuring"
+match {1, {2}} with
+| {a, {a}} -> print 'KO'
+| {a, {b}} -> print 'ok'
+end
+
+p "Non-linear vars on a sequence"
+match 1, 2 with
+| a, a -> print 'KO'
+| a, b -> print 'ok'
+end
+
+p "Multiple _ wildcards"
+match 1, 2 with
+| _, _ -> print 'ok'
+| a, b -> print 'KO'
+end
+
+p "Regexp & non-linear vars"
+match 'toto' with
+| 't(.)t(.)' / { a, a } -> print (a..'k')
+end
+
+p "Nested match & ..."
+match { { 'o', 'k', '!' } } with
+| { t } -> match t with
+   | { a, b }      -> print 'KO'
+   | { a, b, ... } -> print (a..b)
+   | _             -> print 'KO'
+   end
+| _ -> print 'KO'
+end
+

@@ -1,0 +1,130 @@
+#Logo {
+	margin:-67px 0px 20px 20px;
+}
+
+/* Commom header formatting */
+
+#Menu {
+	text-align:right;
+	top:80px;
+	padding:0pt 10pt 0pt 0pt;
+	border-right:1px solid #ccc;
+/* Here is the ugly brilliant hack that protects IE5/Win from its own stupidity. 
+Thanks to Tantek Celik for the hack and to Eric Costello for publicizing it. 
+IE5/Win incorrectly parses the "\"}"" value, prematurely closing the style 
+declaration. The incorrect IE5/Win value is above, while the correct value is 
+below. See http://glish.com/css/hacks.asp for details. */
+	voice-family: "\"}\"";
+	voice-family:inherit;
+	width:120px;
+	}
+/* I've heard this called the "be nice to Opera 5" rule. Basically, it feeds correct 
+length values to user agents that exhibit the parsing error exploited above yet get 
+the CSS box model right and understand the CSS2 parent-child selector. ALWAYS include
+a "be nice to Opera 5" rule every time you use the Tantek Celik hack (above). */
+body>#Menu {width:120px;}
+
+#Header {
+	font-weight:bold;
+	margin:30px 0px 10px 0px;
+	padding:13px 0px 0px 110px;
+	/* For IE5/Win's benefit height = [correct height] + [top padding] + [top and bottom border widths] */
+	height:33px; /* 19px + 13px + 2px = 33px */
+	border-style:solid;
+	border-color:#039;
+	border-width:1px 0px; /* top and bottom borders: 1px; left and right borders: 0px */
+	color:#039;
+	background-color:#eef;
+
+/* Here is the ugly brilliant hack that protects IE5/Win from its own stupidity. 
+Thanks to Tantek Celik for the hack and to Eric Costello for publicizing it. 
+IE5/Win incorrectly parses the "\"}"" value, prematurely closing the style 
+declaration. The incorrect IE5/Win value is above, while the correct value is 
+below. See http://glish.com/css/hacks.asp for details. */
+	voice-family: "\"}\"";
+	voice-family:inherit;
+	height:19px; /* the correct height */
+	}
+/* I've heard this called the "be nice to Opera 5" rule. Basically, it feeds correct 
+length values to user agents that exhibit the parsing error exploited above yet get 
+the CSS box model right and understand the CSS2 parent-child selector. ALWAYS include
+a "be nice to Opera 5" rule every time you use the Tantek Celik hack (above). */
+body>#Header {height:19px;}
+
+/* Other elements formatting */
+
+body {
+	margin:0px;
+	padding:0px;
+	font-family:verdana, arial, helvetica, sans-serif;
+	font-size:smaller;
+	background-color:white;
+}
+h1 {
+	margin:0px 0px 15px 0px;
+	padding:0px;
+	font-weight:bold;
+	color:#ccc;
+}
+h2 {
+	font-style:bold;
+	line-height:180%;
+	margin:15px 0px 5px 0px;
+	padding:0px;
+	color:#039;
+}
+h3 {
+	font-style:bold;
+	line-height:180%;
+	margin:10px 0px 5px 0px;
+	padding:0px;
+}
+p {
+	line-height:180%;
+	margin:0px 0px 16px 0px;
+	padding:0px;
+}
+code,pre { font-size:130%; }
+td { vertical-align:top; }
+
+.content {background-color:white;}
+.content>p {margin:0px;}
+.content>p+p {text-indent:30px;}
+.content>dl dd {
+	margin-bottom:10px;
+}
+
+a {
+	color:#039;
+	font-weight:bold;
+	text-decoration:none;
+}
+a:link {color:#039;}
+a:hover {color:#69f;}
+
+dl.news dt {
+	margin-top: 5px;
+	font-weight:bold;
+}
+dl.news dd {
+	margin-left:15px;
+}
+
+#Menu ul {
+	list-style:none;
+	padding:0pt;
+	line-height:180%;
+}
+
+#Menu ul .inside {
+	margin-left:-85pt;
+	padding-right:5pt;
+	padding-bottom:3pt;
+}
+#Menu ul .outside {
+	border-right:2px solid #039;
+	border-bottom:2px solid #039;
+	margin-left:75pt;
+	margin-bottom:3pt;
+	width:10pt;
+}

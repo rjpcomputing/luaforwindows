@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Unordered Array Set</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																									<li><a href="../../index.html", title="">Home</a></li>
+																									<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																									<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																									<li><a href="../index.html", title="Class Library">Library</a>
+																										<div class="outside"><div class="inside"><ul>
+																											<li><a href="../overview.html#collection", title="Collections">collection</a>
+																												</li>
+																												<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																													</li>
+																													<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																														</li>
+																														<li><a href="../overview.html#object", title="Objects">object</a>
+																															</li>
+																															<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																</li>
+																																<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																	</li>
+																																</ul></div></div>
+																															</li>
+																															<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																															<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																														</ul></div></div>
+																													
+</div>
+
+<div class="content">
+<h1>Unordered Array Set</h1>
+<h2><code>loop.collection.UnorderedArraySet</code></h2><br>
+<p>Class of objects that store a sequence of values as a Lua array like class <a href="UnorderedArray.html">UnorderedArray</a>.
+However it additionally maps values to its current position in the array allowing efficient containment checks and location of a value in the array for removal.
+This class is useful when it is necessary to store a set elements (no duplicates) as an array (<i>e.g.</i> to comply with some library API) but such elements are removed and inserted frequently or it is necessary to perform quick containment checks.</p>
+
+<p>Behaves like <a href="UnorderedArray.html">UnorderedArray</a> class but provides operations to check containment, get the array position, or remove any element of the collection.</p>
+
+<h2>Behavior</h2>
+
+<h3>Methods</h3>
+
+<dl>
+
+	<dt><code><b>add</b>(value)</code></dt>
+	<dd>
+		Adds value <code>value</code> to the collection if it was not already inserted and returns <code>value</code>.
+		If <code>value</code> was already in the collection then the call has no effect and returns no value.
+	</dd>
+	
+	<dt><code><b>contains</b>(value)</code></dt>
+	<dd>
+		Return true if a <code>value</code> belongs to the collection or false otherwise.
+	</dd>
+	
+	<dt><code><b>indexof</b>(value)</code></dt>
+	<dd>
+		Returns the index where value is stored in the array part of the collection or returns <code>nil</code> if <code>value</code> does not belong to the collection.
+		This operation has the same effect of doing <code>self[index]</code>.
+	</dd>
+	
+	<dt><code><b>remove</b>(value)</code></dt>
+	<dd>
+		If <code>value</code> belongs to the collection then it is removed from it and is then returned by this function.
+		Otherwise this function has no effect and no values are returned.
+	</dd>
+	
+	<dt><code><b>removeat</b>(index)</code></dt>
+	<dd>
+		Removes the element at position <code>index</code> of the array and returns the removed element.
+		Otherwise this function has no effect and no values are returned.
+		If <code>index</code> is out of the array bounds then the call has no effect and no values are returned.
+	</dd>
+	
+	<dt><code><b>valueat</b>(index)</code></dt>
+	<dd>
+		Returns the value at <code>index</code> of the array part of the collection.
+		This operation has the same effect of doing <code>self[index]</code>.
+	</dd>
+	
+</dl>
+
+<h2>Examples</h2>
+
+<h3><a name="$ExampleName">$ExampleDescription</a></h3>
+
+<pre>
+-- example missing
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

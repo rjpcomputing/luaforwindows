@@ -1,0 +1,216 @@
+require 'metalua.walk.id'
+-{ extension 'log' }
+
+--------------------------------------------------------------------------------
+--
+-- H params:
+-- * H.alpha is the `Local{ } (or `Set{ }) statement which will
+--   receive the alpha-conversions required to restore the free
+--   variables of the transformed term. For instance,
+--   H+{print(1)} will be transformed into +{.1.X.print(1)},
+--   and alpha will contain +{local -{`Id '.1.X.print} = print }.
+--   alpha is reused and augmented by successive calls to H().
+--
+-- * H.side contains 'inside', 'outside', 'both' or nil (equivalent to
+--   'both'). It indicates the kind of hygienization that's to be
+--   performed.
+--
+-- * H.keep contain a set of free variable names which must not be
+--   renamed.
+--
+-- * H.kind is the kind of walker that must be used ('expr', 'stat',
+--   'block'...) and defaults to 'guess'.
+--
+-- * H:set (field, val) sets a field in H and returns H, so that calls
+--   can be chained, e.g.:
+--   > H:set(keep, {'print'}):set('side', outside)+{print(x)}
+--
+-- * H:reset(field) sets a field to nil, and returns the value of that
+--   field prior to nilification.
+--------------------------------------------------------------------------------
+
+H = { } --setmetatable(H, H)
+H.__index=H
+H.template = { alpha = { } }
+
+--------------------------------------------------------------------------------
+--
+--------------------------------------------------------------------------------
+function H:new(x)
+   local instance = table.deep_copy(self.template)
+   if x then instance <- x end
+   setmetatable(instance, self)
+   return instance
+end
+
+--------------------------------------------------------------------------------
+--
+--------------------------------------------------------------------------------
+function H:__call (ast)
+   assert (type(ast)=='table', "H expects an AST")
+
+   local local_renames -- only set if inside hygienization's required
+
+   -----------------------------------------------------------------------------
+   -- kind of hygienization(s) to perform: h_inseide and/or h_outside
+   -----------------------------------------------------------------------------
+   local h_inside, h_outside do
+      local side = self.side or 'both'
+      h_inside   = side=='inside'  or side=='both'
+      h_outside  = side=='outside' or side=='both'
+   end
+
+   -----------------------------------------------------------------------------
+   -- Initialize self.keep:
+   -- self.keep is a dictionary of free var names to be protected from capture
+   -----------------------------------------------------------------------------
+   do
+      local k = self.keep
+      -- If there's no self.keep, that's an empty dictionary
+      if not k then k = { }; self.keep = k
+      -- If it's a string, consider it as a single-element dictionary
+      elseif type(k)=='string' then k = { [k] = true }; self.keep=k
+      -- If there's a list-part in self.keep, transpose it:
+      else for i, v in ipairs(k) do k[v], k[i] = true, nil end end
+   end
+
+   -----------------------------------------------------------------------------
+   -- Config skeleton for the id walker
+   -----------------------------------------------------------------------------
+   local cfg = { expr = { }, stat = { }, id = { } }
+
+   -----------------------------------------------------------------------------
+   -- Outside hygienization: all free variables are renamed to fresh ones,
+   -- and self.alpha is updated to contain the assignments required to keep
+   -- the AST's semantics.
+   -----------------------------------------------------------------------------
+   if h_outside then
+      local alpha = self.alpha
+
+      -- free_vars is an old_name -> new_name dictionary computed from alpha:
+      -- self.alpha is not an efficient representation for searching.
+      if not alpha then alpha = { }; self.alpha = alpha end
+      -- FIXME: alpha should only be overridden when there actually are some
+      -- globals renamed.
+      if #alpha==0 then alpha <- `Local{ { }, { } } end
+      local new, old = unpack(alpha)
+      local free_vars  = { }
+
+      assert (#new==#old, "Invalid alpha list")
+      for i = 1, #new do
+         assert (old[i].tag=='Id' and #old[i]==1, "Invalid lhs in alpha list")
+         assert (new[i].tag=='Id' and #new[i]==1, "Invalid rhs in alpha list")
+         free_vars[old[i][1]] = new[i][1]
+      end
+
+      -- Rename free variables that are not supposed to be captured.
+      function cfg.id.free (id)
+         local old_name = id[1]
+         if self.keep[old_name] then return end
+         local new_name = free_vars[old_name]
+         if not new_name then
+            new_name = mlp.gensym('X.'..old_name)[1]
+            free_vars[old_name] = new_name
+            table.insert(alpha[1], `Id{new_name})
+            table.insert(alpha[2], `Id{old_name})
+         end
+         id[1] = new_name
+      end
+   end
+
+   -----------------------------------------------------------------------------
+   -- Inside hygienization: rename all local variables and their ocurrences.
+   -----------------------------------------------------------------------------
+   if h_inside then
+
+      ----------------------------------------------------------------
+      -- Renamings can't performed on-the-spot, as it would
+      -- transiently break the link between binders and bound vars,
+      -- thus preventing the algo to work. They're therefore stored
+      -- in local_renames, and performed after the whole tree has been
+      -- walked.
+      ----------------------------------------------------------------
+
+      local_renames = { }    -- `Id{ old_name } -> new_name
+      local bound_vars = { } -- binding statement -> old_name -> new_name
+
+      ----------------------------------------------------------------
+      -- Give a new name to newly created local vars, store it in
+      -- bound_vars
+      ----------------------------------------------------------------
+      function cfg.binder (id, binder)
+         if id.h_boundary then return end
+         local old_name = id[1]
+         local binder_table = bound_vars[binder]
+         if not binder_table then
+            binder_table = { }
+            bound_vars[binder] = binder_table
+         end
+         local new_name = mlp.gensym('L.'..old_name)[1]
+         binder_table[old_name] = new_name
+         local_renames[id] = new_name
+      end
+
+      ----------------------------------------------------------------
+      -- List a bound var for renaming.  The new name has already been
+      -- chosen and put in bound_vars by cfg.binder().
+      ----------------------------------------------------------------
+      function cfg.id.bound (id, binder)
+         if id.h_boundary then return end
+         local old_name = id[1]
+         local new_name = bound_vars[binder][old_name]
+         --.log(bound_vars[binder])
+         assert(new_name, "no alpha conversion for a bound var?!")
+         local_renames[id] = new_name
+      end
+   end
+
+   -----------------------------------------------------------------------------
+   -- Don't traverse subtrees marked by '!'
+   -----------------------------------------------------------------------------
+   local cut_boundaries = |x| x.h_boundary and 'break' or nil
+   cfg.stat.down, cfg.expr.down = cut_boundaries, cut_boundaries
+
+   -----------------------------------------------------------------------------
+   -- The walker's config is ready, let's go.
+   -- After that, ids are renamed in ast, free_vars and bound_vars are set.
+   -----------------------------------------------------------------------------
+   walk_id [self.kind or 'guess'] (cfg, ast)
+
+   if h_inside then -- Apply local name changes
+      for id, new_name in pairs(local_renames) do id[1] = new_name end
+   end
+
+   return ast
+end
+
+--------------------------------------------------------------------------------
+-- Return H to allow call chainings
+--------------------------------------------------------------------------------
+function H:set(field, val)
+   local t = type(field)
+   if t=='string' then self[field]=val
+   elseif t=='table' then self <- field
+   else error("Can't set H, field arg can't be of type "..t) end
+   return self
+end
+
+--------------------------------------------------------------------------------
+-- Return the value before reset
+--------------------------------------------------------------------------------
+function H:reset(field)
+   if type(field) ~= 'string' then error "Can only reset H string fields" end
+   local r = H[field]
+   H[field] = nil
+   return r
+end
+
+-- local function commit_locals_to_chunk(x)
+--    local alpha = H:reset 'alpha'
+--    --$log ('commit locals', x, alpha, 'nohash')
+--    if not alpha or not alpha[1][1] then return end
+--    if not x then return alpha end
+--    table.insert(x, 1, alpha)
+-- end
+
+-- mlp.chunk.transformers:add (commit_locals_to_chunk)

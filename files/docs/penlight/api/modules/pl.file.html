@@ -1,0 +1,315 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Penlight Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Penlight</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/pl.html">pl</a></li>
+  <li><a href="../modules/pl.Date.html">pl.Date</a></li>
+  <li><a href="../modules/pl.List.html">pl.List</a></li>
+  <li><a href="../modules/pl.Map.html">pl.Map</a></li>
+  <li><a href="../modules/pl.MultiMap.html">pl.MultiMap</a></li>
+  <li><a href="../modules/pl.OrderedMap.html">pl.OrderedMap</a></li>
+  <li><a href="../modules/pl.Set.html">pl.Set</a></li>
+  <li><a href="../modules/pl.app.html">pl.app</a></li>
+  <li><a href="../modules/pl.array2d.html">pl.array2d</a></li>
+  <li><a href="../modules/pl.class.html">pl.class</a></li>
+  <li><a href="../modules/pl.comprehension.html">pl.comprehension</a></li>
+  <li><a href="../modules/pl.config.html">pl.config</a></li>
+  <li><a href="../modules/pl.data.html">pl.data</a></li>
+  <li><a href="../modules/pl.dir.html">pl.dir</a></li>
+  <li><strong>pl.file</strong></li>
+  <li><a href="../modules/pl.func.html">pl.func</a></li>
+  <li><a href="../modules/pl.input.html">pl.input</a></li>
+  <li><a href="../modules/pl.lapp.html">pl.lapp</a></li>
+  <li><a href="../modules/pl.lexer.html">pl.lexer</a></li>
+  <li><a href="../modules/pl.luabalanced.html">pl.luabalanced</a></li>
+  <li><a href="../modules/pl.operator.html">pl.operator</a></li>
+  <li><a href="../modules/pl.path.html">pl.path</a></li>
+  <li><a href="../modules/pl.permute.html">pl.permute</a></li>
+  <li><a href="../modules/pl.pretty.html">pl.pretty</a></li>
+  <li><a href="../modules/pl.seq.html">pl.seq</a></li>
+  <li><a href="../modules/pl.sip.html">pl.sip</a></li>
+  <li><a href="../modules/pl.strict.html">pl.strict</a></li>
+  <li><a href="../modules/pl.stringio.html">pl.stringio</a></li>
+  <li><a href="../modules/pl.stringx.html">pl.stringx</a></li>
+  <li><a href="../modules/pl.tablex.html">pl.tablex</a></li>
+  <li><a href="../modules/pl.template.html">pl.template</a></li>
+  <li><a href="../modules/pl.test.html">pl.test</a></li>
+  <li><a href="../modules/pl.text.html">pl.text</a></li>
+  <li><a href="../modules/pl.utils.html">pl.utils</a></li>
+  <li><a href="../modules/pl.xml.html">pl.xml</a></li>
+</ul>
+<h2>Topics</h2>
+<ul>
+  <li><a href="../topics/01-introduction.md.html">01-introduction.md</a></li>
+  <li><a href="../topics/02-arrays.md.html">02-arrays.md</a></li>
+  <li><a href="../topics/03-strings.md.html">03-strings.md</a></li>
+  <li><a href="../topics/04-paths.md.html">04-paths.md</a></li>
+  <li><a href="../topics/05-dates.md.html">05-dates.md</a></li>
+  <li><a href="../topics/06-data.md.html">06-data.md</a></li>
+  <li><a href="../topics/07-functional.md.html">07-functional.md</a></li>
+  <li><a href="../topics/08-additional.md.html">08-additional.md</a></li>
+  <li><a href="../topics/09-discussion.md.html">09-discussion.md</a></li>
+</ul>
+<h2>Examples</h2>
+<ul>
+  <li><a href="../examples/seesubst.lua.html">seesubst.lua</a></li>
+  <li><a href="../examples/sipscan.lua.html">sipscan.lua</a></li>
+  <li><a href="../examples/symbols.lua.html">symbols.lua</a></li>
+  <li><a href="../examples/test-cmp.lua.html">test-cmp.lua</a></li>
+  <li><a href="../examples/test-data.lua.html">test-data.lua</a></li>
+  <li><a href="../examples/test-listcallbacks.lua.html">test-listcallbacks.lua</a></li>
+  <li><a href="../examples/test-pretty.lua.html">test-pretty.lua</a></li>
+  <li><a href="../examples/test-symbols.lua.html">test-symbols.lua</a></li>
+  <li><a href="../examples/testapp.lua.html">testapp.lua</a></li>
+  <li><a href="../examples/testclone.lua.html">testclone.lua</a></li>
+  <li><a href="../examples/testconfig.lua.html">testconfig.lua</a></li>
+  <li><a href="../examples/testglobal.lua.html">testglobal.lua</a></li>
+  <li><a href="../examples/testinputfields.lua.html">testinputfields.lua</a></li>
+  <li><a href="../examples/testinputfields2.lua.html">testinputfields2.lua</a></li>
+  <li><a href="../examples/testxml.lua.html">testxml.lua</a></li>
+  <li><a href="../examples/which.lua.html">which.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>pl.file</code></h1>
+
+<p>File manipulation functions: reading, writing, moving and copying.</p>
+<p> Dependencies: <a href="../modules/pl.utils.html#">pl.utils</a> , <a href="../modules/pl.dir.html#">pl.dir</a> , <a href="../modules/pl.path.html#">pl.path</a> </p>
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#read">read&nbsp;(filename)</a></td>
+	<td class="summary">return the contents of a file as a string</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#write">write&nbsp;(filename, str)</a></td>
+	<td class="summary">write a string to a file</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#copy">copy&nbsp;(src, dest, flag)</a></td>
+	<td class="summary">copy a file.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#move">move&nbsp;(src, dest)</a></td>
+	<td class="summary">move a file.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#access_time">access_time&nbsp;(path)</a></td>
+	<td class="summary">Return the time of last access as the number of seconds since the epoch.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#creation_time">creation_time&nbsp;(path)</a></td>
+	<td class="summary">Return when the file was created.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#modified_time">modified_time&nbsp;(path)</a></td>
+	<td class="summary">Return the time of last modification</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#delete">delete&nbsp;(path)</a></td>
+	<td class="summary">Delete a file</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "read"></a>
+    <strong>read&nbsp;(filename)</strong>
+    </dt>
+    <dd>
+    return the contents of a file as a string 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>filename</em></code>:  The file path</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        file contents
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "write"></a>
+    <strong>write&nbsp;(filename, str)</strong>
+    </dt>
+    <dd>
+    write a string to a file 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>filename</em></code>:  The file path</li>
+       <li><code><em>str</em></code>:  The string</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "copy"></a>
+    <strong>copy&nbsp;(src, dest, flag)</strong>
+    </dt>
+    <dd>
+    copy a file. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>src</em></code>:  source file</li>
+       <li><code><em>dest</em></code>:  destination file</li>
+       <li><code><em>flag</em></code>:  true if you want to force the copy (default)</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        true if operation succeeded
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "move"></a>
+    <strong>move&nbsp;(src, dest)</strong>
+    </dt>
+    <dd>
+    move a file. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>src</em></code>:  source file</li>
+       <li><code><em>dest</em></code>:  destination file</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        true if operation succeeded, else false and the reason for the error.
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "access_time"></a>
+    <strong>access_time&nbsp;(path)</strong>
+    </dt>
+    <dd>
+    Return the time of last access as the number of seconds since the epoch. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>path</em></code>:  A file path</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "creation_time"></a>
+    <strong>creation_time&nbsp;(path)</strong>
+    </dt>
+    <dd>
+    Return when the file was created. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>path</em></code>:  A file path</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "modified_time"></a>
+    <strong>modified_time&nbsp;(path)</strong>
+    </dt>
+    <dd>
+    Return the time of last modification 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>path</em></code>:  A file path</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "delete"></a>
+    <strong>delete&nbsp;(path)</strong>
+    </dt>
+    <dd>
+    Delete a file 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>path</em></code>:  A file path</li>
+    </ul>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

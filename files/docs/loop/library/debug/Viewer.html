@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Value Viewer</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																																																			<li><a href="../../index.html", title="">Home</a></li>
+																																																																			<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																																																			<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																																																			<li><a href="../index.html", title="Class Library">Library</a>
+																																																																				<div class="outside"><div class="inside"><ul>
+																																																																					<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																																																						</li>
+																																																																						<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																																																							</li>
+																																																																							<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																																																								</li>
+																																																																								<li><a href="../overview.html#object", title="Objects">object</a>
+																																																																									</li>
+																																																																									<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																																																										</li>
+																																																																										<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																																																											</li>
+																																																																										</ul></div></div>
+																																																																									</li>
+																																																																									<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																																																									<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																																																								</ul></div></div>
+																																																																							
+</div>
+
+<div class="content">
+<h1>Value Viewer</h1>
+<h2><code>loop.debug.Viewer</code></h2><br>
+<p>Class of objects that generate human-readable textual representation of Lua values.
+This class is typically used to print out value of variables, data structures or objects in a Lua application using a syntax similar to the Lua language.
+It is useful for implementation of command line debug mechanisms.
+This class can also be used as a simple serialization mechanism for a restricted set of Lua values.</p>
+
+<p>Basically, each object provides an operation to print values and holds some information that defines how values should be displayed like the output used.</p>
+
+<h2>Behavior</h2>
+
+<h3>Fields</h3>
+
+<dl>
+	
+	<dt><code><b>indentation</b></code></dt>
+	<dd>
+		String used to add an indentation level when writing nested tables.
+To write tables without indentation or in a single line use the empty string. The default value of this field is a string with two blank spaces <i>i.e.</i> <code>'  '</code>.
+	</dd>
+	
+	<dt><code><b>labels</b></code></dt>
+	<dd>
+		Table mapping values to their labels that are the strings that represent each value.
+		The default value of this field is a table with all packages loaded at the moment this class is first required properly labeled.
+	</dd>
+	
+	<dt><code><b>linebreak</b></code></dt>
+	<dd>
+		String used to add line breaks when writing tables.
+		To write tables in a single line use a string with a space.
+		The default value of this field is the string <code>'\n'</code>. 
+	</dd>
+	
+	<dt><code><b>maxdepth</b></code></dt>
+	<dd>
+		Maximum number of levels of nested tables that should be visualized.
+		When this value is negative all levels of nested tables are visualized.
+		The default value of this field is -1.
+	</dd>
+	
+	<dt><code><b>output</b></code></dt>
+	<dd>
+		Object used to write visualization of values.
+		The object must provide the operation <code>write</code> that receives strings to be written.
+		The default value of this field is the standard output file.
+	</dd>
+	
+	<dt><code><b>prefix</b></code></dt>
+	<dd>
+		String written at the start of each new line of the visualization.
+		The default value of this field is an empty string.
+	</dd>
+	
+</dl>
+
+<h3>Methods</h3>
+
+<dl>
+	
+	<dt><code><b>label</b>(value)</code></dt>
+	<dd>
+		Method used to generate a label for a given value not already labeled in field <code>labels</code>.
+		By default this method generates labels using the <code>tostring</code> method of Lua base library.
+		If the value defines the <code>__tostring</code> meta-method then the original string representation is shown between parenthesis.
+		This method may be redefined for each object in order to define other labeling policy.
+	</dd>
+	
+	<dt><code><b>package</b>(name, pack)</code></dt>
+	<dd>
+		Method that adds labels for the package named <code>name</code> and defined by table <code>pack</code> as well as all its functions or <i>userdata</i> fields.
+	</dd>
+	
+	<dt><code><b>print</b>(...)</code></dt>
+	<dd>
+		Method that writes the textual representation of all arguments to field <code>output</code>.
+		However, string values are written directly without any transformation.
+	</dd>
+	
+	<dt><code><b>tostring</b>(...)</code></dt>
+	<dd>
+		Method that returns a string with the textual representation of all the values passed as argument.
+		The representations of each argument are separated by commas in the final representation.
+	</dd>
+	
+	<dt><code><b>write</b>(...)</code></dt>
+	<dd>
+		Method that writes the textual representation of all arguments to field <code>output</code>.
+		The representations of each argument are separated by commas in the final representation.
+	</dd>
+	
+	<dt><code><b>writeto</b>(output, ...)</code></dt>
+	<dd>
+		Method that writes to object <code>output</code> the textual representation of all other arguments.
+		The object <code>output</code> must provide the operation <code>write</code> that receives strings to be written.
+		The representations of each argument are separated by commas in the final representation.
+	</dd>
+	
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	<li>This class can be used as an instance of itself, therefore all methods can be executed over the class itself.</li>
+	<li>May be used to serialize into Lua code any value of type <code>nil</code>, <code>boolean</code>, <code>number</code>, <code>string</code> and <code>table</code>.
+	However, serialized tables may not contain circular reference, other values that do not match this description, or string keys that match the name of a Lua keyword.
+	To serialize values of other types, you should label them with a chunk of Lua code that is able to restore the value.</li>
+</ul>
+
+<h2>Examples</h2>
+
+<h3><a name="GlobalState">Show part of the global state of Lua</a></h3>
+
+<pre>
+local Viewer = require "loop.debug.Viewer"
+
+viewer = Viewer{
+  maxdepth = 3,
+  indentation = "|  "
+}
+
+viewer:write(_G)
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

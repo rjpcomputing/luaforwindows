@@ -1,0 +1,894 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+
+
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>wxLua Binding HowTo</title> <meta content="John Labenski" name="author"></head><body><h2><u>wxLuaBinding 2.8.10 - Writing and Generating Binding Files</u></h2>
+
+<div style="text-align: justify;">The binding
+generator
+for wxLua provides information for Lua code to
+interface to a C/C++ API. The C/C++ objects are created in Lua as
+userdata and
+manipulated using the same functional semantics as you would in C/C++.
+The <span style="font-weight: bold;">wxlua.html</span>
+wxLua documentation describes in detail how the object
+will be named and where it will be placed in Lua.<br>
+<br>Binding files are provided for the <b>wxWidgets</b>
+cross
+platform GUI library and the wxStyledTextCtrl contrib library
+of the wxWidgets library. You may also write and add your own
+bindings
+to use wxLua as a scripting language in your own C++ project. There is
+an example of this in the <i>apps/wxluacan/src</i>
+directory.<br>
+</div><br>
+<div style="text-align: justify;">The
+interface files are
+skeletons of the C/C++ header files that the
+program
+<i>bindings/genwxbind.lua</i>
+parses
+and turns into C functions that are imported into Lua by an
+automatically generated <i>wxLuaBinding</i> derived
+class. The whole process of generation is
+automatic and no editing of the output files should be required. If
+there is any problem you should fix the interface files and
+regenerate instead of trying to fix the generated files. Some examples
+of the interface files are in the
+<i>bindings/wxwidgets/*.i</i>
+directory. Before writing your own, take some
+time to examine them to see the differences between them and the
+original C++ code.
+If the automatic bindings do not generate suitable code for a specific
+function, you can <i>%override</i> individual function
+bindings
+with your own
+code to implement it in any
+way you want.<br>
+<h2 style="text-decoration: underline;">Contents</h2>
+<ol> <li><a href="#Binding_File_Descriptions">Binding
+File Descriptions</a></li> <li><a href="#Generated_Files">Generated Files</a></li>
+<li><a href="#Binding_C_Virtual_Functions">Binding
+C++ Virtual
+Functions</a></li> <li><a href="#Interface_File_Constructs_">Interface
+File Constructs</a></li> <ol> <li><a href="#Special_function_parameters">Special
+Function
+Parameters</a></li> <li><a href="#C_Class_Member_Function_Directives">C++
+Class Member
+Function Directives</a></li> <li><a href="#Comments_">Comments</a></li> <li><a href="#Interface_Tags">Interface Tags</a></li> </ol>
+</ol></div>
+<h2><a name="Binding_File_Descriptions"></a><u>Binding
+File Descriptions</u></h2>
+<h3>bindings/genwxbind.lua</h3>
+<ul> <li style="text-align: justify;">The binding
+file
+generator that converts the *.i interface
+files
+into a set of C++ files to be compiled into a library and linked
+to or compiled along with your program.</li> <li style="text-align: justify;"><i>bindings/wxwidgets/wxbase_rules.lua</i>
+(for example) is a rules file that determines
+where and what interface files <i>genwxbind.lua</i>
+should read, how it should name the output files and generated
+classes, what extra header code to add, among other things.
+Documentation for creating a rule file is provided inside the ones
+provided by wxLua and you should
+copy an existing one to use as a starting point for your own.</li>
+<li style="text-align: justify;">The rules files are
+actual Lua programs that <i>genwxbind.lua</i>
+runs before processing the interface files, but after it has created
+various structures used for parsing allowing for
+customization by either adding to the structures or changing them.</li>
+<li style="text-align: justify;">Command line usage of
+genwxbind.lua</li> <ul> <li style="text-align: justify;">lua
+-e"rulesFilename=\"wxwidgets/wx_rules.lua\"" genwxbind.lua</li> <li style="text-align: justify;">Informational
+messages, warnings, and errors are printed to the console.</li> <li style="text-align: justify;">The output files are
+only overwritten if they differ.</li> </ul>
+</ul><h3>*.i interface files</h3>
+<ul> <li style="text-align: justify;">Contain a
+skeleton
+of the C/C++ functions, classes,
+global variables, #defines that should be made accessible to Lua.</li>
+<li style="text-align: justify;">See <a href="#Interface_File_Constructs_">Interface File
+Constructs</a> below.</li> <li style="text-align: justify;">The structure
+of wxLua's interface files follows the wxWidgets documentation,
+typically alphabetical.</li> <ul> <li style="text-align: justify;">Class constructors
+first, class member functions, %operators, %members.</li> </ul>
+</ul><h3>*_datatypes.lua files</h3><ul><li>These are generated files
+that contain Lua tables of typedefs, datatypes, and preprocessor
+conditions defined in a binding that may be used by another binding by
+adding them to the <span style="font-style: italic;">datatype_cache_input_fileTable</span> variable of the rules file.</li><li>The
+checking of known datatypes enforces that the generated bindings will
+work correctly. If a datatype is missing it will be unusable in Lua. </li><li>The items are added to the <span style="font-style: italic;">typedefTable, dataTypeTable,</span> and <span style="font-style: italic;">preprocConditionTable</span> variables of the <span style="font-style: italic;">genwxbind.lua</span> program.</li><li>All of the wxWidgets types are added to the <span style="font-weight: bold;">bindings/wxwidgets/wx_datatypes.lua</span> file which may be used by external bindings that use datatypes declared in the wxLua wxWidgets bindings. Note: Each <span style="font-style: italic;">bindings/wxwidgets/wxXXX_rules.lua</span>
+file will generate a wxXXX_datatypes.lua datatype file, but these are
+all gathered together into the wx_datatype.lua file.&nbsp;</li></ul><h3>wxluasetup.h </h3>
+<ul> <li>Contains #defines of all of the wxLUA_USE_wxXXX
+for C++
+compilation of the wxWidgets bindings.</li> <li>This file
+is special to wxLua's wxWidgets binding.</li> <li style="text-align: justify;">If <i>wxLUA_USE_XXX</i>
+is 1 then it's compiled in and will be accessible to wxLua
+scripts, else skipped
+when compiling the generated cpp files to generate a smaller library.</li>
+<li style="text-align: justify;">It provides an
+additional way to cut down on the size of
+wxLua by
+removing large parts of the bindings that will not be used. These
+defines mixed with wxWidget's own <i>wxUSE_XXX</i>
+#defines control what parts
+of wxWidgets is available to wxLua programs.</li> <li style="text-align: justify;">For example, if you
+exclude <i>wxColour</i>
+by setting wxLUA_USE_wxColourPenBrush=0 then
+all functions that take or return a wxColour will be excluded, the best
+thing to do is to test
+things out and see what works for you.<br> </li>
+</ul><h3>overrides.hpp</h3>
+<ul> <li style="text-align: justify;">Contains
+functions that
+cannot be automatically
+wrapped.</li> <li style="text-align: justify;">You
+can name the file
+anything you want and have multiple files since it is specified as a
+table in the
+rules file.</li> <ul> <li style="text-align: justify;"><i>override_fileTable
+= { "override.hpp" }</i></li> </ul> <li style="text-align: justify;">Functions that take
+pointers or references and return
+values through the variables passed in must be reworked to return
+multiple values.</li> <li>It is important to document the
+new signature of the
+overridden function, in wxLua we put comments like these into the
+interface files. </li> <ul> <li>// %override
+single_output_type ClassName::FuncName(C++
+style input parameters)</li> <li>// %override [type1
+output_name1, type2 output_name2]
+ClassName::FuncName(reworked C++ style input parameters that the Lua
+function actually takes)</li> </ul> <li>In order
+for the %overload functionality to work and to get
+the proper signatures; the function parameters in the .i file should
+match the actual parameters that the %override code implements. The
+interface files for wxLua always have these three lines, where the
+first line is for documentation purposes only, the second line is the
+original C++ function declaration for reference
+purposes to compare what wxWidgets
+expects to get, and the third line is the correct calling semantics for
+the %overridden function.</li> <ul> <li>//
+%override void wxFrame::SetStatusWidths(Lua table with
+number indexes and values)</li> <li>// C++ Func: virtual
+void
+SetStatusWidths(int n, int *widths)</li> <li>virtual void
+SetStatusWidths(LuaTable intTable)</li> </ul>
+</ul><h2><a name="Generated_Files"></a><u>Generated
+Files</u></h2>
+The binding generator genwxbind.lua generates a number of files and
+you can specify both their names and directories. <br>
+<ul> <li>A single header file is generated that typically
+does not
+have to be included by any files other than those generated by the
+bindings.</li> <ul> <li>Contains all the #includes
+and exports the tags, structs,
+and functions for use in a DLL.</li> </ul> <li>The
+only function that absolutely must be called is <b>wxLuaBinding_[hook_cpp_binding_classname]_init()</b>.
+</li> <ul> <li>It
+is probably
+easiest to declare the function using <i>extern bool
+wxLuaBinding_[hook_cpp_binding_classname]_init();</i> in your
+file rather than including the header.</li> </ul>
+<ul> <li>This
+function contains a static instance of the generated
+wxLuaBinding derived class that is put into a static wxList of
+bindings. There should only be one of the binding classes created as
+they all share the same structures anyway.</li> <li><i>static
+wxLuaBindingList*
+wxLuaBinding::GetBindingList()</i></li> <li>Note: A
+variety of different ways to automatically
+initialize the bindings were tried that would invariably fail with
+certain compilers, but work with others. Having to call the init
+function before creating a wxLuaState seems to work everywhere as it
+guarantees that when the bindings are compiled as a library, at least
+something in it is used and the linker won't throw the whole lib out.</li>
+</ul> <li>Each binding file, *.i will have a *.cpp file
+generated for
+it that contains:</li> <ul> <li>int
+s_wxluatag_CLASS_NAME for each class that is mapped
+through the wxLuaBindClass struct and when the binding is
+initialized will
+contain the tag index that Lua assigns to the class for the userdata.</li>
+<li>The C functions, <i>int
+ClassMethodFunction(lua_State* L)</i>, that are called for the
+class methods.</li> <li>A wxLuaBindMethod struct for each
+class to map the method
+function names to the C functions.</li> </ul> <li>A
+single C++ file to pull all the remaining parts together
+that contains:</li> <ul> <li>A wxLuaBindEvent
+struct
+that contains all the wxEventType
+values and their associated wxEvent classes to push into the Lua
+binding table.</li> <li>A wxLuaBindDefine struct that
+contains
+all the numerical
+values to push into the Lua binding table.</li> <li>A
+wxLuaBindString struct that contains all the strings to
+push into the Lua binding table.</li> <li>A
+wxLuaBindObject
+struct that contains all the objects to
+push as userdata into the Lua binding table.</li> <li>A
+wxLuaBindMethod struct that contains all the global C
+functions to push into the Lua binding table.</li> <li>A
+wxLuaBindClass struct that contains the class names,
+all
+the wxLuaBindMethod structs from each *.i generated cpp files,
+and their
+tags.</li> <li>A wxLuaBinding derived class that actually
+pushes the
+bindings into Lua.</li> </ul>
+</ul><h2><a name="Binding_C_Virtual_Functions"></a><u>Binding
+C++ Virtual Functions</u></h2>
+The only way to handle C++ virtual functions in wxLua is to subclass
+the C++ class you want to be able to write Lua functions for and bind
+the subclassed version. The hand coded wxLuaPrintout class is a good
+example of this,
+let's examine how the code in C++ and Lua works to allow you to
+override a C++ virtual function.<br>
+The wxWidgets class wxPrintout has a number of virtual functions, but
+lets focus on "virtual bool wxPrintout::OnBeginDocument(int startPage,
+int endPage)" as an example, since if you override
+this function you must also call the base class function for printing
+to operate correctly. The source code for the class
+wxLuaPrintout located in <i>modules/wxbind/include/wxcore_wxlcore.h</i>
+and <i>modules/wxbind/src/wxcore_wxlcore.cpp</i> and you
+should
+review it before reading further. You will also need to look
+at <i>samples/printing.wx.lua</i> to see the Lua
+code that overrides the function and <span style="font-style: italic;">modules/wxlua/src/wxlbind.cpp</span>
+for the metatable functions Lua uses to handle a call to a function. <br>
+Below is a list of the function calls
+for wxPrintout::OnBeginDocument and notes about how it all
+works.<br>
+<ol> <li>Create a userdata wxLuaPrintout in Lua, replace
+the
+function OnBeginDocument with our own one in Lua, and begin
+the printing process, perhaps doing a print preview? The code
+for this is in the <i>printing.wx.lua</i> sample.</li>
+<li>The wxWidgets printing framework calls virtual
+wxPrintout::OnBeginDocument(...), but we've subclassed wxPrintout and
+so the the function wxLuaPrintout::OnBeginDocument(...) gets called.</li>
+<ul> <li>The
+class wxLuaPrintout keeps a refed copy of the wxLuaState from when it
+was created since
+otherwise the function wxLuaPrintout::OnBeginDocument() wouldn't know
+what
+lua_State is active since wxWidgets doesn't know anything about
+wxLua. </li> <li>In the past wxLua would iterate through
+a list of
+wxLuaStates to try to find the C++ userdata object, the wxLuaPrintout
+instance, in order to find the correct lua_State. This can impose a
+large performance penalty if there are multiple states and/or a large
+number of userdata objects.</li> </ul> <li>In
+wxLuaPrintout::OnBeginDocument() we first
+check to see if wxLuaState::GetCallBaseClassFunction() is true, if not
+then check to see if wxLuaState::HasDerivedMethod(this,
+"OnBeginDocument") is true, where <i>this</i> is the
+particular instance of the wxLuaPrintout class. </li> <ul>
+<li>If we're not supposed to call the base class and there is
+a Lua function that replaces "OnBeginDocument" we'll call it. First we
+push the wxLuaPrintout and the parameters to the function that's
+already been pushed on the stack by a successful call to
+wxLuaState::HasDerivedMethod() when it calls wxLuaObject::GetObject().
+We
+then get the result, if any, pop the result, and reset the stack to the
+starting point.</li> <li>On the other hand; if we're
+supposed to call the base
+class function or there isn't a derived Lua method we'll just call
+wxPrintout::OnBeginDocument(...) explicitly.</li> </ul> <li>Here's
+the tricky part for Lua derived functions that then
+call the base class function. In this case we're not calling the "base"
+class function of wxLuaPrintout, but rather wxPrintout since
+wxLuaPrintout is a hollow shell that merely forwards calls to Lua or to
+the base class.</li> <ul> <li>When in Lua we
+call <i>_OnBeginDocument(...)</i>
+on the wxLuaPrintout userdata object, the function
+wxluabind__index_wxLuaBindClass(...) in <i>modules/wxlua/src/wxbind.cpp</i>
+is called. This is the function that handles all function calls
+for wxLua userdata objects that does a lookup to see if the
+function exists and pushes it onto the stack for Lua to call <b>after</b>
+this function has returned. </li> <li>This is why we set
+a variable using
+wxLuaState::Set/GetCallBaseClassFunction() to remember if the Lua
+function was called with a preceding "_". </li> <li>The
+reason why we need to reset the
+GetCallBaseClassFunction() from within our derived C++ virtual class
+function is that wxWidgets may immediately call another C++ virtual
+function, but the wxLuaState is still flagged to call the base class
+and so calls to functions like wxLuaPrintout::OnPrintPage(...) fail
+since they are directed to call the base class function and not our
+derived Lua functions.</li> </ul>
+</ol>To summarize, here's the function calls and where in each
+function wxLuaPrintout::OnBeginDocument is when you override
+the function in Lua.<br>
+<ol> <li>wxWidgets calls
+wxLuaPrintout::OnBeginDocument(...) in C++</li> <li>wxLuaPrintout::OnBeginDocument(...)
+runs the code to call
+the derived Lua function OnBeginDocument by calling wxLuaState::LuaCall
+on it. (GetCallBaseClassFunction() and HasDerivedMethod() are both true)</li>
+<li>wxluabind__index_wxLuaBindClass(...) is called when in Lua the
+function "_OnBeginPrinting" is called for the wxLuaPrintout
+userdata, the flag wxLuaState::GetCallBaseClassFunction is set
+to true, and the C function wxLua_wxPrintout_OnBeginDocument (in <i>modules/wxbind/src/wxcore_print.cpp</i>)
+is run by Lua which calls back to wxLuaPrintout::OnBeginDocument(...).</li>
+<li>We enter wxLuaPrintout::OnBeginDocument(...) a second time,
+the first time through is still stalled at wxLuaState::LuaCall()
+running Lua's OnBeginDocument() function, but this time we just
+call wxPrintout::OnBeginDocument() and return.</li> <li>The
+wxLuaState::LuaCall() function finishes and the first
+call to the function wxLuaPrintout::OnBeginDocument(...) returns.</li>
+<li>Success! </li>
+</ol><h2><a name="Interface_File_Constructs_"></a><u>Interface
+File Constructs</u>
+</h2><h3><a name="Special_function_parameters"></a>Special
+Function Parameters</h3>
+<ul> <li>These parameters are interpreted by the generator
+to
+implement code to handle a few special cases so we don't have to write
+overrides for them.</li> <li><b>const
+wxArrayString&amp;
+choices or wxArrayString choices</b></li> <ul> <li>The
+binding generator will read from Lua either a wxArrayString or a a
+numerically indexed table of strings for that parameter and convert
+them into a
+wxArrayString for the C++
+function.</li> <li>If either <b>wxArrayString&amp;
+choices</b> or <b>wxArrayString* choices</b>
+is used, the generator will not do the table conversion, but look for a
+wxArrayString userdata since it's assumed that the C++ function will
+modify the wxArrayString that's passed to it.</li> </ul> <li><b>const
+wxArrayInt&amp;
+choices or wxArrayInt choices</b></li> <ul> <li>The
+binding generator will read from Lua a
+wxArrayInt or a numerically indexed table of integers for that
+parameter and convert
+them into a
+wxArrayInt for the C++
+function.</li> <li>If either <b>wxArrayInt&amp;
+choices</b>
+or <b>wxArrayInt* choices</b> is used,
+the generator will not do the table conversion, but look for a
+wxArrayInt userdata since it's assumed that the C++ function will
+modify the wxArrayInt that's passed to it.</li> </ul> <li style="font-weight: bold;">IntArray_FromLuaTable</li> <ul>
+<li>The
+binding generator will read from Lua a numerically indexed table of
+integers and create two parameters (int count, int* array) to
+pass
+to a function.</li> <li>The int* array will be
+automatically deleted and the
+function should not take ownership of it and delete it itself.</li>
+</ul> <li><b>LuaTable
+tableName</b></li> <ul> <li>The
+"datatype" LuaTable does not actually exist, but is
+used exclusively for %override functions in the .i interface files.
+It directs the binding generator to expect a Lua table for that
+parameter. </li> <li>Note : You absolutely must <span style="font-style: italic;">%overrride</span> this
+function
+as the generated code will not compile.</li> <li>This is
+useful for functions like
+wxFrame::SetStatusWidths as shown above.</li> </ul> <li style="font-weight: bold;">LuaFunction functionName</li>
+<ul> <li>The
+"datatype" LuaFunction does not actually exist, but is
+used exclusively for %override functions in the .i interface files.
+It directs the binding generator to expect a Lua function for that
+parameter. </li> <li>Note : You absolutely must <span style="font-style: italic;">%overrride</span> this
+function
+as the generated code will not compile.</li> </ul> <li style="font-weight: bold;">voidptr_long</li> <ul>
+<li>This
+is for functions that take a (void *) pointer to something and
+DO
+NOT EVER TRY TO CAST IT, ACCESS IT, OR DELETE IT. This tag will allow
+the Lua code to put a number (perhaps a table index) as the
+void*
+pointer. </li> <li>See Get/SetClientData() functions in
+the wxWidgets
+bindings.</li> </ul>
+</ul><h3><a name="C_Class_Member_Function_Directives"></a>C++
+Class Member Function Directives</h3>
+<ul> <li><b>const</b></li> <ul> <li>This
+function attribute is ignored since wxLua doesn't
+create const objects, it's safe to leave it in the interface
+files as a reminder.</li> </ul> <li><b>static</b> </li>
+<ul> <li>For class member functions inside the <i>%class</i>
+tag, do not use for C style global functions. </li> <li>The
+generated code will call
+ClassName::FunctionName() and not use an object. </li> <li>Example
+: In the %class
+wxFileName the function <i>"static
+wxFileName DirExists(const wxString&amp;
+dir)"</i></li> <ul> <li>wxLua code : <span style="font-style: italic;">"dir
+=
+wx.wxFileName.DirExists("/some/dir")"</span> or <i>"f =
+wx.wxFileName(); dir = f.DirExists("/some/dir")"</i></li> </ul>
+<li>The bindings generate code to make the function
+accessible in the class table (first example above) as well as when
+called using a object.<br> </li> </ul> <li><b><i>virtual</i></b></li>
+<ul> <li><i>Currently ignored - TODO perhaps<br>
+</i></li> </ul>
+</ul><h3><a name="Comments_"></a>Comments
+</h3>
+<ul> <li><b>//</b> as in C++ to
+comment out the rest of a line of text.</li> <li><b>/*
+... */</b>
+to comment multiline blocks.</li>
+</ul><h3><a name="Interface_Tags"></a>Interface
+Tags</h3>
+<b><i>%alias</i><br>
+</b>Reference a class by another name (currently unused).
+<br><br>
+<i><b>%class [%delete] [%noclassinfo]
+[%encapsulate] ClassName [, BaseClassName] <br>
+</b>ClassName(...)<br>
+member functions<b><br>
+%endclass<br>
+</b></i><ul> <li>Declare a class and
+optionally it's base
+class.</li> <li>All the methods of the base class can be
+accessed by an
+instance of the class.</li> <li>Note: If your class is in
+a namespace such as ns::ClassName
+you must
+use %class ... ns::ClassName and the constructor must also be
+ns::ClassName. The generator will change the "::" to "_" however for
+useage in Lua. </li> <li><i><b>%delete</b></i>
+is for
+classes that you
+want the Lua garbage collector to
+delete when the variable goes out of scope. </li> <ul> <li>For
+example, a wxPoint should be deleted when there are no longer any
+references to it, but wxWindows are typically attached to a parent
+and the parent wxWindow should delete its children,
+not Lua.</li> <li>Classes, like the simple wxPoint or ref
+counted wxObject
+classes like wxPen, can use the '=' operator to make a copy of the
+object. Therefore the bindings will make a 'new' object then
+copy it.</li> <li>Classes that are always "owned" by other
+objects that
+will delete them should not use this tag.</li> <li>Cases
+where a class object would be typically
+owned, perhaps after calling a function with them as a
+parameter, but may not start off that way can use the <i>%delete</i>
+tag, but the function that takes ownership should use the <i>%ungc</i>
+tag before the parameter.</li> </ul> <li><i><b>%noclassinfo</b></i>
+is for all classes that
+do
+not have
+DECLARE_XXX_CLASS in their declaration, e.g. wxPoint and any non
+wxObject
+derived classes.</li> <ul> <li>You can use the
+samples/bindings.wx.lua program to test if the assigned classinfo is
+correct.</li> </ul> <li> <i><b>%encapsulate</b></i>
+is for <b>all</b>
+classes
+that are not
+wxObject derived to aid in deleting them. The macros
+wxLUA_DECLARE_ENCAPSULATION and wxLUA_IMPLEMENT_ENCAPSULATION are used
+to wrap the object in a wxObject derived class so that a single list of
+tracked objects can be maintained.<br> </li>
+</ul><b><i>%define NUMBER
+[Value]</i><br>
+</b><ul> <li>Adds a number to the binding table
+which is
+accessed in wxLua using <i>wx.NUMBER</i>. </li> <li>The
+<i>NUMBER</i> can be a #define or an
+int. </li> <li>The optional
+parameter <i>[Value]</i> can be the actual numerical value
+to use.
+This if useful when you want Lua to know about a preprocessor directive
+such as, <i>"#define A_DEFINE"</i> that doesn't have a
+value itself. In this case assign it to be 1 using <i>"%define
+A_DEFINE 1"</i>. </li> <li>There are many examples
+of <i>%define</i> in <i>bindings/wxwidgets/defsutils.i</i>.</li>
+</ul><i><b>%define_event wxEVT_XXX</b></i><br>
+<ul> <li>Declares a wxEventType <i>wxEVT_XXX</i>
+which
+can be
+accessed in wxLua using <i>wx.wxEVT_XXX</i>. </li> <li>This
+tag must
+be used inside of the %class tag for the wxEvent
+derived class it corresponds to so the event's methods can be
+known to Lua and the generator can assign the correct class type to
+it. </li> <li>An example of this is in the wxCommandEvent
+interface in <i>bindings/wxwidgets/event.i</i>, <i>"%define
+%event wxEVT_COMMAND_ENTER"</i>.</li>
+</ul><i><b>%define_object OBJECT</b></i><br>
+<ul> <li>Declares an object in the binding table which can
+be accessed in wxLua using <i>wx.OBJECT</i>. </li> <li>This
+tag must
+be used inside the corresponding <i>%class</i> tag
+so
+that the object's class methods can be known to Lua and the generator
+can assign the correct class type to it.</li> <li>An
+example of this is in the
+wxPoint interface in <i>bindings/wxwidgets/gdi.i</i>, <i>"%define
+%object wxDefaultPosition"</i> where wxWidgets has created
+wxDefaultPosition as <i>"const wxPoint wxDefaultPosition;"</i>.<br>
+</li>
+</ul><i><b>%define_pointer POINTER</b></i><br>
+<ul> <li>Declares a pointer to an object in the binding
+table which
+can be
+accessed in wxLua using <i>wx.POINTER</i>. </li> <li>This
+tag must
+be used inside the corresponding <i>%class</i> tag
+so
+that the pointer's methods can be known to Lua and the
+generator can assign the correct class type to it.</li> <li>An
+example of this is
+in the wxPenList interface in <i>bindings/wxwidgets/gdi.i</i>,
+<i>"%define %pointer wxThePenList"</i> where wxWidgets
+has
+created the wxThePenList as <i>"wxPenList* wxThePenList;"</i>.<br>
+</li>
+</ul><i><b>%define_string STRING [Value]</b></i><br>
+<ul> <li>Adds a string to the binding table which is
+accessed in wxLua using <i>wx.STRING</i>. </li> <li>The
+<i>STRING</i>
+must be defined as <i>"const wxChar* STRING = _("str")
+or
+wxT("str")"</i> or some way that allows it to be
+converted easily to <i>"const
+wxChar*"</i> in Unicode or not. </li> <li>The
+optional parameter <i>[Value]</i>
+can be the actual string value to use and should be _("str"),
+wxT("str"), or a const wxChar* variable declared elsewhere.</li> <li>Note
+:
+Why not use wxString? You
+can't get the data from a wxString if you need to convert from Unicode
+and VC has problems having the class wxString as a member of a struct.</li>
+<li>Note
+: Why not use const char*? There currently isn't a need for it, but it
+would be easy to add if there was.</li>
+</ul><i><b>%enum [Enum_Type] or [ClassName::Enum_Type]</b><br>
+ENUM_ITEM1<br>
+ENUM_ITEM2<br>
+...<br>
+</i><i><b>%endenum</b></i><br>
+<ul> <li>This adds enumerations to the binding table which
+can be
+accessed in wxLua using <i>wx.ENUM_ITEM1</i> as it could
+be in C++, meaning that the <i>Enum_Type</i> is stripped
+off. </li> <li>If
+the enum is a part of a class use <i>"%enum ClassName::Enum_Type"</i>
+and the enums will be accessed in wxLua as <i>"wx.ClassName.ENUM_ITEM1"</i>.</li>
+</ul><b><i>%function FUNCTION(int value, ...)</i><br>
+</b><ul> <li>Declares a global C style function in
+the binding table
+which can be accessed in wxLua using <i>wx.FUNCTION(int
+value, ...)</i>.</li> <li>An example of this is in <i>bindings/wxwidgets/datetime.i</i>,
+<i>"%function
+wxString wxNow()"</i>.</li>
+</ul><b><i>%gc</i></b><i><br>
+</i><ul> <li>For use before a userdata parameter of
+a function or it's
+return value only.</li> <li>Declares that the parameter
+passed to the function or
+return value should be garbage collected or able to be delete()ed by
+the Lua program.</li> <li>This is for C++ functions that
+when passed a
+userdata object will 'release' it from being deleted
+by something else and now it is up to wxLua to delete it to avoid a
+memory leak. This can also be used for return values.</li> <li>You
+should verify that the generated code is appropriate as
+this has
+only been implemented for pointers '*'. It can be extened for
+other cases as they needed, please send a message to the wxlua-users
+mailing list with your special circumstances.</li> <li>Note
+that by default, functions that return a pointer '*'
+or a reference '&amp;' do NOT add the return value to the list of
+objects to be garbage collected even if it is a <i>%class</i>
+data
+type with the <i>%delete</i> tag. This is because it is
+assumed that the return value is 'owned' by someone else that will
+delete it. Use the <i>%gc</i> tag to override this
+behavior.</li> <li>See also <i>%ungc</i>.</li>
+</ul><b><i>%gc_this</i></b><br>
+<ul> <li>For a class member functions only and is
+typically not
+necessary to have for classes that use the <i>%delete</i>
+tag.</li> <li>Declares that after calling this function
+the object itself
+(not return value) should be garbage collected by Lua.</li> <li>This
+is for functions that when called will release the
+object from being deleted by something else and therefore it should be
+deleted in wxLua by either the garbage collector or when a Lua program
+calls the delete() function on it.</li> <li>You should
+verify that the generated code is appropriate as
+this has only been implemented for return pointers '*'. It can be
+extened for other cases as they needed, please send a message to the
+wxlua-users mailing list with your special circumstances.</li> <li>See
+also <i>%ungc_this</i>.</li>
+</ul><i><b>%if wxLUA_USE_XXX &amp; %__WXMSW__</b></i><br>
+<i>Interface file data...<br>
+</i><b><i>%endif wxLUA_USE_XXX</i><br>
+</b><ul> <li>The C++ generated code within this
+block will be surrounded
+by <i>"#if wxLUA_USE_XXX
+&amp;&amp; __WXMSW__" ... #endif</i>. </li> <li>You
+can
+use any #defined value in the %if
+statement as well as the operators !, &amp;, |.</li>
+</ul><b><i>%include "headerfile.h"</i><br>
+</b><ul> <li>Include a C/C++ header file by
+generating the C
+code <i>#include "headerfile.h"</i>. </li>
+</ul><b><i>%includefile interfacefile.i -
+DEPRECATED
+and probably does not work</i><br>
+</b><ul> <li>Includes another wrapper file
+that is added to the list of files to process.</li>
+</ul><b><i>%member int m_x</i><br>
+</b><ul> <li>Declare a property to access member
+variables in a
+class. </li> <li>This tag must
+be used inside of the <i>%class</i> tag. </li> <li>The
+variables will be accessible only using the '.'
+convention as if they were table members.</li> <li>If the
+variable is const, it is only read-only.</li>
+</ul><b><i>%member_func int m_x</i><br>
+</b><ul> <li>Declare a function to access member
+variables in a
+class. </li> <li>This tag must
+be used inside of the <i>%class</i> tag. </li> <li>The
+generated
+functions in the example above will
+be named Get_m_x() and Set_m_x(int x) therefore it is recommended that
+you use <i>%rename</i> in conjunction with <i>%member</i>.
+</li> <li>For example, in wxPoint <i>"%rename X
+%member int x"</i> will generate wxPoint methods named <span style="font-style: italic;">"pt:GetX()"</span>
+and <span style="font-style: italic;">"pt:SetX(5)"</span>
+for the wxPoint class as well as properties to access them as if they
+were table members, <span style="font-style: italic;">print(pt:x)</span>
+and <span style="font-style: italic;">"pt:x = 5"</span>.</li>
+</ul><i><b>%operator bool operator==(const
+wxPoint&amp;
+otherPt)
+const</b></i><br>
+<ul> <li>Declare that the operator == is defined for the
+class which
+can be
+accessed in wxLua using <i>point:op_eq(otherPoint)</i>. </li>
+<li>This tag must
+be used inside of the %class tag. </li> <li>The functions
+that will be generated
+for the
+declared operators use the semantics given below.</li> <li>The
+reason that the
+operators are not overridden in Lua using the metatable is
+that
+Lua only defines a limited set of operators. Having some operators
+overridden and some not is probably more confusing that not overriding
+any. Secondly, by leaving the Lua operators alone
+the = and == operators (for example) can be useful as userdata pointer
+assignment and pointer comparisons respectively. This is
+equivalent to using pointers in C, as in <i>"wxPoint *pt =
+&amp;otherPt"</i>, which merely increases the ref count of
+the object and is useful as is.<br> </li>
+</ul><ul> <li>"==" = "op_eq"</li> <li>"!="
+= "op_ne"</li> <li>"&lt;" = "op_lt"</li> <li>"&gt;"
+= "op_gt"</li> <li>"&lt;=" = "op_le"</li> <li>"&gt;="
+= "op_ge"</li><li>"||" = "op_lor" note: "lor" stands for
+logical (boolean) or,
+same for "land."</li><li>"&amp;&amp;" = "op_land"</li><li>"!" = "op_not"</li>
+</ul><ul> <li>"|" = "op_or"</li> <li>"&amp;"
+= "op_and"</li><li>"^" = "op_xor"</li><li>"&lt;&lt;" = "op_lshift"</li><li>"&gt;&gt;" = "op_rshift"</li>
+</ul><ul><li>"|=" = "op_ior"</li><li>"&amp;="
+= "op_iand"</li><li>"^="
+= "op_ixor"</li><li>"&lt;&lt;=" = "op_ilshift"</li><li>"&gt;&gt;=" = "op_irshift"</li></ul><ul> <li>"++" = "op_inc"</li> <li>"--"
+= "op_dec"</li> <li>"- (unary)" = "op_neg"</li><li>"~ (unary)" = "op_comp"</li><li>"[]" = "op_index"</li><li>"()" = "op_func"</li>
+</ul><ul> <li>"=" = op_set</li> <li>"+"
+= "op_add"</li> <li>"-" = "op_sub"<br> </li> <li>"*"
+= "op_mul"</li> <li>"/" = "op_div"</li><li>"%" = "op_mod"</li>
+</ul><ul> <li>"+=" = "op_iadd" note: ixxx stands for
+"inplace" as it modifies the original object.</li> <li>"-="
+= "op_isub"</li> <li>"*=" = "op_imul"</li> <li>"/="
+= "op_idiv"</li> <li>"%=" = "op_imod"</li></ul><i><b>%not_overload int FUNC_NAME(int value)</b></i><br>
+<ul> <li>Declare to the binding generator that even though
+the
+FUNC_NAME function has two or
+more
+different
+signatures to not generate code to overload it.</li> <li>This
+can be used when a class has two functions
+with the same name that have mutually exclusive #ifdef conditions.</li>
+<li>This
+can happen when, for example, a function is "void DoStuff()" and then
+in a later version of the C++ library "bool DoStuff(int flag)".</li>
+</ul><i><b>%override wxLua_ClassName_FunctionName <br>
+</b>// any code or comments can go within the %override ... %end
+block<br>
+static int LUACALL wxLua_ClassName_FunctionName(lua_State* L)<br>
+{<br>
+... <br>
+}<b><br>
+</b></i><b><i>%end <br>
+</i></b><ul> <li>Replace
+the generated binding code with this
+handwritten code. </li> <li>The lines of C++ code between
+%override and %end is
+copied
+verbatim into the binding code. </li> <li>This is
+necessary for functions that take
+pointers or references and return values though them. Since Lua cannot
+have values passed by reference the only solution is to return
+multiple values. </li> <li>See the function
+wxLua_wxConfigBase_GetNextGroup in <i>bindings/wxwidgets/overrides.hpp</i>
+for
+an example of this and many other examples of when %override is
+necessary. </li> <li>The program genwxbind.lua uses the
+function signature,
+wxLua_ClassName_FunctionName for class member functions, to lookup
+whether there was a %override or not. Therefore, it is important that
+you get the signature correct. The simplest way to get started with
+your own %override is to add the function to your interface files and
+run <i>genwxbind.lua</i> on them. Then look at the C++
+output for that
+function and copy it into your %override file and adjust as necessary.</li>
+</ul><b><i>%override_name CFunctionNameTheOverrideUses</i></b><i><br>
+</i><ul> <li>The binding generator will
+automatically generate names for
+the functions it binds, which is by default
+wxLua_ClassName_FunctionName. </li> <li>There are
+other special cases, please
+review the output of the generated bindings to determine what the
+default will be.</li> <li>However, if the function is
+overloaded (two or more with
+same name) additional C functions created will have 1,2,3... appended
+to their name.</li> <li>In order to enforce that the
+%override that you have
+written will be used for the proper function you can use this tag
+followed by the exact same name you gave the C function in your
+override.</li>
+</ul><b><i>%property NAME, read, write</i><br>
+</b><ul> <li><b>This tag is DEPRECATED and
+does nothing!</b>
+These "functions" are generated on the fly.</li> <li>Defines
+a way to access Get/SetNAME()
+class member
+functions
+as variables. </li> <li>This tag must be used inside of
+the %class tag. </li> <li>The
+Get/SetNAME() functions must exist already. </li> <li>An
+example of this is in
+the wxSize class in <i>bindings/wxwidgets/gdi.i</i> where
+the <i>"%property Height, read, write"</i> is declared. In
+wxLua you can <i>read</i> and <i>write</i> to
+the <i>Height</i> variable using the wxSize::GetHeight()
+and wxSize::SetHeight(int height) as "size = wx.wxSize(1,2);
+size.Height = 3; print(size.Height)". Note that the period, not colon,
+is used to access the property for both reading and writing.</li>
+</ul><b><i>%rename NEW_FUNC_NAME void FUNC_NAME()</i><br>
+</b><ul> <li>Rename a C/C++ method to a new name
+which can be accessed
+in
+Lua as NEW_FUNC_NAME() though it's accessed in C
+using FUNC_NAME().</li> <li>This can be necessary when
+there are two overloaded C
+functions that are hard or impossible to distinguish between
+the two and so it is necessary to rename them for the Lua script to
+access them correctly.</li> <li>An example of when this is
+necessary is</li> <ul> <li>wxSize
+wxWindow::GetClientSize()</li> <li>void
+wxWindow::GetClientSize(int* width, int* height)</li> <li>Since
+Lua cannot pass the int *width and *height by
+reference, we change the function to have this signature.</li> <ul>
+<li>[int width, int height] = wxWindow::GetClientSize()</li>
+<li>However there is not anyway to distinguish between
+getting ints or a wxSize since we cannot check the left hand side, the
+return values.</li> <li>The only solution seems to be to
+%rename the
+int width, height function to GetClientSizeWH() </li> </ul>
+</ul>
+</ul><b><i>%skip</i><br>
+</b><ul> <li>The next item is skipped, either a
+single line or a
+whole class.</li>
+</ul><i><b>%typedef&nbsp;KNOWN_DATATYPE</b></i> <i><b>UNKNOWN_DATATYPE</b></i>
+<ul> <li>Declares to the binding that the <i>UNKNOWN_DATATYPE</i>
+should be treated as <i>KNOWN_DATATYPE</i>. </li> <li>An
+example of
+this is <i>"%typedef long wxTextCoord"</i> where
+the wxTextCoord is&nbsp;just a long integer.</li><li>Without
+the %typedef the binding generator would give an error about an unknown
+data type, since it would assume that a typo or an error in the
+interface file has been made.</li>
+</ul><b><i>%ungc</i></b><i><br>
+</i><ul> <li>For use before a userdata parameter of
+a function or it's
+return value only.</li> <li>Declares
+that the parameter passed to the function or return value should not be
+garbage collected or able to be delete()ed by the Lua program.</li>
+<li>This
+is for functions that when passed a userdata object will take
+'ownership' of it and wxLua should
+not delete it to avoid double deletion. This can also be used
+for return values.</li> <li>You should verify that the
+generated code is appropriate as
+this has
+only been implemented for pointers '*'. It can be extened for
+other cases as they needed, please send a message to the wxlua-users
+mailing list with your special circumstances.</li> <li>See
+also <i>%gc</i>.</li>
+</ul><i><b>%ungc_this</b><br>
+</i><ul> <li>For a class member functions only and
+may
+be necessary for classes that use the <i>%delete</i>
+tag.</li> <li>Declares that after calling this function
+the object itself
+(not return value) will not be garbage collected by Lua.</li> <li>See
+also <i>%gc_this</i>.</li>
+</ul><b><i>%wxchkver_X_Y_Z</i></b><br>
+<ul> <li>The next item will be <i>#if
+wxCHECK_VERSION(X,Y,Z).</i> </li> <li>The Y and Z
+parameters are optional and default to 0.</li> <li><i>%wxchkverXY
+is now deprecated, please use %wxchkver_X_Y_Z</i></li>
+</ul><b><i>%wxcompat_X_Y</i><br>
+</b><ul> <li>The next item will be <i>#if
+(defined(WXWIN_COMPATIBILITY_X_Y</i>) &amp;&amp; <i>WXWIN_COMPATIBILITY_X_Y)</i>.
+</li> <li>The rest of the string beyond "%wxcompat" is
+appended to
+"WXWIN_COMPATIBILITY" so hopefully all future versions of wxWidgets
+should be supported.</li> <li><i>%wxcompatXY is now
+deprecated, please use %wxcompat_X_Y</i></li>
+</ul><b>These #ifdef conditions are deprecated, use __XXX__
+conditions
+directly</b><br>
+<i><b>%msw</b></i> - the next item will
+#if defined(__WXMSW__)<b><br>
+<i>%gtk</i></b> - the next item will #if
+defined(__WXGTK__)<b><br>
+<i>%mac</i></b> - the next item will #if
+defined(__WXMAC__)<b><br>
+<i>%win</i></b> - the next item will #if
+defined(__WXMSW__)<b><br>
+</b><b><i>%mgl</i></b>
+- the next item will #if defined(__WXMGL__)<b><br>
+<i>%motif</i></b> - the next item will #if
+defined(__WXMOTIF__)<b><br>
+<i>%univ</i></b> - the next item will #if
+defined(__WXUNIVERSAL__)<b><br>
+<i>%x11</i></b> - the next item will #if
+defined(__WXX11__)<b><br>
+<i>%cocoa</i></b> - the next item will #if
+defined(__WXCOCOA__)<b><br>
+<i>%os2</i></b> - the next item will #if
+defined(__WXPM__)<b><br>
+<i>%palm</i></b> - the next item will #if
+defined(__WXPALMOS__)<b><br>
+<i>%wince</i></b> - the next item will #if
+defined(__WXWINCE__)<br>
+<br><b>Standard wxWidgets #defines for conditional use
+using the %if
+directive</b><br>
+%__WINDOWS__<br>
+%__WIN16__<br>
+%__WIN32__<br>
+%__WIN95__<br>
+%__WXBASE__<br>
+%__WXCOCOA__<br>
+%__WXWINCE__<br>
+%__WXGTK__<br>
+%__WXGTK12__<br>
+%__WXGTK20__<br>
+%__WXMOTIF__<br>
+%__WXMOTIF20__<br>
+%__WXMAC__<br>
+%__WXMAC_CLASSIC__<br>
+%__WXMAC_CARBON__<br>
+%__WXMAC_OSX__<br>
+%__WXMGL__<br>
+%__WXMSW__<br>
+%__WXOS2__<br>
+%__WXOSX__<br>
+%__WXPALMOS__<br>
+%__WXPM__<br>
+%__WXSTUBS__<br>
+%__WXXT__<br>
+%__WXX11__<br>
+%__WXWINE__<br>
+%__WXUNIVERSAL__<br>
+%__X__<br>
+%__WXWINCE__<br>
+<br></body></html>

@@ -1,0 +1,786 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Penlight Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Penlight</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/pl.html">pl</a></li>
+  <li><a href="../modules/pl.Date.html">pl.Date</a></li>
+  <li><a href="../modules/pl.List.html">pl.List</a></li>
+  <li><a href="../modules/pl.Map.html">pl.Map</a></li>
+  <li><a href="../modules/pl.MultiMap.html">pl.MultiMap</a></li>
+  <li><a href="../modules/pl.OrderedMap.html">pl.OrderedMap</a></li>
+  <li><a href="../modules/pl.Set.html">pl.Set</a></li>
+  <li><a href="../modules/pl.app.html">pl.app</a></li>
+  <li><a href="../modules/pl.array2d.html">pl.array2d</a></li>
+  <li><a href="../modules/pl.class.html">pl.class</a></li>
+  <li><a href="../modules/pl.comprehension.html">pl.comprehension</a></li>
+  <li><a href="../modules/pl.config.html">pl.config</a></li>
+  <li><a href="../modules/pl.data.html">pl.data</a></li>
+  <li><a href="../modules/pl.dir.html">pl.dir</a></li>
+  <li><a href="../modules/pl.file.html">pl.file</a></li>
+  <li><a href="../modules/pl.func.html">pl.func</a></li>
+  <li><a href="../modules/pl.input.html">pl.input</a></li>
+  <li><a href="../modules/pl.lapp.html">pl.lapp</a></li>
+  <li><a href="../modules/pl.lexer.html">pl.lexer</a></li>
+  <li><a href="../modules/pl.luabalanced.html">pl.luabalanced</a></li>
+  <li><a href="../modules/pl.operator.html">pl.operator</a></li>
+  <li><a href="../modules/pl.path.html">pl.path</a></li>
+  <li><a href="../modules/pl.permute.html">pl.permute</a></li>
+  <li><a href="../modules/pl.pretty.html">pl.pretty</a></li>
+  <li><a href="../modules/pl.seq.html">pl.seq</a></li>
+  <li><a href="../modules/pl.sip.html">pl.sip</a></li>
+  <li><a href="../modules/pl.strict.html">pl.strict</a></li>
+  <li><a href="../modules/pl.stringio.html">pl.stringio</a></li>
+  <li><strong>pl.stringx</strong></li>
+  <li><a href="../modules/pl.tablex.html">pl.tablex</a></li>
+  <li><a href="../modules/pl.template.html">pl.template</a></li>
+  <li><a href="../modules/pl.test.html">pl.test</a></li>
+  <li><a href="../modules/pl.text.html">pl.text</a></li>
+  <li><a href="../modules/pl.utils.html">pl.utils</a></li>
+  <li><a href="../modules/pl.xml.html">pl.xml</a></li>
+</ul>
+<h2>Topics</h2>
+<ul>
+  <li><a href="../topics/01-introduction.md.html">01-introduction.md</a></li>
+  <li><a href="../topics/02-arrays.md.html">02-arrays.md</a></li>
+  <li><a href="../topics/03-strings.md.html">03-strings.md</a></li>
+  <li><a href="../topics/04-paths.md.html">04-paths.md</a></li>
+  <li><a href="../topics/05-dates.md.html">05-dates.md</a></li>
+  <li><a href="../topics/06-data.md.html">06-data.md</a></li>
+  <li><a href="../topics/07-functional.md.html">07-functional.md</a></li>
+  <li><a href="../topics/08-additional.md.html">08-additional.md</a></li>
+  <li><a href="../topics/09-discussion.md.html">09-discussion.md</a></li>
+</ul>
+<h2>Examples</h2>
+<ul>
+  <li><a href="../examples/seesubst.lua.html">seesubst.lua</a></li>
+  <li><a href="../examples/sipscan.lua.html">sipscan.lua</a></li>
+  <li><a href="../examples/symbols.lua.html">symbols.lua</a></li>
+  <li><a href="../examples/test-cmp.lua.html">test-cmp.lua</a></li>
+  <li><a href="../examples/test-data.lua.html">test-data.lua</a></li>
+  <li><a href="../examples/test-listcallbacks.lua.html">test-listcallbacks.lua</a></li>
+  <li><a href="../examples/test-pretty.lua.html">test-pretty.lua</a></li>
+  <li><a href="../examples/test-symbols.lua.html">test-symbols.lua</a></li>
+  <li><a href="../examples/testapp.lua.html">testapp.lua</a></li>
+  <li><a href="../examples/testclone.lua.html">testclone.lua</a></li>
+  <li><a href="../examples/testconfig.lua.html">testconfig.lua</a></li>
+  <li><a href="../examples/testglobal.lua.html">testglobal.lua</a></li>
+  <li><a href="../examples/testinputfields.lua.html">testinputfields.lua</a></li>
+  <li><a href="../examples/testinputfields2.lua.html">testinputfields2.lua</a></li>
+  <li><a href="../examples/testxml.lua.html">testxml.lua</a></li>
+  <li><a href="../examples/which.lua.html">which.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>pl.stringx</code></h1>
+
+<p>Python-style extended string library.</p>
+<p> see 3.6.1 of the Python reference.
+ If you want to make these available as string methods, then say
+ <code>stringx.import()</code> to bring them into the standard <a href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>  table.</p>
+
+<p> See <a href="../topics/03-strings.md.html#">the Guide</a></p>
+
+<p> Dependencies: <a href="../modules/pl.utils.html#">pl.utils</a> </p>
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#isalpha">isalpha&nbsp;(s)</a></td>
+	<td class="summary">does s only contain alphabetic characters?.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isdigit">isdigit&nbsp;(s)</a></td>
+	<td class="summary">does s only contain digits?.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isalnum">isalnum&nbsp;(s)</a></td>
+	<td class="summary">does s only contain alphanumeric characters?.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isspace">isspace&nbsp;(s)</a></td>
+	<td class="summary">does s only contain spaces?.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#islower">islower&nbsp;(s)</a></td>
+	<td class="summary">does s only contain lower case characters?.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isupper">isupper&nbsp;(s)</a></td>
+	<td class="summary">does s only contain upper case characters?.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#join">join&nbsp;(self, seq)</a></td>
+	<td class="summary">concatenate the strings using this string as a delimiter.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#startswith">startswith&nbsp;(self, s2)</a></td>
+	<td class="summary">does string start with the substring?.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#endswith">endswith&nbsp;(s, send)</a></td>
+	<td class="summary">does string end with the given substring?.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#expandtabs">expandtabs&nbsp;(self, n)</a></td>
+	<td class="summary">replace all tabs in s with n spaces.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#lfind">lfind&nbsp;(self, sub, i1)</a></td>
+	<td class="summary">find index of first instance of sub in s from the left.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#rfind">rfind&nbsp;(self, sub, first, last)</a></td>
+	<td class="summary">find index of first instance of sub in s from the right.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#replace">replace&nbsp;(s, old, new, n)</a></td>
+	<td class="summary">replace up to n instances of old by new in the string s.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#split">split&nbsp;(self, re, n)</a></td>
+	<td class="summary">split a string into a list of strings using a delimiter.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#splitv">splitv&nbsp;(self, re)</a></td>
+	<td class="summary">split a string using a pattern.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#count">count&nbsp;(self, sub)</a></td>
+	<td class="summary">count all instances of substring in string.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ljust">ljust&nbsp;(self, w, ch)</a></td>
+	<td class="summary">left-justify s with width w.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#rjust">rjust&nbsp;(s, w, ch)</a></td>
+	<td class="summary">right-justify s with width w.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#center">center&nbsp;(s, w, ch)</a></td>
+	<td class="summary">center-justify s with width w.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#lstrip">lstrip&nbsp;(self, chrs)</a></td>
+	<td class="summary">trim any whitespace on the left of s.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#rstrip">rstrip&nbsp;(s, chrs)</a></td>
+	<td class="summary">trim any whitespace on the right of s.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#strip">strip&nbsp;(self, chrs)</a></td>
+	<td class="summary">trim any whitespace on both left and right of s.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#partition">partition&nbsp;(self, ch)</a></td>
+	<td class="summary">partition the string using first occurance of a delimiter</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#rpartition">rpartition&nbsp;(self, ch)</a></td>
+	<td class="summary">partition the string p using last occurance of a delimiter</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#at">at&nbsp;(self, idx)</a></td>
+	<td class="summary">return the &lsquo;character&rsquo; at the index.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#lines">lines&nbsp;(self)</a></td>
+	<td class="summary">return an interator over all lines in a string</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#title">title&nbsp;(self)</a></td>
+	<td class="summary">iniital word letters uppercase (&lsquo;title case&rsquo;).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#shorten">shorten&nbsp;(self, sz, tail)</a></td>
+	<td class="summary">return a shorted version of a string.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "isalpha"></a>
+    <strong>isalpha&nbsp;(s)</strong>
+    </dt>
+    <dd>
+    does s only contain alphabetic characters?. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  a string</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isdigit"></a>
+    <strong>isdigit&nbsp;(s)</strong>
+    </dt>
+    <dd>
+    does s only contain digits?. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  a string</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isalnum"></a>
+    <strong>isalnum&nbsp;(s)</strong>
+    </dt>
+    <dd>
+    does s only contain alphanumeric characters?. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  a string</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isspace"></a>
+    <strong>isspace&nbsp;(s)</strong>
+    </dt>
+    <dd>
+    does s only contain spaces?. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  a string</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "islower"></a>
+    <strong>islower&nbsp;(s)</strong>
+    </dt>
+    <dd>
+    does s only contain lower case characters?. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  a string</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isupper"></a>
+    <strong>isupper&nbsp;(s)</strong>
+    </dt>
+    <dd>
+    does s only contain upper case characters?. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  a string</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "join"></a>
+    <strong>join&nbsp;(self, seq)</strong>
+    </dt>
+    <dd>
+    concatenate the strings using this string as a delimiter. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+       <li><code><em>seq</em></code>:  a table of strings or numbers</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">(' '):join {1,2,3} == '1 2 3'</pre>
+    </ul>
+
+
+
+</dd>
+    <dt>
+    <a name = "startswith"></a>
+    <strong>startswith&nbsp;(self, s2)</strong>
+    </dt>
+    <dd>
+    does string start with the substring?. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+       <li><code><em>s2</em></code>:  a string</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "endswith"></a>
+    <strong>endswith&nbsp;(s, send)</strong>
+    </dt>
+    <dd>
+    does string end with the given substring?. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  a string</li>
+       <li><code><em>send</em></code>:  a substring or a table of suffixes</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "expandtabs"></a>
+    <strong>expandtabs&nbsp;(self, n)</strong>
+    </dt>
+    <dd>
+    replace all tabs in s with n spaces.  If not specified, n defaults to 8.
+ with 0.9.5 this now correctly expands to the next tab stop (if you really
+ want to just replace tabs, use :gsub(&lsquo;\t&rsquo;,&lsquo;  &rsquo;) etc)
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+       <li><code><em>n</em></code>:  number of spaces to expand each tab, (default 8)</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "lfind"></a>
+    <strong>lfind&nbsp;(self, sub, i1)</strong>
+    </dt>
+    <dd>
+    find index of first instance of sub in s from the left. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+       <li><code><em>sub</em></code>:  substring</li>
+       <li><code><em>i1</em></code>:  start index</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "rfind"></a>
+    <strong>rfind&nbsp;(self, sub, first, last)</strong>
+    </dt>
+    <dd>
+    find index of first instance of sub in s from the right. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+       <li><code><em>sub</em></code>:  substring</li>
+       <li><code><em>first</em></code>:  first index</li>
+       <li><code><em>last</em></code>:  last index</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "replace"></a>
+    <strong>replace&nbsp;(s, old, new, n)</strong>
+    </dt>
+    <dd>
+    replace up to n instances of old by new in the string s. 
+ if n is not present, replace all instances.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  the string</li>
+       <li><code><em>old</em></code>:  the target substring</li>
+       <li><code><em>new</em></code>:  the substitution</li>
+       <li><code><em>n</em></code>:  optional maximum number of substitutions</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>result string</li>
+        <li>the number of substitutions</li>
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "split"></a>
+    <strong>split&nbsp;(self, re, n)</strong>
+    </dt>
+    <dd>
+    split a string into a list of strings using a delimiter. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+       <li><code><em>re</em></code>:  a delimiter (defaults to whitespace)</li>
+       <li><code><em>n</em></code>:  maximum number of results</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">#(('one two'):split()) == 2</pre></li>
+        <li><pre class="example">('one,two,three'):split(',') == List{'one','two','three'}</pre></li>
+        <li><pre class="example">('one,two,three'):split(',',2) == List{'one','two,three'}</pre></li>
+    </ul>
+
+
+
+</dd>
+    <dt>
+    <a name = "splitv"></a>
+    <strong>splitv&nbsp;(self, re)</strong>
+    </dt>
+    <dd>
+    split a string using a pattern.  Note that at least one value will be returned!
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+       <li><code><em>re</em></code>:  a Lua string pattern (defaults to whitespace)</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">a,b = line:splitv('=')</pre>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        the parts of the string
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "count"></a>
+    <strong>count&nbsp;(self, sub)</strong>
+    </dt>
+    <dd>
+    count all instances of substring in string. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+       <li><code><em>sub</em></code>:  substring</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ljust"></a>
+    <strong>ljust&nbsp;(self, w, ch)</strong>
+    </dt>
+    <dd>
+    left-justify s with width w. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+       <li><code><em>w</em></code>:  width of justification</li>
+       <li><code><em>ch</em></code>:  padding character, default &lsquo; &rsquo;</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "rjust"></a>
+    <strong>rjust&nbsp;(s, w, ch)</strong>
+    </dt>
+    <dd>
+    right-justify s with width w. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  the string</li>
+       <li><code><em>w</em></code>:  width of justification</li>
+       <li><code><em>ch</em></code>:  padding character, default &lsquo; &rsquo;</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "center"></a>
+    <strong>center&nbsp;(s, w, ch)</strong>
+    </dt>
+    <dd>
+    center-justify s with width w. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  the string</li>
+       <li><code><em>w</em></code>:  width of justification</li>
+       <li><code><em>ch</em></code>:  padding character, default &lsquo; &rsquo;</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "lstrip"></a>
+    <strong>lstrip&nbsp;(self, chrs)</strong>
+    </dt>
+    <dd>
+    trim any whitespace on the left of s. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+       <li><code><em>chrs</em></code>:  default space, can be a string of characters to be trimmed</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "rstrip"></a>
+    <strong>rstrip&nbsp;(s, chrs)</strong>
+    </dt>
+    <dd>
+    trim any whitespace on the right of s. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  the string</li>
+       <li><code><em>chrs</em></code>:  default space, can be a string of characters to be trimmed</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "strip"></a>
+    <strong>strip&nbsp;(self, chrs)</strong>
+    </dt>
+    <dd>
+    trim any whitespace on both left and right of s. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+       <li><code><em>chrs</em></code>:  default space, can be a string of characters to be trimmed</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "partition"></a>
+    <strong>partition&nbsp;(self, ch)</strong>
+    </dt>
+    <dd>
+    partition the string using first occurance of a delimiter 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+       <li><code><em>ch</em></code>:  delimiter</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>part before ch</li>
+        <li>ch</li>
+        <li>part after ch</li>
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "rpartition"></a>
+    <strong>rpartition&nbsp;(self, ch)</strong>
+    </dt>
+    <dd>
+    partition the string p using last occurance of a delimiter 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+       <li><code><em>ch</em></code>:  delimiter</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>part before ch</li>
+        <li>ch</li>
+        <li>part after ch</li>
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "at"></a>
+    <strong>at&nbsp;(self, idx)</strong>
+    </dt>
+    <dd>
+    return the &lsquo;character&rsquo; at the index. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+       <li><code><em>idx</em></code>:  an index (can be negative)</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        a substring of length 1 if successful, empty string otherwise.
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "lines"></a>
+    <strong>lines&nbsp;(self)</strong>
+    </dt>
+    <dd>
+    return an interator over all lines in a string 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        an iterator
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "title"></a>
+    <strong>title&nbsp;(self)</strong>
+    </dt>
+    <dd>
+    iniital word letters uppercase (&lsquo;title case&rsquo;). 
+ Here &lsquo;words&rsquo; mean chunks of non-space characters.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        a string with each word&rsquo;s first letter uppercase
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "shorten"></a>
+    <strong>shorten&nbsp;(self, sz, tail)</strong>
+    </dt>
+    <dd>
+    return a shorted version of a string. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>self</em></code>:  the string</li>
+       <li><code><em>sz</em></code>:  the maxinum size allowed</li>
+       <li><code><em>tail</em></code>:  true if we want to show the end of the string (head otherwise)</li>
+    </ul>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

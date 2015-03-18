@@ -1,0 +1,10 @@
+module Control {
+	exception AccessError {
+		string tagname;
+		string reason;
+	};
+	interface Server {
+		any read(in string tag) raises(AccessError);
+		void write(in string tag, in any value) raises(AccessError);
+	};
+};

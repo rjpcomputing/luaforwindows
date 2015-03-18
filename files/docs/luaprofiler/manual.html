@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>LuaProfiler - Time profiler for the Lua programming language</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+
+<div id="container">
+	
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+		<img alt="LuaProfiler logo" src="luaprofiler.png"/>
+	</a></div>
+	<div id="product_name"><big><b>LuaProfiler</b></big></div>
+	<div id="product_description">Time profiler for the Lua programming language</div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+<h1>LuaProfiler</h1>
+	<ul>
+		<li><a href="index.html">Home</a>
+			<ul>
+				<li> <a href="index.html#over">Overview</a></li>
+				<li> <a href="index.html#status">Status</a></li>
+				<li> <a href="index.html#download">Download</a></li>
+				<li> <a href="index.html#history">History</a></li>
+				<li> <a href="index.html#credits">Credits</a></li>
+				<li> <a href="index.html#contact">Contact</a></li>
+			</ul>
+		</li>
+		<li><strong>Manual</strong>
+			<ul>
+				<li> <a href="manual.html#introduction">Introduction</a></li>
+				<li> <a href="manual.html#install">Installation</a></li>
+				<li> <a href="manual.html#analyzer">Using LuaProfiler</a></li>
+			</ul>
+		</li>
+        <li><a href="http://luaforge.net/projects/luaprofiler/">Project</a>
+            <ul>
+                <li><a href="http://luaforge.net/tracker/?group_id=25">Bug Tracker</a></li>
+                <li><a href="http://luaforge.net/scm/?group_id=25">CVS</a></li>
+            </ul>
+        </li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div>
+
+<div id="content">
+
+<h2><a name="introduction"></a>Introduction</h2>
+
+<cite>More computing sins are committed in the name of efficiency (without necessarily
+achieving it) than for any other single reason - including blind stupidity. - W.A. Wulf</cite>
+
+<p>	LuaProfiler can profile programs written in Lua 5.1, Lua 5.0, Lua 4.0, Lua 3.2 and LuaNG
+(used by older versions of CGILua).</p>
+
+<p>There are several reasons to not optimize your program prematurely. Some 
+of them include unnecessary loss of time, maintainability and robustness.</p>
+
+<p>A profiler tells you what parts of your program are slow, so you can 
+focus on them and forget about the rest. The slow parts are called bottlenecks.
+A bottleneck is a part of your program that is much slower than 
+the rest of the program.</p>
+
+<p>If you are programming in Lua, as a rule of thumb once you found a bottleneck
+you have two options: fine tune your code or, arguably the better option,
+redesigning your code.</p>
+
+<p>To fine tune your Lua code, all you need to know is how slow the functions
+are. Then you can rewrite some of them, possibly in C. This option not necessarily
+improves significantly your performance.</p>
+
+<p>To redesign your Lua code, you need more than that: you'll need to know how slow
+the functions are and which context makes them slow. A general solution aims to avoid
+unnecessary calls and loops.</p>
+
+<p>When you do that, you reduce the complexity of your code, which can give you much
+more significant speed improvements in some situations. If you still need to speed
+things up and redesigning is not a viable option anymore, go ahead and fine tune the
+slower functions.</p>
+
+<p>To fine tune, you need only timing numbers, but to redesign you need a better view
+of your program. This profiler helps you in these two processes.</p>
+
+<p>For flexibility reasons, LuaProfiler is divided in 2 parts: the Lua code profiler, 
+written in C to maximize the precision of timing, and the analyzer that generates
+information about the program execution, written in Lua to allow greater variance
+in the analysis process.</p>
+
+<p>The code profiler produces as result a table of function calls and times 
+that is usable by the analyzer itself or by a spreadsheet program, so you can 
+analyze the results numerically to help you to fine tune your program.</p>
+
+<h2><a name="install"></a>Installation</h2>
+
+<p>LuaProfiler source is distributed as a group of C files and some makefile templates.
+For older versions of Lua (3.2 and 4.0), LuaProfiler must be embedded in your application
+(linked with it). You must call the function <code>init_profiler()</code> to start profiling from
+C code.</p>
+
+<p>LuaProfiler follows the
+<a href="http://www.inf.puc-rio.br/~roberto/pil2/chapter15.pdf">package model</a>
+for Lua 5.1, therefore it should be "installed" in your <code>package.path</code>.</p>
+
+<p>Windows users can use the pre-compiled version of LuaProfiler
+(<code>profiler.dll</code>) available at
+<a href="http://luaforge.net/projects/luaprofiler/files">LuaForge</a>.</p>
+
+<h2><a name="analyzer"></a>Using LuaProfiler</h2>
+
+<p>To profile your program for versions of Lua prior to 5.0, include <code>luaProfiler.h</code>
+into your main module, include a call to <code>init_profiler(L)</code> after opening the Lua library
+and recompile it using the appropriate LuaProfiler lib. If you are profiling Lua 3.2 programs,
+consider <em>L</em> to be <code>NULL</code>.</p>
+
+<p>For Lua 5.1 and 5.0, just <code>require"profiler"</code> in your script and this will define a
+<em>profiler</em> module with two functions:</p>
+
+<dl>
+    <dt><strong>start([filename])</strong></dt>
+    <dd>Starts the profiler using the optional <em>filename</em> as the log file.</dd>
+    
+    <dt><strong>stop()</strong></dt>
+    <dd>Stops the profiler.</dd>
+</dl>
+
+<p>You can restart the profiler after a <code>stop</code> with another call to <code>start</code>.</p>
+
+<p>All you need now is to run your program and get the output generated by the
+profiler. The default log file is written to the working directory of the program,
+in a file like <code>lprof_<em>randomid</em>.out</code> where <em>randomid</em> is
+a random number. The log format uses a line for every function call in your program which may
+result in huge files, so be careful with disk space if your program runs for a long time, or use
+localized profiling wrapping the target section with a <code>start()</code>/<code>stop()</code>
+call sequence.</p>
+
+<p>LuaProfiler includes a script, <code>summary.lua</code>, that analyzes the output of the profiler
+and generates a table with the functions used by your program and their running
+times, ordered according to how much of the total execution time of your program the function
+used. This script needs to be interpreted by Lua.</p>
+
+<p>You can also pass the <code>-v</code> option to <code>summary.lua</code>, just before the name of the
+log file, to generate a more comprehensive summary, containing the number of times each function
+was called, their average running times, and the percentage of the total running time of your
+script each function took.</p>
+
+<p>Assuming the Lua interpreter is in your path, and both summary.lua and your output
+file are in the same directory, switch to the directory where the output file is and type:</p>
+
+<pre class="example">
+lua summary.lua lprof_123456.out
+</pre>
+
+<p>For the verbose output, type:</p>
+
+<pre class="example">
+lua summary.lua -v lprof_123456.out
+</pre>
+
+<p>You can also import the output file into a spreadsheet and analyze it there. Each line
+of the output file is a function call. The first line is a header that explains what each
+column contains. If you are using Excel for example, you can easily create a pivot table that
+shows the sum of times for the functions and then sort the cells so the bottlenecks are at the top.</p>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+	<p><small>
+	$Id: manual.html,v 1.13 2007/08/22 18:20:40 carregal Exp $
+	</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+
+</body>
+</html>

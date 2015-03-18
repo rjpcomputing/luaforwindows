@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>Coxpcall -  Coroutine Safe xpcall and pcall</title>
+	<link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+		<img alt="coxpcall logo" src="coxpcall.png" width="128" height="128"/></a>
+	</div>
+	<div id="product_name"><big><strong>Coxpcall</strong></big></div>
+	<div id="product_description">Coroutine-safe <code>xpcall</code> and <code>pcall</code> versions</div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+<h1>Coxpcall</h1>
+	<ul>
+		<li><strong>Home</strong>
+		<ul>
+			<li><a href="index.html#over">Overview</a></li>
+			<li><a href="index.html#status">Status</a></li>
+			<li><a href="index.html#download">Download</a></li>
+			<li><a href="index.html#history">History</a></li>              
+			<li><a href="index.html#reference">Reference</a></li>
+			<li><a href="index.html#credits">Credits</a></li>
+			<li><a href="index.html#contact">Contact us</a></li>
+		</ul>
+		</li>
+		<li><a href="http://luaforge.net/projects/coxpcall/">Project</a>
+		<ul>
+			<li><a href="http://luaforge.net/tracker/?group_id=101">Bug Tracker</a></li>
+			<li><a href="http://luaforge.net/scm/?group_id=101">CVS</a></li>
+		</ul>
+		</li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+<h2><a name="over"></a>Overview</h2>
+
+<p>Coxpcall encapsulates the protected calls with a coroutine based loop,
+so errors can be dealed without the usual <code>pcall</code>/<code>xpcall</code>
+issues with coroutines.
+</p>
+
+<p>Using Coxpcall usually consists in simply loading the module and then
+replacing Lua <code>pcall</code> and <code>xpcall</code> by <code>copcall</code> and <code>coxpcall</code>.</p>
+
+<p>Coxpcall is free software and uses the same
+<a href="license.html">license</a> as Lua 5.1.
+</p>
+
+<h2><a name="status"></a>Status</h2>
+
+<p>Current version is 1.13. It was developed for Lua 5.1.</p>
+
+<h2><a name="download"></a>Download</h2>
+
+<p>
+Coxpcall can be downloaded from its
+<a href="http://luaforge.net/frs/?group_id=101">LuaForge</a> page.
+You can also get Coxpcall using <a href="http://luarocks.org">LuaRocks</a>:
+</p>
+
+<pre class="example">
+luarocks install coxpcall
+</pre>
+
+<h2><a name="history"></a>History</h2>
+
+<dl>
+	<dt><strong>Coxpcall 1.13</strong> [19/May/2008]</dt>
+	<dd><ul>
+		<li>Fixed bug <a href="http://luaforge.net/tracker/?func=detail&amp;group_id=101&amp;aid=5275&amp;atid=496">[#5275]</a>, found by Gary NG</li>
+	</ul></dd>
+	
+	<dt><strong>Coxpcall 1.12</strong> [09/May/2008]</dt>
+	<dd><ul>
+		<li>Added stack traces</li>
+	</ul></dd>
+	
+	<dt><strong>Coxpcall 1.11</strong> [22/Jan/2008]</dt>
+	<dd><ul>
+		<li>Moving Coxpcall to a standalone project since its now being used by more than only Xavante</li>
+		<li>Refactoring and bug fixes by Thomas Harning Jr., Ignacio Burgue&ntilde;o and
+		F&aacute;bio Mascarenhas</li>
+	</ul></dd>
+	<dt><strong>Coxpcall 1.0</strong> [18/Feb/2005]</dt>
+	<dd>Coxpcall 1.0 until 1.11 was released as part of Xavante</dd>
+</dl>
+
+<h2><a name="reference"></a>Reference</h2>
+
+<p>Coxpcall offers two functions that reproduce the behaviour of
+<code>pcall</code> and <code>xpcall</code>:</p>
+
+<dl>
+	<dt><strong><code>coxpcall(f, err)</code></strong></dt>
+	<dd>Offers the same functionality as Lua <code>xpcall(f, err)</code>.</dd>
+	
+	<dt><strong><code>copcall(f, ...)</code></strong></dt>
+	<dd>Offers the same functionality as Lua <code>pcall(f, ...)</code>.</dd>
+</dl>
+
+<h2><a name="credits"></a>Credits</h2>
+
+<p>
+Coxpcall was designed and implemented by Roberto Ierusalimschy and
+Andr&eacute; Carregal with the colaboration of Thomas Harning Jr., Ignacio Burgue&ntilde;o,
+Gary NG and F&aacute;bio Mascarenhas as part of the
+<a href="http://www.keplerproject.org">Kepler Project</a> which holds its copyright.
+</p>
+
+<h2><a name="contact"></a>Contact us</h2>
+
+<p>
+For more information please
+<a href="mailto:info-NO-SPAM-THANKS@keplerproject.org">contact us</a>.
+Comments are welcome!
+</p>
+
+<p>
+You can also reach other Coxpcall developers and users on the Kepler
+Project <a href="http://luaforge.net/mail/?group_id=104">mailing list</a>.
+</p>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
+	<p><small>$Id: index.html,v 1.4 2008/05/19 20:32:33 carregal Exp $</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+</body>
+</html>
+

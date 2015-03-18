@@ -1,0 +1,16 @@
+#!/bin/sh
+
+LUA=lua
+
+echo "Starting server"
+$LUA server.lua &
+pid=$!
+trap "kill $pid > /dev/null 2> /dev/null" 0
+
+for((i=0;i<10;++i));do if test -r ref.ludo;then break;else sleep 1;fi;done
+
+echo "Starting client"
+$LUA client.lua
+
+echo "Demo finished."
+rm -f ref.ludo

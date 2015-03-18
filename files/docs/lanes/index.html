@@ -1,0 +1,951 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+    Documentation for Lua Lanes
+-->
+
+<html>
+<head>
+  <meta name="description" content="Lua Lanes - multithreading in Lua" />
+  <meta name="keywords" content="Lua, Library, Multithreading, Threads, Rocks" />
+
+  <title>Lua Lanes - multithreading in Lua</title>
+</head>
+
+<body>
+<div class="header">
+<hr />
+
+<center>
+<table summary="Lua logo">
+  <tbody>
+    <tr>
+      <td align="center">
+      <a href="http://www.lua.org">
+        <img src="http://akauppi.googlepages.com/multi.png" alt="Lua" align="middle" border="0" height="120" width="128" />
+        <img src="http://akauppi.googlepages.com/multi.png" alt="Lua" align="middle" border="0" height="120" width="128" />
+        <img src="http://akauppi.googlepages.com/multi.png" alt="Lua" align="middle" border="0" height="120" width="128" />
+        <img src="http://akauppi.googlepages.com/multi.png" alt="Lua" align="middle" border="0" height="120" width="128" />
+        <img src="http://akauppi.googlepages.com/multi.png" alt="Lua" align="middle" border="0" height="120" width="128" />
+      </a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top"><h1>Lua Lanes - multithreading in Lua</h1>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="bar">
+  <a href="#description">Description</a> &middot;
+  <a href="#systems">Supported systems</a> &middot;
+  <a href="#installing">Building and Installing</a>
+</p><p class="bar">
+  <a href="#creation">Creation</a> &middot;
+  <a href="#status">Status</a> &middot;
+  <a href="#results">Results and errors</a>
+</p><p class="bar">
+  <a href="#cancelling">Cancelling</a> &middot;
+  <a href="#finalizers">Finalizers</a> &middot;
+  <a href="#lindas">Lindas</a> &middot;
+  <a href="#timers">Timers</a> &middot;
+  <a href="#locks">Locks etc.</a>
+</p><p class="bar">
+  <a href="#other">Other issues</a> &middot;
+  <a href="#changes">Change log</a>
+  <!-- ... -->
+
+<p><br/><font size="-1"><i>Copyright &copy; 2007-08 Asko Kauppi. All rights reserved.</i>
+    <br>Lua Lanes is published under the same <A HREF="http://en.wikipedia.org/wiki/MIT_License">MIT license</A> as Lua 5.1.
+    </p><p>This document was revised on 23-Jan-09, and applies to version 2.0.3.
+</font></p>
+
+</center>
+</div>
+
+
+<!-- description +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+<h2 id="description">Description</h2>
+
+<p>Lua Lanes is a Lua extension library providing
+    the possibility to run multiple Lua states in parallel. It is intended to
+    be used for optimizing performance on multicore CPU's and to study ways to make Lua programs naturally parallel to begin with.
+</p><p>
+    Lanes is included into your software by the regular
+    <tt>require "lanes"</tt> method. No C side programming is needed; all APIs are Lua side, and most existing extension modules should
+    work seamlessly together with the multiple lanes.
+</p><p>
+    See <A HREF="comparison.html">comparison</A> of Lua Lanes with other Lua multithreading solutions.
+</p><p>
+    <h3>Features:</h3>
+
+  <ul>
+    <li>Lanes have separated data, by default. Shared data is possible with Linda objects.
+    </li>
+    <li>Communications is separate of threads, using Linda objects.
+    </li>
+    <li>Data passing uses fast inter-state copies (no serialization required)</li>
+    </li>
+    <li>"Deep userdata" concept, for sharing userdata over multiple lanes
+    </li>
+    <li>Millisecond level timers, integrated with the Linda system.
+    </li>
+    <li>Threads can be given priorities -2..+2 (default is 0).
+    </li>
+    <li>Lanes are cancellable, with proper cleanup.
+    </li>
+    <li>No application level locking - ever!
+    </li>
+  </ul>
+
+
+<h3>Limitations:</h3>
+
+  <ul><li>coroutines are not passed between states
+        </li>
+      <li>sharing full userdata between states needs special C side
+          preparations (-&gt; <A HREF="#deep_userdata">deep userdata</A>)
+      </li>
+        <li>network level parallelism not included
+        </li>
+    </ul>
+</p>
+
+
+<!-- systems +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+<h2 id="systems">Supported systems</h2>
+
+<p>Lua Lanes supports the following operating systems:
+
+    <ul>
+        <li>Mac OS X PowerPC / Intel (10.4 and later)</li>
+        <li>Linux x86</li>
+        <li>Windows 2000/XP and later <font size="-1">(MinGW or Visual C++ 2005/2008)</font></li>
+<!--
+    Other OS'es here once people help test them. (and the tester's name)
+    
+    Win64, BSD, Linux x64, Linux embedded, QNX, Solaris, ...
+-->
+    </ul>
+    
+    <p>The underlying threading code can be compiled either towards Win32 API 
+    or <a TARGET="_blank" HREF="http://en.wikipedia.org/wiki/POSIX_Threads">Pthreads</a>. Unfortunately, thread prioritation under Pthreads is a JOKE, 
+    requiring OS specific tweaks and guessing undocumented behaviour. Other
+    features should be portable to any modern platform.
+    </p>
+</p>
+
+
+<!-- installing +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+<h2 id="installing">Building and Installing</h2>
+
+<p>Lua Lanes is built simply by <tt>make</tt> on the supported platforms
+(<tt>make-vc</tt> for Visual C++). See <tt>README</tt> for system specific
+details and limitations.
+</p>
+
+<p>To install Lanes, all you need are the <tt>lanes.lua</tt> and <tt>lua51-lanes.so|dll</tt>
+files to be reachable by Lua (see LUA_PATH, LUA_CPATH). 
+
+Or use <A HREF="http://www.luarocks.org" TARGET="_blank">Lua Rocks</A> package management.
+</p>
+
+<pre>
+  > luarocks search lanes
+    ... output listing Lua Lanes is there ...
+
+  > luarocks install lanes
+    ... output ...
+</pre>
+
+
+<!-- launching +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+<h2 id="creation">Creation</h2>
+
+<p>The following sample shows preparing a function for parallel calling, and
+calling it with varying arguments. Each of the two results is calculated in
+a separate OS thread, parallel to the calling one. Reading the results
+joins the threads, waiting for any results not already there.
+</p>
+
+<table border=1 bgcolor="#FFFFE0" width=500><tr><td>
+<pre>
+  require "lanes"
+
+  f= lanes.gen( function(n) return 2*n end )
+  a= f(1)
+  b= f(2)
+
+  print( a[1], b[1] )     -- 2    4
+</pre>
+</table>
+
+<p>
+<table border=1 bgcolor="#E0E0FF" cellpadding=10><tr><td>
+    <code>func= lanes.gen( [libs_str | opt_tbl [, ...],] lane_func )
+    <br/><br/>
+    lane_h= func( ... )</code>
+</table>
+</p>
+</p><p>
+    The function returned by <tt>lanes.gen()</tt> is a "generator" for
+    launching any number of lanes. They will share code, options, initial globals,
+    but the particular arguments may vary. Only calling the generator function
+    actually launches a lane, and provides a handle for controlling it.
+<!--
+</p>
+<p>This prepares <tt>lane_func</tt> to be called in parallel. It does not yet start
+anything, but merely returns a <i>generator function</i> that can be called
+any number of times, with varying parameters. Each call will spawn a new lane.
+-->
+</p><p>
+Lanes automatically copies upvalues over to the new lanes, so you
+need not wrap all the required elements into one 'wrapper' function. If
+<tt>lane_func</tt> uses some local values, or local functions, they will be there
+also in the new lanes.
+</p><p>
+    <code>libs_str</code> defines the standard libraries made available to the
+    new Lua state:
+    <table>
+        <tr><td/><td>(nothing)</td><td>no standard libraries (default)</td></tr>
+        <tr><td width=40><td><tt>"base"</tt> or <tt>""</tt></td>
+            <td>root level names, <tt>print</tt>, <tt>assert</tt>, <tt>unpack</tt> etc.</td></tr>
+        <tr><td/><td><tt>"coroutine"</tt></td><td><tt>coroutine.*</tt> namespace <font size="-1">(part of base in Lua 5.1)</font></td></tr>
+        <tr><td/><td><tt>"debug"</tt></td><td><tt>debug.*</tt> namespace</td></tr>
+        <tr><td/><td><tt>"io"</tt></td><td><tt>io.*</tt> namespace</td></tr>
+        <tr><td/><td><tt>"math"</tt></td><td><tt>math.*</tt> namespace</td></tr>
+        <tr><td/><td><tt>"os"</tt></td><td><tt>os.*</tt> namespace</td></tr>
+        <tr><td/><td><tt>"package"</tt></td><td><tt>package.*</tt> namespace and <tt>require</tt></td></tr>
+        <tr><td/><td><tt>"string"</tt></td><td><tt>string.*</tt> namespace</td></tr>
+        <tr><td/><td><tt>"table"</tt></td><td><tt>table.*</tt> namespace</td></tr>
+        <br/>
+        <tr><td/><td><tt>"*"</tt></td><td>all standard libraries</td></tr>
+    </table>
+
+</p><p>
+    Initializing the standard libs takes a bit of time at each lane invocation.
+    This is the main reason why "no libraries" is the default.
+</p><p>
+
+    <code>opt_tbl</code> is a collection of named options to control the way
+    lanes are run:
+</p><p>
+  <table>
+    <tr valign=top><td/><td>
+        <code>.cancelstep</code> <br/><nobr>N / true</nobr></td>
+    <td>
+    By default, lanes are only cancellable when they enter a pending
+    <tt>:receive()</tt> or <tt>:send()</tt> call.
+    With this option, one can set cancellation check to occur every <tt>N</tt>
+    Lua statements. The value <tt>true</tt> uses a default value (100).
+    </td></tr>
+
+    <tr valign=top><td/><td>
+        <code>.globals</code> <br/>globals_tbl</td>
+    <td>
+    Sets the globals table for the launched threads. This can be used for giving
+    them constants.
+    </p><p>
+    The global values of different lanes are in no manner connected;
+    modifying one will only affect the particular lane.
+    </td></tr>
+
+    <tr valign=top><td width=40><td>
+        <code>.priority</code> <br/><nobr>-2..+2</nobr></td>
+        <td>The priority of lanes generated. -2 is lowest, +2 is highest.
+        <p>
+    Implementation and dependability of priorities varies
+    by platform. Especially Linux kernel 2.6 is not supporting priorities in user mode.
+    </td></tr>
+  </table>
+  
+</p>
+
+<h3>Free running lanes</h3>
+
+<p>
+The lane handles are allowed to be 'let loose'; in other words you may execute
+a lane simply by:
+
+<pre>
+    lanes.gen( function() ... end ) ()
+</pre>
+
+Normally, this kind of lanes will be in an eternal loop handling messages.
+Since the lane handle is gone,
+there is no way to control such a lane from the outside, nor read its potential
+return values. Then again, such a lane does not even normally return.
+</p>
+
+
+<!-- status +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+<h2 id="status">Status</h2>
+
+<table border=1 bgcolor="#E0E0FF" cellpadding=10><tr><td>
+    <code>str= lane_h.status</code>
+</table>
+
+<p>The current execution state of a lane can be read via its <tt>status</tt>
+member, providing one of these values: <sup>(<a href="#2">2</a></sup>
+
+    <table>
+        <tr><td width=40><td><tt>"pending"</tt></td><td>not started, yet</td></tr>
+        <tr><td/><td><tt>"running"</tt></td><td>running</td></tr>
+        <tr><td/><td><tt>"waiting"</tt></td><td>waiting at a Linda <tt>:receive()</tt> or <tt>:send()</tt></td></tr>
+        <tr><td/><td><tt>"done"</tt></td><td>finished executing (results are ready)</td></tr>
+        <tr><td/><td><tt>"error"</tt></td><td>met an error (reading results will propagate it)</td></tr>
+        <tr><td/><td><tt>"cancelled"</tt></td><td>received cancellation and finished itself</td></tr>
+    </table>
+</p><p>
+    This is similar to <tt>coroutine.status</tt>, which has: <tt>"running"</tt> /
+    <tt>"suspended"</tt> / <tt>"normal"</tt> / <tt>"dead"</tt>. Not using the
+    exact same names is intentional.
+</p>
+
+
+<!-- results +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+<h2 id="results">Results and errors</h2>
+
+<p>A lane can be waited upon by simply reading its results. This can be done
+in two ways.
+</p><p>
+
+<table border=1 bgcolor="#E0E0FF" cellpadding=10><tr><td>
+    <code>[val]= lane_h[1]</code>
+</table>
+<p>
+Makes sure lane has finished, and gives its first (maybe only) return value.
+Other return values will be available in other <tt>lane_h</tt> indices.
+</p><p>
+If the lane ended in an error, it is propagated to master state at this place.
+</p>
+
+<table border=1 bgcolor="#E0E0FF" cellpadding=10><tr><td>
+    <code>[...]|[nil,err,stack_tbl]= lane_h:join( [timeout_secs] )</code>
+</table>
+<p>
+Waits until the lane finishes, or <tt>timeout</tt> seconds have passed.
+Returns <tt>nil</tt> on timeout, <tt>nil,err,stack_tbl</tt> if the lane hit an error,
+or the return values of the lane. Unlike in reading the results in table
+fashion, errors are not propagated.
+</p><p>
+<tt>stack_tbl</tt> is an array of "&lt;filename&gt;:&lt;line&gt;" strings,
+describing where the error was thrown. Use <tt>table.concat()</tt> to format
+it to your liking (or just ignore it).
+</p><p>
+If you use <tt>:join</tt>, make sure your lane main function returns
+a non-nil value so you can tell timeout and error cases apart from succesful
+return (using the <tt>.status</tt> property may be risky, since it might change
+between a timed out join and the moment you read it).
+</p><p>
+
+<table border=1 bgcolor="#FFFFE0" width=500><tr><td>
+<pre>
+  require "lanes"
+
+  f= lanes.gen( function() error "!!!" end )
+  a= f(1)
+
+  --print( a[1] )   -- propagates error
+
+  v,err= a:join()   -- no propagation
+  if v==nil then
+    error( "'a' faced error"..tostring(err) )   -- manual propagation
+  end
+</pre>
+</table>
+
+
+<!-- cancelling +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+<h2 id="cancelling">Cancelling</h2>
+
+<table border=1 bgcolor="#E0E0FF" cellpadding=10><tr><td>
+    <code>bool= lane_h:cancel( [timeout_secs=0.0,] [force_kill_bool=false] )</code>
+</table>
+
+<p>Sends a cancellation request to the lane. If <tt>timeout_secs</tt> is non-zero, waits
+for the request to be processed, or a timeout to occur.
+Returns <tt>true</tt> if the lane was already done (in <tt>"done"</tt>, <tt>"error"</tt> or <tt>"cancelled"</tt> status)
+or if the cancellation was fruitful within timeout period.
+</p><p>
+If the lane is still running and <tt>force_kill</tt> is <tt>true</tt>, the 
+OS thread running the lane is forcefully killed. This means no GC, and should
+generally be the last resort.
+</p>
+<p>Cancellation is tested before going to sleep in <tt>receive()</tt> or <tt>send()</tt> calls
+and after executing <tt>cancelstep</tt> Lua statements. A currently pending <tt>receive</tt>
+or <tt>send</tt> call is currently not awakened, and may be a reason for a non-detected cancel.
+</p>
+
+
+<!-- finalizers +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+<h2 id="finalizers">Finalizers</h2>
+
+<table border=1 bgcolor="#E0E0FF" cellpadding=10><tr><td>
+    <code>set_finalizer( finalizer_func )</code>
+    <br/><br/>
+    <code>void= finalizer_func( [error] )</code>
+</table>
+
+<p>The <tt>error</tt> call is used for throwing exceptions in Lua. What Lua
+does not offer, however, is scoped <a href="http://en.wikipedia.org/wiki/Finalizer">finalizers</a> 
+that would get called when a certain block of instructions gets exited, whether
+through peaceful return or abrupt <tt>error</tt>.
+</p>
+<p>Since 2.0.3, Lanes prepares a function <tt>set_finalizer</tt> for doing this. 
+Any functions given to it will be called in the lane Lua state, just prior to 
+closing it. They are not called in any particular order.
+</p>
+<p>An error in a finalizer itself overrides the state of the regular chunk
+(in practise, it would be highly preferable <i>not</i> to have errors in finalizers). 
+If one finalizer errors, the others may not get called.
+</p>
+
+
+<!-- lindas +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+<h2 id="lindas">Lindas</h2>
+
+<p>Communications between lanes is completely detached from the lane handles
+themselves. By itself, a lane can only provide return values once it's finished,
+or throw an error. Needs to communicate during runtime are handled by <A HREF="http://en.wikipedia.org/wiki/Linda_%28coordination_language%29" TARGET="_blank">Linda objects</A>, which are 
+<A HREF="#deep_userdata">deep userdata</A> instances. They can be provided to a lane
+as startup parameters, upvalues or in some other Linda's message.
+</p><p>
+Access to a Linda object means a lane can read or write to any of its data
+slots. Multiple lanes can be accessing the same Linda in parallel. No application
+level locking is required; each Linda operation is atomic.
+</p><p>
+
+<table border=1 bgcolor="#FFFFE0" width=500><tr><td>
+<pre>
+  require "lanes"
+
+  local linda= lanes.linda()
+
+  local function loop( max )
+    for i=1,max do
+        print( "sending: "..i )
+        linda:send( "x", i )    -- linda as upvalue
+    end
+  end
+  
+  a= lanes.gen("",loop)( 10000 )
+
+  while true do
+    local val= linda:receive( 3.0, "x" )    -- timeout in seconds&nbsp;
+    if val==nil then
+        print( "timed out" )
+        break
+    end
+    print( "received: "..val )
+  end
+</pre>
+</table>
+
+</p>
+<p>Characteristics of the Lanes implementation of Lindas are:
+
+<ul>
+    <li>keys can be of number, string or boolean type
+    </li>
+    <li>values can be any type supported by inter-state copying (same limits
+    as for function parameters and upvalues)
+    </li>
+    <li>consuming method is <tt>:receive</tt> (not in)
+    </li>
+    <li>non-consuming method is <tt>:get</tt> (not rd)
+    </li>
+    <li>two producer-side methods: <tt>:send</tt> and <tt>:set</tt> (not out)
+    </li>
+    <li><tt>send</tt> allows for sending multiple values -atomically- to a
+    given key
+    </li>
+    <li><tt>receive</tt> can wait for multiple keys at once
+    </li>
+    <li>individual keys' queue length can be limited, balancing speed differences
+    in a producer/consumer scenario (making <tt>:send</tt> wait)
+    </li>
+</ul>
+</p>
+
+<p>
+<table border=1 bgcolor="#E0E0FF" cellpadding=10><tr><td>
+    <code>h= lanes.linda()</code>
+    <br/><br/>
+    <code>bool= h:send( [timeout_secs,] key, ... )</code>
+    <br/>
+    <code>[val, key]= h:receive( [timeout_secs,] key [, ...] )</code>
+    <br/><br/>
+    <code>= h:limit( key, n_uint )</code>
+</table>
+
+<p>The <tt>send</tt> and <tt>receive</tt> methods use Linda keys as FIFO stacks
+(first in, first out). Timeouts are given in seconds (millisecond accuracy).
+If using numbers as the first Linda key, one must explicitly give <tt>nil</tt>
+as the timeout parameter to avoid ambiguities.
+</p><p>
+By default, stack sizes are unlimited but limits can be
+enforced using the <tt>limit</tt> method. This can be useful to balance execution
+speeds in a producer/consumer scenario.
+</p><p>
+Note that any number of lanes can be reading or writing a Linda. There can be
+many producers, and many consumers. It's up to you.
+</p>
+<p><tt>send</tt> returns <tt>true</tt> if the sending succeeded, and <tt>false</tt>
+if the queue limit was met, and the queue did not empty enough during the given
+timeout.
+</p><p>
+Equally, <tt>receive</tt> returns a value and the key that provided the value, 
+or nothing for timeout. Note that <tt>nil</tt>s can be sent and received;
+the <tt>key</tt> value will tell it apart from a timeout.
+</p><p>
+Multiple values can be sent to a given key at once, atomically (the send will
+fail unless all the values fit within the queue limit). This can be useful for
+multiple producer scenarios, if the protocols used are giving data in streams
+of multiple units. Atomicity avoids the producers from garbling each others
+messages, which could happen if the units were sent individually.
+</p><p>
+
+When receiving from multiple slots, the keys are checked in order, which can
+be used for making priority queues.
+</p><p>
+
+<table border=1 bgcolor="#E0E0FF" cellpadding=10><tr><td>
+    <code>linda_h:set( key, [val] )</code>
+    <br/>
+    <code>[val]= linda_h:get( key )</code>
+</table>
+
+</p><p>
+The table access methods are for accessing a slot without queuing or consuming.
+They can be used for making shared tables of storage among the lanes.
+</p><p>
+Writing to a slot overwrites existing value, and clears any possible queued 
+entries. Table access and <tt>send</tt>/<tt>receive</tt> can be used together; 
+reading a slot essentially peeks the next outcoming value of a queue.
+</p>
+
+<!--
+<p>
+<table border=1 bgcolor="#E0E0FF" cellpadding=10><tr><td>
+    <code>lightuserdata= linda_h:deep()</code>
+</table>
+
+<p>There is one more method that is not required in applications, but
+discussing it is good for a preview of how deep userdata works.
+</p><p>
+Because proxy objects (<tt>linda_h</tt>) are just pointers to the real, deep
+userdata, they cannot be used to identify a certain Linda from the others.
+The internal timer system needs to do this, and the <tt>:deep()</tt> method
+has been added for its use. It returns a light userdata pointing to the 
+<i>actual</i> deep object, and thus can be used for seeing, which proxies actually
+mean the same underlying object. You might or might not need a similar system
+with your own deep userdata.
+</p>
+-->
+
+
+<h3>Granularity of using Lindas</h3>
+
+<p>A single Linda object provides an infinite number of slots, so why would
+you want to use several?
+</p><p>There are some important reasons:
+
+<ul>
+    <li>Access control. If you don't trust certain code completely, or just
+    to modularize your design, use one Linda for one usage and another one
+    for the other. This keeps your code clear and readable. You can pass
+    multiple Linda handles to a lane with practically no added cost.
+    </li>
+    
+    <li>Namespace control. Linda keys have a "flat" namespace, so collisions
+    are possible if you try to use the same Linda for too many separate uses.
+    </li>
+    
+    <li>Performance. Changing any slot in a Linda causes all pending threads
+    for that Linda to be momentarily awakened (at least in the C level). 
+    This can degrade performance due to unnecessary OS level context switches.
+    </li>
+</ul>
+
+On the other side, you need to use a common Linda for waiting for multiple
+keys. You cannot wait for keys from two separate Linda objects at the same
+time.
+</p><p>
+<font size="-1">Actually, you can. Make separate lanes to wait each, and then multiplex those
+events to a common Linda, but... :).</font>
+</p>
+
+
+<!-- timers +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+<h2 id="timers">Timers</h2>
+
+<table border=1 bgcolor="#E0E0FF" cellpadding=10><tr><td>
+    <code>= lanes.timer( linda_h, key, date_tbl|first_secs [,period_secs] )</code>
+</table>
+
+<p>
+Timers can be run once, or in a reoccurring fashion (<tt>period_secs > 0</tt>). 
+The first occurrence can be given either as a date or as a relative delay in seconds. 
+The <tt>date</tt> table is like what <tt>os.date("*t")</tt> returns, in the 
+local time zone.
+</p><p>
+Once a timer expires, the <tt>key</tt> is set with the current time
+(in seconds, same offset as <tt>os.time()</tt> but with millisecond accuracy). 
+The key can be waited upon using the regular Linda <tt>:receive()</tt>
+method.
+</p><p>
+A timer can be stopped simply by <tt>first_secs=0</tt> and no period.
+</p><p>
+
+<table border=1 bgcolor="#FFFFE0" width=500><tr><td>
+<pre>
+  require "lanes"
+
+  local linda= lanes.linda()
+
+  -- First timer once a second, not synchronized to wall clock
+  --
+  lanes.timer( linda, "sec", 1, 1 )
+
+  -- Timer to a future event (next even minute); wall clock synchronized&nbsp;
+  --
+  local t= os.date( "*t", os.time()+60 )    -- now + 1min
+  t.sec= 0
+
+  lanes.timer( linda, "min", t, 60 )   -- reoccur every minute (sharp)
+    
+  while true do
+    local v,key= linda:receive( "sec", "min" )
+    print( "Timer "..key..": "..v )
+  end  
+</pre>
+</table>
+
+</p><p>
+NOTE: Timer keys are set, not queued, so missing a beat is possible especially
+if the timer cycle is extremely small. The key value can be used to know the 
+actual time passed.
+</p><p>
+<table>
+    <tr><td valign=top><nobr><i>Design note:</i></nobr>&nbsp;</td>
+        <td>
+<font size="-1">
+Having the API as <tt>lanes.timer()</tt> is intentional. Another
+alternative would be <tt>linda_h:timer()</tt> but timers are not traditionally
+seen to be part of Lindas. Also, it would mean any lane getting a Linda handle
+would be able to modify timers on it. A third choice could
+be abstracting the timers out of Linda realm altogether (<tt>timer_h= lanes.timer( date|first_secs, period_secs )</tt>)
+but that would mean separate waiting functions for timers, and lindas. Even if
+a linda object and key was returned, that key couldn't be waited upon simultaneously
+with one's general linda events.
+The current system gives maximum capabilities with minimum API, and any smoothenings
+can easily be crafted in Lua at the application level.
+</font>
+        </td>
+    </tr>
+</table>
+</p>
+
+
+<!-- locks +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+<h2 id="locks">Locks etc.</h2>
+
+<p>
+Lanes does not generally require locks or critical sections to be used, at all.
+If necessary, a limited queue can be used to emulate them. <tt>lanes.lua</tt>
+offers some sugar to make it easy:
+</p><p>
+
+<table border=1 bgcolor="#E0E0FF" cellpadding=10><tr><td><pre>
+  lock_func= lanes.genlock( linda_h, key [,N_uint=1] )
+
+  lock_func( M_uint )     -- acquire
+    ..
+  lock_func( -M_uint )    -- release
+</table>
+</p><p>
+
+The generated function acquires M entries from the N available, or releases
+them if the value is negative. The acquiring call will suspend the lane, if necessary.
+Use <tt>M=N=1</tt> for a critical section lock (only one lane allowed to enter).
+</p><p>
+
+Note: The locks generated are <u>not recursive</u>. That would need another
+kind of generator, which is currently not implemented.
+</p><p>
+
+Similar sugar exists for atomic counters:
+</p><p>
+
+<table border=1 bgcolor="#E0E0FF" cellpadding=10><tr><td><pre>
+  atomic_func= lanes.genatomic( linda_h, key [,initial_num=0.0] )
+
+  new_num= atomic_func( [diff_num=+1.0] )
+</table>
+</p><p>
+
+Each time called, the generated function will change <tt>linda[key]</tt> 
+atomically, without other lanes being able to interfere. The new value is
+returned. You can use either <tt>diff 0.0</tt> or <tt>get</tt> to just read the current
+value.
+</p><p>
+
+Note that the generated functions can be passed on to other lanes.
+</p>
+
+
+<!-- others +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+<h2 id="other">Other issues</h2>
+
+<h3>Limitations on data passing</h3>
+
+<p>Data passed between lanes (either as starting parameters, return values, upvalues or via Lindas) must conform to the following:
+</p>
+<p><ul>
+	<li>Booleans, numbers, strings, light userdata, Lua functions and tables of such can always be passed.
+	</li>
+	<li>Cyclic tables and/or duplicate references are allowed and reproduced appropriately, 
+	but only <u>within the same transmission</u>.
+	   <ul>
+	       <li>using the same source table in multiple Linda messages keeps no ties between the tables
+	       </li>
+	   </ul>
+    </li>
+    <li>Objects (tables with a metatable) are copyable between lanes.
+        <ul>
+            <li>metatables are assumed to be immutable; they are internally indexed and only copied once
+            per each type of objects per lane
+            </li>
+        </ul>
+    </li>
+    <li>C functions (<tt>lua_CFunction</tt>) referring to <tt>LUA_ENVIRONINDEX</tt> or <tt>LUA_REGISTRYINDEX</tt> might not
+    work right in the target
+        <ul>
+            <li>rather completely re-initialize a module with <tt>require</tt> in the target lane
+            </li>
+        </ul>
+    </li>
+    <li>Full userdata can be passed only if it's prepared using the <A HREF="#deep_userdata">deep userdata</A>
+        system, which handles its lifespan management
+        <ul>
+            <li>in particular, lane handles cannot be passed between lanes
+            </li>
+        </ul>
+    </li>
+    <li>coroutines cannot be passed
+    </li>
+</ul>
+</p>
+
+
+<h3>Required of module makers</h3>
+
+<p>
+Most Lua extension modules should work unaltered with Lanes.
+If the module simply ties C side features to Lua, everything is fine without
+alterations. The <tt>luaopen_...()</tt> entry point will be called separately for each
+lane, where the module is <tt>require</tt>'d from.
+</p><p>
+If it, however, also does one-time C side initializations, these
+should be covered into a one-time-only construct such as below.
+</p><p>
+
+<table><tr><td width=40>
+    <td bgcolor="#ffffe0">
+<pre>
+ int luaopen_module( lua_State *L )
+ {
+    static char been_here;  /* 0 by ANSI C */
+    
+    /* Calls to 'require' serialized by Lanes; this is safe.&nbsp;&nbsp;
+    */
+    if (!been_here) {
+        been_here= 1;
+        ... one time initializations ...
+    }
+    
+    ... binding to Lua ...
+ }
+</pre>
+</td></tr></table>
+</p>
+
+
+<h3 id="shared_userdata">Deep userdata in your own apps</h3>
+
+<p>
+The mechanism Lanes uses for sharing Linda handles between separate Lua states
+can be used for custom userdata as well. Here's what to do.
+</p>
+<ol>
+    <li>Provide an <i>identity function</i> for your userdata, in C. This function is
+used for creation and deletion of your deep userdata (the shared resource),
+and for making metatables for the state-specific proxies for accessing it.
+Take a look at <tt>linda_id</tt> in <tt>lanes.c</tt>.
+    </li>
+    <li>Create your userdata using <tt>luaG_deep_userdata()</tt>, which is
+    a Lua-callable function. Given an <tt>idfunc</tt>, it sets up the support
+    structures and returns a state-specific proxy userdata for accessing your
+    data. This proxy can also be copied over to other lanes.
+    </li>
+    <li>Accessing the deep userdata from your C code, use <tt>luaG_todeep()</tt>
+    instead of the regular <tt>lua_touserdata()</tt>.
+    </li>
+</ol>
+
+<p>Deep userdata management will take care of tying to <tt>__gc</tt> methods,
+and doing reference counting to see how many proxies are still there for 
+accessing the data. Once there are none, the data will be freed through a call
+to the <tt>idfunc</tt> you provided.
+</p>
+<p><b>NOTE</b>: The lifespan of deep userdata may exceed that of the Lua state
+that created it. The allocation of the data storage should not be tied to
+the Lua state used. In other words, use <tt>malloc</tt>/<tt>free</tt> or
+similar memory handling mechanism.
+</p>
+
+
+<h3>Lane handles don't travel</h3>
+
+<p>
+Lane handles are not implemented as deep userdata, and cannot thus be
+copied across lanes. This is intentional; problems would occur at least when
+multiple lanes were to wait upon one to get ready. Also, it is a matter of
+design simplicity.
+</p><p>
+The same benefits can be achieved by having a single worker lane spawn all
+the sublanes, and keep track of them. Communications to and from this lane
+can be handled via a Linda.
+</p>
+
+
+<h3>Beware with print and file output</h3>
+
+<p>
+In multithreaded scenarios, giving multiple parameters to <tt>print()</tt>
+or <tt>file:write()</tt> may cause them to be overlapped in the output,
+something like this:
+
+<pre>
+  A:  print( 1, 2, 3, 4 )
+  B:  print( 'a', 'b', 'c', 'd' )
+  
+  1   a   b   2   3   c   d   4
+</pre>
+
+Lanes does not protect you from this behaviour. The thing to do is either to
+concentrate your output to a certain lane per stream, or to concatenate output
+into a single string before you call the output function.
+</p>
+
+
+<h3 id="performance">Performance considerations</h3>
+
+<p>
+Lanes is about making multithreading easy, and natural in the Lua state of mind.
+Expect performance not to be an issue, if your program is logically built.
+Here are some things one should consider, if best performance is vital:
+</p><p>
+<ul>
+    <li>Data passing (parameters, upvalues, Linda messages) is generally fast,
+    doing two binary state-to-state copies (from source state to hidden state,
+    hidden state to target state). Remember that not only the function you 
+    specify but also its upvalues, their upvalues, etc. etc. will get copied.
+    </li>
+    <li>Lane startup is fast (1000's of lanes a second), depending on the
+    number of standard libraries initialized. Initializing all standard libraries
+    is about 3-4 times slower than having no standard libraries at all. If you
+    throw in a lot of lanes per second, make sure you give them minimal necessary
+    set of libraries.
+    </li>
+    <li>Waiting Lindas are woken up (and execute some hidden Lua code) each
+    time <u>any</u> key in the Lindas they are waiting for are changed. This
+    may give essential slow-down (not measured, just a gut feeling) if a lot
+    of Linda keys are used. Using separate Linda objects for logically separate
+    issues will help (which is good practise anyhow).
+    </li>
+    <li>Linda objects are light. The memory footprint is two OS-level signalling
+    objects (<tt>HANDLE</tt> or <tt>pthread_cond_t</tt>) for each, plus one
+    C pointer for the proxies per each Lua state using the Linda. Barely nothing.
+    </li>
+    <li>Timers are light. You can probably expect timers up to 0.01 second
+    resolution to be useful, but that is very system specific. All timers are
+    merged into one main timer state (see <tt>timer.lua</tt>); no OS side
+    timers are utilized.
+    </li>
+    <li>Lindas are hashed to a fixed number of "keeper states", which are a locking entity. 
+    If you are using a lot of Linda objects,
+    it may be useful to try having more of these keeper states. By default,
+    only one is used (see <tt>KEEPER_STATES_N</tt>), but this is an implementation detail.
+    </li>
+</ul>
+</p>
+
+
+<h3 id="cancelling_cancel">Cancelling cancel</h3>
+
+<p>
+Cancellation of lanes uses the Lua error mechanism with a special lightuserdata
+error sentinel. 
+If you use <tt>pcall</tt> in code that needs to be cancellable
+from the outside, the special error might not get through to Lanes, thus
+preventing the Lane from being cleanly cancelled. You should throw any
+lightuserdata error further.
+</p><p>
+This system can actually be used by application to detect cancel, do your own
+cancellation duties, and pass on the error so Lanes will get it. If it does
+not get a clean cancellation from a lane in due time,
+it may forcefully kill the lane.
+</p><p>
+The sentinel is exposed as <tt>lanes.cancel_error</tt>, if you wish to use
+its actual value.
+</p>
+
+
+
+<!-- change log +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+<h2 id="changes">Change log</h2>
+
+<p>
+Jan-2009 (2.0.3):
+<ul>
+  <li>Added 'finalizer' to lane options. (TBD: not implemented yet!)
+  </li>
+  <li>Added call stack to errors coming from a lane.
+  </li>
+</ul>
+
+Jul-2008 (2.0):
+<ul>
+  <li>Too many changes to list (you'll need to re-read this manual)
+  </li>
+</ul>
+</p>
+
+<!-- footnotes +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<hr/>
+
+<p>For feedback, questions and suggestions:
+<UL>
+    <li><A HREF="http://luaforge.net/projects/lanes">Lanes @ LuaForge</A></li>
+    <li><A HREF="mailto:akauppi@gmail.com">the author</A></li>
+</UL>
+</p>
+
+<p><br/></p>
+
+</body>
+</html>

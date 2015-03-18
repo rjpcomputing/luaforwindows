@@ -1,0 +1,14 @@
+$#include "hello.hpp"
+
+namespace Hello {
+	
+	class HelloWorld {
+		HelloWorld(bool isquiet);
+		void _set_quiet(bool value);
+		bool _get_quiet();
+		long _get_count();
+		std::string say_hello_to(std::string name);
+	};
+
+};
+

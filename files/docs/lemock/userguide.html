@@ -1,0 +1,425 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META NAME="generator" CONTENT="http://txt2tags.sf.net">
+<LINK REL="stylesheet" TYPE="text/css" HREF="style.css">
+<TITLE>LeMock</TITLE>
+</HEAD>
+<BODY>
+
+<DIV CLASS="header" ID="header">
+<H1>LeMock</H1>
+</DIV>
+
+<DIV CLASS="body" ID="page-userguide">
+<ul id="main_menu">
+  <li id="main_menu-README"><a    href="README.html"   >Readme</a></li>
+  <li id="main_menu-COPYRIGHT"><a href="COPYRIGHT.html">License</a></li>
+  <li id="main_menu-userguide"><a href="userguide.html">Userguide</a></li>
+  <li id="main_menu-HISTORY"><a   href="HISTORY.html"  >History</a></li>
+  <li id="main_menu-DEVEL"><a     href="DEVEL.html"    >Devel</a></li>
+</ul>
+<DIV CLASS="toc" ID="toc">
+  <UL>
+  <LI><A HREF="#toc1">Introduction</A>
+  <LI><A HREF="#toc2">The Mock Object</A>
+    <UL>
+    <LI><A HREF="#toc3">Actions</A>
+    <LI><A HREF="#anyargs">Anyargs</A>
+    </UL>
+  <LI><A HREF="#toc5">The Controller</A>
+    <UL>
+    <LI><A HREF="#toc6">Returns &amp; Error</A>
+    <LI><A HREF="#toc7">Label &amp; Depend</A>
+    <LI><A HREF="#toc8">Times</A>
+    <LI><A HREF="#toc9">Close</A>
+    </UL>
+  <LI><A HREF="#toc10">Tricks</A>
+    <UL>
+    <LI><A HREF="#toc11">Method Overloading</A>
+    </UL>
+  </UL>
+
+</DIV>
+<A NAME="toc1"></A>
+<H1>Introduction</H1>
+<P>
+Mock objects replace difficult external objects during unit testing by
+simulating the behaviors of the replaced objects. This is done by first
+recording actions and their responses with the mock objects, and then
+switching to replay mode. During replay mode the mock objects simulate the
+replaced objects by looking up actions and replaying the recorded
+responses, and finally verifying that all expected actions where completely
+replayed.
+</P>
+<P>
+Actions are stored in a list in a special controller object. During replay
+the list is searched in recording order for the first matching action that
+can be replayed.
+</P>
+<P>
+Restrictions on the actions can be inserted during the recording phase. An
+action can have a maximum count of how many times it will be replayed, and
+a minimum count of how many times it must be replayed to be satisfied. An
+action can depend on any set of other actions, and can not be replayed
+before all of its depended actions are satisfied. An action can close any
+set of actions when it is replayed, which stops all further replaying of
+the closed actions. This is good for simulating state changes.
+</P>
+<H3>Example</H3>
+<P>
+This example tests that the insert_data function of the foo module handles
+a missing data base table gracefully.
+</P>
+<PRE>
+-- Setup
+require 'lemock'
+local mc = lemock.controller()
+local sqlite3 = mc:mock()
+local env     = mc:mock()
+local con     = mc:mock()
+package.loaded.luasql = nil
+package.preload['luasql.sqlite3'] = function ()
+    luasql = {}
+    luasql.sqlite3 = sqlite3
+    return sqlite3
+end
+
+-- Record
+sqlite3()                 ;mc :returns(env)
+env:connect('/data/base') ;mc :returns(con)
+con:execute(mc.ANYARGS)   ;mc :error('LuaSQL: no such table')
+con:close()
+env:close()
+
+-- Replay
+mc:replay()
+require 'foo'
+local res = foo.insert_data(17)
+assert(res==false)
+
+--Verify
+mc:verify()
+</PRE>
+<P></P>
+<P>
+First a controller is created. Then three mock objects are created, one for
+the sqlite3 module, and two for objects returned by the (simulated) module.
+</P>
+<P>
+Then a preloader for the sqlite3 module is installed, which returns the
+sqlite3 mock object instead of the actual sqlite3 module.
+</P>
+<P>
+In the record phase the expected calls and their return values (or thrown
+errors) are recorded. The order is not significant, so this simplified test
+will not detect if the close method is called before the execute method.
+</P>
+<P>
+In the replay phase the tested module is loaded and executed. It will use
+the mock objects instead of the real data base, and if it makes any
+unrecorded calls, an error is thrown.
+</P>
+<P>
+The verify phase asserts that all recorded actions have been replayed. If
+the foo module for example forgets to call the close method, verify throws
+an error.
+</P>
+<A NAME="toc2"></A>
+<H1>The Mock Object</H1>
+<P>
+Mock objects are empty objects with special Lua meta methods that detect
+actions performed with the object. What happens depends on the state
+(recording or replaying) of the controller which created the mock object.
+During recording the mock object adds the action to the controller's list
+of recorded actions. During replay the mock object looks for a matching
+recorded action that can be replayed, and simulates the action.
+</P>
+<P>
+Some action attributes can not be inferred by the mock objects, for example
+return values. These attributes have to be added afterwards with special
+controller methods, and always affect the last recorded action.
+</P>
+<A NAME="toc3"></A>
+<H2>Actions</H2>
+<P>
+Mock objects detect four types of actions: assignment, indexing, method
+call, and self call. During replay an action will only match if it is the
+very same action, that is, the same type of action performed on the same
+mock object with all the same arguments. There are however
+<A HREF="#anyargs">special arguments</A> that can be used during recording.
+</P>
+<PRE>
+require 'lemock'
+local mc = lemock.controller()
+local m = mc:mock()
+
+m.x = 17    -- assignment
+r = m.x     -- indexing
+m.x(1,2,3)  -- method call
+m:x(1,2,3)  -- method call
+m(1,2,3)    -- self call
+</PRE>
+<A NAME="anyargs"></A>
+<H2>Anyargs</H2>
+<P>
+An <I>anyarg</I> is a special argument used when recording, that will match
+any argument during replay. It can appear anywhere and any times in an
+argument list, or as the argument in an assignment, to replace real
+arguments. There is also <I>anyargs</I>, which will match any number
+(including zero) of any arguments. Anyargs can only appear as the last
+argument of an argument list. Anyarg and anyargs are handy when the actual
+values of the arguments during replay are unimportant or unknown.
+</P>
+<P>
+Anyarg and anyargs are constants defined in the controller object.
+</P>
+<H3>Example</H3>
+<P>
+This example tests that the fetch_data function of module foo waits a while
+and retries when no data is immediately available, and that it updates the
+value of lasttime.
+</P>
+<PRE>
+require 'lemock'
+local mc = lemock.controller()
+local con = mc:mock()
+
+con:poll()           ;mc :returns(nil)
+con:sleep(mc.ANYARG)
+con:poll()           ;mc :returns('123.45')
+con.lasttime = mc.ANYARG
+
+mc:replay()
+require 'foo'
+local res = foo.fetch_data(con)
+assert( math.abs(res-123.45) &lt; 0.0005 )
+
+mc:verify()
+</PRE>
+<A NAME="toc5"></A>
+<H1>The Controller</H1>
+<P>
+The controller's main purpose is to store the recorded actions, create mock
+objects, switch to replay mode, and verify the completion of the replay
+phase. But it is also needed to set or change special action attributes
+during recording.
+</P>
+<P>
+It is possible, although doubtfully useful, to use several controllers in
+parallel during a single unit test. Each controller maintains its own
+action list and state, and mock objects remember which controller they
+belong to.
+</P>
+<A NAME="toc6"></A>
+<H2>Returns &amp; Error</H2>
+<P>
+The by far most useful special action attribute is the return value.
+Indexing actions can return a single value, while call actions and self
+call actions can return a list of values. The return value is set with the
+<I>returns</I> method, and it is an error to set the return value twice for
+the same action.
+</P>
+<P>
+For purposes of unit testing it is often useful to simulate errors. All
+actions can raise an error, and return an error value (usually a string).
+The return value is set with the <I>error</I> method. An action can not have
+both a return value and raise an error.
+</P>
+<H3>Example</H3>
+<PRE>
+require 'lemock'
+local mc = lemock.controller()
+local m = mc:mock()
+
+m:foo(17)  ;mc :returns(nil, "index out of range")
+m:bar(-1)  ;mc :error("invalid index")
+</PRE>
+<A NAME="toc7"></A>
+<H2>Label &amp; Depend</H2>
+<P>
+Dependencies block actions from replaying until other actions have replayed
+first. They can be used to verify that actions are being replayed in a
+valid order.
+</P>
+<P>
+To add dependencies, actions must first be labeled with one or more
+<I>labels</I>. The same label can be given to several actions. As long as some
+action with the label remains unsatisfied, that label is blocked, and all
+actions depending on that label will not replay.
+</P>
+<H3>Example</H3>
+<P>
+This (contrived) example tests that function draw_square in module foo
+calls all the necessary drawing methods of a square object in a correct
+order. Note that there can be more than one correct order.
+</P>
+<PRE>
+require 'lemock'
+local mc = lemock.controller()
+local square = mc:mock()
+
+square:topleft()   ;mc :label('tl')
+square:topright()  ;mc :label('tr')
+square:botleft()   ;mc :label('bl')
+square:botright()  ;mc :label('br')
+square:leftedge()  ;mc :label('edge') :depend('tl', 'bl')
+square:rightedge() ;mc :label('edge') :depend('tr', 'br')
+square:topedge()   ;mc :label('edge') :depend('tl', 'tr')
+square:botedge()   ;mc :label('edge') :depend('bl', 'br')
+square:fill()      ;mc                :depend('edge')
+
+mc:replay()
+require 'foo'
+foo.draw_square( square )
+
+mc:verify()
+</PRE>
+<P></P>
+<P>
+This example demonstrates two different ways of using dependencies. All the
+corners have unique labels, because each edge depend on a set of specific
+corners. But all the edges have the same label, because the fill operation
+only depends on <I>all</I> edges have been satisfied.
+</P>
+<A NAME="toc8"></A>
+<H2>Times</H2>
+<P>
+The default for a recorded action is to be replayed exactly once.
+<CODE>times(2)</CODE> changes that to exactly two times, and <CODE>times(1,2)</CODE> changes
+it to at least one time and at most two times.
+</P>
+<P>
+When the action has been replayed the least count times it is
+<I>satisfied</I>, which means verify will not complain about it, and it no
+longer blocks actions that depend on this action from being replayed. If
+the least count is zero the action is automatically satisfied and need not
+be replayed at all, i.e., it is optional.
+</P>
+<P>
+When the action has been replayed the most count times it will not replay
+any more. The most replay count can be set to infinity (<CODE>math.huge</CODE> or
+<CODE>1/0</CODE>), in which case the action will never stop replaying.
+</P>
+<P>
+<CODE>anytimes()</CODE> can be used as an alias for <CODE>times(0,1/0)</CODE>, and
+<CODE>atleastonce()</CODE> can be used as an alias for <CODE>times(1,1/0)</CODE>.
+</P>
+<H3>Example</H3>
+<P>
+This example tests that method update is called at least once.
+</P>
+<PRE>
+require 'lemock'
+local mc = lemock.controller()
+local con = mc:mock()
+
+con:log(mc.ANYARGS) ;mc                :anytimes()
+con:update('x',3)   ;mc :returns(true) :atleastonce()
+
+mc:replay()
+require 'foo'
+local watcher = foo.mk_watcher( con )
+watcher:set( 'x', 3 )
+
+mc:verify()
+</PRE>
+<A NAME="toc9"></A>
+<H2>Close</H2>
+<P>
+Close can be used to simulate state changes in a limited way. When an
+action with a close statement is replayed for the first time, it will
+permanently block all labels in its close statement, so that actions with
+these labels no longer replays. This passes on matching to later actions in
+the action list, which may for example have different return values.
+</P>
+<P>
+The closing simply blocks the labels, and it has nothing to do with max
+replay counts or if closed actions have been satisfied or not. Closing an
+unsatisfied action however results in an immediate failure.
+</P>
+<H3>Example</H3>
+<P>
+This example tests that the dump function of module foo calls the myio
+functions in a correct order. The read function can be called any number of
+times, until it is closed by the close function.
+</P>
+<PRE>
+require 'lemock'
+local mc = lemock.controller()
+local myio = mc:mock()
+local fs   = mc:mock()
+
+myio.open('abc', 'r') ;mc :returns(fs)
+mc :label('open')
+
+fs:read(mc.ANYARG) ;mc :returns('data')
+mc :atleastonce() :label('read') :depend('open')
+
+fs:close() ;mc :returns(true)
+mc :depend('open') :close('read')
+
+mc:replay()
+require 'foo'
+foo.dump(myio, 'abc', 128)
+
+mc:verify()
+</PRE>
+<A NAME="toc10"></A>
+<H1>Tricks</H1>
+<P>
+Mock objects are completely empty, and do not contain any methods or
+properties of their own. If they did, that would risk shadowing a name of a
+simulated object's method or property. There is however nothing preventing
+users from defining methods and properties in mock objects. This way mock
+objects can be turned into stubs, or a kind of mock–stub hybrid.
+</P>
+<A NAME="toc11"></A>
+<H2>Method Overloading</H2>
+<P>
+Lua does not support method overloading, but it can be (and sometimes is)
+implemented manually by testing of function arguments. This presents a
+problem to LeMock, because it matches exact arguments, and anyargs in not
+sufficient. In this case the mock object can be extended with a dispatcher
+function.
+</P>
+<H3>Example</H3>
+<P>
+This example shows a mock object with an overloaded add function. The stub
+function can not be defined in the usual way, because that would record an
+assignment action; it needs to be defined with <I>rawset</I>.
+</P>
+<PRE>
+require 'lemock'
+local mc = lemock.controller()
+local m = mc:mock()
+
+do
+local function add (a, b)
+    if type(a) == 'number' then
+        return m.add_number(a, b)
+    else
+        return m.add_string(a, b)
+    end
+end
+rawset( m, 'add', add ) -- not recorded
+end -- do
+
+m.add_number(1, 2)         ;mc :returns(3)
+m.add_string('foo', 'bar') ;mc :returns('foobar')
+
+mc:replay()
+assert_equal( 3, m.add(1, 2) )
+assert_equal( 'foobar', m.add('foo', 'bar') )
+
+mc:verify()
+</PRE>
+<HR NOSHADE SIZE=1>
+<P>
+2009-05-31
+</P>
+</DIV>
+
+<!-- html code generated by txt2tags 2.3 (http://txt2tags.sf.net) -->
+<!-- cmdline: txt2tags -t html -\-toc -\-toc-level 2 -i www/userguide.t2t -o htdocs/userguide.html -->
+</BODY></HTML>

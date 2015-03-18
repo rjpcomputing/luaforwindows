@@ -1,0 +1,18 @@
+Description:
+This example shows how to use LuaCom to access the Microsoft
+ActiveX Data Objects (ADO).
+It defines a set of Lua functions (in adolua.lua) to simplify
+the use of the ADO objects.
+
+Files:
+  - adolua.lua: the implementation of a set of Lua functions to simplify
+                the use of the ADO objects.
+  - adotest.lua: a script to test the API that "adolua.lua" provides.
+
+How to run:
+  - Execute the "adotest.lua" script using the LuaCom console:
+       c:\luacom\demo\ado> ..\..\bin\luacom adotest.lua
+  - The following lines should be printed to the standard output:
+     Paul Allen                      606-0606
+     George Bush                     123-4567
+

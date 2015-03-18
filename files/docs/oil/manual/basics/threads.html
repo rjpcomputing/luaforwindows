@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Cooperative Multithreading</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="index.html", title="Basic Concepts">Basics</a>
+				<div class="outside"><div class="inside"><ul>
+					<li><a href="module.html", title="The oil Module">Module</a></li>
+					<li><a href="brokers.html", title="Initializing Brokers">Brokers</a></li>
+					<li><a href="servants.html", title="Registering Servants">Servants</a></li>
+					<li><a href="proxies.html", title="Using Remote Servants">Proxies</a></li>
+					<li><strong>Threads</strong></li>
+				</ul></div></div>
+			</li>
+			<li><a href="../corba/index.html", title="CORBA Support">CORBA</a></li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="../arch/index.html", title="Internal Architecture">Arch</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Cooperative Multithreading</h1>
+<p>Multithreading is the capacity to execute simultaneously multiple executions independently from each other.
+This feature is essential in distributed systems for many reasons.
+For example, threads can be used to service different clients requesting the same service independently, so they do not interfere with each other.
+In this section, we present the multithreading support of OiL and how it is used.</p>
+
+<h2>Coroutines</h2>
+
+<p>Lua does not provide standard support for multithreading.
+However, it provides the concept of coroutines, which can be used to implement a cooperative multithreading infrastructure.
+Unlike preemptive multithreading, as provided by Java or POSIX Threads, the execution switch between threads does not occur automatically.
+Instead the code executed by the coroutine must explicitly signal for execution switch by invocation of operation <code>coroutine.yield()</code>.</p>
+
+<p>Lua coroutines are created by operation <code>coroutine.create(function)</code>.
+The function passed as parameter is the code executed by the coroutine.
+Every time the coroutine executes function <code>coroutine.yield()</code> the coroutine yields the execution to the function that initiated its execution by calling operation <code>coroutine.resume(coroutine)</code>.
+For further information about Lua coroutines, check the chapter on <a href="http://www.lua.org/pil/9.html">Coroutines</a> of the book <a href="http://www.lua.org/pil2/">Programming in Lua</a></p>
+
+<h2>Scheduler</h2>
+
+<p>Coroutines provide means to create independent execution threads, however it is up to the application to manage the execution of these threads.
+To perform this management, OiL uses a coroutine scheduler.
+The scheduler keeps a collection of all the threads of the system.
+These threads are then scheduled for execution, in such way that whenever a coroutine yields its execution, the scheduler chooses another coroutine for execution following a round-robin algorithm.</p>
+
+<p>Since the coroutine scheduler is not part of the standard virtual machine of Lua, it must be created and started by the application.
+This can be done by operation <a href="module.html#main"><code>oil.main</code></a><code>(mainbody)</code> that creates and initiates the execution of the scheduler with a single thread registered that executes the function <code>mainbody</code> provided as parameter.
+After this operations is called, other threads can be created with operation <a href="module.html#newthread"><code>oil.newthread</code></a><code>(function, ...)</code> that register new coroutines to execute the function informed as the first parameter, and starts its execution immediately.
+The scheduler also provides other operations to register or unregister as described <a href="http://loop.luaforge.net/library/thread/Scheduler.lua">here</a>.</p>
+
+<h2>Synchronization</h2>
+
+<p>Cooperative multithreading is far more simple to understand and use.
+For example, the implementation of synchronization mechanisms is far more simple to be implemented.
+In OiL, to implement these mechanisms, we use only operations <code>oil.tasks:suspend()</code> and <code>oil.tasks:resume(thread, ...)</code> provided by the scheduler as illustrated in the example below.</p>
+
+<p>To implement mutual exclusion between a set of cooperative threads that access a shared resource, we can use global variables or other shared memory space to indicate when a thread is using the shared resource and also to register the threads waiting for their turn to use the resource.
+For example, consider the following implementation.</p>
+
+<pre>local Mutex = { waiting = {} }
+  
+function Mutex:enter()
+  local thread = oil.tasks.current
+  if self.inside then
+    self.waiting[thread] = true
+    oil.tasks:suspend()
+  else
+    self.inside = thread
+  end
+end
+
+function Mutex:leave()
+  assert(self.inside == oil.tasks.current)
+  local waiting = next(self.waiting)
+  if waiting then
+    self.waiting[waiting] = nil
+    self.inside = waiting
+    oil.tasks:resume(waiting)
+  else
+    self.inside = nil
+  end
+end</pre>
+
+<p>A similar approach can be used to provide other synchronization mechanisms to common problems like <a href="http://en.wikipedia.org/wiki/Producer-consumer_problem">Producers and Consumers</a></p>
+
+<h2><a name="limitations">Limitations</a></h2>
+
+<p>The multithreading model used by OiL presents two strong limitations.
+The first one is due to a limitation of the coroutines in Lua, which cannot yield execution inside some special places, like metamethods, for interators or C functions exported to Lua.
+A particular case for this is that coroutines cannot yield execution inside a <code><a href="http://www.lua.org/manual/5.1/manual.html#pdf-pcall">pcall</a>(function, ...)</code>.
+Therefore, you usually cannot invoke a remote operation inside such functions because OiL will most likely generate an yield to allow other threads to execute while it waits for the reply of the remote invocation.
+To alleviate the problem of the <a href="http://www.lua.org/manual/5.1/manual.html#pdf-pcall"><code>pcall</code></a> function, OiL provides the alternative implementation <a href="module.html#pcall"><code>oil.pcall</code></a><code>(function, ...)</code>, which can be used inside threads.</p>
+
+<p>The other limitation is that the thread scheduler is not integrated to the underlying operating system.
+Therefore, any blocking system call performed by a thread will eventually suspend the execution of the application as a whole since the coroutine does not yield the execution back to the scheduler.
+This is particularly true for file operations that suspend the entire execution of the application regardless of the number of other independent threads that might be ready to execute.
+For socket operations in particular, OiL provides a cooperative API similar to the one provided by <a href="http://www.tecgraf.puc-rio.br/~diego/professional/luasocket/">LuaSocket</a>, as described <a href="http://loop.luaforge.net/library/thread/CoSocket.lua">here</a>.
+This cooperative socket API is provided by field <code>oil.tasks.sockets</code>.</p>
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

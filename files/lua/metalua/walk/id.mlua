@@ -1,0 +1,186 @@
+--------------------------------------------------------------------------------
+--
+-- This library walks AST to gather information about the identifiers
+-- in it. It classifies them between free variables and bound
+-- variables, and keeps track of which AST node created a given bound
+-- variable occurence.
+--
+-- walk_id (kind, ast)
+--
+-- Input:
+-- * an AST kind: 'expr', 'stat', 'block', 'expr_list', 'binder_list', 'guess'
+-- * an AST of the corresponding kind.
+--
+-- > string, AST
+--
+-- Output: a table with two fields, 'bound' and 'free';
+-- * free associates the name of each free variable with the list of
+--   all its occurences in the AST. That list is never empty.
+-- * bound associates each stat or expr binding a new variable with
+--   the occurences of that/those new variable(s).
+--
+-- > { free  = table (string, AST and `Id{ });
+-- >   bound = table (AST, table(AST and `Id{ })) }
+--
+-- How it works
+-- ============
+-- Walk the tree to:
+-- * locate open variables, and keep pointers on them so that they can
+--   be alpha converted.
+-- * locate variable bindings, so that we can find bound variables
+-- * locate bound variables, keep them in association with their
+--   binder, again in order to alpha-convert them.
+--
+-- Special treatments:
+-- * `Function `Local `Localrec `Fornum `Forin have binders;
+--   `Local takes effect from the next statement, 
+--   `Localrec from the current statement,
+--   `Function and other statments inside their bodies.
+-- * `Repeat has a special scoping rule for its condition.
+-- * blocks create temporary scopes
+-- * `Splice must stop the walking, so that user code won't be
+--   converted
+--
+--------------------------------------------------------------------------------
+
+-{ extension 'match' }
+-{ extension 'log' }
+
+require 'metalua.walk'
+require 'metalua.walk.scope'
+
+-- variable lists auto-create empty list as values by default.
+local varlist_mt = { __index = function (self, key) 
+                                  local x={ }; self[key] = x; return x 
+                               end }
+
+local function _walk_id (kind, supercfg, ast, ...)
+
+   assert(walk[kind], "Inbalid AST kind selector")
+   assert(type(supercfg=='table'), "Config table expected")
+   assert(type(ast)=='table', "AST expected")
+
+   local cfg = { expr = { }; block = { }; stat = { } }
+   local scope = scope:new()
+
+   local visit_bound_var, visit_free_var
+   if not supercfg.id then
+      printf("Warning, you're using the id walker without id visitor. "..
+             "If you know what you want do to, then you're probably doing "..
+             "something else...")
+      visit_bound_var = || nil
+      visit_free_var  = || nil
+   else
+      visit_free_var  = supercfg.id.free  or || nil
+      visit_bound_var = supercfg.id.bound or || nil
+   end
+
+   -----------------------------------------------------------------------------
+   -- Check identifiers; add functions parameters to scope
+   -----------------------------------------------------------------------------
+   function cfg.expr.down(x, ...)
+      -- Execute the generic expression walker; if it breaks.
+      -- don't do the id walking.
+      if supercfg.expr and  supercfg.expr.down then  
+         local r = supercfg.expr.down(x, ...)
+         if r then return r end
+      end
+      local parents = {...}
+      match x with
+      | `Id{ name } ->
+         local binder, r = scope.current[name] -- binder :: ast which bound var
+         if binder then 
+            --$log( 'walk.id found a bound var:', x, binder)
+            r = visit_bound_var(x, binder, unpack(parents))
+         else 
+            --$log( 'walk.id found a free var:', x, scope.current)
+            r = visit_free_var(x, unpack(parents))
+         end
+         if r then return r end
+      | `Function{ params, _ } -> scope:push (params, x)
+      | `Stat{ block, expr }   -> 
+         -------------------------------------------------------------
+         -- 'expr' is in the scope of 'block': create the scope and
+         -- walk the block 'manually', then prevent automatic walk
+         -- by returning 'break'.
+         -------------------------------------------------------------
+         scope:push()
+         for stat in values (block) do walk.stat(cfg, stat, x, ...) end 
+         walk.expr(cfg, expr, x, unpack(parents))
+         scope:pop()
+         return 'break'
+      | _ -> -- pass
+      end
+
+   end
+
+   -----------------------------------------------------------------------------
+   -- Close the function scope opened by 'down()'
+   -----------------------------------------------------------------------------
+   function cfg.expr.up(x, ...)   
+      match x with `Function{...} -> scope:pop() | _ -> end
+      if supercfg.expr and supercfg.expr.up then supercfg.expr.up(x, ...) end
+   end
+
+   -----------------------------------------------------------------------------
+   -- Create a new scope and register loop variable[s] in it
+   -----------------------------------------------------------------------------
+   function cfg.stat.down(x, ...)
+      -- Execute the generic statement walker; if it breaks.
+      -- don't do the id walking.
+      if supercfg.stat and supercfg.stat.down then  
+         local r = supercfg.stat.down(x, ...)
+         if r then return r end
+      end
+      match x with
+      | `Forin{ vars, ... }    -> scope:push (vars,  x)
+      | `Fornum{ var, ... }    -> scope:push ({var}, x)
+      | `Localrec{ vars, ... } -> scope:add  (vars,  x)
+      | `Repeat{ block, expr } ->
+         -------------------------------------------------------------
+         -- 'expr' is in the scope of 'block': create the scope and
+         -- walk the block 'manually', then prevent automatic walk
+         -- by returning 'break'.
+         -------------------------------------------------------------
+         scope:push() 
+         for stat in values (block) do walk.stat(cfg, stat, x, ...) end 
+         walk.expr(cfg, expr, x, ...)
+         scope:pop()
+         return 'break'
+      | _ -> -- pass
+      end
+   end
+
+   -----------------------------------------------------------------------------
+   -- Close the scopes opened by 'up()'
+   -----------------------------------------------------------------------------
+   function cfg.stat.up(x, ...)
+      match x with
+      | `Forin{ ... } | `Fornum{ ... } -> scope:pop() 
+      | `Local{ vars, ... }            -> scope:add(vars, x)
+      | _                              -> -- pass
+      -- `Repeat has no up(), because it 'break's.
+      end
+      if supercfg.stat and supercfg.stat.up then supercfg.stat.up(x, ...) end
+   end
+
+   -----------------------------------------------------------------------------
+   -- Create a separate scope for each block
+   -----------------------------------------------------------------------------
+   function cfg.block.down(x, ...) 
+      if supercfg.block and supercfg.block.down then
+         local r = supercfg.block.down(x, ...) 
+         if r then return r end
+      end
+      scope:push() 
+   end
+   function cfg.block.up(x, ...) 
+      scope:pop() 
+      if supercfg.block and supercfg.block.up then supercfg.block.up(x, ...) end
+   end
+   cfg.binder = supercfg.binder
+   walk[kind](cfg, ast, ...)
+end
+
+local mt = { __index = |_,k| |...| _walk_id(k, ...) }
+walk_id = setmetatable({ }, mt)

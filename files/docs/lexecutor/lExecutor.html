@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="luadoc.css" type="text/css" />
+	<!--meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/-->
+</head>
+
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+
+
+<h1>LuaDoc</h1>
+<ul>
+	
+	<li><strong>lExecutor</strong></li>
+	
+</ul>
+
+
+<!-- Module list -->
+
+
+<!-- File list -->
+
+
+
+
+
+
+</div><!-- id="navigation" -->
+
+<div id="content">
+
+<h1>Module <code>lExecutor</code></h1>
+
+<p>lExecutor is a <a href="http://lua.org">Lua</a> application that allows users to run there console based scripts in a user interface. It is completely general purpose and uses 'print()' and 'Prompt()' to get messages to the GUI. It is very simple and exposes only a couple of variables and functions to aid in keeping your scripts simple and not written just to work in lExecutor.<br /> <br />  lExecutor has a very simple user interface that has a menu, an output log, an execute button, and a continuous run checkbox. You can open lExecutor just by launching it and then if no script was passed on its command line it will prompt for a file to run. After that the user just clicks the 'Execute' button each time they want to run the script, starting at the <code>main()</code> function. If the user wants to repeatedly run the script over and over, just clicking the 'Continuous' checkbox and then the 'Execute' button. The 'Continuous' checkbox is located next to the 'Execute' button. When you are done running it is continuous mode just click the 'Continuous' checkbox, to remove the check, and it will stop executing.<br /> <br />  lExecutor can also save the output to a text file so that you can review and have record of all that occured in that session. To save the output to a text file use <code>File->Save Output (Ctrl + S)</code> and choose the location to save the file to. When you save the log lExecutor will clear the output.<br /> <br />  lExecutor can also open new files and load them to execute without always having to restart the application. To do this you use <code>File->Open (Ctrl+O)</code> and select the file you want to open. </p>
+
+
+<p><b>Author:</b>
+<table class="authors_list">
+
+	<tr><td class="name"><a href="mailto:rpusztai@gmail.com">Ryan Pusztai</a></td></tr>
+
+</table>
+</p>
+
+
+
+<p><b>Release:</b> 1.01 <04/07/2010>  <h2>Note:</h2> <ul>When a file is loaded <code>lExecutor</code> will set the current working directory to the loaded scripts directory. Make sure your paths in your scripts are relative to the top level script (the script you are running). </ul>  <h2>lExecutor:</h2> <ul> To use lExecutor you need to write scripts in Lua. You can find out more about Lua here:<br /><br /> <li><a href="http://lua.org/manual/">Lua manual</a></li> <li><a href="http://www.lua.org/pil/">Programming in Lua</a> – First Edition (book)</li> </ul>  <h2>Usage:</h2> <ul> <code>lExecutor.wlua [script [args]]</code> <h4>Options:</h4> <ul> <li><code>script</code>  <ul>file path to a Lua script to load when started. It must exist.</ul></li> <li><code>args</code>    <ul>arguments to pass to the loaded script. Not to lexecutor</ul></li> </Ul> </ul>  <h2>General Information:</h2> <ul> <b>Script initialization and using a <code>main()</code>:</b> <ul> The general idea that lExecutor uses is the idea that any code that is not in a fuction is ran as initialization code for your script. Then lExecutor calls a global function named <code>main()</code>. This is simply done as a main entry point into your application. If the global function <code>main()</code> is missing lExecutor will just execute the entire script when 'Execute' is pressed.  <pre class="example"> -- Initialization code here<br /> APP_NAME = "Simple lExecutor Example"<br /> -- Code that is ran as soon as lExecutor has loaded this script.<br /> port = lExecutor.Prompt( "What COM port?" )<br /> <br />  -- Main entry point<br /> -- This is ran every press of 'Execute' in lExecutor.<br /> function main()<br /> &nbsp; &nbsp; print( "Hi from main()" )<br /> &nbsp; &nbsp; print( "Opening COM port", port )<br /> end<br /> <br />  -- Checking to see if lExecutor is running this script.<br /> -- If it is not then we still want the script to run completely,<br /> -- so call main()<br /> if not _LEXECUTOR then<br /> &nbsp; &nbsp; main()<br /> end </pre> </ul> </ul>  <ul> <b>Script parameters:</b> <ul> When running a script you can access the command line parameters passed to the script (see above in the 'Usage' section) in a table called <code>arg</code>. The zero index always has the full file name of the running script. It also contains the rest of the parameters passed in as a normal Lua table. <pre class="example"> print( "Script that is loaded: ", arg[0] )<br /> print( "Number of arguments sent to the script: ", #arg )<br /> print( "Unpacked arguments: ", unpack( arg ) ) </pre> </ul> </ul> 
+</p>
+
+
+
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#lExecutor.ClearLog">lExecutor.ClearLog</a>&nbsp;()</td>
+	<td class="summary">Clears the log </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#lExecutor.Prompt">lExecutor.Prompt</a>&nbsp;(message)</td>
+	<td class="summary">This function will allow you to take input from the user.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#lExecutor.SetPassFailStatus">lExecutor.SetPassFailStatus</a>&nbsp;(isPassed, show)</td>
+	<td class="summary">Sets the pass/fail status indicator to the specified state.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#print">print</a>&nbsp;(...)</td>
+	<td class="summary">This overrides the default <code>print()</code> and allows the loaded script to display feedback to the user in the GUI.</td>
+	</tr>
+
+</table>
+
+
+
+<h2>Tables</h2>
+<table class="table_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#APP_NAME">APP_NAME</a></td>
+	<td class="summary">Use this in the calling app to overwrite the windows title that is displayed.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#_LEXECUTOR">_LEXECUTOR</a></td>
+	<td class="summary">This symbol is defined so that scripts can be written to know if lExecutor is running the script.</td>
+	</tr>
+
+</table>
+
+
+
+<br/>
+<br/>
+
+
+
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="lExecutor.ClearLog"></a><strong>lExecutor.ClearLog</strong>&nbsp;()</dt>
+<dd>
+Clears the log
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="lExecutor.Prompt"></a><strong>lExecutor.Prompt</strong>&nbsp;(message)</dt>
+<dd>
+This function will allow you to take input from the user. This function will stop the execution of your script to let the user respond.
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>message</em></code>: {string} Message to display to the user.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+<ul>{string} The value entered by the user.</ul>
+
+
+
+</dd>
+
+
+
+
+<dt><a name="lExecutor.SetPassFailStatus"></a><strong>lExecutor.SetPassFailStatus</strong>&nbsp;(isPassed, show)</dt>
+<dd>
+Sets the pass/fail status indicator to the specified state. Use this to display a pass or fail status to the user running the script. This function will show the pass/fail status indicator the first time it is called.
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>isPassed</em></code>: {bool} [DEF] If true then the indicator will display "PASS" and the background will be green. If false, then it will display "FAIL" and the background will be red.
+	</li>
+	
+	<li>
+	  <code><em>show</em></code>: {bool} [DEF] If true then the indicator will display, else if false it will not show. This defaults to true.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="print"></a><strong>print</strong>&nbsp;(...)</dt>
+<dd>
+This overrides the default <code>print()</code> and allows the loaded script to display feedback to the user in the GUI.
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>...</em></code>: {varies} Message to display to the user.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+</dl>
+
+
+
+
+<h2><a name="tables"></a>Tables</h2>
+<dl class="table">
+
+<dt><a name="APP_NAME"></a><strong>APP_NAME</strong></dt>
+<dd>Use this in the calling app to overwrite the windows title that is displayed. This just allows a bit more customization of the GUI. It must be a string and it must be a global declaration.  <h4>Example:</h4> <pre class="example"> APP_NAME = "My Cool App" </pre><br /><br />
+
+
+
+</dd>
+
+
+<dt><a name="_LEXECUTOR"></a><strong>_LEXECUTOR</strong></dt>
+<dd>This symbol is defined so that scripts can be written to know if lExecutor is running the script. This can be helpful so that you can write your script once and have it work in the console as well as lExecutor.  A common use for this would be to not automatically call your Lua scripts <code>main()</code> function, so that lExecutor can be the only one to call it. Ex.  <h4>Example:</h4> <pre class="example"> function main()<br /> &nbsp; &nbsp; print( "Hello World" )<br /> end<br /> <br /> -- Now we need to automatically run the main() function when<br /> -- anywhere other then lExecutor.<br /> if not _LEXECUTOR then main() end </pre><br /><br />
+
+
+
+</dd>
+
+
+</dl>
+
+
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->	
+</body>
+</html>

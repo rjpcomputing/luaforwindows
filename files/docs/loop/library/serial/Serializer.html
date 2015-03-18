@@ -1,0 +1,276 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Value Serializer</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																																																																																													<li><a href="../../index.html", title="">Home</a></li>
+																																																																																																													<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																																																																																													<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																																																																																													<li><a href="../index.html", title="Class Library">Library</a>
+																																																																																																														<div class="outside"><div class="inside"><ul>
+																																																																																																															<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																																																																																																</li>
+																																																																																																																<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																																																																																																	</li>
+																																																																																																																	<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																																																																																																		</li>
+																																																																																																																		<li><a href="../overview.html#object", title="Objects">object</a>
+																																																																																																																			</li>
+																																																																																																																			<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																																																																																																				</li>
+																																																																																																																				<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																																																																																																					</li>
+																																																																																																																				</ul></div></div>
+																																																																																																																			</li>
+																																																																																																																			<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																																																																																																			<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																																																																																																		</ul></div></div>
+																																																																																																																	
+</div>
+
+<div class="content">
+<h1>Value Serializer</h1>
+<h2><code>loop.serial.Serializer</code></h2><br>
+<p>Class of objects that serialize values by creating a chunk of Lua code that when executed creates an isomorphic image of the serialized value, <i>i.e.</i> an identical copy of the original value, that may include self-referecing tables and functions.
+However there are some limitations, specifically related to function upvalues.
+It is also possible to define custom serialization for <code>userdata</code>.
+This class is useful to implement persistence mechanisms or remote communication infrastructure.</p>
+
+<p>Each serialized value is processed once for each instance.
+Serialized objects are stored in the object instance by mapping its value to the serialized string that re-creates the value.
+However, to properly restore the value the serialized code must be executed by a special method provided by this class (<i>i.e.</i> <code>load</code>).
+The object instance may also store configuration values that define if meta-tables or function environments are serialized along with the values or not.</p>
+
+<h2>Behavior</h2>
+
+<h3>Initialization</h3>
+
+<dl>
+	
+	<dt><code><b>Serializer</b>([object])</code></dt>
+	<dd>
+		Makes <code>object</code> an instance of <code>Serializer</code>.
+		Creates an environment that will be used to load serialized values if none is provided.
+		It also register all loaded packages in order to avoid that such packages are serialized.
+	</dd>
+	
+</dl>
+
+<h3>Fields</h3>
+
+<dl>
+	
+	<dt><code><b>environment</b></code></dt>
+	<dd>
+		Table used as environment of the serialized code when it is loaded by method <code>load</code>.
+		This field must be defined at instantiation otherwise a new table is created and used the environment of loading code.
+		The instance is stored in the environment with the name defined by field <code>namespace</code> in order to be accessed by the loading code.
+	</dd>
+	
+	<dt><code><b>function</b></code></dt>
+	<dd>
+		Method that serialize function values.
+		If this field evaluates to <code>false</code> then function serialization is not allowed and results in Lua errors.
+		By default, this field is a method that serialize the function bytecodes and its environment and upvalues accoding to the settings defined in the instance (see fields <code>getfenv</code> and <code>getupvalue</code>).
+	</dd>
+	
+	<dt><code><b>getfenv</b></code></dt>
+	<dd>
+		Function used to retrieve the environment of a given function.
+		If this field evaluates to <code>false</code> then no function environments are serialized.
+		By default this field is the <code>getfenv</code> of the Lua library.
+	</dd>
+	
+	<dt><code><b>getmetatable</b></code></dt>
+	<dd>
+		Function used to retrieve the metatable of a given table.
+		If this field evaluates to <code>false</code> then no metatables are serialized.
+		By default this field is the <code>getmetatable</code> of the Lua library.
+	</dd>
+	
+	<dt><code><b>getupvalue</b></code></dt>
+	<dd>
+		Function used to retrieve the contents of upvalues of a given function.
+		If this field evaluates to <code>false</code> then the contents of function upvalues are not serialized.
+		If the package <code>debug</code> is loaded when this class is first required, then the value of this field is the <code>debug.getupvalue</code> of the Lua library by default.
+	</dd>
+	
+	<dt><code><b>globals</b></code></dt>
+	<dd>
+		Table used as global environment of functions.
+		Functions that have this table as global environment are serialized without such environment and when these functions are restored this table is set as the new environment.
+		By default this field is <code>_G</code>.
+	</dd>
+	
+	<dt><code><b>namespace</b></code></dt>
+	<dd>
+		String defining the name used in the serialized code to reference the <code>Serializer</code> instance.
+		Since the serialized code may be concatenated with other code, this field is used to avoid name collisions.
+		However, this field must be defined at instantiation and should not be changed further.
+	</dd>
+	
+	<dt><code><b>package</b></code></dt>
+	<dd>
+		Table that maps the name of packages to the tables representing them.
+		These packages are not serialized, instead a call to the <code>require</code> function with the name of the package is used as serialized code for the package.
+		This field is only used when the instance is created thus further changes over this field have no effect.
+		If this value evaluates to <code>false</code> then all packages are serialized as ordinary values.
+		By default this field is the field <code>package.loaded</code> of the Lua library.
+	</dd>
+	
+	<dt><code><b>setfenv</b></code></dt>
+	<dd>
+		Function used to define the environment of a given function.
+		If this field evaluates to <code>false</code> then no environments are defined for restored functions.
+		By default this field is the <code>setfenv</code> of the Lua library.
+	</dd>
+	
+	<dt><code><b>setmetatable</b></code></dt>
+	<dd>
+		Function used to define the metatable of a given table.
+		If this field evaluates to <code>false</code> then no metatables are defined for restored tables.
+		By default this field is the <code>setmetatable</code> of the Lua library.
+	</dd>
+	
+	<dt><code><b>setupvalue</b></code></dt>
+	<dd>
+		Function used to define the contents of upvalues of a given function.
+		If this field evaluates to <code>false</code> then the contents of function upvalues are not restored.
+		If the package <code>debug</code> is loaded when this class is first required, then the value of this field is the <code>debug.setupvalue</code> of the Lua library by default.
+	</dd>
+	
+	<dt><code><b>table</b></code></dt>
+	<dd>
+		Method that serialize table values.
+		If this field evaluates to <code>false</code> then table serialization is not allowed and results in Lua errors.
+		By default, this field is a method that serialize the table contents including self-references and its meta-table accoding to the settings defined in the instance (see field <code>getmetatable</code>).
+	</dd>
+	
+	<dt><code><b>thread</b></code></dt>
+	<dd>
+		Method that serialize thread values.
+		If this field evaluates to <code>false</code> then thread serialization is not allowed and results in Lua errors.
+		By default, this field is <code>nil</code> thus thread serialization is not allowed.
+	</dd>
+	
+	<dt><code><b>userdata</b></code></dt>
+	<dd>
+		Method that serialize userdata values.
+		If this field evaluates to <code>false</code> then userdata serialization is not allowed and results in Lua errors.
+		By default, this field is a method that use the virtual meta-methods (<i>i.e.</i> fields defined by the object's meta-table but not used by the Lua VM) <code>__serialize</code> and <code>__load</code> to serialize and restore <code>userdata</code> values.
+		See below for the behavior required by these meta-methods.
+		<p>
+			<dl>
+				<dt><code><b>__serialize</b>(udata)</code></dt>
+				<dd>
+					Must return a string with a name that identifies this kind of <code>userdata</code>.
+					The instance used to restore this value must map this name to a factory that creates such <code>userdata</code> values.
+					This meta-method may also return additional values that will be used to restore the <code>userdata</code> state.
+					These values may be any valid Lua value including the <code>userdata</code> itself (<i>e.g.</i> if it have self-references).
+				</dd>
+				<dt><code><b>__load</b>(udata, ...)</code></dt>
+				<dd>
+					Receives a <code>userdata</code> value created by the factory registered in the instance with the name provided by meta-method <code>__serialize</code>.
+					The factory must create empty <code>userdata</code> values which state will be restored by this meta-method using the additional values provided as arguments.
+					Such arguments are the same additional values returned by meta-method <code>__serialize</code> at the moment the <code>userdata</code> was first serialized.
+				</dd>
+			</dl>
+		</p>
+	</dd>
+	
+</dl>
+
+<h3>Methods</h3>
+
+<dl>
+	
+	<dt><code><b>load</b>(code)</code></dt>
+	<dd>
+		Compiles the Lua chunk <code>code</code> that may contain chunks of serialized code.
+		It also defines the proper environment of the loaded chunk so it can execute properly and recover serialized values.
+		For example, to serialize and restore a sequence of values in order to produce a copy of the sequence you can use the following code:
+		<pre>function makecopy(...)
+  serial = loop.serial.Serializer()
+  function serial:write(...)
+    for i=1, select("#", ...) do
+      self[#self+1] = select(i, ...)
+    end
+  end
+  serial:serialize(...)
+  return assert(serial:load("return "..table.concat(serial)))()
+end</pre>
+	</dd>
+	
+	<dt><code><b>serialize</b>(...)</code></dt>
+	<dd>
+		Uses the <code>write</code> method to write a chunk of Lua code that is able to restore the values given as parameters.
+		This code may be concatenated with other chunks of Lua code and then executed by method <code>load</code> to restore the values.
+	</dd>
+	
+	<dt><code><b>write</b>(...)</code> [required]</dt>
+	<dd>
+		Method used to write the resulting serialized code.
+		It is called several times during the serialization process with sequences of strings as arguments that shall be concatenated to form the serialized code.
+		By default, this field is <code>nil</code>.
+	</dd>
+	
+</dl>
+
+<h3>Meta-Fields</h3>
+
+<dl>
+	
+	<dt><code>__<b>mode</b> = "k"</code></dt>
+	<dd>
+		Defines that serialized values registered are weak references thus such values are collected if they are not referenced elsewhere.
+	</dd>
+
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	<li>Since it is only possible to manipulate upvalue contents, when functions that share the same upvalue are serialized and restored will actually refer to different upvalues although they store the same value.</li>
+	<li>Each value is serialized only once by an instance of <code>Serializer</code>, therefore even if the value change the same old serialized code will be used.
+	To produce new serialized chunks, use one instance per serialization.</li>
+	<li>Each value is restored only once by an instance of <code>Serializer</code> thus all further references to the same value with the given instance will result in the same restored value.
+	To produce new restored values, use one instance per restore.</li>
+	<li>All the code produced by a instance of <code>Serializer</code> must be executed in the same order they were created and by a single instance of <code>Serializer</code> that may the different from the one used to produce the serialized code.
+	In order to produce independent codes use one instance per serialization.</li>
+</ul>
+
+<h2>Examples</h2>
+
+<h3><a name="$ExampleName">$ExampleDescription</a></h3>
+
+<pre>
+-- example missing
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

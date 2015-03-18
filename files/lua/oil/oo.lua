@@ -1,0 +1,1 @@
+package.loaded["oil.oo"] = require "loop.multiple"

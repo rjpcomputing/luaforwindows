@@ -1,0 +1,36 @@
+interface Adaptor {
+	string execute(in string code);
+};
+
+interface Observer {
+	enum PhilosopherState { eating, thinking, hungry, starving, dead };
+	struct Info {
+		string           name;
+		PhilosopherState state;
+		long             ticks_since_last_meal;
+		boolean          has_left_fork;
+		boolean          has_right_fork;
+	};
+	void push(in Info info);
+};
+interface ObserverHome : Adaptor {
+	Observer create();
+};
+
+interface Fork {
+	boolean get();
+	boolean release();
+};
+interface ForkHome : Adaptor {
+	Fork create();
+};
+
+interface Philosopher {
+	attribute Fork left_fork;
+	attribute Fork right_fork;
+	attribute Observer info;
+	oneway void start();
+};
+interface PhilosopherHome : Adaptor {
+	Philosopher create(in string name);
+};

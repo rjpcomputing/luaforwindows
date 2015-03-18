@@ -1,0 +1,1598 @@
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html >
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css">
+
+
+/* default css */
+
+table {
+  font-size: 1em;
+  line-height: inherit;
+}
+
+
+div, address, ol, ul, li, option, select { 
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+p {
+  margin: 0px;
+}
+
+body {
+  margin: 6px;
+  padding: 0px;
+  font-family: Verdana, sans-serif;
+  font-size: 10pt;
+  background-color: #ffffff;
+}
+
+
+@media screen {
+  html.pageview {
+    background-color: #f3f3f3 !important;
+  }
+
+  
+  *:first-child+html body {
+    min-height: 1100px;
+  }
+
+  .pageview body {
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 2px solid #bbb;
+    border-bottom: 2px solid #bbb;
+    width: 648px !important;
+    min-height: 1100px;
+    margin: 15px auto 25px !important;
+    padding: 40px 50px; 
+  }
+  /* IE6 */
+  * html.pageview body {
+    height: 1100px;
+    overflow-x: auto;
+  }
+  
+  
+}
+
+
+h6 { font-size: 10pt }
+h5 { font-size: 11pt }
+h4 { font-size: 12pt }
+h3 { font-size: 13pt }
+h2 { font-size: 14pt }
+h1 { font-size: 16pt }
+
+blockquote {padding: 10px; border: 1px #DDD dashed }
+
+a img {border: 0}
+
+.pb {height: 1px}
+
+div.google_header, div.google_footer {
+  position: relative;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+/* end default css */
+
+
+  /* default print css */
+  
+  @media print {
+    body { 
+      padding: 0; 
+      margin: 0; 
+    }
+
+    div.google_header, div.google_footer {
+      display: block;
+      min-height: 0;
+      border: none;
+    }
+
+    div.google_header {
+      flow: static(header);
+    }
+
+    /* used to insert page numbers */
+    div.google_header::before, div.google_footer::before {
+      position: absolute;
+      top: 0;
+    }
+
+    div.google_footer {
+      flow: static(footer);
+    }
+
+    /* always consider this element at the start of the doc */
+    div#google_footer {
+      flow: static(footer, start);
+    }
+
+    span.google_pagenumber {
+      content: counter(page);
+    }
+
+    span.google_pagecount {
+      content: counter(pages);
+    }
+  }
+
+  @page {
+    @top {
+      content: flow(header);
+    }
+    @bottom {
+      content: flow(footer);
+    }
+  }
+  /* end default print css */
+ 
+
+/* custom css */
+
+
+/* end custom css */
+
+
+
+  /* ui edited css */
+  
+  body {
+    font-family: Times New Roman;
+    
+    font-size: 12.0pt;
+    line-height: normal;
+    background-color: #ffffff;
+  }
+  /* end ui edited css */
+
+
+
+/* editor CSS */
+.editor a:visited {color: #551A8B}
+.editor table.zeroBorder {border: 1px dotted gray}
+.editor table.zeroBorder td {border: 1px dotted gray}
+.editor table.zeroBorder th {border: 1px dotted gray}
+
+
+.editor div.google_header, .editor div.google_footer {
+  border: 2px #DDDDDD dashed;
+  position: static;
+  width: 100%;
+  min-height: 2em;
+}
+
+.editor .misspell {background-color: yellow}
+
+
+.editor .pb {
+  border-top: 1px dashed #C0C0C0; 
+  border-bottom: 1px dashed #C0C0C0
+}
+.editor .writely-comment {
+  font-size: 9pt; 
+  line-height: 1.4; 
+  padding: 1px; 
+  border: 1px dashed #C0C0C0
+}
+/* end editor CSS */
+</style>
+
+
+<base target="_top">
+
+</head>
+
+<body
+    
+    revision="dhpv5rd2_834fmndvtcq:5">
+
+    
+    
+<p align=center class=western id=c8tq0 style=MARGIN-BOTTOM:0pt>
+  <font id=c8tq1 size=4 style=FONT-SIZE:16pt><b id=c8tq2>Classlib v.
+  2.03</b></font>
+</p>
+<p align=center class=western id=c8tq3 style=MARGIN-BOTTOM:0pt>
+  <b id=c8tq4><font id=c8tq5 size=4 style=FONT-SIZE:16pt>A multiple-inheritance
+  class library for Lua</font></b>
+</p>
+<p align=center class=western id=c8tq6 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq7>
+</p>
+<p align=justify class=western id=c8tq8 style=MARGIN-BOTTOM:0pt>
+  This library is based on the general guidelines on OOP found in the
+  <b id=c8tq9>PIL</b> (<b id=c8tq10>Programming in Lua</b> by Roberto
+  Ierusalimschy) and is also inspired by the class library in
+  <b id=c8tq11>http://lua-users.org/wiki/SimpleLuaClasses,</b> which was taken
+  as a starting point.
+</p>
+<p align=justify class=western id=c8tq12 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq13>
+</p>
+<p align=justify class=western id=c8tq14 style=MARGIN-BOTTOM:0pt>
+  It offers a full-featured class system in C++ style, including multiple
+  inheritance of stateful classes (not just interfaces), shared (like C++
+  virtual) derivation and the correct handling of inheritance and ambiguities.
+</p>
+<p align=justify class=western id=c8tq15 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq16>
+</p>
+<p align=justify class=western id=c8tq17 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq18>
+</p>
+<p align=justify class=western id=c8tq19 style=MARGIN-BOTTOM:0pt>
+  <b id=c8tq20>Class creation </b>
+</p>
+<p align=justify class=western id=c8tq21 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq22>
+</p>
+<p align=justify class=western id=c8tq23 style=MARGIN-BOTTOM:0pt>
+  Classes are created by calling
+  <font id=c8tq24 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq25><font color=#0000ff id=c8tq26>class()</font></font></font>
+  with the optional list of classes from which the new class derives.
+</p>
+<p class=western id=c8tq27 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq28>
+</p>
+<p class=western id=c8tq29 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq30 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq31><font color=#0000ff id=c8tq32>A
+  = class(P, Q)</font></font></font>
+</p>
+<p class=western id=c8tq33 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq34><font face="Courier New, monospace" id=c8tq35><font id=c8tq36 size=2 style=FONT-SIZE:11pt>B
+  = class(P, Q)</font></font></font>
+</p>
+<p class=western id=c8tq37 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq38><font face="Courier New, monospace" id=c8tq39><font id=c8tq40 size=2 style=FONT-SIZE:11pt>C
+  = class(A, B)</font></font></font>
+</p>
+<p class=western id=c8tq41 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq42>
+</p>
+<p align=justify class=western id=c8tq43 style=MARGIN-BOTTOM:0pt>
+  Objects or instances are created by calling the class with arguments to the
+  constructor. This is the structure of the generated object:
+</p>
+<p class=western id=c8tq44 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq45>
+</p>
+<p class=western id=c8tq46 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq47><font face="Courier New, monospace" id=c8tq48><font id=c8tq49 size=2 style=FONT-SIZE:11pt>Cobj
+  = C(...)</font></font></font>
+</p>
+<p class=western id=c8tq50 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq51>
+</p>
+<div id=bysn style="PADDING:1em 0pt; TEXT-ALIGN:left">
+  <img id=yu8k0 src=Classlib_Manual_images/dhpv5rd2_845fqszcvcq_b.jpg style="WIDTH:640px; HEIGHT:331px">
+</div>
+<br id=c8tq137>
+<p align=justify class=western id=c8tq121 style=MARGIN-BOTTOM:0pt>
+  An object of type <font color=#0000ff id=c8tq138>C</font> directly contains
+  two base objects of type <font color=#0000ff id=c8tq139>A</font> and
+  <font color=#0000ff id=c8tq140>B</font>, and indirectly two each of types
+  <font color=#0000ff id=c8tq141>P</font> and
+  <font color=#0000ff id=c8tq142>Q</font> which are not directly visible from
+  <font color=#0000ff id=c8tq143>C</font>. The
+  <font color=#0000ff id=c8tq144>A</font> and
+  <font color=#0000ff id=c8tq145>B</font> base objects can be accessed from the
+  <font color=#0000ff id=c8tq146>C</font> object as:
+</p>
+<p align=justify class=western id=c8tq147 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq148>
+</p>
+<p class=western id=c8tq149 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq150 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq151><font color=#0000ff id=c8tq152>Cobj[A],
+  Cobj[B]</font></font></font>
+</p>
+<p class=western id=c8tq153 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq154>
+</p>
+<p align=justify class=western id=c8tq155 style=MARGIN-BOTTOM:0pt>
+  The <font color=#0000ff id=c8tq156>P</font> and
+  <font color=#0000ff id=c8tq157>Q</font> objects are not directly accessible
+  from the <font color=#0000ff id=c8tq158>C</font> object since their references
+  are ambiguous. They can be accessed by their full paths:
+</p>
+<p class=western id=c8tq159 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq160>
+</p>
+<p class=western id=c8tq161 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <span id=c8tq162 lang=es-AR><font id=c8tq163 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq164><font color=#0000ff id=c8tq165>Cobj[A][P],
+  Cobj[A][Q], Cobj[B][P], Cobj[B][Q]</font></font></font></span>
+</p>
+<p class=western id=c8tq166 lang=es-AR style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq167>
+</p>
+<p class=western id=c8tq168 lang=es-AR style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq169>
+</p>
+<p align=justify class=western id=c8tq170 style=MARGIN-BOTTOM:0pt>
+  <b id=c8tq171>Shared derivation</b>
+</p>
+<p align=justify class=western id=c8tq172 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq173>
+</p>
+<p align=justify class=western id=c8tq174 style=MARGIN-BOTTOM:0pt>
+  Shared derivation is roughly equivalent to C++ virtual derivation:
+</p>
+<p class=western id=c8tq175 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq176>
+</p>
+<p class=western id=c8tq177 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq178><font face="Courier New, monospace" id=c8tq179><font id=c8tq180 size=2 style=FONT-SIZE:11pt>X
+  = class(P, shared(Q))</font></font></font>
+</p>
+<p class=western id=c8tq181 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq182><font face="Courier New, monospace" id=c8tq183><font id=c8tq184 size=2 style=FONT-SIZE:11pt>Y
+  = class(P, shared(Q))</font></font></font>
+</p>
+<p class=western id=c8tq185 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq186><font face="Courier New, monospace" id=c8tq187><font id=c8tq188 size=2 style=FONT-SIZE:11pt>Z
+  = class(X, Y)</font></font></font>
+</p>
+<p class=western id=c8tq189 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq190>
+</p>
+<p class=western id=c8tq191 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq192><font face="Courier New, monospace" id=c8tq193><font id=c8tq194 size=2 style=FONT-SIZE:11pt>Zobj
+  = Z(...)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq195 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq274>
+  <br id=c8tq275>
+  <div id=fn7o style="PADDING:1em 0pt; TEXT-ALIGN:left">
+    <img id=xx200 src=Classlib_Manual_images/dhpv5rd2_846v3d4h4g7_b.jpg style="WIDTH:640px; HEIGHT:341px">
+  </div>
+  The shared derivation of <font color=#0000ff id=c8tq278>X</font> and
+  <font color=#0000ff id=c8tq279>Y</font> from
+  <font color=#0000ff id=c8tq280>Q</font> results in a single
+  <font color=#0000ff id=c8tq281>Q</font> base object. This object is visible
+  from the <font color=#0000ff id=c8tq282>Z</font> object, since its reference
+  is unambiguous. It can be accessed directly or following any of its full
+  paths:
+</p>
+<p class=western id=c8tq283 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq284>
+</p>
+<p class=western id=c8tq285 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <span id=c8tq286 lang=es-AR><font id=c8tq287 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq288><font color=#0000ff id=c8tq289>Zobj[Q]
+  == Zobj[X][Q] == Zobj[Y][Q]</font></font></font></span>
+</p>
+<p class=western id=c8tq290 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq291>
+</p>
+<p class=western id=c8tq292 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq293>
+</p>
+<p class=western id=c8tq294 style=MARGIN-BOTTOM:0pt>
+  <b id=c8tq295>Populating the class</b>
+</p>
+<p class=western id=c8tq296 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq297>
+</p>
+<p align=justify class=western id=c8tq298 style=MARGIN-BOTTOM:0pt>
+  When a new class is created by the
+  <font id=c8tq299 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq300><font color=#0000ff id=c8tq301>class()</font></font></font>
+  function, it includes attributes (methods and properties) inherited from the
+  base classes according to inheritance rules that will be explained later.
+  After that, the class may be populated by adding new attributes or redefining
+  inherited ones:
+</p>
+<p align=justify class=western id=c8tq302 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq303>
+</p>
+<p align=justify class=western id=c8tq304 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font color=#0000ff id=c8tq305><font face="Courier New, monospace" id=c8tq306><font id=c8tq307 size=2 style=FONT-SIZE:11pt>Account
+  = class()</font></font></font>
+</p>
+<p align=justify class=western id=c8tq308 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <br id=c8tq309>
+</p>
+<p align=justify class=western id=c8tq310 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font id=c8tq311 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq312><font color=#0000ff id=c8tq313>function
+  Account:__init(initial)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq314 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font id=c8tq315 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq316><font color=#0000ff id=c8tq317>
+  self.balance = initial or 0</font></font></font>
+</p>
+<p align=justify class=western id=c8tq318 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq319><font face="Courier New, monospace" id=c8tq320><font id=c8tq321 size=2 style=FONT-SIZE:11pt>end</font></font></font>
+</p>
+<p align=justify class=western id=c8tq322 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq323>
+</p>
+<p align=justify class=western id=c8tq324 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq325><font face="Courier New, monospace" id=c8tq326><font id=c8tq327 size=2 style=FONT-SIZE:11pt>function
+  Account:deposit(amount)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq328 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq329><font face="Courier New, monospace" id=c8tq330><font id=c8tq331 size=2 style=FONT-SIZE:11pt>
+  self.balance = self.balance + amount</font></font></font>
+</p>
+<p align=justify class=western id=c8tq332 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq333><font face="Courier New, monospace" id=c8tq334><font id=c8tq335 size=2 style=FONT-SIZE:11pt>end</font></font></font>
+</p>
+<p align=justify class=western id=c8tq336 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq337>
+</p>
+<p align=justify class=western id=c8tq338 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq339 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq340><font color=#0000ff id=c8tq341>function
+  Account:withdraw(amount)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq342 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq343 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq344><font color=#0000ff id=c8tq345>
+  self.balance = self.balance - amount</font></font></font>
+</p>
+<p align=justify class=western id=c8tq346 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq347><font face="Courier New, monospace" id=c8tq348><font id=c8tq349 size=2 style=FONT-SIZE:11pt>end</font></font></font>
+</p>
+<p align=justify class=western id=c8tq350 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq351>
+</p>
+<p align=justify class=western id=c8tq352 style=MARGIN-BOTTOM:0pt>
+  Method
+  <font id=c8tq353 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq354><font color=#0000ff id=c8tq355>__init()</font></font></font>
+  is the constructor; it is called when an instance is created and passed all
+  arguments given to the
+  <font id=c8tq356 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq357><font color=#0000ff id=c8tq358>__call()</font></font></font>
+  operator of the class. For example,
+</p>
+<p align=justify class=western id=c8tq359 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq360>
+</p>
+<p align=justify class=western id=c8tq361 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq362 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq363><font color=#0000ff id=c8tq364>myAccount
+  = Account(10.00)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq365 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq366>
+</p>
+<p align=justify class=western id=c8tq367 style=MARGIN-BOTTOM:0pt>
+  creates an account with an initial
+  <font id=c8tq368 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq369><font color=#0000ff id=c8tq370>balance
+  </font></font></font>of $10.00.
+</p>
+<p align=justify class=western id=c8tq371 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq372>
+</p>
+<p align=justify class=western id=c8tq373 style=MARGIN-BOTTOM:0pt>
+  If
+  <font id=c8tq374 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq375><font color=#0000ff id=c8tq376>__init()
+  </font></font></font>is defined, it may call the constructors of the base
+  objects explicitly in order to initialize them:
+</p>
+<p align=justify class=western id=c8tq377 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq378>
+</p>
+<p align=justify class=western id=c8tq379 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq380 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq381><font color=#0000ff id=c8tq382>NamedAccount
+  = class(Account)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq383 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq384>
+</p>
+<p align=justify class=western id=c8tq385 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq386><font face="Courier New, monospace" id=c8tq387><font id=c8tq388 size=2 style=FONT-SIZE:11pt>function
+  NamedAccount:__init(name, initial)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq389 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq390><font face="Courier New, monospace" id=c8tq391><font id=c8tq392 size=2 style=FONT-SIZE:11pt>
+  self[Account]:__init(initial)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq393 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq394><font face="Courier New, monospace" id=c8tq395><font id=c8tq396 size=2 style=FONT-SIZE:11pt>
+  self.name = name or 'anonymous'</font></font></font>
+</p>
+<p align=justify class=western id=c8tq397 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq398><font face="Courier New, monospace" id=c8tq399><font id=c8tq400 size=2 style=FONT-SIZE:11pt>end</font></font></font>
+</p>
+<p align=justify class=western id=c8tq401 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq402>
+</p>
+<p align=justify class=western id=c8tq403 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq404><font face="Courier New, monospace" id=c8tq405><font id=c8tq406 size=2 style=FONT-SIZE:11pt>myNamedAccount
+  = NamedAccount('John', 10.00)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq407 style="MARGIN-LEFT:0.25in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq408>
+</p>
+<p align=justify class=western id=c8tq409 style=MARGIN-BOTTOM:0pt>
+  The library modifies the user-supplied
+  <font id=c8tq410 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq411><font color=#0000ff id=c8tq412>__init()
+  </font></font></font>by wrapping it in such a way that:
+</p>
+<p align=justify class=western id=c8tq413 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq414>
+</p>
+<p align=justify class=western id=c8tq415 style=MARGIN-BOTTOM:0pt>
+  1. It will run exactly once per object. This is specially necessary in the
+  case of multiple shared inheritance, when a shared base object may be accessed
+  following more than one path, in order to protect the object against multiple
+  initialization. In our example of shared inheritance given before, the
+  <font face="Courier New, monospace" id=c8tq416><font color=#0000ff id=c8tq417>Q</font></font>
+  object might otherwise be initialized up to three times.
+</p>
+<p align=justify class=western id=c8tq418 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq419>
+</p>
+<p align=justify class=western id=c8tq420 style=MARGIN-BOTTOM:0pt>
+  2. Base objects not explicitly initialized by the user-supplied constructor
+  are initialized by default with the same arguments received by the constructor
+  of the derived object. If this is not adequate, base objects should be
+  initialized explicitly.
+</p>
+<p align=justify class=western id=c8tq421 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq422>
+</p>
+<p align=justify class=western id=c8tq423 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq424>
+</p>
+<p align=justify class=western id=c8tq425 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <b id=c8tq426>Named classes and dot scoping</b>
+</p>
+<p align=justify class=western id=c8tq427 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <br id=c8tq428>
+</p>
+<p align=justify class=western id=c8tq429 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  Accessing the base objects by indexing the object with the base class is
+  simple and intuitive. This is the mechanism used by <i id=c8tq430>unnamed</i>
+  classes.
+</p>
+<p align=justify class=western id=c8tq431 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq432>
+</p>
+<p align=justify class=western id=c8tq433 style=MARGIN-BOTTOM:0pt>
+  The library also supports <i id=c8tq434>named</i> classes. Using named
+  classes, a base object is accessed by indexing the derived object not with the
+  base class, but with the <i id=c8tq435>name</i> of the base class (a string).
+  This makes the base object appear as a field of the derived object, the field
+  name being the name of the base class. Here is our previous example revisited,
+  where
+  <font id=c8tq436 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq437><font color=#0000ff id=c8tq438>Account</font></font></font>
+  is now a named class whose name is precisely
+  <font id=c8tq439 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq440><font color=#0000ff id=c8tq441>'Account'</font></font></font>:
+</p>
+<p align=justify class=western id=c8tq442 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq443>
+</p>
+<p align=justify class=western id=c8tq444 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq445><font face="Courier New, monospace" id=c8tq446><font id=c8tq447 size=2 style=FONT-SIZE:11pt>function
+  NamedAccount:__init(name, initial)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq448 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq449 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq450><font color=#0000ff id=c8tq451>
+  self.Account:__init(initial)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq452 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq453><font face="Courier New, monospace" id=c8tq454><font id=c8tq455 size=2 style=FONT-SIZE:11pt>
+  self.name = name or 'anonymous'</font></font></font>
+</p>
+<p align=justify class=western id=c8tq456 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq457><font face="Courier New, monospace" id=c8tq458><font id=c8tq459 size=2 style=FONT-SIZE:11pt>end</font></font></font>
+</p>
+<p align=justify class=western id=c8tq460 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq461>
+</p>
+<p align=justify class=western id=c8tq462 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq463><font face="Courier New, monospace" id=c8tq464><font id=c8tq465 size=2 style=FONT-SIZE:11pt>myNamedAccount
+  = NamedAccount('John', 10.00)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq466 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq467>
+</p>
+<p align=justify class=western id=c8tq468 style=MARGIN-BOTTOM:0pt>
+  Note that
+  <font id=c8tq469 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq470><font color=#0000ff id=c8tq471>self[Account]
+  </font></font></font>has been replaced by
+  <font id=c8tq472 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq473><font color=#0000ff id=c8tq474>self.Account</font></font></font>.
+  This scoping syntax is more in line with the conventions used by other OO
+  languages
+</p>
+<p align=justify class=western id=c8tq475 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq476>
+</p>
+<p align=justify class=western id=c8tq477 style=MARGIN-BOTTOM:0pt>
+  There are several ways of giving a name to a class. The first one is to simply
+  assign its
+  <font id=c8tq478 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq479><font color=#0000ff id=c8tq480>__name
+  </font></font></font>attribute:
+</p>
+<p align=justify class=western id=c8tq481 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq482>
+</p>
+<p align=justify class=western id=c8tq483 style=MARGIN-BOTTOM:0pt>
+  <font id=c8tq484 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq485><font color=#0000ff id=c8tq486>Account
+  = class()</font></font></font>
+</p>
+<p align=justify class=western id=c8tq487 style=MARGIN-BOTTOM:0pt>
+  <font color=#0000ff id=c8tq488><font face="Courier New, monospace" id=c8tq489><font id=c8tq490 size=2 style=FONT-SIZE:11pt>
+  Account.__name = 'Account'</font></font></font>
+</p>
+<p align=justify class=western id=c8tq491 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq492>
+</p>
+<p align=justify class=western id=c8tq493 style=MARGIN-BOTTOM:0pt>
+  Another way is to pass the class name as a first string argument to
+  <font id=c8tq494 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq495><font color=#0000ff id=c8tq496>class()</font></font></font>:
+</p>
+<p align=justify class=western id=c8tq497 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq498>
+</p>
+<p align=justify class=western id=c8tq499 style=MARGIN-BOTTOM:0pt>
+  <font id=c8tq500 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq501><font color=#0000ff id=c8tq502>Account
+  = class('Account')</font></font></font>
+</p>
+<p align=justify class=western id=c8tq503 style=MARGIN-BOTTOM:0pt>
+  <font color=#0000ff id=c8tq504><font face="Courier New, monospace" id=c8tq505><font id=c8tq506 size=2 style=FONT-SIZE:11pt>
+  NamedAccount = class('NamedAccount', Account)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq507 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq508>
+</p>
+<p align=justify class=western id=c8tq509 style=MARGIN-BOTTOM:0pt>
+  Here the classes were named after the variables holding them. If these
+  variables are global, there is a shorter way of doing the same thing:
+</p>
+<p align=justify class=western id=c8tq510 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq511>
+</p>
+<p align=justify class=western id=c8tq512 style=MARGIN-BOTTOM:0pt>
+  <font id=c8tq513 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq514><font color=#0000ff id=c8tq515>class.Account()
+  -- same as Account = class('Account', ...)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq516 style=MARGIN-BOTTOM:0pt>
+  <font id=c8tq517 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq518><font color=#0000ff id=c8tq519>
+  class.NamedAccount(Account)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq520 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq521>
+</p>
+<p align=justify class=western id=c8tq522 style=MARGIN-BOTTOM:0pt>
+  This technique is limited to global variables. For classes living in locals
+  and upvalues, use explicit naming. In the rest of this document we shall
+  assume that classes are named.
+</p>
+<p align=justify class=western id=c8tq523 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq524>
+</p>
+<p align=justify class=western id=c8tq525 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq526>
+</p>
+<p align=justify class=western id=c8tq527 style=MARGIN-BOTTOM:0pt>
+  <b id=c8tq528>Object and class attributes</b>
+</p>
+<p align=justify class=western id=c8tq529 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq530>
+</p>
+<p align=justify class=western id=c8tq531 style=MARGIN-BOTTOM:0pt>
+  Object attributes live in their respective objects. The constructor of the
+  <font id=c8tq532 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq533><font color=#0000ff id=c8tq534>Account</font></font></font>
+  class, for example, creates a property called
+  <font id=c8tq535 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq536><font color=#0000ff id=c8tq537>balance</font></font></font>
+  in the
+  <font id=c8tq538 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq539><font color=#0000ff id=c8tq540>Account</font></font></font>
+  object. The constructor of
+  <font id=c8tq541 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq542><font color=#0000ff id=c8tq543>NamedAccount
+  </font></font></font>creates a property called
+  <font id=c8tq544 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq545><font color=#0000ff id=c8tq546>name</font></font></font>
+  in the
+  <font id=c8tq547 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq548><font color=#0000ff id=c8tq549>NamedAccount
+  </font></font></font>object. Object properties created by methods of a certain
+  class never migrate to a derived object; a
+  <font id=c8tq550 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq551><font color=#0000ff id=c8tq552>NamedAccount
+  </font></font></font>object does not have a
+  <font id=c8tq553 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq554><font color=#0000ff id=c8tq555>balance</font></font></font>
+  in itself, but in its base
+  <font id=c8tq556 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq557><font color=#0000ff id=c8tq558>Account</font></font></font>
+  object. In the example above:
+</p>
+<p align=justify class=western id=c8tq559 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq560>
+</p>
+<p align=justify class=western id=c8tq561 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq562 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq563><font color=#0000ff id=c8tq564>myNamedAccount.name
+  == 'John'</font></font></font>
+</p>
+<p align=justify class=western id=c8tq565 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq566 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq567><font color=#0000ff id=c8tq568>myNamedAccount.balance
+  == nil </font></font></font>
+</p>
+<p align=justify class=western id=c8tq569 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq570 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq571><font color=#0000ff id=c8tq572>myNamedAccount.Account.balance
+  == 10.00</font></font></font>
+</p>
+<p align=justify class=western id=c8tq573 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq574>
+</p>
+<p align=justify class=western id=c8tq575 style=MARGIN-BOTTOM:0pt>
+  This scheme avoids name clashes between attributes generated by different
+  classes, keeps classes independent of each other and allows one to derive from
+  classes whose name spaces overlap. It departs from the C++ scheme in the sense
+  that base object attributes are not inherited by the derived objects (in C++
+  properties of base objects are inherited by the derived object if they are not
+  ambiguous) but there is no other reasonable way given the dynamic nature of
+  variables in Lua: object properties are not defined statically, they come into
+  existence and disappear during program execution.
+</p>
+<p align=justify class=western id=c8tq576 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq577>
+</p>
+<p align=justify class=western id=c8tq578 style=MARGIN-BOTTOM:0pt>
+  Following the guidelines of Lua OOP (and also departing from C++), this
+  library makes class attributes default values for object attributes. This
+  feature comes from the fact that classes are metatables of their objects, and
+  helps get rid of constructors whose sole purpose is assigning initial default
+  values. For example, if an
+  <font id=c8tq579 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq580><font color=#0000ff id=c8tq581>Account</font></font></font>
+  were to be created always with an initial zero balance, instead of defining a
+  constructor one could simply declare:
+</p>
+<p align=justify class=western id=c8tq582 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq583>
+</p>
+<p align=justify class=western id=c8tq584 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq585 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq586><font color=#0000ff id=c8tq587>Account.balance
+  = 0</font></font></font>
+</p>
+<p align=justify class=western id=c8tq588 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq589>
+</p>
+<p align=justify class=western id=c8tq590 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq591 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq592><font color=#0000ff id=c8tq593>myAccount
+  = Account() </font></font></font>
+</p>
+<p align=justify class=western id=c8tq594 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq595>
+</p>
+<p align=justify class=western id=c8tq596 style=MARGIN-BOTTOM:0pt>
+  Before the balance is assigned to for the first time,
+  <font id=c8tq597 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq598><font color=#0000ff id=c8tq599>myAccount.balance</font></font></font>
+  refers to the class property and reads zero. On the first deposit, however,
+  the
+  <font id=c8tq600 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq601><font color=#0000ff id=c8tq602>Account:deposit()</font></font></font>
+  method creates a
+  <font id=c8tq603 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq604><font color=#0000ff id=c8tq605>balance</font></font></font>
+  property in the
+  <font id=c8tq606 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq607><font color=#0000ff id=c8tq608>Account</font></font></font>
+  object (it does not modify the class property) and thereafter
+  <font id=c8tq609 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq610><font color=#0000ff id=c8tq611>myAccount.balance</font></font></font>
+  refers to the object property. If sometime later the user assigns
+  <font id=c8tq612 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq613><font color=#0000ff id=c8tq614>myAccount.balance
+  = nil,</font></font></font> the object property disappears and
+  <font id=c8tq615 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq616><font color=#0000ff id=c8tq617>myAccount.balance</font></font></font>
+  refers to the class property again. This behavior must be taken into account
+  if class properties are used as default values: assigning
+  <font id=c8tq618 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq619><font color=#0000ff id=c8tq620>nil</font></font></font>
+  to an object property defaulted by a class property seems to actually assign
+  it the default value.
+</p>
+<p align=justify class=western id=c8tq621 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq622>
+</p>
+<p align=justify class=western id=c8tq623 style=MARGIN-BOTTOM:0pt>
+  Class properties can also be used as class global variables (as in C++) and
+  assigned to, but in that case they must be accessed directly and not through
+  the objects. For example, by making the direct assignment
+</p>
+<p align=justify class=western id=c8tq624 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq625>
+</p>
+<p align=justify class=western id=c8tq626 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq627 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq628><font color=#0000ff id=c8tq629>Account.balance
+  = 4.50 </font></font></font>
+</p>
+<p align=justify class=western id=c8tq630 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq631>
+</p>
+<p align=justify class=western id=c8tq632 style=MARGIN-BOTTOM:0pt>
+  all accounts created thereafter will have an initial balance of $4.50.
+</p>
+<p align=justify class=western id=c8tq633 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq634>
+</p>
+<p align=justify class=western id=c8tq635 style=MARGIN-BOTTOM:0pt>
+  Class functions (i.e. those functions that are not methods) should also be
+  called directly, never through the objects. This is another departure from
+  C++, which accepts both ways of calling a static or class method as
+  equivalent. See the following section for an explanation why this is not so
+  with this library.
+</p>
+<p align=justify class=western id=c8tq636 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq637>
+</p>
+<p align=justify class=western id=c8tq638 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq639>
+</p>
+<p align=justify class=western id=c8tq640 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <b id=c8tq641>Inheritance</b>
+</p>
+<p align=justify class=western id=c8tq642 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <br id=c8tq643>
+</p>
+<p align=justify class=western id=c8tq644 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  Taking the
+  <font id=c8tq645 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq646><font color=#0000ff id=c8tq647>NamedAccount</font></font></font>
+  example, we can make a deposit by calling
+</p>
+<p align=justify class=western id=c8tq648 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq649>
+</p>
+<p align=justify class=western id=c8tq650 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq651 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq652><font color=#0000ff id=c8tq653>myNamedAccount.Account:deposit(2.00)
+  </font></font></font>
+</p>
+<p align=justify class=western id=c8tq654 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq655>
+</p>
+<p align=justify class=western id=c8tq656 style=MARGIN-BOTTOM:0pt>
+  But the
+  <font id=c8tq657 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq658><font color=#0000ff id=c8tq659>deposit()</font></font></font>
+  method is <i id=c8tq660>inherited</i> by
+  <font id=c8tq661 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq662><font color=#0000ff id=c8tq663>NamedAccount
+  </font></font></font>from
+  <font id=c8tq664 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq665><font color=#0000ff id=c8tq666>Account</font></font></font>,
+  so we can simply say
+</p>
+<p align=justify class=western id=c8tq667 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq668>
+</p>
+<p align=justify class=western id=c8tq669 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq670 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq671><font color=#0000ff id=c8tq672>myNamedAccount:deposit(2.00)
+  </font></font></font>
+</p>
+<p align=justify class=western id=c8tq673 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq674>
+</p>
+<p align=justify class=western id=c8tq675 style=MARGIN-BOTTOM:0pt>
+  and we get exactly the same result.
+</p>
+<p align=justify class=western id=c8tq676 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq677>
+</p>
+<p align=justify class=western id=c8tq678 style=MARGIN-BOTTOM:0pt>
+  Inheritance rules are simple: the first rule says that an attribute is
+  inherited from a base class if there is no ambiguity. Attributes that have the
+  same name in different bases are not inherited. Multiple inheritances of the
+  same attribute from the same base are ambiguous unless they originate in a
+  shared base, the reason being that unshared base objects of the same class
+  have their own separate states and methods accessing their states must be
+  called with a full path to make sure that they receive the correct
+  <font id=c8tq679 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq680><font color=#0000ff id=c8tq681>self</font></font></font>.
+</p>
+<p align=justify class=western id=c8tq682 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq683>
+</p>
+<p align=justify class=western id=c8tq684 style=MARGIN-BOTTOM:0pt>
+  For example:
+</p>
+<p align=justify class=western id=c8tq685 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq686>
+</p>
+<p align=justify class=western id=c8tq687 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq688 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq689><font color=#0000ff id=c8tq690>class.SavingsAccount(Account)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq691 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq692 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq693><font color=#0000ff id=c8tq694>class.CurrentAccount(Account)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq695 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq696 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq697><font color=#0000ff id=c8tq698>class.CombinedAccount(SavingsAccount,
+  CurrentAccount)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq699 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq700>
+</p>
+<p align=justify class=western id=c8tq701 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq702><font face="Courier New, monospace" id=c8tq703><font id=c8tq704 size=2 style=FONT-SIZE:11pt>myCombinedAccount
+  = CombinedAccount()</font></font></font>
+</p>
+<p align=justify class=western id=c8tq705 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq706 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq707><font color=#0000ff id=c8tq708>myCombinedAccount:deposit(2.00)
+  ← Error, deposit is nil</font></font></font>
+</p>
+<p align=justify class=western id=c8tq709 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq710>
+</p>
+<p align=justify class=western id=c8tq711 style=MARGIN-BOTTOM:0pt>
+  The
+  <font id=c8tq712 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq713><font color=#0000ff id=c8tq714>deposit()</font></font></font>method
+  of the
+  <font id=c8tq715 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq716><font color=#0000ff id=c8tq717>Account</font></font></font>
+  class is inherited by both
+  <font id=c8tq718 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq719><font color=#0000ff id=c8tq720>SavingsAccount
+  </font></font></font>and
+  <font id=c8tq721 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq722><font color=#0000ff id=c8tq723>CurrentAccount</font></font></font>,
+  but not by
+  <font id=c8tq724 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq725><font color=#0000ff id=c8tq726>CombinedAccount
+  </font></font></font>since it would be ambiguous as the
+  <font id=c8tq727 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq728><font color=#0000ff id=c8tq729>Account</font></font></font>
+  base is not shared. These are correct:
+</p>
+<p align=justify class=western id=c8tq730 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq731>
+</p>
+<p align=justify class=western id=c8tq732 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq733 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq734><font color=#0000ff id=c8tq735>myCombinedAccount.CurrentAccount.Account:deposit(2.00)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq736 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq737 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq738><font color=#0000ff id=c8tq739>myCombinedAccount.CurrentAccount:deposit(2.00)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq740 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq741>
+</p>
+<p align=justify class=western id=c8tq742 style=MARGIN-BOTTOM:0pt>
+  Both will increment
+  <font id=c8tq743 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq744><font color=#0000ff id=c8tq745>myCombinedAccount.CurrentAccount.Account.balance
+  </font></font></font>by $2.00.
+</p>
+<p align=justify class=western id=c8tq746 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq747>
+</p>
+<p align=justify class=western id=c8tq748 style=MARGIN-BOTTOM:0pt>
+  There would exist a
+  <font id=c8tq749 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq750><font color=#0000ff id=c8tq751>CombinedAccount:deposit()
+  </font></font></font>method if
+  <font id=c8tq752 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq753><font color=#0000ff id=c8tq754>SavingsAccount
+  </font></font></font>and
+  <font id=c8tq755 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq756><font color=#0000ff id=c8tq757>CurrentAccount
+  </font></font></font>were derived from
+  <font id=c8tq758 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq759><font color=#0000ff id=c8tq760>shared(Account)</font></font></font>.
+  That would create a single
+  <font id=c8tq761 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq762><font color=#0000ff id=c8tq763>Account</font></font></font>
+  base object and a single
+  <font id=c8tq764 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq765><font color=#0000ff id=c8tq766>balance
+  </font></font></font>and would avoid the ambiguity, although it would
+  certainly not make any sense in this particular application.
+</p>
+<p align=justify class=western id=c8tq767 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq768>
+</p>
+<p align=justify class=western id=c8tq769 style=MARGIN-BOTTOM:0pt>
+  The second inheritance rule says that when methods are inherited, they are not
+  merely copied from the base class to the derived class, but modified (wrapped)
+  so that they call the original methods with
+  <font id=c8tq770 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq771><font color=#0000ff id=c8tq772>self</font></font></font>
+  values corresponding to the base objects of their class.
+</p>
+<p align=justify class=western id=c8tq773 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq774>
+</p>
+<p align=justify class=western id=c8tq775 style=MARGIN-BOTTOM:0pt>
+  Recall that these two operations were reported to produce identical results:
+</p>
+<p align=justify class=western id=c8tq776 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq777>
+</p>
+<p align=justify class=western id=c8tq778 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq779 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq780><font color=#0000ff id=c8tq781>myNamedAccount.Account:deposit(2.00)
+  (1) </font></font></font>
+</p>
+<p align=justify class=western id=c8tq782 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq783 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq784><font color=#0000ff id=c8tq785>myNamedAccount:deposit(2.00)
+  (2)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq786 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq787>
+</p>
+<p align=justify class=western id=c8tq788 style=MARGIN-BOTTOM:0pt>
+  The original
+  <font id=c8tq789 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq790><font color=#0000ff id=c8tq791>deposit()</font></font></font>belongs
+  to the
+  <font id=c8tq792 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq793><font color=#0000ff id=c8tq794>Account</font></font></font>
+  class. In
+  <font id=c8tq795 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq796><font color=#0000ff id=c8tq797>(1)</font></font></font>
+  the original method is called with
+  <font id=c8tq798 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq799><font color=#0000ff id=c8tq800>myNamedAccount.Account</font></font></font>
+  (the
+  <font id=c8tq801 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq802><font color=#0000ff id=c8tq803>Account</font></font></font>
+  object) as
+  <font id=c8tq804 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq805><font color=#0000ff id=c8tq806>self</font></font></font>.
+  In
+  <font id=c8tq807 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq808><font color=#0000ff id=c8tq809>(2)</font></font></font>
+  the inherited version is called with
+  <font id=c8tq810 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq811><font color=#0000ff id=c8tq812>myNamedAccount
+  </font></font></font>(the
+  <font id=c8tq813 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq814><font color=#0000ff id=c8tq815>NamedAccount
+  </font></font></font>object) as
+  <font id=c8tq816 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq817><font color=#0000ff id=c8tq818>self</font></font></font>.
+  This inherited version in turn calls the original one passing it
+  <font id=c8tq819 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq820><font color=#0000ff id=c8tq821>self.Account
+  </font></font></font>as
+  <font id=c8tq822 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq823><font color=#0000ff id=c8tq824>self</font></font></font>.
+  The runtime cost of this wrapping mechanism is indexing on
+  <font id=c8tq825 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq826><font color=#0000ff id=c8tq827>self</font></font></font>
+  and calling a function, no matter how many levels of derivation are involved.
+</p>
+<p align=justify class=western id=c8tq828 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq829>
+</p>
+<p align=justify class=western id=c8tq830 style=MARGIN-BOTTOM:0pt>
+  When a class is created, the derivation process wraps all inherited functions
+  assuming that they are methods, since there is no way to tell. The user is
+  expected to avoid calling functions that are not methods as if they were;
+  class functions should be called only directly, never through the objects. The
+  only cost of wrapping class functions, then, is to generate some (small)
+  useless code.
+</p>
+<p align=justify class=western id=c8tq831 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq832>
+</p>
+<p align=justify class=western id=c8tq833 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq834>
+</p>
+<p align=justify class=western id=c8tq835 style=MARGIN-BOTTOM:0pt>
+  <b id=c8tq836>Metamethods and indexing</b>
+</p>
+<p align=justify class=western id=c8tq837 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq838>
+</p>
+<p align=justify class=western id=c8tq839 style=MARGIN-BOTTOM:0pt>
+  Classes may freely define metamethods like
+  <font id=c8tq840 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq841><font color=#0000ff id=c8tq842>__call()</font></font></font>,
+  <font id=c8tq843 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq844><font color=#0000ff id=c8tq845>__add()</font></font></font>,
+  <font id=c8tq846 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq847><font color=#0000ff id=c8tq848>__mul()</font></font></font>,
+  etc. They behave like any other method and are inherited if they are not
+  ambiguous.
+</p>
+<p align=justify class=western id=c8tq849 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq850>
+</p>
+<p align=justify class=western id=c8tq851 style=MARGIN-BOTTOM:0pt>
+  Indexing, however, is special. The methametods controlling indexing
+  (<font id=c8tq852 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq853><font color=#0000ff id=c8tq854>__index()</font></font></font>
+  and
+  <font id=c8tq855 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq856><font color=#0000ff id=c8tq857>__newindex()</font></font></font>)
+  cannot be defined by the user directly, since that would dismantle the whole
+  class machinery.
+</p>
+<p align=justify class=western id=c8tq858 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq859>
+</p>
+<p align=justify class=western id=c8tq860 style=MARGIN-BOTTOM:0pt>
+  The class library supports indexing control by letting users define two
+  special methods:
+  <font id=c8tq861 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq862><font color=#0000ff id=c8tq863>__get()
+  </font></font></font>and
+  <font id=c8tq864 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq865><font color=#0000ff id=c8tq866>__set()</font></font></font>.
+  These methods are not meant to be called directly (they are internally
+  renamed) but if they are defined they are called when indexing operations
+  (square bracket or dot-field accesses) are performed on an instance of a
+  class.
+</p>
+<p align=justify class=western id=c8tq867 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq868>
+</p>
+<p align=justify class=western id=c8tq869 style=MARGIN-BOTTOM:0pt>
+  Classes are metatables of their instances. Normally, a class
+  <font id=c8tq870 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq871><font color=#0000ff id=c8tq872>C</font></font></font>
+  has:
+</p>
+<p align=justify class=western id=c8tq873 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq874>
+</p>
+<p align=justify class=western id=c8tq875 style=MARGIN-BOTTOM:0pt>
+  <font color=#0000ff id=c8tq876><font face="Courier New, monospace" id=c8tq877><font id=c8tq878 size=2 style=FONT-SIZE:11pt>
+  __index == C</font></font></font>
+</p>
+<p align=justify class=western id=c8tq879 style=MARGIN-BOTTOM:0pt>
+  <font color=#0000ff id=c8tq880><font face="Courier New, monospace" id=c8tq881><font id=c8tq882 size=2 style=FONT-SIZE:11pt>
+  __newindex == nil</font></font></font>
+</p>
+<p align=justify class=western id=c8tq883 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq884>
+</p>
+<p align=justify class=western id=c8tq885 style=MARGIN-BOTTOM:0pt>
+  When
+  <font id=c8tq886 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq887><font color=#0000ff id=c8tq888>__get()</font></font></font>
+  is defined, an
+  <font id=c8tq889 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq890><font color=#0000ff id=c8tq891>__index()
+  </font></font></font>handler is installed. This handler is called every time
+  an attempt is made to read a missing object attribute. The handler first looks
+  for the attribute in the class. If it finds it there, it just returns it. If
+  the attribute is not found in the class, the handler calls
+  <font id=c8tq892 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq893><font color=#0000ff id=c8tq894>__get()
+  </font></font></font>with the name of the attribute, and returns whatever
+  <font id=c8tq895 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq896><font color=#0000ff id=c8tq897>__get(name)
+  </font></font></font>returns.
+</p>
+<p align=justify class=western id=c8tq898 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq899>
+</p>
+<p align=justify class=western id=c8tq900 style=MARGIN-BOTTOM:0pt>
+  When
+  <font id=c8tq901 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq902><font color=#0000ff id=c8tq903>__set()</font></font></font>
+  is defined, a
+  <font id=c8tq904 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq905><font color=#0000ff id=c8tq906>__newindex()
+  </font></font></font>handler is installed. This handler is called every time
+  an attempt is made to assign a value to a missing object attribute. The
+  handler starts by calling
+  <font id=c8tq907 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq908><font color=#0000ff id=c8tq909>__set()
+  </font></font></font>with the name and value of the attribute. If
+  <font id=c8tq910 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq911><font color=#0000ff id=c8tq912>__set(name,
+  value) </font></font></font>returns
+  <font id=c8tq913 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq914><font color=#0000ff id=c8tq915>true</font></font></font>,
+  this indicates that
+  <font id=c8tq916 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq917><font color=#0000ff id=c8tq918>__set()</font></font></font>
+  has handled the assignment and there is nothing else to do. Otherwise, the
+  assignment was not handled and the handler creates the attribute directly in
+  the main body of the object.
+</p>
+<p align=justify class=western id=c8tq919 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq920>
+</p>
+<p align=justify class=western id=c8tq921 style=MARGIN-BOTTOM:0pt>
+  This mechanism is useful for defining classes that behave like arrays or
+  tables and keep the elements separate from the main body of the object. Since
+  the elements are not found directly in the object,
+  <font id=c8tq922 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq923><font color=#0000ff id=c8tq924>__get()
+  </font></font></font>and
+  <font id=c8tq925 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq926><font color=#0000ff id=c8tq927>__set()</font></font></font>
+  are called on every access. One can also think of applications where objects
+  are proxies and the elements are stored remotely and accessed through a
+  communications interface.
+</p>
+<p align=justify class=western id=c8tq928 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq929>
+</p>
+<p align=justify class=western id=c8tq930 style=MARGIN-BOTTOM:0pt>
+  As an example, consider this excerpt from a
+  <font id=c8tq931 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq932><font color=#0000ff id=c8tq933>Tuple</font></font></font>
+  class that behaves like a contiguous array indexed by integers from
+  <font id=c8tq934 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq935><font color=#0000ff id=c8tq936>1
+  </font></font></font>to the current size plus one. It has two fields: a table
+  <font id=c8tq937 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq938><font color=#0000ff id=c8tq939>elem</font></font></font>
+  for holding the elements and the current size
+  <font id=c8tq940 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq941><font color=#0000ff id=c8tq942>n</font></font></font>.
+  Element
+  <font id=c8tq943 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq944><font color=#0000ff id=c8tq945>[n+1]</font></font></font>
+  is a sentinel, reading it returns
+  <font id=c8tq946 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq947><font color=#0000ff id=c8tq948>nil
+  </font></font></font>and assigning it increases the size by one.
+</p>
+<p align=justify class=western id=c8tq949 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq950>
+</p>
+<p align=justify class=western id=c8tq951 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq952><font face="Courier New, monospace" id=c8tq953><font id=c8tq954 size=2 style=FONT-SIZE:11pt>function
+  Tuple:__get(i)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq955 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq956><font face="Courier New, monospace" id=c8tq957><font id=c8tq958 size=2 style=FONT-SIZE:11pt>
+  if type(i) ~= 'number' then return nil end</font></font></font>
+</p>
+<p align=justify class=western id=c8tq959 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq960 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq961><font color=#0000ff id=c8tq962>
+  assert(i &gt;= 1 and i &lt;= self.n + 1, 'Invalid index')</font></font></font>
+</p>
+<p align=justify class=western id=c8tq963 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq964><font face="Courier New, monospace" id=c8tq965><font id=c8tq966 size=2 style=FONT-SIZE:11pt>
+  return self.elem[i]</font></font></font>
+</p>
+<p align=justify class=western id=c8tq967 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq968><font face="Courier New, monospace" id=c8tq969><font id=c8tq970 size=2 style=FONT-SIZE:11pt>end</font></font></font>
+</p>
+<p align=justify class=western id=c8tq971 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq972>
+</p>
+<p align=justify class=western id=c8tq973 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq974><font face="Courier New, monospace" id=c8tq975><font id=c8tq976 size=2 style=FONT-SIZE:11pt>function
+  Tuple:__set(i, v)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq977 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq978><font face="Courier New, monospace" id=c8tq979><font id=c8tq980 size=2 style=FONT-SIZE:11pt>
+  if type(i) ~= 'number' then return false end</font></font></font>
+</p>
+<p align=justify class=western id=c8tq981 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq982 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq983><font color=#0000ff id=c8tq984>
+  assert(i &gt;= 1 and i &lt;= self.n + 1, 'Invalid index')</font></font></font>
+</p>
+<p align=justify class=western id=c8tq985 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq986 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq987><font color=#0000ff id=c8tq988>
+  if v == nil then --remove</font></font></font>
+</p>
+<p align=justify class=western id=c8tq989 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq990><font face="Courier New, monospace" id=c8tq991><font id=c8tq992 size=2 style=FONT-SIZE:11pt>
+  if i &lt;= self.n then</font></font></font>
+</p>
+<p align=justify class=western id=c8tq993 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq994><font face="Courier New, monospace" id=c8tq995><font id=c8tq996 size=2 style=FONT-SIZE:11pt>
+  table.remove(self.elem, i)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq997 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq998><font face="Courier New, monospace" id=c8tq999><font id=c8tq1000 size=2 style=FONT-SIZE:11pt>
+  self.n = self.n - 1</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1001 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq1002><font face="Courier New, monospace" id=c8tq1003><font id=c8tq1004 size=2 style=FONT-SIZE:11pt>
+  end</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1005 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq1006><font face="Courier New, monospace" id=c8tq1007><font id=c8tq1008 size=2 style=FONT-SIZE:11pt>
+  return true</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1009 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq1010><font face="Courier New, monospace" id=c8tq1011><font id=c8tq1012 size=2 style=FONT-SIZE:11pt>
+  end </font></font></font>
+</p>
+<p align=justify class=western id=c8tq1013 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq1014 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1015><font color=#0000ff id=c8tq1016>
+  if i == self.n + 1 then self.n = i end --append</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1017 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq1018><font face="Courier New, monospace" id=c8tq1019><font id=c8tq1020 size=2 style=FONT-SIZE:11pt>
+  self.elem[i] = v</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1021 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq1022><font face="Courier New, monospace" id=c8tq1023><font id=c8tq1024 size=2 style=FONT-SIZE:11pt>
+  return true</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1025 style="MARGIN-LEFT:0.5in; MARGIN-BOTTOM:0pt">
+  <font color=#0000ff id=c8tq1026><font face="Courier New, monospace" id=c8tq1027><font id=c8tq1028 size=2 style=FONT-SIZE:11pt>end</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1029 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1030>
+</p>
+<p align=justify class=western id=c8tq1031 style=MARGIN-BOTTOM:0pt>
+  Note how
+  <font id=c8tq1032 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1033><font color=#0000ff id=c8tq1034>__get()
+  </font></font></font>and
+  <font id=c8tq1035 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1036><font color=#0000ff id=c8tq1037>__set()</font></font></font>
+  carefully reject non-numeric indexes by returning
+  <font id=c8tq1038 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1039><font color=#0000ff id=c8tq1040>nil</font></font></font>
+  and
+  <font id=c8tq1041 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1042><font color=#0000ff id=c8tq1043>false
+  </font></font></font>respectively. These methods must be written with great
+  care so that they do not re-enter indefinitely. Use
+  <font id=c8tq1044 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1045><font color=#0000ff id=c8tq1046>rawget()</font></font></font>
+  and
+  <font id=c8tq1047 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1048><font color=#0000ff id=c8tq1049>rawset()</font></font></font>
+  when necessary.
+</p>
+<p align=justify class=western id=c8tq1050 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  This class can be used as follows:
+</p>
+<p align=justify class=western id=c8tq1051 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <br id=c8tq1052>
+</p>
+<p align=justify class=western id=c8tq1053 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font id=c8tq1054 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1055><font color=#0000ff id=c8tq1056>
+  t = Tuple(11, 22, 33)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1057 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font id=c8tq1058 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1059><font color=#0000ff id=c8tq1060>
+  = t --&gt; (11, 22, 33)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1061 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font id=c8tq1062 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1063><font color=#0000ff id=c8tq1064>
+  = t[2] --&gt; 22</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1065 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font color=#0000ff id=c8tq1066><font face="Courier New, monospace" id=c8tq1067><font id=c8tq1068 size=2 style=FONT-SIZE:11pt>
+  t[2] = nil</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1069 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font id=c8tq1070 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1071><font color=#0000ff id=c8tq1072>
+  = t --&gt; (11, 33)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1073 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font id=c8tq1074 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1075><font color=#0000ff id=c8tq1076>
+  t[3] = 333</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1077 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font id=c8tq1078 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1079><font color=#0000ff id=c8tq1080>
+  = t --&gt; (11, 33, 333)</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1081 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font id=c8tq1082 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1083><font color=#0000ff id=c8tq1084>
+  t[5] = 55 --&gt; Error, invalid index</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1085 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1086>
+</p>
+<p align=justify class=western id=c8tq1087 style=MARGIN-BOTTOM:0pt>
+  The indexing hooks have a cost in terms of performance, but it is only paid by
+  classes that define the
+  <font id=c8tq1088 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1089><font color=#0000ff id=c8tq1090>__get()
+  </font></font></font>and
+  <font id=c8tq1091 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1092><font color=#0000ff id=c8tq1093>__set()</font></font></font>
+  methods. Other classes are not affected. If a class derives from an indexing
+  base but does not need the indexing operations, it may just define
+  <font id=c8tq1094 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1095><font color=#0000ff id=c8tq1096>__get
+  = nil</font></font></font>
+  and<font id=c8tq1097 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1098><font color=#0000ff id=c8tq1099>
+  __set = nil</font></font></font>; this will remove the indexing hooks.
+</p>
+<p align=justify class=western id=c8tq1100 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1101>
+</p>
+<p align=justify class=western id=c8tq1102 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1103>
+</p>
+<p align=justify class=western id=c8tq1104 style=MARGIN-BOTTOM:0pt>
+  <b id=c8tq1105>Implementation</b>
+</p>
+<p align=justify class=western id=c8tq1106 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1107>
+</p>
+<p align=justify class=western id=c8tq1108 style=MARGIN-BOTTOM:0pt>
+  The library is implemented in a single file,
+  <font id=c8tq1109 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1110><font color=#0000ff id=c8tq1111>classlib.lua</font>.
+  </font></font>Public interface:
+</p>
+<p align=justify class=western id=c8tq1112 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1113>
+</p>
+<p align=justify class=western id=c8tq1114 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq1115 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1116><font color=#0000ff id=c8tq1117>class([name,][bases])
+  </font></font></font>Creates a new class that derives from zero or more
+  classes. If
+  <font id=c8tq1118 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1119><font color=#0000ff id=c8tq1120>name</font></font></font>
+  exists it creates a named class, otherwise an unnamed class;
+  <font id=c8tq1121 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1122><font color=#0000ff id=c8tq1123>bases</font></font></font>
+  is a list of classes or values returned by
+  <font id=c8tq1124 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1125><font color=#0000ff id=c8tq1126>shared()</font></font></font>.
+</p>
+<p align=justify class=western id=c8tq1127 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq1128>
+</p>
+<p align=justify class=western id=c8tq1129 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq1130 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1131><font color=#0000ff id=c8tq1132>class.name([bases])
+  </font></font></font>Creates a new named class and assigns it to a global
+  variable with the same name:
+  <font id=c8tq1133 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1134><font color=#0000ff id=c8tq1135>class.name(bases)
+  </font></font></font>is the same as
+  <font id=c8tq1136 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1137><font color=#0000ff id=c8tq1138>name
+  = class('name', bases) </font></font></font>where
+  <font id=c8tq1139 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1140><font color=#0000ff id=c8tq1141>name</font></font></font>
+  is global.
+</p>
+<p align=justify class=western id=c8tq1142 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq1143>
+</p>
+<p align=justify class=western id=c8tq1144 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq1145 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1146><font color=#0000ff id=c8tq1147>shared(class)</font></font></font>
+  Wraps a class so that it can be passed as an argument to
+  <font id=c8tq1148 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1149><font color=#0000ff id=c8tq1150>class()</font></font></font>
+  for shared derivation.
+</p>
+<p align=justify class=western id=c8tq1151 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq1152>
+</p>
+<p align=justify class=western id=c8tq1153 style=MARGIN-BOTTOM:0pt>
+  There is a version of the library that only supports unnamed classes and
+  square-bracket scoping,
+  <font id=c8tq1154 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1155><font color=#0000ff id=c8tq1156>unclasslib.lua</font></font></font>.
+  If named classes are not used this version should be a bit more efficient,
+  since it eliminates one level of indexing when accessing the base objects.
+  Classes are created by
+  <font id=c8tq1157 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1158><font color=#0000ff id=c8tq1159>class([bases])</font></font></font>.
+  No name argument is allowed, and assigning the
+  <font id=c8tq1160 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1161><font color=#0000ff id=c8tq1162>__name</font></font></font>
+  attribute of a class has no effect.
+</p>
+<p align=justify class=western id=c8tq1163 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1164>
+</p>
+<p align=justify class=western id=c8tq1165 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  There is also a group of utility functions for checking types and interface
+  support:
+</p>
+<p align=justify class=western id=c8tq1166 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <br id=c8tq1167>
+</p>
+<p align=justify class=western id=c8tq1168 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font id=c8tq1169 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1170><font color=#0000ff id=c8tq1171>typeof(v)
+  </font></font></font>Returns
+  <font id=c8tq1172 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1173><font color=#0000ff id=c8tq1174>'object'</font></font></font>
+  if
+  <font id=c8tq1175 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1176><font color=#0000ff id=c8tq1177>v</font></font></font>
+  is an object,
+  <font id=c8tq1178 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1179><font color=#0000ff id=c8tq1180>'class'</font></font></font>
+  if it is a class,
+  <font id=c8tq1181 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1182><font color=#0000ff id=c8tq1183>type(v)</font></font></font>
+  otherwise.
+</p>
+<p align=justify class=western id=c8tq1184 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <br id=c8tq1185>
+</p>
+<p align=justify class=western id=c8tq1186 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq1187 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1188><font color=#0000ff id=c8tq1189>classof(v)
+  </font></font></font>Returns the class
+  of<font id=c8tq1190 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1191><font color=#0000ff id=c8tq1192>
+  v</font></font></font> if
+  <font id=c8tq1193 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1194><font color=#0000ff id=c8tq1195>v
+  </font></font></font>is an object or a class,
+  <font id=c8tq1196 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1197><font color=#0000ff id=c8tq1198>nil
+  </font></font></font>otherwise.
+</p>
+<p align=justify class=western id=c8tq1199 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq1200>
+</p>
+<p align=justify class=western id=c8tq1201 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq1202 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1203><font color=#0000ff id=c8tq1204>classname(v)
+  </font></font></font>Returns the name of the class
+  of<font id=c8tq1205 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1206><font color=#0000ff id=c8tq1207>
+  v</font></font></font> if
+  <font id=c8tq1208 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1209><font color=#0000ff id=c8tq1210>v
+  </font></font></font>is an object or a class and the class is named,
+  <font id=c8tq1211 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1212><font color=#0000ff id=c8tq1213>nil
+  </font></font></font>otherwise.
+</p>
+<p align=justify class=western id=c8tq1214 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1215>
+</p>
+<p align=justify class=western id=c8tq1216 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq1217 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1218><font color=#0000ff id=c8tq1219>implements(v,
+  class) </font></font></font>True if
+  <font id=c8tq1220 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1221><font color=#0000ff id=c8tq1222>v
+  </font></font></font>is an object or a class that implements the interface of
+  <font id=c8tq1223 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1224><font color=#0000ff id=c8tq1225>class</font></font></font>.
+</p>
+<p align=justify class=western id=c8tq1226 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1227>
+</p>
+<p align=justify class=western id=c8tq1228 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq1229 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1230><font color=#0000ff id=c8tq1231>is_a(v,
+  class) </font></font></font>True if
+  <font id=c8tq1232 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1233><font color=#0000ff id=c8tq1234>v
+  </font></font></font>is an object or a class of class
+  <font id=c8tq1235 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1236><font color=#0000ff id=c8tq1237>class</font></font></font>
+  or derives from
+  <font id=c8tq1238 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1239><font color=#0000ff id=c8tq1240>class</font></font></font>
+  and implements its interface.
+</p>
+<p align=justify class=western id=c8tq1241 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1242>
+</p>
+<p align=justify class=western id=c8tq1243 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  When a class is created, it has a few initial methods:
+</p>
+<p align=justify class=western id=c8tq1244 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <br id=c8tq1245>
+</p>
+<p align=justify class=western id=c8tq1246 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font id=c8tq1247 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1248><font color=#0000ff id=c8tq1249>__call(...)</font></font></font>
+  Calling the class creates an instance. Arguments are passed to the
+  constructor.
+</p>
+<p align=justify class=western id=c8tq1250 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq1251>
+</p>
+<p align=justify class=western id=c8tq1252 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <font id=c8tq1253 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1254><font color=#0000ff id=c8tq1255>__init(...)</font></font></font>
+  Default constructor.
+</p>
+<p align=justify class=western id=c8tq1256 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq1257>
+</p>
+<p align=justify class=western id=c8tq1258 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font id=c8tq1259 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1260><font color=#0000ff id=c8tq1261>implements(class)</font></font></font>
+  Method to determine if an object or class implements the interface of a target
+  class.
+</p>
+<p align=justify class=western id=c8tq1262 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <br id=c8tq1263>
+</p>
+<p align=justify class=western id=c8tq1264 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font id=c8tq1265 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1266><font color=#0000ff id=c8tq1267>is_a(class)</font></font></font>
+  Method to determine if an object or class is of the type of a target class.
+</p>
+<p align=justify class=western id=c8tq1268 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq1269>
+</p>
+<p align=justify class=western id=c8tq1270 style=MARGIN-BOTTOM:0pt>
+  The
+  <font id=c8tq1271 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1272><font color=#0000ff id=c8tq1273>is_a()
+  </font></font></font>and
+  <font id=c8tq1274 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1275><font color=#0000ff id=c8tq1276>implements()
+  </font></font></font>methods are somehow special since they can be applied to
+  both classes and objects.
+</p>
+<p align=justify class=western id=c8tq1277 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1278>
+</p>
+<p align=justify class=western id=c8tq1279 style=MARGIN-BOTTOM:0pt>
+  The
+  <font id=c8tq1280 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1281><font color=#0000ff id=c8tq1282>implements()
+  </font></font></font>method checks that an object or class supports the
+  interface of the target class. The interface of a class is the set of its
+  callable attributes (functions and objects with a
+  <font id=c8tq1283 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1284><font color=#0000ff id=c8tq1285>__call()</font></font></font>
+  operator). The method merely checks that these attributes <i id=c8tq1286>exist
+  and are callable</i>; certainly this does not guarantee that they are
+  semantically correct.
+</p>
+<p align=justify class=western id=c8tq1287 style="MARGIN-LEFT:2.13in; TEXT-INDENT:-2.13in; MARGIN-BOTTOM:0pt">
+  <br id=c8tq1288>
+</p>
+<p align=justify class=western id=c8tq1289 style=MARGIN-BOTTOM:0pt>
+  The
+  <font id=c8tq1290 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1291><font color=#0000ff id=c8tq1292>is_a()
+  </font></font></font>method checks whether the object or class is of the same
+  class as the target class or derives from the target <i id=c8tq1293>and</i>
+  implements it. For example,
+</p>
+<p align=justify class=western id=c8tq1294 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1295>
+</p>
+<p align=justify class=western id=c8tq1296 style=MARGIN-BOTTOM:0pt>
+  <font id=c8tq1297 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1298><font color=#0000ff id=c8tq1299>myNamedAccount:is_a(Account)
+  == true</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1300 style=MARGIN-BOTTOM:0pt>
+  <font id=c8tq1301 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1302><font color=#0000ff id=c8tq1303>
+  myCombinedAccount:is_a(Account) == false</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1304 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1305>
+</p>
+<p align=justify class=western id=c8tq1306 style="MARGIN-BOTTOM:0pt; page-break-inside:avoid; page-break-after:avoid">
+  The last one fails because although
+  <font id=c8tq1307 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1308><font color=#0000ff id=c8tq1309>CombinedAccount</font></font></font>
+  derives from
+  <font id=c8tq1310 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1311><font color=#0000ff id=c8tq1312>Account</font></font></font>,
+  it does not support its
+  <font id=c8tq1313 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1314><font color=#0000ff id=c8tq1315>deposit()</font></font></font>
+  and
+  <font id=c8tq1316 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1317><font color=#0000ff id=c8tq1318>withdraw()</font></font></font>
+  methods since they are ambiguous. This means that a
+  <font id=c8tq1319 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1320><font color=#0000ff id=c8tq1321>CombinedAccount</font></font></font>
+  cannot be passed to a function expecting an
+  <font id=c8tq1322 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1323><font color=#0000ff id=c8tq1324>Account</font></font></font>,
+  since that function could blindly attempt to call those methods.
+</p>
+<p align=justify class=western id=c8tq1325 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1326>
+</p>
+<p align=justify class=western id=c8tq1327 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1328>
+</p>
+<p align=justify class=western id=c8tq1329 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <b id=c8tq1330>Reserved names</b>
+</p>
+<p align=justify class=western id=c8tq1331 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <br id=c8tq1332>
+</p>
+<p align=justify class=western id=c8tq1333 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  The implementation of the class library reserves some attribute names for
+  internal use:
+</p>
+<p align=justify class=western id=c8tq1334 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <br id=c8tq1335>
+</p>
+<p align=justify class=western id=c8tq1336 style="MARGIN-BOTTOM:0pt; page-break-after:avoid">
+  <font id=c8tq1337 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1338><font color=#0000ff id=c8tq1339>
+  __index __newindex __type</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1340 style=MARGIN-BOTTOM:0pt>
+  <font id=c8tq1341 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1342><font color=#0000ff id=c8tq1343>
+  __class __bases __shared __inherited __from __user_init __initialized
+  __user_get __user_set</font></font></font>
+</p>
+<p align=justify class=western id=c8tq1344 style=MARGIN-BOTTOM:0pt>
+  <br id=c8tq1345>
+</p>
+<p align=justify class=western id=c8tq1346 style=MARGIN-BOTTOM:0pt>
+  Please leave these alone or just avoid using names starting with two
+  underscores, with the exception of
+  <font id=c8tq1347 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1348><font color=#0000ff id=c8tq1349>__name</font></font></font>,<font id=c8tq1350 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1351><font color=#0000ff id=c8tq1352>
+  __init()</font></font></font>,<font id=c8tq1353 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1354><font color=#0000ff id=c8tq1355>
+  __get()</font></font></font>,<font id=c8tq1356 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1357><font color=#0000ff id=c8tq1358>
+  __set()</font></font></font> and the metamethods like
+  <font id=c8tq1359 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1360><font color=#0000ff id=c8tq1361>__call()</font></font></font>,<font id=c8tq1362 size=2 style=FONT-SIZE:11pt><font face="Courier New, monospace" id=c8tq1363><font color=#0000ff id=c8tq1364>
+  __add()</font></font></font>, etc. which may be safely defined.
+</p></body>
+</html>

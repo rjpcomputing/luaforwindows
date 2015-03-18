@@ -1,0 +1,29 @@
+TABLE UL { margin-top: 0px; }
+
+TABLE {
+	border: 1pt solid #039;
+	border-collapse: separate;
+}
+
+TABLE CAPTION {
+	text-align: left;
+	color:#69f;
+	font-variant: small-caps;
+	font-size: 20px;
+}
+
+TH {
+	text-align: left;
+	font-variant: small-caps;
+}
+
+TD {
+	padding-left: 10pt;
+	padding-right: 10pt;
+	vertical-align: top;
+}
+TABLE TBODY TR TD.title {
+	font-variant: small-caps;
+	border-top: 2pt solid;
+	border-bottom: 1pt solid;
+}

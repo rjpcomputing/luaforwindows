@@ -1,0 +1,77 @@
+Directory layout before build:
+
+WIN32
+-----
+
+LuaTask-1.6.x\
+              build\
+                    win32\
+                          moduleVC6\
+                                    task.dsp
+                                    task.dsw
+                          moduleVC8\
+                                    task.sln
+                                    task.vcproj
+              doc\
+                  DirLayout.txt
+                  LuaTaskRG.odt
+                  LuaTaskRG.pdf
+              examples\
+                       Readme
+                       test.lua
+                       test2.lua
+              lua5.1\
+                     include\
+                             lauxlib.h
+                             lua.h
+                             lua.hpp
+                             luaconf.h
+                             lualib.h
+                     lib\
+                         dll\
+                             lua5.1.lib
+                         dll8\
+                              lua5.1.lib
+              src\
+                  LuaTask\
+                          ltask.c
+                          queue.c
+                          queue.h
+                          syncos.c
+                          syncos.h
+                          task.rc
+
+
+*IX
+---
+
+LuaTask-1.6.x/
+              build/
+                    ix/
+                       module/
+                              Makefile
+              doc
+              examples
+              doc/
+                  DirLayout.txt
+                  LuaTaskRG.odt
+                  LuaTaskRG.pdf
+              examples/
+                       Readme
+                       test.lua
+                       test2.lua
+              lua5.1/
+                     include/
+                             lauxlib.h
+                             lua.h
+                             lua.hpp
+                             luaconf.h
+                             lualib.h
+              src/
+                  LuaTask/
+                          ltask.c
+                          queue.c
+                          queue.h
+                          syncos.c
+                          syncos.h
+                          task.rc

@@ -1,0 +1,20 @@
+-- WARNING, this is undertested, especially in cases where mutliple
+-- modules have their own fenvs. Use at your own risks.
+
+require 'strict'
+
+local function decl_builder(x)
+   local ids, vals = unpack(x)
+   local ids_as_strings = table.imap(|x| `String{x[1]}, ids)
+   local decl = `Call{ +{getmetatable(getfenv()).__newglobal},
+                       unpack(ids_as_strings) }
+   if vals then return { decl, `Set{ ids, vals } }
+   else return decl end
+end
+
+mlp.lexer:add 'global'
+mlp.stat:add{ 
+   'global', mlp.id_list, gg.onkeyword{ '=', mlp.expr_list },
+   builder = decl_builder }
+
+return +{ require (-{ `String{ package.metalua_extension_prefix .. 'xglobal-runtime' } }) }

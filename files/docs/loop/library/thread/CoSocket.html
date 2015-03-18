@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Cooperative Sockets</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																																																																																																																																	<li><a href="../../index.html", title="">Home</a></li>
+																																																																																																																																																	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																																																																																																																																	<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																																																																																																																																	<li><a href="../index.html", title="Class Library">Library</a>
+																																																																																																																																																		<div class="outside"><div class="inside"><ul>
+																																																																																																																																																			<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																																																																																																																																				</li>
+																																																																																																																																																				<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																																																																																																																																					</li>
+																																																																																																																																																					<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																																																																																																																																						</li>
+																																																																																																																																																						<li><a href="../overview.html#object", title="Objects">object</a>
+																																																																																																																																																							</li>
+																																																																																																																																																							<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																																																																																																																																								</li>
+																																																																																																																																																								<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																																																																																																																																									</li>
+																																																																																																																																																								</ul></div></div>
+																																																																																																																																																							</li>
+																																																																																																																																																							<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																																																																																																																																							<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																																																																																																																																						</ul></div></div>
+																																																																																																																																																					
+</div>
+
+<div class="content">
+<h1>Cooperative Sockets</h1>
+<h2><code>loop.thread.CoSocket</code></h2><br>
+<p>Class of objects that implement a socket API integrated with an instance of <code><a href="IOScheduler.html">IOScheduler</a></code> similar to the one provided by the <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library.
+This class is useful to port or implement LuaSocket based applications with the cooperative multi-threading model provided by <code><a href="Scheduler.html">Scheduler</a></code> class.</p>
+
+<p>Each instance provides methods that correspond to the main functions of the <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> API.
+Such methods creates wrappers for sockets that re-implement basic operations like <code>send</code> and <code>receive</code> in order to implicitly switch execution if the socket is not ready to perform the operation yet.
+When the socket becomes ready the execution is resumed and the operation is carried on transparently to the application.
+This implicit switch enables maximal use of the processing time transparently to the programmer.</p>
+
+<h2>Behavior</h2>
+
+<h3>Initialization</h3>
+
+<dl>
+	
+	<dt><code><b>CoSocket</b>([object])</code></dt>
+	<dd>
+		Makes <code>object</code> an instance of <code>CoSocket</code>.
+		If no <code>object</code> is provided, a new table is created.
+		The initialization creates two tables used to store read/write locks for socket objects in order to avoid that two threads read/write the same socket at the same time.
+	</dd>
+	
+</dl>
+
+<h3>Fields</h3>
+
+<dl>
+	
+	<dt><code><b>scheduler</b></code></dt>
+	<dd>
+		Instance of <code><a href="IOScheduler.html">IOScheduler</a></code> which threads execute this API.
+		Every thread that may execute an operation of this API that might implicitly switch execution must be running under this scheduler instance.
+	</dd>
+	
+	<dt><code><b>socketapi</b></code></dt>
+	<dd>
+		Non-blocking socket API to be used to access operating system features.
+		This API must be the same API provided by <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a>, or at least the equivalent subset provided by this class.
+	</dd>
+	
+</dl>
+
+<h3>Methods</h3>
+
+<dl>
+	
+	<dt><code><b>bind</b>(host, port)</code></dt>
+	<dd>
+		Method that provides the same signature and semantics of <code>socket.bind</code> of <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library.
+		However, it returns a wrapped socket that provides operations that may implicitly switch execution to other scheduled thread of <code>self.scheduler</code> if the operation cannot be performed at the time..
+	</dd>
+	
+	<dt><code><b>connect</b>(host, port)</code></dt>
+	<dd>
+		Method that provides the same signature and semantics of <code>socket.connect</code> of <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library.
+		However, it returns a wrapped socket that provides operations that may implicitly switch execution to other scheduled thread of <code>self.scheduler</code> if the operation cannot be performed at the time..
+	</dd>
+	
+	<dt><code><b>select</b>(recv, send [, timeout])</code></dt>
+	<dd>
+		Method that provides the same signature and semantics of <code>socket.select</code> of <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library.
+		However, such method may implicitly switch execution to other scheduled thread of <code>self.scheduler</code> if the operation cannot be performed at the time.
+	</dd>
+	
+	<dt><code><b>tcp</b>()</code></dt>
+	<dd>
+		Method that provides the same signature and semantics of <code>socket.tcp</code> of <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library.
+		However, it returns a wrapped socket that provides operations that may implicitly switch execution to other scheduled thread of <code>self.scheduler</code> if the operation cannot be performed at the time.
+	</dd>
+	
+	<dt><code><b>udp</b>()</code></dt>
+	<dd>
+		Method that provides the same signature and semantics of <code>socket.udp</code> of <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library.
+		However, it returns a wrapped socket that provides operations that may implicitly switch execution to other scheduled thread of <code>self.scheduler</code> if the operation cannot be performed at the time.
+	</dd>
+	
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	<li>
+		Wrapped sockets redefine the following methods of the API of the socket objects of the <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library:
+		<p>
+			<ul>
+				<li><code><b>accept</b>()</code></li>
+				<li><code><b>connect</b>(host, port)</code></li>
+				<li><code><b>receive</b>([pattern])</code></li>
+				<li><code><b>send</b>(data [, i, j])</code></li>
+				<li><code><b>settimeout</b>(timeout)</code></li>
+			</ul>
+		</p>
+		<code>accept</code>, <code>receive</code> and <code>send</code> operations cannot be called outside a scheduled thread and may implicitly switch execution to other scheduled thread of <code>self.scheduler</code> if the operation cannot be performed at the time.</li>
+	<li>
+		Two threads cannot attempt to read or write the same socket, thus only one thread can perform an <code>accept</code> or <code>receive</code> on a given socket.
+		Similarly, only one thread can perform a <code>send</code> on a given socket.
+		However, two different threads may access the same socket performing different operations, <i>e.g.</i> one perform a <code>send</code> and the other a <code>receive</code>.
+	</li>
+	<li>
+		While porting LuaSocket based applications, a cumbersome difference is that this API offers methods instead of functions, therefore every call to the socket API should use the <code>:</code> operator.
+	</li>
+	<li>
+		This class adds the message flag <code>cosocket</code> to the <code>verbose</code> field provided by class <a href="Scheduler.html">Scheduler</a> that generates messages describing the actions related to the wrapped socket operations that implement the integration with the coroutine scheduler.
+		To rip the verbose support from the source code follow the same instructions suggested for class <a href="Scheduler.html">Scheduler</a>.
+	</li>
+</ul>
+
+<h2>Examples</h2>
+
+<h3>$ExampleName</h3>
+
+<pre>
+-- example missing
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

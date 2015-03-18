@@ -1,0 +1,4 @@
+ldoc --dir . ..\..\lua\pl
+
+
+

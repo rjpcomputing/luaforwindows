@@ -1,0 +1,22 @@
+Metalint 0.1 - INSTALL.TXT
+==========================
+
+Metalint is a regular Metalua program, and relies on Metalua compilation
+libraries. You must therefore have a working Metalua installation on your
+system. You can run it with: "metalua metalint.mlua -- <metalint arguments>".
+For instance, to check metalint itself:
+
+    ~/src/metalua/src/sandbox$ metalua metalint.mlua -- metalint.mlua
+    File metalint.mlua checked successfully
+    ~/src/metalua/src/sandbox$
+
+You can also precompile it:
+
+    ~/src/metalua/src/sandbox$ metalua metalint.mlua -s '#!/usr/bin/env lua' -o metalint
+    ~/src/metalua/src/sandbox$ ./metalint lint.mlua 
+    File lint.mlua checked successfully
+    ~/src/metalua/src/sandbox$
+
+Beware that even when precompiled, it still requires the Metalua runtime libs in LUA_PATH.
+
+Don't forget to set the LUA_DPATH environment variable!

@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Penlight Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Penlight</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Modularity_and_Granularity">Modularity and Granularity</a></li>
+<li><a href="#Defining_what_is_Callable">Defining what is Callable</a></li>
+</ul>
+
+
+<h2>Topics</h2>
+<ul>
+  <li><a href="../topics/01-introduction.md.html">01-introduction.md</a></li>
+  <li><a href="../topics/02-arrays.md.html">02-arrays.md</a></li>
+  <li><a href="../topics/03-strings.md.html">03-strings.md</a></li>
+  <li><a href="../topics/04-paths.md.html">04-paths.md</a></li>
+  <li><a href="../topics/05-dates.md.html">05-dates.md</a></li>
+  <li><a href="../topics/06-data.md.html">06-data.md</a></li>
+  <li><a href="../topics/07-functional.md.html">07-functional.md</a></li>
+  <li><a href="../topics/08-additional.md.html">08-additional.md</a></li>
+  <li><strong>09-discussion.md</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/pl.html">pl</a></li>
+  <li><a href="../modules/pl.Date.html">pl.Date</a></li>
+  <li><a href="../modules/pl.List.html">pl.List</a></li>
+  <li><a href="../modules/pl.Map.html">pl.Map</a></li>
+  <li><a href="../modules/pl.MultiMap.html">pl.MultiMap</a></li>
+  <li><a href="../modules/pl.OrderedMap.html">pl.OrderedMap</a></li>
+  <li><a href="../modules/pl.Set.html">pl.Set</a></li>
+  <li><a href="../modules/pl.app.html">pl.app</a></li>
+  <li><a href="../modules/pl.array2d.html">pl.array2d</a></li>
+  <li><a href="../modules/pl.class.html">pl.class</a></li>
+  <li><a href="../modules/pl.comprehension.html">pl.comprehension</a></li>
+  <li><a href="../modules/pl.config.html">pl.config</a></li>
+  <li><a href="../modules/pl.data.html">pl.data</a></li>
+  <li><a href="../modules/pl.dir.html">pl.dir</a></li>
+  <li><a href="../modules/pl.file.html">pl.file</a></li>
+  <li><a href="../modules/pl.func.html">pl.func</a></li>
+  <li><a href="../modules/pl.input.html">pl.input</a></li>
+  <li><a href="../modules/pl.lapp.html">pl.lapp</a></li>
+  <li><a href="../modules/pl.lexer.html">pl.lexer</a></li>
+  <li><a href="../modules/pl.luabalanced.html">pl.luabalanced</a></li>
+  <li><a href="../modules/pl.operator.html">pl.operator</a></li>
+  <li><a href="../modules/pl.path.html">pl.path</a></li>
+  <li><a href="../modules/pl.permute.html">pl.permute</a></li>
+  <li><a href="../modules/pl.pretty.html">pl.pretty</a></li>
+  <li><a href="../modules/pl.seq.html">pl.seq</a></li>
+  <li><a href="../modules/pl.sip.html">pl.sip</a></li>
+  <li><a href="../modules/pl.strict.html">pl.strict</a></li>
+  <li><a href="../modules/pl.stringio.html">pl.stringio</a></li>
+  <li><a href="../modules/pl.stringx.html">pl.stringx</a></li>
+  <li><a href="../modules/pl.tablex.html">pl.tablex</a></li>
+  <li><a href="../modules/pl.template.html">pl.template</a></li>
+  <li><a href="../modules/pl.test.html">pl.test</a></li>
+  <li><a href="../modules/pl.text.html">pl.text</a></li>
+  <li><a href="../modules/pl.utils.html">pl.utils</a></li>
+  <li><a href="../modules/pl.xml.html">pl.xml</a></li>
+</ul>
+<h2>Examples</h2>
+<ul>
+  <li><a href="../examples/seesubst.lua.html">seesubst.lua</a></li>
+  <li><a href="../examples/sipscan.lua.html">sipscan.lua</a></li>
+  <li><a href="../examples/symbols.lua.html">symbols.lua</a></li>
+  <li><a href="../examples/test-cmp.lua.html">test-cmp.lua</a></li>
+  <li><a href="../examples/test-data.lua.html">test-data.lua</a></li>
+  <li><a href="../examples/test-listcallbacks.lua.html">test-listcallbacks.lua</a></li>
+  <li><a href="../examples/test-pretty.lua.html">test-pretty.lua</a></li>
+  <li><a href="../examples/test-symbols.lua.html">test-symbols.lua</a></li>
+  <li><a href="../examples/testapp.lua.html">testapp.lua</a></li>
+  <li><a href="../examples/testclone.lua.html">testclone.lua</a></li>
+  <li><a href="../examples/testconfig.lua.html">testconfig.lua</a></li>
+  <li><a href="../examples/testglobal.lua.html">testglobal.lua</a></li>
+  <li><a href="../examples/testinputfields.lua.html">testinputfields.lua</a></li>
+  <li><a href="../examples/testinputfields2.lua.html">testinputfields2.lua</a></li>
+  <li><a href="../examples/testxml.lua.html">testxml.lua</a></li>
+  <li><a href="../examples/which.lua.html">which.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Topic <code>09-discussion.md</code></h1>
+
+    <h2>Technical Choices</h2>
+
+<p><a name="Modularity_and_Granularity"></a></p>
+
+<h3>Modularity and Granularity</h3>
+
+<p>In an ideal world, a program should only load the libraries it needs. Penlight is intended to work in situations where an extra 100Kb of bytecode could be a problem. It is straightforward but tedious to load exactly what you need:</p>
+
+<pre>
+ <span class="keyword">local</span> data = <span class="global">require</span> <span class="string">'pl.data'</span>
+ <span class="keyword">local</span> List = <span class="global">require</span> <span class="string">'pl.List'</span>
+ <span class="keyword">local</span> array2d = <span class="global">require</span> <span class="string">'pl.array2d'</span>
+ <span class="keyword">local</span> seq = <span class="global">require</span> <span class="string">'pl.seq'</span>
+ <span class="keyword">local</span> utils = <span class="global">require</span> <span class="string">'pl.utils'</span>
+</pre>
+
+
+<p>This is the style that I follow in Penlight itself, so that modules don&rsquo;t mess with the global environment; also, <code>stringx.import()</code> is not used because it will update the global <a href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>  table.</p>
+
+<p>But <code>require 'pl'</code> is more convenient in scripts; the question is how to ensure that one doesn&rsquo;t load the whole kitchen sink as the price of convenience. The strategy is to only load modules when they are referenced. In &lsquo;init.lua&rsquo; (which is loaded by <code>require 'pl'</code>) a metatable is attached to the global table with an <code>__index</code> metamethod. Any unknown name is looked up in the list of modules, and if found, we require it and make that module globally available. So when <a href="../modules/pl.tablex.html#deepcompare">tablex.deepcompare</a>  is encountered, looking up <a href="../modules/pl.tablex.html#">tablex</a>  causes &lsquo;pl.tablex&rsquo; to be required.  .</p>
+
+<p>Modifying the behaviour of the global table has consequences. For instance, there is the famous module <a href="../modules/pl.strict.html#">strict</a>  which comes with Lua itself (perhaps the only standard Lua module written in Lua itself) which also does this modification so that global variiables must be defined before use.  So the implementation in &lsquo;init.lua&rsquo; allows for a &lsquo;not found&rsquo; hook, which &lsquo;pl.strict.lua&rsquo; uses.  Other libraries may install their own metatables for <code>_G</code>, but Penlight will now forward any unknown name to the <code>__index</code> defined by the original metatable.</p>
+
+<p>But the strategy is worth the effort: the old &lsquo;kitchen sink&rsquo; &lsquo;init.lua&rsquo; would pull in about 260K of bytecode, whereas now typical programs use about 100K less, and short scripts even better &ndash; for instance, if they were only needing functionality in <a href="../modules/pl.utils.html#">utils</a> .</p>
+
+<p>There are some functions which mark their output table with a special metatable, when it seems particularly appropriate. For instance, <a href="../modules/pl.tablex.html#makeset">tablex.makeset</a>  creates a <a href="../modules/pl.Set.html#">Set</a> , and <a href="../modules/pl.seq.html#copy">seq.copy</a>  creates a <a href="../modules/pl.List.html#">List</a> . But this does not automatically result in the loading of <a href="../modules/pl.Set.html#">pl.Set</a>  and <a href="../modules/pl.List.html#">pl.List</a> ; only if you try to access any of these methods.  In &lsquo;utils.lua&rsquo;, there is an exported table called <code>stdmt</code>:</p>
+
+<pre>
+ stdmt = { List = {}, Map = {}, Set = {}, MultiMap = {} }
+</pre>
+
+
+<p>If you go through &lsquo;init.lua&rsquo;, then these plain little &lsquo;identity&rsquo; tables get an <code>__index</code> metamethod which forces the loading of the full functionality. Here is the code from &lsquo;list.lua&rsquo; which starts the ball rolling for lists:</p>
+
+<pre>
+ List = utils.stdmt.List
+ List.__index = List
+ List._name = <span class="string">"List"</span>
+ List._class = List
+</pre>
+
+
+<p>The &lsquo;load-on-demand&rsquo; strategy helps to modularize the library.  Especially for more casual use, <code>require 'pl'</code> is a good compromise between convenience and modularity.</p>
+
+<p>In this current version, I have generally reduced the amount of trickery involved. Previously, <a href="../modules/pl.Map.html#">Map</a>  was defined in <a href="../modules/pl.class.html#">pl.class</a> ; now it is sensibly defined in <a href="../modules/pl.Map.html#">pl.Map</a> ; <a href="../modules/pl.class.html#">pl.class</a>  only contains the basic class mechanism (and returns that function.) For consistency, <a href="../modules/pl.List.html#">List</a>  is returned directly by  <code>require 'pl.List'</code> (note the uppercase &lsquo;L&rsquo;),  Also, the amount of module dependencies in the non-core libraries like <a href="../modules/pl.config.html#">pl.config</a>  have been reduced.</p>
+
+<p><a name="Defining_what_is_Callable"></a></p>
+
+<h3>Defining what is Callable</h3>
+
+<p>'utils.lua' exports <code>function_arg</code> which is used extensively throughout Penlight. It defines what is meant by &lsquo;callable&rsquo;.  Obviously true functions are immediately passed back. But what about strings? The first option is that it represents an operator in &lsquo;operator.lua&rsquo;, so that &lsquo;&lt;&rsquo; is just an alias for <a href="../modules/pl.operator.html#lt">operator.lt</a> .</p>
+
+<p>We then check whether there is a <em>function factory</em> defined for the metatable of the value.</p>
+
+<p>(It is true that strings can be made callable, but in practice this turns out to be a cute but dubious idea, since <em>all</em> strings share the same metatable. A common programming error is to pass the wrong kind of object to a function, and it&rsquo;s better to get a nice clean &lsquo;attempting to call a string&rsquo; message rather than some obscure trace from the bowels of your library.)</p>
+
+<p>The other module that registers a function factory is <a href="../modules/pl.func.html#">pl.func</a> . Placeholder expressions cannot be directly calleable, and so need to be instantiated and cached in as efficient way as possible.</p>
+
+<p>(An inconsistency is that <a href="../modules/pl.utils.html#is_callable">utils.is_callable</a>  does not do this thorough check.)</p>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

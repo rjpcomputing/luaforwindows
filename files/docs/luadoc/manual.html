@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>LuaDoc: Documentation Generator Tool for the Lua language</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+		<img alt="LuaDoc logo" src="lua.png"/>
+	</a></div>
+	<div id="product_name"><big><b>LuaDoc</b></big></div>
+	<div id="product_description">Documentation Generator Tool for the Lua language</div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+<h1>LuaDoc</h1>
+	<ul>
+		<li><a href="index.html">Home</a>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+                <li><a href="index.html#dependencies">Dependencies</a></li>
+				<li><a href="index.html#history">History</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact us</a></li>
+			</ul>
+		</li>
+		<li><strong>Manual</strong>
+			<ul>
+				<li><a href="manual.html#introduction">Introduction</a></li>
+				<li><a href="manual.html#installation">Installation</a></li>
+				<li><a href="manual.html#howto">How to</a></li>
+				<li><a href="manual.html#tags">Tags</a></li>
+				<li><a href="manual.html#options">Options</a></li>
+			</ul>
+		</li>
+		<li><a href="architecture.html">Customizing</a>
+			<ul>
+				<li><a href="architecture.html#architecture">Architecture</a></li>
+				<li><a href="architecture.html#taglet">Taglet</a></li>
+				<li><a href="architecture.html#documentation">Documentation</a></li>
+				<li><a href="architecture.html#doclet">Doclet</a></li>
+			</ul>
+		</li>
+		<li><a href="examples.html">Examples</a></li>
+        <li><a href="http://luaforge.net/projects/luadoc/">Project</a>
+            <ul>
+                <li><a href="http://luaforge.net/tracker/?group_id=18">Bug Tracker</a></li>
+                <li><a href="http://luaforge.net/scm/?group_id=18">CVS</a></li>
+            </ul>
+        </li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+<h2><a name="introduction">Introduction</a></h2>
+<p>LuaDoc is a documentation generation tool for lua source files. It does not 
+impose a documentation format, but suggests one (XHTML) and implements it. The produced 
+documentation can be of any type.
+</p>
+
+<p>
+LuaDoc can be used out-of-the-box, provided that the source code is documented in
+the proposed format.
+</p>
+
+<h2><a name="installation">Installation</a></h2>
+
+<p>LuaDoc tool is composed by two parts, a library, and a launcher script.</p>
+
+<p>
+The library follows the 
+<a href="http://www.keplerproject.org/compat/">package model</a>
+for Lua 5.1 and therefore should be "installed" in your
+<code>package.path</code>.
+</p>
+
+<p>
+The launcher script, namely <code>luadoc.lua</code> for Unix and <code>luadoc.bat</code>
+for Windows, should be installed in your system <code>PATH</code>, so that it can be executed.
+</p>
+
+<p>
+LuaDoc also depends on two external packages: 
+<a href="http://www.keplerproject.org/luafilesystem">LuaFileSystem</a> and 
+<a href="http://www.keplerproject.org/lualogging">LuaLogging</a>, and you'll 
+need to install them accordingly.
+</p>
+
+<p>
+On Unix boxes, the file luadoc.lua could be used as a script; it's the same as:
+</p>
+
+<pre class="example">
+lua5.1 luadoc.lua [options|files]
+</pre>
+
+<p>
+This is the main script: it will load LuaDoc library and process the specified 
+files. Try <code>luadoc.lua --help</code>, it will show you all available options.
+</p>
+
+
+<h2><a name="howto">How to comment</a></h2>
+<p>
+LuaDoc looks for the sequence of three minus signs (---).
+This sequence of characters indicates the beginning of a documented comment.
+The documentation ends with the first line of code found.
+</p>
+<p>
+The following code defines a function and its documentation.
+</p>
+<pre class="example">
+--- Define special sequences of characters.
+-- For each pair (find, subs), the function will create a field named with
+-- find which has the value of subs.
+-- It also creates an index for the table, according to the order of insertion.
+-- @param subs The replacement pattern.
+-- @param find The pattern to find.
+function def_escapes (find, subs)
+   local special = { t = "\t", n = "\n", ['"'] = '"', ['\\'] = '\\', }
+   find = gsub (find, "\\(.)", function (x) return %special[x] or x end)
+   subs = gsub (subs, "\\(.)", function (x) return %special[x] or x end)
+   escape_sequences.n = escape_sequences.n+1
+   escape_sequences[escape_sequences.n] = find
+   escape_sequences[find] = subs
+end
+</pre>
+<p>
+The first sentence (until the first period) will be the resume.
+The last two, which begins with <code>-- @param</code>, will compound the
+parameters section.
+The other lines will complete the description of the function.
+The corresponding documentation should be something like:
+</p>
+
+<dl class="example function">
+	<dt><a name="def_escapes"></a><strong>def_escapes</strong>&nbsp;(find, subs)</dt>
+	<dd>
+		Define special sequences of characters.
+		For each pair (find, subs), the function will create a field named with find which has the value of subs.
+		It also creates an index for the table, according to the order of insertion.
+	<h3>Parameters</h3>
+		<ul>
+			<li>find: The pattern to find.</li>
+			<li>subs: The replacement pattern.</li>
+		</ul>
+	</dd>
+</dl>
+
+<p>
+A good example is the LuaDoc system itself.
+You can build the documentation by executing the following line from the
+LuaDoc directory:
+</p>
+<pre class="example">
+luadoc.lua *.lua
+</pre>
+<p>
+It will produce one HTML file for each Lua file and an index file.
+You can browse them <a href="api/index.html">here</a>.
+</p>
+
+
+<h2><a name="tags">Tags</a></h2>
+<p>
+LuaDoc can parse some tags at each function or table documentation.
+Tags are indicated in the source code with a `<code>@</code>' character
+followed by the name of the tag:
+</p>
+
+<dl>
+  <dt>@author &lt;text&gt;</dt>
+  <dd>An author of the module or file.</dd>
+
+  <dt>@copyright &lt;text&gt;</dt>
+  <dd>The copyright notice of the module or file.
+      LuaDoc adds a &copy; sign between the label (Copyright) and the
+      given text (e.g. 2004-2007 Kepler Project).</dd>
+
+  <dt>@field</dt>
+  <dd>Describe a table field definition.</dd>
+
+  <dt>@param &lt;word&gt; &lt;text&gt;</dt>
+  <dd>Describe function parameters.
+      It requires the name of the parameter and its description.</dd>
+  
+  <dt>@release &lt;text&gt;</dt>
+  <dd>Free format string to describe the module or file release.</dd>
+  
+  <dt>@return &lt;text&gt;</dt>
+  <dd>Describe a returning value of the function.
+      Since Lua can return multiple values, this tag should appear more
+      than once.</dd>
+  
+  <dt>@see &lt;text&gt;</dt>
+  <dd>Refers to other descriptions of functions or tables.</dd>
+  
+  <dt>@usage &lt;text&gt;</dt>
+  <dd>Describe the usage of the function or variable.</dd>
+</dl>
+
+<h3><a name="infered-tags">Infered Tags</a></h3>
+
+<p>
+The following tags would be normally infered by LuaDoc,
+but they can be used to override the infered value.
+</p>
+
+<dl>
+  <dt>@class &lt;word&gt;</dt>
+  <dd>If LuaDoc cannot infer the type of documentation (function, table or
+      module definition), the programmer can specify it explicitally.</dd>
+  
+  <dt>@description</dt>
+  <dd>The description of the function or table.
+      This is usually infered automatically.</dd>
+  
+  <dt>@name &lt;word&gt;</dt>
+  <dd>The name of the function or table definition.
+      This is usually infered from the code analysis, and the programmer does
+      not need to define it. If LuaDoc can infer the name of the function
+      automatically it's even not recomended to define the name explicitally,
+      to avoid redundancy.</dd>
+
+</dl>
+
+
+<h2><a name="options">Command line options</a></h2>
+<p>
+The luadoc command line script has some options:
+</p>
+<dl>
+	<dt>-d &lt;path&gt;</dt>
+	<dd>Defines the output directory path. Default is the current dir.</dd>
+  
+	<dt>-h, --help</dt>
+	<dd>Show help instructions</dd>
+  
+	<dt>--noindexpage</dt>
+	<dd>Do not generate the index page.</dd>
+
+	<dt>--nofiles</dt>
+	<dd>Do not generate documentation focused on files.</dd>
+
+	<dt>--nomodules</dt>
+	<dd>Do not generate documentation focused on modules.</dd>
+
+	<dt>--doclet &lt;doclet_module&gt;</dt>
+	<dd>Doclet module used to generate output</dd>
+  
+	<dt>--taglet &lt;taglet_module&gt;</dt>
+	<dd>Taglet module used to parse input code</dd>
+  
+	<dt>-q, --quiet</dt>
+	<dd>Suppress info output</dd>
+  
+	<dt>-v, --version</dt>
+	<dd>Print version information</dd>
+</dl>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+	<p><small>$Id: manual.html,v 1.10 2007/10/12 13:33:45 tomas Exp $</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->	
+</body>
+</html>

@@ -1,0 +1,341 @@
+abort();
+abs(int n);
+acos(double x);
+asctime(const struct tm* tp);
+asin(double x);
+assert(int expression);
+atan(double x);
+atan2(double y, double x);
+atexit(void (*fcm)(void));
+atof(const char* s);
+atoi(const char* s);
+atol(const char* s);
+bsearch(const void* key, const void* base, size_t n, size_t size, int (*cmp)(const void* keyval, const void* datum));
+calloc(size_t nobj, size_t size);
+ceil(double x);
+clearerr(FILE* stream);
+clock(void);
+cos(double x);
+cosh(double x);
+ctime(const time_t* tp);
+difftime(time_t time2, time_t time1);
+div(int num, int denom);
+exit(int status);
+exp(double x);
+fabs(double x);
+fclose(FILE* stream);
+feof(FILE* stream);
+ferror(FILE* stream);
+fflush(FILE* stream);
+fgetc(FILE* stream);
+fgetpos(FILE* stream, fpos_t* ptr);
+fgets(char* s, int n, FILE* stream);
+floor(double x);
+fmod(double x, double y);
+fopen(const char* filename, const char* mode);
+fprintf(FILE* stream, const char* format, ...);
+fputc(int c, FILE* stream);
+fputs(const char* s, FILE* stream);
+fread(void* ptr, size_t size, size_t nobj, FILE* stream);
+free(void* p);
+freopen(const char* filename, const char* mode, FILE* stream);
+frexp(double x, int* exp);
+fscanf(FILE* stream, const char* format, ...);
+fseek(FILE* stream, long offset, int origin);
+fsetpos(FILE* stream, const fpos_t* ptr);
+ftell(FILE* stream);
+fwrite(const void* ptr, size_t size, size_t nobj, FILE* stream);
+getc(FILE* stream);
+getchar(void);
+getenv(const char* name);
+gets(char* s);
+gmtime(const time_t* tp);
+isalnum(int c);
+isalpha(int c);
+iscntrl(int c);
+isdigit(int c);
+isgraph(int c);
+islower(int c);
+isprint(int c);
+ispunct(int c);
+isspace(int c);
+isupper(int c);
+isxdigit(int c);
+labs(long n);
+ldexp(double x, int n);
+ldiv(long num, long denom);
+localtime(const time_t* tp);
+log(double x);
+log10(double x);
+lua_assert(expr) macro
+lua_atpanic (lua_State *L, lua_CFunction panicf) returns lua_CFunction
+LUA_AUTHORS
+lua_baselibopen(lua_State *L) macro returns int
+lua_boxpointer(lua_State *L, void *u) macro returns void*
+lua_call (lua_State *L, int nargs, int nresults) returns void
+lua_checkstack (lua_State *L, int sz) returns int
+lua_close (lua_State *L) returns void
+LUA_COLIBNAME
+lua_concat (lua_State *L, int n) returns void
+LUA_COPYRIGHT
+lua_cpcall (lua_State *L, lua_CFunction func, void *ud) returns int
+LUA_DBLIBNAME
+lua_dblibopen(lua_State *L) macro returns int
+lua_dobuffer (lua_State *L, const char *buff, size_t sz, const char *n) returns int
+lua_dofile (lua_State *L, const char *filename) returns int
+lua_dostring (lua_State *L, const char *str) returns int
+lua_dump (lua_State *L, lua_Chunkwriter writer, void *data) returns int
+lua_equal (lua_State *L, int idx1, int idx2) returns int
+LUA_ERRERR
+LUA_ERRFILE
+LUA_ERRMEM
+lua_error (lua_State *L) returns int
+LUA_ERRRUN
+LUA_ERRSYNTAX
+lua_getfenv (lua_State *L, int idx) returns void
+lua_getgccount (lua_State *L) returns int
+lua_getgcthreshold (lua_State *L) returns int
+lua_getglobal(lua_State *L, const char *s) macro returns void
+lua_gethook (lua_State *L) returns lua_Hook
+lua_gethookcount (lua_State *L) returns int
+lua_gethookmask (lua_State *L) returns int
+lua_getinfo (lua_State *L, const char *what, lua_Debug *ar) returns int
+lua_getlocal (lua_State *L, const lua_Debug *ar, int n) returns const char*
+lua_getmetatable (lua_State *L, int objindex) returns int
+lua_getref(lua_State *L, int ref) macro returns void
+lua_getregistry(lua_State *L) macro returns void
+lua_getstack (lua_State *L, int level, lua_Debug *ar) returns int
+lua_gettable (lua_State *L, int idx) returns void
+lua_gettop (lua_State *L) returns int
+lua_getupvalue (lua_State *L, int funcindex, int n) returns const char*
+LUA_GLOBALSINDEX
+LUA_HOOKCALL
+LUA_HOOKCOUNT
+LUA_HOOKLINE
+LUA_HOOKRET
+LUA_HOOKTAILRET
+LUA_IDSIZE
+lua_insert (lua_State *L, int idx) returns void
+LUA_IOLIBNAME
+lua_iolibopen(lua_State *L) macro returns int
+lua_isboolean(lua_State *L,n) macro returns int
+lua_iscfunction (lua_State *L, int idx) returns int
+lua_isfunction(lua_State *L,n) macro returns int
+lua_islightuserdata(lua_State *L,n) macro returns int
+lua_isnil(lua_State *L,n) macro returns int
+lua_isnone(lua_State *L,n) macro returns int
+lua_isnoneornil(lua_State *L, n) macro returns int
+lua_isnumber (lua_State *L, int idx) returns int
+lua_isstring (lua_State *L, int idx) returns int
+lua_istable(lua_State *L,n) macro returns int
+lua_isuserdata (lua_State *L, int idx) returns int
+lua_lessthan (lua_State *L, int idx1, int idx2) returns int
+lua_load (lua_State *L, lua_Chunkreader reader, void *dt, const char *chunkname) returns int
+LUA_MASKCALL
+LUA_MASKCOUNT
+LUA_MASKLINE
+LUA_MASKRET
+LUA_MATHLIBNAME
+lua_mathlibopen(lua_State *L) macro returns int
+LUA_MINSTACK
+LUA_MULTRET
+lua_newtable (lua_State *L) returns void
+lua_newthread (lua_State *L) returns lua_State*
+lua_newuserdata (lua_State *L, size_t sz) returns void*
+lua_next (lua_State *L, int idx) returns int
+LUA_NOREF
+LUA_NUMBER_FMT
+LUA_NUMBER_SCAN
+lua_open (void) returns lua_State*
+LUA_OSLIBNAME
+lua_pcall (lua_State *L, int nargs, int nresults, int errfunc) returns int
+lua_pop(lua_State *L, int idx) macro returns void
+lua_pushboolean (lua_State *L, int b) returns void
+lua_pushcclosure (lua_State *L, lua_CFunction fn, int n) returns void
+lua_pushcfunction(lua_State *L, lua_CFunction fn) macro returns void
+lua_pushfstring (lua_State *L, const char *fmt, ...) returns const char*
+lua_pushlightuserdata (lua_State *L, void *p) returns void
+lua_pushliteral(lua_State *L, s) macro returns void
+lua_pushlstring (lua_State *L, const char *s, size_t l) returns void
+lua_pushnil (lua_State *L) returns void
+lua_pushnumber (lua_State *L, lua_Number n) returns void
+lua_pushstring (lua_State *L, const char *s) returns void
+lua_pushupvalues (lua_State *L) returns int
+lua_pushvalue (lua_State *L, int idx) returns void
+lua_pushvfstring (lua_State *L, const char *fmt, va_list argp) returns const char*
+lua_rawequal (lua_State *L, int idx1, int idx2) returns int
+lua_rawget (lua_State *L, int idx) returns void
+lua_rawgeti (lua_State *L, int idx, int n) returns void
+lua_rawset (lua_State *L, int idx) returns void
+lua_rawseti (lua_State *L, int idx, int n) returns void
+lua_ref(lua_State *L, lock) macro returns int
+LUA_REFNIL
+lua_register(lua_State *L, const char *s, lua_CFunction fn) macro returns void
+LUA_REGISTRYINDEX
+lua_remove (lua_State *L, int idx) returns void
+lua_replace (lua_State *L, int idx) returns void
+lua_resume (lua_State *L, int narg) returns int
+lua_setfenv (lua_State *L, int idx) returns int
+lua_setgcthreshold (lua_State *L, int newthreshold) returns void
+lua_setglobal(lua_State *L, const char *s) macro returns void
+lua_sethook (lua_State *L, lua_Hook func, int mask, int count) returns int
+lua_setlocal (lua_State *L, const lua_Debug *ar, int n) returns const char*
+lua_setmetatable (lua_State *L, int objindex) returns int
+lua_settable (lua_State *L, int idx) returns void
+lua_settop (lua_State *L, int idx) returns void
+lua_setupvalue (lua_State *L, int funcindex, int n) returns const char*
+lua_strlen (lua_State *L, int idx) returns size_t
+LUA_STRLIBNAME
+lua_strlibopen(lua_State *L) macro returns int
+LUA_TABLIBNAME
+lua_tablibopen(lua_State *L) macro returns int
+LUA_TBOOLEAN
+LUA_TFUNCTION
+LUA_TLIGHTUSERDATA
+LUA_TNIL
+LUA_TNONE
+LUA_TNUMBER
+lua_toboolean (lua_State *L, int idx) returns int
+lua_tocfunction (lua_State *L, int idx) returns lua_CFunction
+lua_tonumber (lua_State *L, int idx) returns lua_Number
+lua_topointer (lua_State *L, int idx) returns const char*
+lua_tostring (lua_State *L, int idx) returns const char*
+lua_tothread (lua_State *L, int idx) returns lua_State*
+lua_touserdata (lua_State *L, int idx) returns void*
+LUA_TSTRING
+LUA_TTABLE
+LUA_TTHREAD
+LUA_TUSERDATA
+lua_type (lua_State *L, int idx) returns int
+lua_typename (lua_State *L, int tp) returns const char*
+lua_unboxpointer(lua_State *L, int idx) macro returns void*
+lua_unref(lua_State *L, int ref) macro returns void
+lua_upvalueindex(i) macro returns expr
+LUA_VERSION
+lua_version (void) returns const char*
+lua_xmove (lua_State *from, lua_State *to, int n) returns void
+lua_yield (lua_State *L, int nresults) returns int
+luaL_addlstring (luaL_Buffer *B, const char *s, size_t l) returns void
+luaL_addsize(luaL_Buffer *B, size_t n) macro returns void
+luaL_addstring (luaL_Buffer *B, const char *s) returns void
+luaL_addvalue (luaL_Buffer *B) returns void
+luaL_arg_check(lua_State *L, expr, int numarg, const char *extramsg) macro returns void
+luaL_argcheck(lua_State *L, expr, int numarg, const char *extramsg) macro returns void
+luaL_argerror (lua_State *L, int numarg, const char *extramsg) returns int
+LUAL_BUFFERSIZE
+luaL_buffinit (lua_State *L, luaL_Buffer *B) returns void
+luaL_callmeta (lua_State *L, int obj, const char *e) returns int
+luaL_check_int(lua_State *L, int numArg) macro returns int
+luaL_check_long(lua_State *L, int numArg) macro returns long
+luaL_check_lstr(lua_State *L, int numArg, size_t *l) macro returns const char*
+luaL_check_number(lua_State *L, int numArg) macro returns lua_Number
+luaL_check_string(lua_State *L, int n) macro returns const char*
+luaL_checkany (lua_State *L, int narg) returns void
+luaL_checkint(lua_State *L, int numArg) macro returns int
+luaL_checklong(lua_State *L, int numArg) macro returns long
+luaL_checklstring (lua_State *L, int numArg, size_t *l) returns const char*
+luaL_checknumber (lua_State *L, int numArg) returns lua_Number
+luaL_checkstack (lua_State *L, int sz, const char *msg) returns void
+luaL_checkstring(lua_State *L, int numArg) macro returns const char*
+luaL_checktype (lua_State *L, int narg, int t) returns void
+luaL_checkudata (lua_State *L, int ud, const char *tname) returns void*
+luaL_error (lua_State *L, const char *fmt, ...) returns int
+luaL_findstring (const char *st, const char *const lst[]) returns int
+luaL_getmetafield (lua_State *L, int obj, const char *e) returns int
+luaL_getmetatable (lua_State *L, const char *tname) returns void
+luaL_getn (lua_State *L, int t) returns int
+luaL_loadbuffer (lua_State *L, const char *buff, size_t sz, const char *name) returns int
+luaL_loadfile (lua_State *L, const char *filename) returns int
+luaL_newmetatable (lua_State *L, const char *tname) returns int
+luaL_openlib (lua_State *L, const char *libname, const luaL_reg *l, int nup) returns void
+luaL_opt_int(lua_State *L, int nArg, lua_Number def) macro returns int
+luaL_opt_long(lua_State *L, int nArg, lua_Number def) macro returns long
+luaL_opt_lstr(lua_State *L, int numArg, const char *def, size_t *l) macro returns const char*
+luaL_opt_number(lua_State *L, int nArg, lua_Number def) macro returns lua_Number
+luaL_opt_string(lua_State *L, int numArg, const char *def) macro returns const char*
+luaL_optint(lua_State *L, int nArg, lua_Number def) macro returns int
+luaL_optlong(lua_State *L, int nArg, lua_Number def) macro returns long
+luaL_optlstring (lua_State *L, int numArg, const char *def, size_t *l) returns const char*
+luaL_optnumber (lua_State *L, int nArg, lua_Number def) returns lua_Number
+luaL_optstring(lua_State *L, int numArg, const char *def) macro returns const char*
+luaL_prepbuffer (luaL_Buffer *B) returns char*
+luaL_pushresult (luaL_Buffer *B) returns void
+luaL_putchar(luaL_Buffer *B, char c) macro returns void
+luaL_ref (lua_State *L, int t) returns int
+luaL_setn (lua_State *L, int t, int n) returns void
+luaL_typerror (lua_State *L, int narg, const char *tname) returns int
+luaL_unref (lua_State *L, int t, int ref) returns void
+luaL_where (lua_State *L, int lvl) returns void
+luaopen_base (lua_State *L) returns int
+luaopen_debug (lua_State *L) returns int
+luaopen_io (lua_State *L) returns int
+luaopen_loadlib (lua_State *L) returns int
+luaopen_math (lua_State *L) returns int
+luaopen_string (lua_State *L) returns int
+luaopen_table (lua_State *L) returns int
+malloc(size_t size);
+memchr(const void* cs, int c, size_t n);
+memcmp(const void* cs, const void* ct, size_t n);
+memcpy(void* s, const void* ct, size_t n);
+memmove(void* s, const void* ct, size_t n);
+memset(void* s, int c, size_t n);
+mktime(struct tm* tp);
+modf(double x, double* ip);
+perror(const char* s);
+pow(double x, double y);
+printf(const char* format, ...);
+putc(int c, FILE* stream);
+putchar(int c);
+puts(const char* s);
+qsort(void* base, size_t n, size_t size, int (*cmp)(const void*, const void*));
+raise(int sig);
+rand(void);
+realloc(void* p, size_t size);
+remove(const char* filename);
+rename(const char* oldname, const char* newname);
+rewind(FILE* stream);
+scanf(const char* format, ...);
+setbuf(FILE* stream, char* buf);
+setvbuf(FILE* stream, char* buf, int mode, size_t size);
+sin(double x);
+sinh(double x);
+sprintf(char* s, const char* format, ...);
+sqrt(double x);
+srand(unsigned int seed);
+sscanf(char* s, const char* format, ...);
+strcat(char* s, const char* ct);
+strchr(const char* cs, int c);
+strcmp(const char* cs, const char* ct);
+strcoll(const char* cs, const char* ct);
+strcpy(char* s, const char* ct);
+strcspn(const char* cs, const char* ct);
+strerror(int n);
+strftime(char* s, size_t smax, const char* fmt, const struct tm* tp);
+strlen(const char* cs);
+strncat(char* s, const char* ct, size_t n);
+strncmp(const char* cs, const char* ct, size_t n);
+strncpy(char* s, const char* ct, size_t n);
+strpbrk(const char* cs, const char* ct);
+strrchr(const char* cs, int c);
+strspn(const char* cs, const char* ct);
+strstr(const char* cs, const char* ct);
+strtod(const char* s, char** endp);
+strtok(char* s, const char* t);
+strtol(const char* s, char** endp, int base);
+strtoul(const char* s, char** endp, int base);
+strxfrm(char* s, const char* ct, size_t n);
+system(const char* s);
+tan(double x);
+tanh(double x);
+time(time_t* tp);
+tmpfile();
+tmpname(char s[L_tmpnam]);
+tolower(int c);
+toupper(int c);
+ungetc(int c, FILE* stream);
+va_arg(va_list ap, type);
+va_end(va_list ap);
+va_start(va_list ap, lastarg);
+vfprintf(FILE* stream, const char* format, va_list arg);
+vprintf(const char* format, va_list arg);
+vsprintf(char* s, const char* format, va_list arg);

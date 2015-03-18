@@ -1,0 +1,189 @@
+-{ extension 'match' }
+
+--------------------------------------------------------------------------------
+--
+-- TODO:
+--
+-- * Hygienize calls to pcall()
+--
+--------------------------------------------------------------------------------
+
+-{ extension 'H' }
+-{ extension 'log' }
+
+-- Get match parsers and builder, for catch cases handling:
+local match_alpha = require 'metalua.extension.match'
+local H = H:new{side='inside', alpha = match_alpha }
+
+-- We'll need to track rogue return statements:
+require 'metalua.walk'
+
+-- Put a block AST into a pcall():
+local mkpcall = |block| +{pcall(function() -{block} end)}
+
+-- The statement builder:
+function trycatch_builder(x)
+   --$log ("trycatch_builder", x, 'nohash', 60)
+   local try_code, catch_cases, finally_code = unpack(x)
+   local insert_return_catcher = false
+
+   -- Can't be hygienize automatically by the current version of H, as
+   -- it must bridge from inside user code (hacjed return statements)
+   -- to outside macro code.
+   local caught_return = !mlp.gensym 'caught_return'
+   local saved_args
+
+   !try_code; !(finally_code or { })
+   -- FIXME: Am I sure there's no need to hygienize inside?
+   --[[if catch_cases then
+      for case in ivalues(catch_cases) do
+         --$log(case,'nohash')
+         local patterns, guard, block = unpack(case)
+         ! block
+      end
+   end]]
+
+
+   ----------------------------------------------------------------
+   -- Returns in the try-block must be transformed:
+   -- from the user's PoV, the code in the try-block isn't
+   -- a function, therefore a return in it must not merely
+   -- end the execution of the try block, but:
+   --  * not cause any error to be caught;
+   --  * let the finally-block be executed;
+   --  * only then, let the enclosing function return with the
+   --    appropraite values.
+   -- The way to handle that is that any returned value is stored
+   -- into the runtime variable caught_return, then a return with
+   -- no value is sent, to stop the execution of the try-code.
+   --
+   -- Similarly, a return in a catch case code must not prevent
+   -- the finally-code from being run.
+   --
+   -- This walker catches return statements and perform the relevant
+   -- transformation into caught_return setting + empty return.
+   --
+   -- There is an insert_return_catcher compile-time flag, which
+   -- allows to avoid inserting return-handling code in the result
+   -- when not needed.
+   ----------------------------------------------------------------
+   local replace_returns_and_dots do
+      local function f(x)
+         match x with
+         | `Return{...} ->
+            insert_return_catcher = true
+            -- Setvar's 'caught_return' code can't be hygienize by H currently.
+            local setvar = `Set{ {caught_return}, { `Table{ unpack(x) } } }
+            x <- { setvar; `Return }; x.tag = nil;
+            --$log('transformed return stat:', x, 60)
+            return 'break'
+         | `Function{...} -> return 'break'
+            -- inside this, returns would be the nested function's, not ours.
+         | `Dots ->
+            if not saved_args then saved_args = mlp.gensym 'args' end
+            x <- `Call{ `Id 'unpack', saved_args }
+         | _ -> -- pass
+         end
+      end
+      local cfg = { stat = {down=f}, expr = {down=f} }
+      replace_returns_and_dots = |x| walk.block(cfg, x)
+   end
+
+   -- parse returns in the try-block:
+   replace_returns_and_dots (try_code)
+
+   -- code handling the error catching process:
+   local catch_result do
+      if catch_cases and #catch_cases>0 then
+         ----------------------------------------------------------
+         -- Protect catch code against failures: they run in a pcall(), and
+         -- the result is kept in catch_* vars so that it can be used to
+         -- relaunch the error after the finally code has been executed.
+         ----------------------------------------------------------
+         for x in ivalues (catch_cases) do
+            local case_code = x[3]
+            -- handle rogue returns:
+            replace_returns_and_dots (case_code)
+            -- in case of error in the catch, we still need to run "finally":
+            x[3] = +{block: catch_success, catch_error = -{mkpcall(case_code)}}
+         end
+         ----------------------------------------------------------
+         -- Uncaught exceptions must not cause a mismatch,
+         -- so we introduce a catch-all do-nothing last case:
+         ----------------------------------------------------------
+         table.insert (catch_cases, { { { `Id '_' } }, false, { } })
+         catch_result = spmatch.match_builder{ {+{user_error}}, catch_cases }
+      else
+         catch_result = { }
+      end
+   end
+
+   ----------------------------------------------------------------
+   -- Build the bits of code that will handle return statements
+   -- in the user code (try-block and catch-blocks).
+   ----------------------------------------------------------------
+   local caught_return_init, caught_return_rethrow do
+      if insert_return_catcher then
+         caught_return_init    = `Local{{caught_return}}
+         caught_return_rethrow =
+            +{stat: if -{caught_return} then return unpack(-{caught_return}) end}
+      else
+         caught_return_init, caught_return_rethrow = { }, { }
+      end
+   end
+
+   local saved_args_init =
+      saved_args and `Local{ {saved_args}, { `Table{`Dots} } } or { }
+
+   -- The finally code, to execute no matter what:
+   local finally_result = finally_code or { }
+
+   -- And the whole statement, gluing all taht together:
+   local result = +{stat:
+      do
+         -{ saved_args_init }
+         -{ caught_return_init }
+         local user_success,  user_error  = -{mkpcall(try_code)}
+         local catch_success, catch_error = false, user_error
+         if not user_success then -{catch_result} end
+         -{finally_result}
+         if not user_success and not catch_success then error(catch_error) end
+         -{ caught_return_rethrow }
+      end }
+
+   H(result)
+
+   return result
+end
+
+function catch_case_builder(x)
+   --$log ("catch_case_builder", x, 'nohash', 60)
+   local patterns, guard, _, code = unpack(x)
+   -- patterns ought to be a pattern_group, but each expression must
+   -- be converted into a single-element pattern_seq.
+   for i = 1, #patterns do patterns[i] = {patterns[i]} end
+   return { patterns, guard, code }
+end
+
+mlp.lexer:add{ 'try', 'catch', 'finally', '->' }
+mlp.block.terminators:add{ 'catch', 'finally' }
+
+mlp.stat:add{
+   'try',
+   mlp.block,
+   gg.onkeyword{ 'catch',
+      gg.list{
+         gg.sequence{
+            mlp.expr_list,
+            gg.onkeyword{ 'if', mlp.expr },
+            gg.optkeyword 'then',
+            mlp.block,
+            builder = catch_case_builder },
+         separators = 'catch' } },
+   gg.onkeyword{ 'finally', mlp.block },
+   'end',
+   builder = trycatch_builder }
+
+return H.alpha
+
+

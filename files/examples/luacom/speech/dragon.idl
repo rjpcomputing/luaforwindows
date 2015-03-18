@@ -1,0 +1,1819 @@
+// Generated .IDL file (by the OLE/COM Object Viewer)
+// 
+// typelib filename: dnstk10.dll
+
+[
+  uuid(5C486340-2F92-11D1-A47C-00A024A3A678),
+  version(1.0),
+  helpstring("Dragon NaturallySpeaking ActiveX Controls"),
+  helpfile("dnstk10.hlp"),
+  helpcontext(00000000)
+]
+library DNSTools
+{
+    // TLib :     // TLib : OLE Automation : {00020430-0000-0000-C000-000000000046}
+    importlib("stdole2.tlb");
+
+    // Forward declare all types defined in this typelib
+    interface IDgnEngineControlAuto;
+    interface IDgnStrings;
+    interface SpeechEngines;
+    interface SpeechEngine;
+    interface IDgnEngineControlAuto2;
+    dispinterface _DDgnEngineControlEvents;
+    interface IDgnEngineControlW;
+    interface IDgnEngineControlA;
+    interface IDgnEngineControlNotifySink;
+    interface IVCmdAuto;
+    interface IVMenuAuto;
+    interface IDgnVMenuA;
+    interface IDgnVMenuW;
+    interface IDgnVoiceCmdAuto;
+    interface IDgnVoiceCmdA;
+    interface IDgnVoiceCmdW;
+    interface IDgnVCmdNotifySinkA;
+    interface IDgnVCmdNotifySinkW;
+    dispinterface _DDgnVCmdEvents;
+    interface IVTxtAuto;
+    interface IDgnVoiceTxt;
+    dispinterface _DDgnVTxtEvents;
+    interface IDgnMicBtn;
+    interface IDgnMicrophone;
+    dispinterface _DDgnMicBtnEvents;
+    interface IDgnMicrophoneNotifySink;
+    interface IDgnDictEditAuto;
+    interface IDgnDictEditAuto2;
+    interface IDgnDictEditA;
+    interface IDgnDictEditW;
+    interface IDgnDictEditNotifySink;
+    dispinterface _DDgnDictEditEvents;
+    interface NowPlayingInfos;
+    interface NowPlayingInfo;
+    interface IDgnDictCustomAuto;
+    interface IDgnDictCustomAuto2;
+    interface IDgnDictCustomA;
+    interface IDgnDictCustomW;
+    dispinterface _DDgnDictCustomEvents;
+    interface IDgnDictCustomNotifySinkA;
+    interface IDgnDictCustomNotifySinkW;
+
+    typedef [helpstring("Constants for the flags argument of the Register methods."), helpcontext(0x000000de)]
+    enum {
+        dgnregNone = 0,
+        dgnregGlobalCM = 1,
+        dgnregAltListSeparator = 2,
+        dgnregNoTrayMic = 4
+    } DgnRegisterConstants;
+
+    typedef [helpstring("Constants for the flags argument of IVMenuAuto.Add."), helpcontext(0x000000e1)]
+    enum {
+        dgnactionUserDefined = 0,
+        dgnactionScript = 1,
+        dgnactionKeys = 2
+    } DgnActionConstants;
+
+    typedef [helpstring("Constants for the flags argument of DgnVoiceCmd.MenuCreate."), helpcontext(0x00000018)]
+    enum {
+        vcmdmc_CREATE_TEMP = 1
+    } CREATEFLAGS;
+
+    typedef [helpstring("Language identifiers."), helpcontext(0x000000ba)]
+    enum {
+        dgnlangUSEnglish = 1033,
+        dgnlangUKEnglish = 2057,
+        dgnlangFrench = 1036,
+        dgnlangItalian = 1040,
+        dgnlangGerman = 1031,
+        dgnlangSpanish = 1034,
+        dgnlangDutch = 1043,
+        dgnlangJapanese = 1041
+    } DgnLanguageConstants;
+
+    typedef [helpstring("Speech engine feature constants."), helpcontext(0x000000b9)]
+    enum {
+        dgnengfeatureCommandWizard = 4,
+        dgnengfeatureMultiTopic = 16,
+        dgnengfeaturePlaybackSpeech = 64,
+        dgnengfeatureTTS = 128
+    } DgnEngineFeatureConstants;
+
+    typedef [helpstring("Special Device ID Constants")]
+    enum {
+        dgndlgdeviceDefault = -1,
+        dgndlgdeviceUserSelect = -2,
+        dgndlgdeviceNone = -3
+    } DgnDlgDeviceIdConstants;
+
+    [
+      odl,
+      uuid(DE2DB780-BE83-11D1-A572-006008AAC4E2),
+      helpstring("Dragon EngineControlAuto Interface"),
+      helpcontext(0x00000114),
+      hidden,
+      dual,
+      oleautomation
+    ]
+    interface IDgnEngineControlAuto : IDispatch {
+        [id(0x00000001), helpstring("Registers DgnEngineControl control."), helpcontext(0x00000115)]
+        HRESULT Register([in, optional] VARIANT Flags);
+        [id(0x00000002), helpstring("Unregisters DgnEngineControl control."), helpcontext(0x00000116)]
+        HRESULT UnRegister([in] VARIANT_BOOL LockServer);
+        [id(0x00000003), propget, helpstring("Returns collection of available speakers."), helpcontext(0x000000a6)]
+        HRESULT Speakers([out, retval] IDgnStrings** Speakers);
+        [id(0x00000004), propget, helpstring("Returns/sets the current speaker."), helpcontext(0x000000a2)]
+        HRESULT Speaker([out, retval] BSTR* SpeakerName);
+        [id(0x00000004), propput, helpstring("Returns/sets the current speaker."), helpcontext(0x000000a2)]
+        HRESULT Speaker([in] BSTR SpeakerName);
+        [id(0x00000005), helpstring("Create new speaker."), helpcontext(0x000000a4)]
+        HRESULT SpeakerCreate(
+                        [in] BSTR SpeakerName, 
+                        [in, optional] VARIANT SpeakerBasedOn);
+        [id(0x00000006), helpstring("Delete specified speaker."), helpcontext(0x000000a5)]
+        HRESULT SpeakerDelete([in] BSTR SpeakerName);
+        [id(0x00000007), helpstring("Saves the current speaker's speech files."), helpcontext(0x000000d3)]
+        HRESULT SpeakerSave();
+        [id(0x00000008), propget, helpstring("Returns collection of available topics for specified speaker."), helpcontext(0x00000086)]
+        HRESULT Topics(
+                        BSTR Speaker, 
+                        [out, retval] IDgnStrings** Topics);
+        [id(0x00000009), propget, helpstring("Returns/sets the current topic."), helpcontext(0x0000001f)]
+        HRESULT Topic([out, retval] BSTR* TopicName);
+        [id(0x00000009), propput, helpstring("Returns/sets the current topic."), helpcontext(0x0000001f)]
+        HRESULT Topic([in] BSTR TopicName);
+        [id(0x0000000a), helpstring("Create new topic for specified speaker."), helpcontext(0x00000021)]
+        HRESULT TopicCreate(
+                        [in] BSTR Speaker, 
+                        [in] BSTR Topic, 
+                        [in] BSTR TopicBasedOn);
+        [id(0x0000000b), helpstring("Delete specified topic."), helpcontext(0x00000022)]
+        HRESULT TopicDelete(
+                        [in] BSTR Reserved, 
+                        [in] BSTR Topic);
+        [id(0x0000000c), propget, helpstring("Returns collection of available base speaker models."), helpcontext(0x000000db)]
+        HRESULT BaseSpeakerModels([out, retval] IDgnStrings** Models);
+        [id(0x0000000d), propget, helpstring("Returns collection of available base topic models."), helpcontext(0x000000dc)]
+        HRESULT BaseTopicModels([out, retval] IDgnStrings** Models);
+        [id(0x0000000e), propget, helpstring("Returns collection of compatible speech recognition engines."), helpcontext(0x000000d4)]
+        HRESULT SpeechEngines([out, retval] SpeechEngines** Engines);
+        [id(0x0000000f), hidden, helpstring("Opens the Vocabulary Builder with the specified command line.")]
+        HRESULT VocabularyBuilder([in] BSTR CommandLine);
+        [id(0x00000010), hidden, helpstring("Opens the Audio Setup Wizard with the specified command line.")]
+        HRESULT AudioSetupWizard([in] BSTR CommandLine);
+        [id(0x00000011), hidden, helpstring("Opens General Training with the specified command line.")]
+        HRESULT GeneralTraining([in] BSTR CommandLine);
+        [id(0x00000012), propget, helpstring("Returns whether the current speaker has completed the AudioSetupWizard."), helpcontext(0x00000121)]
+        HRESULT AudioSetupComplete([out, retval] VARIANT_BOOL* Value);
+        [id(0x00000013), propget, helpstring("Returns whether the current speaker is calibrated."), helpcontext(0x00000125)]
+        HRESULT SpeakerCalibrated([out, retval] VARIANT_BOOL* Value);
+        [id(0x00000014), propget, hidden, helpstring("Returns the total time in milliseconds of all utterances used in general training."), helpcontext(0x00000126)]
+        HRESULT SpeakerTrainingTime([out, retval] long* Value);
+        [id(0x00000015), helpstring("Returns the Dragon NaturallySpeaking SDK version info."), helpcontext(0x00000129)]
+        HRESULT GetToolsVersion(
+                        [in, out] short* MajorNum, 
+                        [in, out] short* MinorNum, 
+                        [in, out] short* BuildNum);
+        [id(0x00000016), helpstring("Returns the speech engine version info."), helpcontext(0x00000128)]
+        HRESULT GetEngineVersion(
+                        [in, out] short* MajorNum, 
+                        [in, out] short* MinorNum, 
+                        [in, out] short* BuildNum);
+        [id(0x00000017), propget, helpstring("Returns the SpeechEngine object associated with the current speech engine."), helpcontext(0x0000012e)]
+        HRESULT SpeechEngine([out, retval] SpeechEngine** Engine);
+        [id(0x00000018), propget, helpstring("Enables/disables global dictation into the application associated with the specified window, or current application if no window is specified."), helpcontext(0x0000012a)]
+        HRESULT GlobalDictation(
+                        [in, optional] VARIANT hWndApp, 
+                        [out, retval] VARIANT_BOOL* Enable);
+        [id(0x00000018), propput, helpstring("Enables/disables global dictation into the application associated with the specified window, or current application if no window is specified."), helpcontext(0x0000012a)]
+        HRESULT GlobalDictation(
+                        [in, optional] VARIANT hWndApp, 
+                        [in] VARIANT_BOOL Enable);
+        [id(0x00000019), hidden, helpstring("Opens the New Command Wizard.")]
+        HRESULT NewCommandWizard([in] long hWndParent);
+        [id(0x0000001a), hidden, helpstring("Opens the Edit Command Wizard.")]
+        HRESULT EditCommandWizard([in] long hWndParent);
+        [id(0x0000001b), propget, helpstring("Returns whether the current speech files have been modified and need saving."), helpcontext(0x0000012f)]
+        HRESULT SpeakerModified([out, retval] VARIANT_BOOL* Modified);
+        [id(0x0000001c), helpstring("Selects specified speech recognition engine for use."), helpcontext(0x00000130)]
+        HRESULT EngineSelect([in] SpeechEngine* Engine);
+        [id(0x0000001d), helpstring("Returns the module name associated with the given window handle."), helpcontext(0x00000111)]
+        HRESULT GetWindowModuleFileName(
+                        [in] long hWnd, 
+                        [out, retval] BSTR* FileName);
+        [id(0x0000001e), helpstring("Opens the specified speaker and topic."), helpcontext(0x000001cc)]
+        HRESULT SpeakerTopicSelect(
+                        [in] BSTR Speaker, 
+                        [in] BSTR Topic);
+        [id(0x000003e8), hidden, helpstring("Writes a string to the speech engine's log file.")]
+        HRESULT LogMessage([in] BSTR MessageString);
+        [id(0x000003e9), propget, hidden, helpstring("Returns underlying ISRCentral interface pointer.")]
+        HRESULT ISRCentral([out, retval] IUnknown** ppUnk);
+        [id(0x000003ea), propget, hidden]
+        HRESULT EngineParam(
+                        [in] BSTR RegName, 
+                        [in] BSTR UserOrAppName, 
+                        [in] BSTR ValueName, 
+                        [out, retval] BSTR* Value);
+        [id(0x000003ea), propput, hidden]
+        HRESULT EngineParam(
+                        [in] BSTR RegName, 
+                        [in] BSTR UserOrAppName, 
+                        [in] BSTR ValueName, 
+                        [in] BSTR Value);
+        [id(0x000003eb), propget, hidden]
+        HRESULT RecogParam(
+                        [in] BSTR Name, 
+                        [out, retval] BSTR* Value);
+        [id(0x000003eb), propput, hidden]
+        HRESULT RecogParam(
+                        [in] BSTR Name, 
+                        [in] BSTR Value);
+    };
+
+    [
+      odl,
+      uuid(DC188E5F-B202-11D1-A4B6-00A024A3A678),
+      helpstring("IDgnStrings Interface"),
+      helpcontext(0x000000d5),
+      hidden,
+      dual,
+      nonextensible,
+      oleautomation
+    ]
+    interface IDgnStrings : IDispatch {
+        [id(00000000), propget, helpstring("Given an integer index, returns a string in the collection."), helpcontext(0x0000010f)]
+        HRESULT Item(
+                        [in] long Index, 
+                        [out, retval] BSTR* String);
+        [id(0x00000001), propget, helpstring("Returns number of strings in collection."), helpcontext(0x0000010e)]
+        HRESULT Count([out, retval] long* Value);
+        [id(0x00000002), helpstring("Adds a string to the collection."), helpcontext(0x0000010d)]
+        HRESULT Add([in] BSTR String);
+        [id(0x00000003), helpstring("Removes a string from the collection."), helpcontext(0x00000110)]
+        HRESULT Remove([in] long Index);
+        [id(0x00000004), helpstring("Removes all strings from the collection."), helpcontext(0x0000009b)]
+        HRESULT Clear();
+        [id(0x00000005), propget, restricted, hidden, helpstring("Returns internal array of TCHAR pointers.")]
+        HRESULT _Data([out, retval] VARIANT* Data);
+        [id(0xfffffffc), propget, restricted]
+        HRESULT _NewEnum([out, retval] IUnknown** ppUnk);
+    };
+
+    [
+      odl,
+      uuid(24884591-B2F3-11D1-A4B7-00A024A3A678),
+      helpstring("SpeechEngines collection."),
+      helpcontext(0x000000b4),
+      dual,
+      oleautomation
+    ]
+    interface SpeechEngines : IDispatch {
+        [id(00000000), propget, helpstring("Given an integer index, returns one of the SpeechEngine objects in the collection."), helpcontext(0x0000010c)]
+        HRESULT Item(
+                        [in] long Index, 
+                        [out, retval] SpeechEngine** Engine);
+        [id(0x00000001), propget, helpstring("Returns number of SpeechEngine objects in collection."), helpcontext(0x0000010b)]
+        HRESULT Count([out, retval] long* Value);
+        [id(0xfffffffc), propget, restricted]
+        HRESULT _NewEnum([out, retval] IUnknown** ppUnk);
+    };
+
+    [
+      odl,
+      uuid(24884593-B2F3-11D1-A4B7-00A024A3A678),
+      helpstring("SpeechEngine object."),
+      helpcontext(0x000000b7),
+      dual,
+      oleautomation
+    ]
+    interface SpeechEngine : IDispatch {
+        [id(0x00000001), propget, helpstring("Returns the speech recognition engine product name."), helpcontext(0x000000bc)]
+        HRESULT ProductName([out, retval] BSTR* Name);
+        [id(0x00000002), propget, helpstring("Returns the speech recognition engine mode name."), helpcontext(0x000000bb)]
+        HRESULT ModeName([out, retval] BSTR* Name);
+        [id(0x00000003), propget, helpstring("Returns the speech recognition engine language identifier."), helpcontext(0x000000ba)]
+        HRESULT LanguageID([out, retval] DgnLanguageConstants* LangID);
+        [id(0x00000004), propget, helpstring("Returns the speech recognition engine language dialect."), helpcontext(0x000000b8)]
+        HRESULT Dialect([out, retval] BSTR* Dialect);
+        [id(0x00000005), propget, helpstring("Returns the set of features supported by the speech recognition engine."), helpcontext(0x000000b9)]
+        HRESULT EngineFeatures([out, retval] DgnEngineFeatureConstants* Features);
+        [id(0x00000006), propget, hidden, helpstring("Returns Mode ID of this speech recognition engine.")]
+        HRESULT ModeID([out, retval] BSTR* ModeID);
+    };
+
+    [
+      odl,
+      uuid(06560220-E5F6-11D2-A6B0-00105AC979CC),
+      helpstring("Dragon EngineControlAuto2 Interface"),
+      helpcontext(0x00000114),
+      hidden,
+      dual,
+      oleautomation
+    ]
+    interface IDgnEngineControlAuto2 : IDgnEngineControlAuto {
+        [id(0x00000064), propget, helpstring("Returns/sets the requested engine UI")]
+        HRESULT EngineUI([out, retval] DgnEngineUIConstants* pEngineUI);
+        [id(0x00000064), propput, helpstring("Returns/sets the requested engine UI")]
+        HRESULT EngineUI([in] DgnEngineUIConstants pEngineUI);
+        [id(0x00000065), hidden, helpstring("Pushes an audio source onto the engine's stack.")]
+        HRESULT AudioPushCLSID(
+                        [in] BSTR Clsid, 
+                        [in] VARIANT_BOOL AutoPop, 
+                        [in, out] IUnknown** ppIUnkAudioFile, 
+                        [in, out] long* Key);
+        [id(0x00000066), hidden, helpstring("Pops an audio source off the engine's stack.")]
+        HRESULT AudioPop([in] long Key);
+        [id(0x00000067), propget, hidden, helpstring("Returns the key of the current audio source.")]
+        HRESULT AudioQuery([out, retval] long* Key);
+        [id(0x00000068), propget, helpstring("Returns whether the current speaker is sufficiently trained.")]
+        HRESULT SpeakerTrained(
+                        [in] VARIANT Reserved, 
+                        [out, retval] VARIANT_BOOL* Trained);
+        [id(0x00000069), helpstring("Indicates whether a given Dragon NaturallySpeaking dialog can be displayed.")]
+        HRESULT DlgStatusGet(
+                        [in] DgnDialogConstants Dialog, 
+                        [out, retval] DgnDlgStatusConstants* pStatus);
+        [id(0x0000006a), helpstring("Displays a Dragon NaturallySpeaking dialog.")]
+        HRESULT DlgShow(
+                        [in] DgnDialogConstants Dialog, 
+                        [in] long hWndParent, 
+                        [in, optional] VARIANT Data, 
+                        [in, optional] VARIANT Flags);
+        [id(0x0000006b), propget, helpstring("Indicates whether Dragon NaturallySpeaking is currently running.")]
+        HRESULT EngineRunning([out, retval] VARIANT_BOOL* Running);
+    };
+
+    typedef [helpstring("Constants for the EngineUI property of the EngineControl object.")]
+    enum {
+        dgnenguiNone = 0,
+        dgnenguiTrayIcon = 1
+    } DgnEngineUIConstants;
+
+    typedef [helpstring("Speech dialog constants."), helpcontext(0x00000123)]
+    enum {
+        dgndlgAudioSetupWizard = 1,
+        dgndlgGeneralTraining = 2,
+        dgndlgVocabularyBuilder = 3,
+        dgndlgVocBuilder = 3,
+        dgndlgSpeakerNew = 6,
+        dgndlgSpeakerOpen = 7,
+        dgndlgSpeakerSave = 8,
+        dgndlgNewCommandWizard = 10,
+        dgndlgEditCommandWizard = 11,
+        dgndlgVocabularyNew = 12,
+        dgndlgVocabularyOpen = 13,
+        dgndlgVocabularyEditor = 14,
+        dgndlgTrainWords = 16,
+        dgndlgMobileTraining = 17,
+        dgndlgOptions = 18,
+        dgndlgHelpTopics = 19,
+        dgndlgAbout = 20
+    } DgnDialogConstants;
+
+    typedef [helpstring("Constants returned by the DlgStatusGet method of the EngineControl object.")]
+    enum {
+        dgndlgstatusOK = 0,
+        dgndlgstatusNotAvailable = 1,
+        dgndlgstatusDisabledForSpeaker = 2,
+        dgndlgstatusNotSupported = 3
+    } DgnDlgStatusConstants;
+
+    [
+      uuid(C2811DE0-BE97-11D1-A572-006008AAC4E2),
+      helpstring("Dragon EngineControl Event interface"),
+      hidden
+    ]
+    dispinterface _DDgnEngineControlEvents {
+        properties:
+        methods:
+            [id(0x00000001), helpstring("Occurs when the current speaker changes."), helpcontext(0x000000a3)]
+            void SpeakerChanged();
+            [id(0x00000002), helpstring("Occurs when the current topic changes."), helpcontext(0x00000020)]
+            void TopicChanged();
+            [id(0x00000003), helpstring("Occurs when a speech dialog closes."), helpcontext(0x00000123)]
+            void DialogClosed(
+                            [in, out] DgnDialogConstants* Dialog, 
+                            [in, out] long* ExitCode);
+            [id(0x00000004), helpstring("Occurs when speech recognition is about to begin."), helpcontext(0x00000239)]
+            void RecognitionStarting();
+            [id(0x00000005), helpstring("Occurs at the beginning of an utterance.")]
+            void UtteranceBegin();
+            [id(0x00000006), helpstring("Occurs at the end of an utterance.")]
+            void UtteranceEnd();
+    };
+
+    [
+      odl,
+      uuid(F90AC490-E6F3-11D2-8EAA-0060080D713A),
+      hidden
+    ]
+    interface IDgnEngineControlW : IUnknown {
+        HRESULT _stdcall BaseSpeakerModelsGet(
+                        [out] LPWSTR* ppModels, 
+                        [out] unsigned long* pdwSize);
+        HRESULT _stdcall BaseTopicModelsGet(
+                        [out] LPWSTR* ppModels, 
+                        [out] unsigned long* pdwSize);
+        HRESULT _stdcall EngineVersionGet(
+                        [in, out] short* psMajorNum, 
+                        [in, out] short* psMinorNum, 
+                        [in, out] short* psBuildNum);
+        HRESULT _stdcall ToolsVersionGet(
+                        [in, out] short* psMajorNum, 
+                        [in, out] short* psMinorNum, 
+                        [in, out] short* psBuildNum);
+        HRESULT _stdcall WindowModuleFileNameGet(
+                        [in] wireHWND hWnd, 
+                        [out] LPWSTR* ppszFileName);
+        HRESULT _stdcall GlobalDictationGet(
+                        [in] wireHWND hWndApp, 
+                        [in, out] long* pbEnabled);
+        HRESULT _stdcall GlobalDictationSet(
+                        [in] wireHWND hWndApp, 
+                        [in] long bEnabled);
+        HRESULT _stdcall Register(
+                        [in] unsigned long dwFlags, 
+                        [in] GUID* riid, 
+                        [in] IUnknown* pNotifySinkUnk);
+        HRESULT _stdcall SpeakerCreate(
+                        [in] LPWSTR pszSpeakerName, 
+                        [in] LPWSTR pszSpeakerBasedOn);
+        HRESULT _stdcall SpeakerModifiedGet([in, out] long* pbModified);
+        HRESULT _stdcall SpeakerTopicSelect(
+                        [in] LPWSTR pszSpeaker, 
+                        [in] LPWSTR pszTopic);
+        HRESULT _stdcall TopicCreate(
+                        [in] LPWSTR pszSpeaker, 
+                        [in] LPWSTR pszTopic, 
+                        [in] LPWSTR pszTopicBasedOn);
+        HRESULT _stdcall TopicDelete(
+                        [in] LPWSTR pszReserved, 
+                        [in] LPWSTR pszTopic);
+        HRESULT _stdcall TopicGet([out] LPWSTR* ppTopic);
+        HRESULT _stdcall TopicSet([in] LPWSTR pszTopic);
+        HRESULT _stdcall TopicsGet(
+                        [in] LPWSTR pszSpeaker, 
+                        [out] LPWSTR* ppTopics, 
+                        [out] unsigned long* pdwSize);
+        HRESULT _stdcall UnRegister([in] long bLockServer);
+        HRESULT _stdcall EngineUIGet([in, out] DgnEngineUIConstants* pEngineUI);
+        HRESULT _stdcall EngineUISet([in] DgnEngineUIConstants EngineUI);
+        HRESULT _stdcall RecognitionMimic(
+                        [in] unsigned long dwNumWords, 
+                        [in] LPWSTR pWords, 
+                        [in] unsigned long dwSize, 
+                        [in] unsigned long dwParam);
+        HRESULT _stdcall ISRCentralGet([in, out] IUnknown** ppUnk);
+        HRESULT _stdcall SpeakerTrainedGet(
+                        [in] unsigned long dwReserved, 
+                        [in, out] long* pbTrained);
+        HRESULT _stdcall EngineRunningGet([in, out] long* pbRunning);
+    };
+
+    typedef [public]
+    _RemotableHandle* wireHWND;
+
+    typedef struct tag_RemotableHandle {
+                
+long fContext;
+                
+__MIDL_IWinTypes_0009 u;
+    } _RemotableHandle;
+
+    typedef union tag__MIDL_IWinTypes_0009 {
+                
+long hInproc;
+                
+long hRemote;
+    } __MIDL_IWinTypes_0009;
+
+    [
+      odl,
+      uuid(8CE9DAE0-ED14-11D2-8EAC-0060080D713A),
+      hidden
+    ]
+    interface IDgnEngineControlA : IUnknown {
+        HRESULT _stdcall BaseSpeakerModelsGet(
+                        [out] LPSTR* ppModels, 
+                        [out] unsigned long* pdwSize);
+        HRESULT _stdcall BaseTopicModelsGet(
+                        [out] LPSTR* ppModels, 
+                        [out] unsigned long* pdwSize);
+        HRESULT _stdcall EngineVersionGet(
+                        [in, out] short* psMajorNum, 
+                        [in, out] short* psMinorNum, 
+                        [in, out] short* psBuildNum);
+        HRESULT _stdcall ToolsVersionGet(
+                        [in, out] short* psMajorNum, 
+                        [in, out] short* psMinorNum, 
+                        [in, out] short* psBuildNum);
+        HRESULT _stdcall WindowModuleFileNameGet(
+                        [in] wireHWND hWnd, 
+                        [out] LPSTR* ppszFileName);
+        HRESULT _stdcall GlobalDictationGet(
+                        [in] wireHWND hWndApp, 
+                        [in, out] long* pbEnabled);
+        HRESULT _stdcall GlobalDictationSet(
+                        [in] wireHWND hWndApp, 
+                        [in] long bEnabled);
+        HRESULT _stdcall Register(
+                        [in] unsigned long dwFlags, 
+                        [in] GUID* riid, 
+                        [in] IUnknown* pNotifySinkUnk);
+        HRESULT _stdcall SpeakerCreate(
+                        [in] LPSTR pszSpeakerName, 
+                        [in] LPSTR pszSpeakerBasedOn);
+        HRESULT _stdcall SpeakerModifiedGet([in, out] long* pbModified);
+        HRESULT _stdcall SpeakerTopicSelect(
+                        [in] LPSTR pszSpeaker, 
+                        [in] LPSTR pszTopic);
+        HRESULT _stdcall TopicCreate(
+                        [in] LPSTR pszSpeaker, 
+                        [in] LPSTR pszTopic, 
+                        [in] LPSTR pszTopicBasedOn);
+        HRESULT _stdcall TopicDelete(
+                        [in] LPSTR pszReserved, 
+                        [in] LPSTR pszTopic);
+        HRESULT _stdcall TopicGet([out] LPSTR* ppTopic);
+        HRESULT _stdcall TopicSet([in] LPSTR pszTopic);
+        HRESULT _stdcall TopicsGet(
+                        [in] LPSTR pszSpeaker, 
+                        [out] LPSTR* ppTopics, 
+                        [out] unsigned long* pdwSize);
+        HRESULT _stdcall UnRegister([in] long bLockServer);
+        HRESULT _stdcall EngineUIGet([in, out] DgnEngineUIConstants* pEngineUI);
+        HRESULT _stdcall EngineUISet([in] DgnEngineUIConstants EngineUI);
+        HRESULT _stdcall RecognitionMimic(
+                        [in] unsigned long dwNumWords, 
+                        [in] LPSTR pWords, 
+                        [in] unsigned long dwSize, 
+                        [in] unsigned long dwParam);
+        HRESULT _stdcall ISRCentralGet([in, out] IUnknown** ppUnk);
+        HRESULT _stdcall SpeakerTrainedGet(
+                        [in] unsigned long dwReserved, 
+                        [in, out] long* pbTrained);
+        HRESULT _stdcall EngineRunningGet([in, out] long* pbRunning);
+    };
+
+    [
+      odl,
+      uuid(84BBB0A0-ED26-11D2-8EAC-0060080D713A)
+    ]
+    interface IDgnEngineControlNotifySink : IUnknown {
+        HRESULT _stdcall RecognitionStarting();
+        HRESULT _stdcall SpeakerChanged();
+        HRESULT _stdcall TopicChanged();
+        HRESULT _stdcall UtteranceBegin();
+        HRESULT _stdcall UtteranceEnd();
+        HRESULT _stdcall MimicDone(
+                        [in] unsigned long dwParam, 
+                        [in] IUnknown* pIErr);
+    };
+
+    [
+      uuid(DE2DB781-BE83-11D1-A572-006008AAC4E2),
+      helpstring("DgnEngineControl Class"),
+      helpcontext(0x00000114)
+    ]
+    coclass DgnEngineControl {
+        [default] interface IDgnEngineControlAuto2;
+        interface IDgnEngineControlAuto;
+        [default, source] dispinterface _DDgnEngineControlEvents;
+        interface IDgnEngineControlW;
+        interface IDgnEngineControlA;
+    };
+
+    [
+      odl,
+      uuid(5C48634D-2F92-11D1-A47C-00A024A3A678),
+      helpstring("Command object for the VoiceCommand application."),
+      helpcontext(0x00000010),
+      dual,
+      oleautomation
+    ]
+    interface IVCmdAuto : IDispatch {
+        [id(0x60020000), helpstring("Register application with Dragon VoiceCommands."), helpcontext(0x000000de)]
+        HRESULT Register(
+                        [in] BSTR Site, 
+                        [in, optional] VARIANT Flags);
+        [id(0x60020001), helpstring("Create/Open a voice menu."), helpcontext(0x00000018)]
+        HRESULT MenuCreate(
+                        [in] BSTR Application, 
+                        [in] BSTR State, 
+                        [in] DgnLanguageConstants LangID, 
+                        [in] BSTR Dialect, 
+                        [in] CREATEFLAGS Flags, 
+                        [out, retval] IVMenuAuto** ppMenu);
+        [id(0x60020002), propget, hidden, helpstring("Returns/sets the Awake state.")]
+        HRESULT Awake([out, retval] VARIANT_BOOL* AwakeState);
+        [id(0x60020002), propput, hidden, helpstring("Returns/sets the Awake state.")]
+        HRESULT Awake([in] VARIANT_BOOL AwakeState);
+        [id(0x60020004), propget, helpstring("Returns/sets the spoken command identifier."), helpcontext(0x00000016)]
+        HRESULT CommandSpoken([out, retval] long* CmdSpoken);
+        [id(0x60020004), propput, helpstring("Returns/sets the spoken command identifier."), helpcontext(0x00000016)]
+        HRESULT CommandSpoken([in] long CmdSpoken);
+        [id(0x60020006), propput, helpstring("Sets the Automation Server PROGID containing callbacks."), helpcontext(0x000000dd)]
+        HRESULT Callback([in] BSTR rhs);
+        [id(0x00000001), helpstring("Verifies the syntax of a NaturallySpeaking script."), helpcontext(0x000000a0)]
+        HRESULT CheckScript(
+                        [in] BSTR Script, 
+                        [out] BSTR* ErrString, 
+                        [out, retval] long* ErrAtLine);
+        [id(0x00000002), helpstring("Executes a NaturallySpeaking script."), helpcontext(0x000000a1)]
+        HRESULT ExecuteScript(
+                        [in] BSTR Script, 
+                        [in] long ID);
+        [id(0x00000007), helpstring("Detaches application from Dragon Voice Commands object."), helpcontext(0x000000df)]
+        HRESULT UnRegister();
+        [id(0x00000008), propget, hidden, helpstring("Returns/sets whether to use the alternate list separator instead of NULL character")]
+        HRESULT UseAltListSeparator([out, retval] VARIANT_BOOL* UseAltListSeparator);
+        [id(0x00000008), propput, hidden, helpstring("Returns/sets whether to use the alternate list separator instead of NULL character")]
+        HRESULT UseAltListSeparator([in] VARIANT_BOOL UseAltListSeparator);
+        [id(0x000003e8), propget, hidden, helpstring("Returns underlying IVoiceCmd interface pointer.")]
+        HRESULT IVoiceCmd([out, retval] IUnknown** ppUnk);
+        [id(0x000003e9), propget, hidden, helpstring("Returns the recognition results associated with the last CommandRecognize.")]
+        HRESULT LastResults([out, retval] IUnknown** ppUnk);
+    };
+
+    [
+      odl,
+      uuid(5C486350-2F92-11D1-A47C-00A024A3A678),
+      helpstring("Command object for the VoiceCommand application."),
+      helpcontext(0x00000010),
+      dual,
+      oleautomation
+    ]
+    interface IVMenuAuto : IDispatch {
+        [id(0x60020000), helpstring("Add commands to a menu."), helpcontext(0x000000e1)]
+        HRESULT Add(
+                        [in] long CmdNum, 
+                        [in] BSTR Command, 
+                        [in] BSTR Category, 
+                        [in] BSTR Description, 
+                        [in, optional] VARIANT Action, 
+                        [in, optional] VARIANT Flags);
+        [id(0x60020001), propget, helpstring("Activate/Deactivate a menu for speech recognition."), helpcontext(0x000000e0)]
+        HRESULT Active([out, retval] VARIANT_BOOL* Active);
+        [id(0x60020001), propput, helpstring("Activate/Deactivate a menu for speech recognition."), helpcontext(0x000000e0)]
+        HRESULT Active([in] VARIANT_BOOL Active);
+        [id(0x60020003), propget, helpstring("Returns/sets the hWnd associated with this menu."), helpcontext(0x00000029)]
+        HRESULT hWndMenu([out, retval] long* hWnd);
+        [id(0x60020003), propput, helpstring("Returns/sets the hWnd associated with this menu."), helpcontext(0x00000029)]
+        HRESULT hWndMenu([in] long hWnd);
+        [id(0x60020004), helpstring("Remove commands from a menu."), helpcontext(0x000000e2)]
+        HRESULT Remove([in] long ID);
+        [id(0x60020005), helpstring("Set a list in the menu."), helpcontext(0x0000002a)]
+        HRESULT ListSet(
+                        [in] BSTR ListName, 
+                        [in] long ListNum, 
+                        [in] BSTR ListData);
+        [id(0x00000004), helpstring("Set a list in the menu."), helpcontext(0x00000088)]
+        HRESULT ListSetStrings(
+                        [in] BSTR ListName, 
+                        [in] IDgnStrings* List);
+        [id(0x00000001), propget, helpstring("Returns/sets whether to show the NaturallySpeaking Results box associated with this menu."), helpcontext(0x000000e4)]
+        HRESULT ShowResultsBox([out, retval] VARIANT_BOOL* Show);
+        [id(0x00000001), propput, helpstring("Returns/sets whether to show the NaturallySpeaking Results box associated with this menu."), helpcontext(0x000000e4)]
+        HRESULT ShowResultsBox([in] VARIANT_BOOL Show);
+        [id(0x00000002), helpstring("Sets the screen position of the NaturallySpeaking Results box associated with this menu."), helpcontext(0x000000e3)]
+        HRESULT SetResultsBoxPos(
+                        [in] long Left, 
+                        [in] long Top, 
+                        [in] long Right, 
+                        [in] long Bottom);
+        [id(0x00000003), helpstring("Brings up the Train Menu Dialog."), helpcontext(0x0000002e)]
+        HRESULT TrainMenuDlg(
+                        [in] long hWndParent, 
+                        [in, optional] VARIANT Title);
+        [id(0x000003e8), propget, hidden, helpstring("Returns underlying IVCmdMenu interface pointer.")]
+        HRESULT IVCmdMenu([out, retval] IUnknown** ppUnk);
+    };
+
+    [
+      odl,
+      uuid(0BDD86B4-0D44-11D3-99F1-00105AC97946)
+    ]
+    interface IDgnVMenuA : IUnknown {
+        HRESULT _stdcall Add(
+                        [in] unsigned long dwCmdNum, 
+                        [in] LPSTR pszCommand, 
+                        [in] LPSTR pszCategory, 
+                        [in] LPSTR pszDescription, 
+                        [in] LPSTR pszAction, 
+                        [in] unsigned long dwFlags);
+        HRESULT _stdcall ActiveGet([in, out] long* pbActive);
+        HRESULT _stdcall ActiveSet([in] long bActive);
+        HRESULT _stdcall HwndMenuGet([in, out] wireHWND* phWnd);
+        HRESULT _stdcall HwndMenuSet([in] wireHWND hWnd);
+        HRESULT _stdcall Remove([in] unsigned long dwCmdNum);
+        HRESULT _stdcall ListSet(
+                        [in] LPSTR pszListName, 
+                        [in] unsigned long dwListNum, 
+                        [in] LPSTR pListData, 
+                        [in] unsigned long dwListSize);
+        HRESULT _stdcall ShowResultsBoxGet([in, out] long* pbShow);
+        HRESULT _stdcall ShowResultsBoxSet([in] long bShow);
+        HRESULT _stdcall ResultsBoxPosSet(
+                        [in] long lLeft, 
+                        [in] long lTop, 
+                        [in] long lRight, 
+                        [in] long lBottom);
+        HRESULT _stdcall TrainMenuDlg(
+                        [in] wireHWND hWndParent, 
+                        [in] LPSTR pszTitle);
+    };
+
+    [
+      odl,
+      uuid(0BDD86B5-0D44-11D3-99F1-00105AC97946)
+    ]
+    interface IDgnVMenuW : IUnknown {
+        HRESULT _stdcall Add(
+                        [in] unsigned long dwCmdNum, 
+                        [in] LPWSTR pszCommand, 
+                        [in] LPWSTR pszCategory, 
+                        [in] LPWSTR pszDescription, 
+                        [in] LPWSTR pszAction, 
+                        [in] unsigned long dwFlags);
+        HRESULT _stdcall ActiveGet([in, out] long* pbActive);
+        HRESULT _stdcall ActiveSet([in] long bActive);
+        HRESULT _stdcall HwndMenuGet([in, out] wireHWND* phWnd);
+        HRESULT _stdcall HwndMenuSet([in] wireHWND hWnd);
+        HRESULT _stdcall Remove([in] unsigned long dwCmdNum);
+        HRESULT _stdcall ListSet(
+                        [in] LPWSTR pszListName, 
+                        [in] unsigned long dwListNum, 
+                        [in] LPWSTR pListData, 
+                        [in] unsigned long dwListSize);
+        HRESULT _stdcall ShowResultsBoxGet([in, out] long* pbShow);
+        HRESULT _stdcall ShowResultsBoxSet([in] long bShow);
+        HRESULT _stdcall ResultsBoxPosSet(
+                        [in] long lLeft, 
+                        [in] long lTop, 
+                        [in] long lRight, 
+                        [in] long lBottom);
+        HRESULT _stdcall TrainMenuDlg(
+                        [in] wireHWND hWndParent, 
+                        [in] LPWSTR pszTitle);
+    };
+
+    [
+      uuid(5C48634E-2F92-11D1-A47C-00A024A3A678),
+      helpstring("Dragon VoiceCommand Automation Class"),
+      helpcontext(0x00000010),
+      appobject
+    ]
+    coclass VCmdAuto {
+        [default] interface IVCmdAuto;
+        interface IDispatch;
+    };
+
+    [
+      odl,
+      uuid(607FC1B1-70AE-11D1-A49F-00A024A3A678),
+      helpstring("IDgnVoiceCmd Interface"),
+      helpcontext(0x00000010),
+      hidden,
+      dual,
+      nonextensible,
+      oleautomation
+    ]
+    interface IDgnVoiceCmdAuto : IDispatch {
+        [id(0x60020000), helpstring("Register application with Dragon VoiceCommands."), helpcontext(0x000000de)]
+        HRESULT Register(
+                        [in] BSTR Site, 
+                        [in, optional] VARIANT Flags);
+        [id(0x60020001), helpstring("Create/Open a voice menu."), helpcontext(0x00000018)]
+        HRESULT MenuCreate(
+                        [in] BSTR Application, 
+                        [in] BSTR State, 
+                        [in] DgnLanguageConstants LangID, 
+                        [in] BSTR Dialect, 
+                        [in] CREATEFLAGS Flags, 
+                        [out, retval] IVMenuAuto** ppMenu);
+        [id(0x60020002), propget, hidden, helpstring("Returns/sets the Awake state.")]
+        HRESULT Awake([out, retval] VARIANT_BOOL* AwakeState);
+        [id(0x60020002), propput, hidden, helpstring("Returns/sets the Awake state.")]
+        HRESULT Awake([in] VARIANT_BOOL AwakeState);
+        [id(0x60020004), propget, hidden, helpstring("Returns/sets the spoken command identifier."), helpcontext(0x00000016)]
+        HRESULT CommandSpoken([out, retval] long* CmdSpoken);
+        [id(0x60020004), propput, hidden, helpstring("Returns/sets the spoken command identifier."), helpcontext(0x00000016)]
+        HRESULT CommandSpoken([in] long CmdSpoken);
+        [id(0x00000001), helpstring("Verifies the syntax of a NaturallySpeaking script."), helpcontext(0x000000a0)]
+        HRESULT CheckScript(
+                        [in] BSTR Script, 
+                        [out] BSTR* ErrString, 
+                        [out, retval] long* ErrAtLine);
+        [id(0x00000002), helpstring("Executes a NaturallySpeaking script."), helpcontext(0x000000a1)]
+        HRESULT ExecuteScript(
+                        [in] BSTR Script, 
+                        [in] long ID);
+        [id(0x00000007), helpstring("Detaches application from Dragon Voice Commands object."), helpcontext(0x000000df)]
+        HRESULT UnRegister();
+        [id(0x00000008), propget, hidden, helpstring("Returns/sets whether to use the alternate list separator instead of NULL character")]
+        HRESULT UseAltListSeparator([out, retval] VARIANT_BOOL* UseAltListSeparator);
+        [id(0x00000008), propput, hidden, helpstring("Returns/sets whether to use the alternate list separator instead of NULL character")]
+        HRESULT UseAltListSeparator([in] VARIANT_BOOL UseAltListSeparator);
+        [id(0x000003e8), propget, hidden, helpstring("Returns underlying IVoiceCmd interface pointer.")]
+        HRESULT IVoiceCmd([out, retval] IUnknown** ppUnk);
+        [id(0x000003e9), propget, hidden, helpstring("Returns the recognition results associated with the last CommandRecognize.")]
+        HRESULT LastResults([out, retval] IUnknown** ppUnk);
+    };
+
+    [
+      odl,
+      uuid(0BDD86B0-0D44-11D3-99F1-00105AC97946)
+    ]
+    interface IDgnVoiceCmdA : IUnknown {
+        HRESULT _stdcall Register(
+                        [in] LPSTR pszSite, 
+                        [in] unsigned long dwFlags, 
+                        [in] GUID* riid, 
+                        [in] IUnknown* pNotifySinkIUnknown);
+        HRESULT _stdcall MenuCreate(
+                        [in] LPSTR pszApplication, 
+                        [in] LPSTR pszState, 
+                        [in] DgnLanguageConstants LangID, 
+                        [in] LPSTR pszDialect, 
+                        [in] CREATEFLAGS Flags, 
+                        [in] GUID* riid, 
+                        [in] IUnknown** ppIDgnVMenuIUnknown);
+        HRESULT _stdcall CheckScript(
+                        [in] LPSTR pszScript, 
+                        [in, out] LPSTR* ppszErrString, 
+                        [in, out] unsigned long* pdwErrAtLine);
+        HRESULT _stdcall ExecuteScript(
+                        [in] LPSTR pszScript, 
+                        [in] unsigned long dwID);
+        HRESULT _stdcall UnRegister();
+    };
+
+    [
+      odl,
+      uuid(0BDD86B1-0D44-11D3-99F1-00105AC97946)
+    ]
+    interface IDgnVoiceCmdW : IUnknown {
+        HRESULT _stdcall Register(
+                        [in] LPWSTR pszSite, 
+                        [in] unsigned long dwFlags, 
+                        [in] GUID* riid, 
+                        [in] IUnknown* pNotifySinkIUnknown);
+        HRESULT _stdcall MenuCreate(
+                        [in] LPWSTR pszApplication, 
+                        [in] LPWSTR pszState, 
+                        [in] DgnLanguageConstants LangID, 
+                        [in] LPWSTR pszDialect, 
+                        [in] CREATEFLAGS Flags, 
+                        [in] GUID* riid, 
+                        [in] IUnknown** ppIDgnVMenuIUnknown);
+        HRESULT _stdcall CheckScript(
+                        [in] LPWSTR pszScript, 
+                        [in, out] LPWSTR* ppszErrString, 
+                        [in, out] unsigned long* pdwErrAtLine);
+        HRESULT _stdcall ExecuteScript(
+                        [in] LPWSTR pszScript, 
+                        [in] unsigned long dwID);
+        HRESULT _stdcall UnRegister();
+    };
+
+    [
+      odl,
+      uuid(0BDD86B2-0D44-11D3-99F1-00105AC97946)
+    ]
+    interface IDgnVCmdNotifySinkA : IUnknown {
+        HRESULT _stdcall CommandRecognize(
+                        [in] LPSTR pszCommand, 
+                        [in] unsigned long dwID, 
+                        [in] LPSTR pszAction, 
+                        [in] LPSTR pListResults, 
+                        [in] unsigned long dwListSize);
+        HRESULT _stdcall CommandOther(
+                        [in] LPSTR pszCommand, 
+                        [in] LPSTR pszApp, 
+                        [in] LPSTR pszState);
+        HRESULT _stdcall ActionComplete(
+                        [in] unsigned long dwID, 
+                        [in] long bAborted);
+    };
+
+    [
+      odl,
+      uuid(0BDD86B3-0D44-11D3-99F1-00105AC97946)
+    ]
+    interface IDgnVCmdNotifySinkW : IUnknown {
+        HRESULT _stdcall CommandRecognize(
+                        [in] LPWSTR pszCommand, 
+                        [in] unsigned long dwID, 
+                        [in] LPWSTR pszAction, 
+                        [in] LPWSTR pListResults, 
+                        [in] unsigned long dwListSize);
+        HRESULT _stdcall CommandOther(
+                        [in] LPWSTR pszCommand, 
+                        [in] LPWSTR pszApp, 
+                        [in] LPWSTR pszState);
+        HRESULT _stdcall ActionComplete(
+                        [in] unsigned long dwID, 
+                        [in] long bAborted);
+    };
+
+    [
+      uuid(9FA21240-8C71-11D1-A4AF-00A024A3A678),
+      helpstring("Dragon VoiceCommands Event interface"),
+      hidden
+    ]
+    dispinterface _DDgnVCmdEvents {
+        properties:
+        methods:
+            [id(0x00000001), helpstring("Occurs when a command associated with this voice-command object is recognized."), helpcontext(0x00000015)]
+            void CommandRecognize(
+                            [in, out] BSTR* Command, 
+                            [in, out] long* ID, 
+                            [in, out] BSTR* Action, 
+                            [in, out] DgnStrings** ListResults);
+            [id(0x00000002), helpstring("Occurs when a command associated with a different object was recognized."), helpcontext(0x0000005f)]
+            void CommandOther(
+                            [in, out] BSTR* Command, 
+                            [in, out] BSTR* App, 
+                            [in, out] BSTR* State);
+            [id(0x00000003), helpstring("Occurs when a script or keystroke execution finishes."), helpcontext(0x0000009f)]
+            void ActionComplete(
+                            [in, out] long* ID, 
+                            [in, out] VARIANT_BOOL* Aborted);
+    };
+
+    [
+      uuid(DC188E62-B202-11D1-A4B6-00A024A3A678),
+      helpstring("DgnStrings collection."),
+      helpcontext(0x000000d5)
+    ]
+    coclass DgnStrings {
+        [default] interface IDgnStrings;
+    };
+
+    [
+      uuid(607FC1B2-70AE-11D1-A49F-00A024A3A678),
+      helpstring("Dragon VoiceCommand Control"),
+      helpcontext(0x00000010)
+    ]
+    coclass DgnVoiceCmd {
+        [default] interface IDgnVoiceCmdAuto;
+        interface IDgnVoiceCmdA;
+        interface IDgnVoiceCmdW;
+        [default, source] dispinterface _DDgnVCmdEvents;
+    };
+
+    typedef [helpstring("Constants for the flags argument of DgnVoiceTxt.Speak."), helpcontext(0x00000035)]
+    enum {
+        vtxtst_STATEMENT = 1,
+        vtxtst_QUESTION = 2,
+        vtxtst_COMMAND = 4,
+        vtxtst_WARNING = 8,
+        vtxtst_READING = 16,
+        vtxtst_NUMBERS = 32,
+        vtxtst_SPREADSHEET = 64,
+        vtxtsp_VERYHIGH = 128,
+        vtxtsp_HIGH = 256,
+        vtxtsp_NORMAL = 512
+    } SPEAKFLAGS;
+
+    [
+      odl,
+      uuid(7C91B686-5B5F-11D1-9B43-00609720FF2C),
+      helpstring("Text object for the VoiceText application."),
+      helpcontext(0x0000002f),
+      dual,
+      oleautomation
+    ]
+    interface IVTxtAuto : IDispatch {
+        [id(0x60020000), helpstring("Register application with VoiceText."), helpcontext(0x000000e7)]
+        HRESULT Register(
+                        [in] BSTR SiteName, 
+                        [in] BSTR AppName);
+        [id(0x60020001), helpstring("Speak the text."), helpcontext(0x00000035)]
+        HRESULT Speak(
+                        [in] BSTR Text, 
+                        [in, optional] VARIANT Flags);
+        [id(0x60020002), helpstring("Stop speaking the text."), helpcontext(0x00000039)]
+        HRESULT StopSpeaking();
+        [id(0x60020008), propget, helpstring("Returns/sets the TTS speed."), helpcontext(0x00000038)]
+        HRESULT Speed([out, retval] long* Value);
+        [id(0x60020008), propput, helpstring("Returns/sets the TTS speed."), helpcontext(0x00000038)]
+        HRESULT Speed([in] long Value);
+        [id(0x6002000a), propget, helpstring("Returns/sets the Enabled/Disabled state."), helpcontext(0x000000e6)]
+        HRESULT Enabled([out, retval] VARIANT_BOOL* Value);
+        [id(0x6002000a), propput, helpstring("Returns/sets the Enabled/Disabled state."), helpcontext(0x000000e6)]
+        HRESULT Enabled([in] VARIANT_BOOL Value);
+        [id(0x6002000c), propget, helpstring("Returns the speaking state."), helpcontext(0x00000032)]
+        HRESULT IsSpeaking([out, retval] VARIANT_BOOL* Value);
+        [id(0x60020007), propput, helpstring("Sets the Automation Server PROGID containing callbacks."), helpcontext(0x000000e5)]
+        HRESULT Callback([in] BSTR rhs);
+        [id(0x60020006), helpstring("Fast forward the text."), helpcontext(0x000000ce)]
+        HRESULT AudioFastForward();
+        [id(0x60020003), helpstring("Pause speaking the text."), helpcontext(0x000000cf)]
+        HRESULT AudioPause();
+        [id(0x60020004), helpstring("Resume speaking the text."), helpcontext(0x000000d0)]
+        HRESULT AudioResume();
+        [id(0x60020005), helpstring("Rewind the text."), helpcontext(0x000000d1)]
+        HRESULT AudioRewind();
+        [id(0x0000000a), propget, helpstring("Returns the minimum speed allowed by this engine."), helpcontext(0x00000139)]
+        HRESULT SpeedMin([out, retval] long* Value);
+        [id(0x0000000b), propget, helpstring("Returns the maximum speed allowed by this engine."), helpcontext(0x00000138)]
+        HRESULT SpeedMax([out, retval] long* Value);
+        [id(0x0000000c), propget, helpstring("Returns the minimum volume allowed by this engine."), helpcontext(0x0000013b)]
+        HRESULT VolumeMin([out, retval] long* Value);
+        [id(0x0000000d), propget, helpstring("Returns the maximum volume allowed by this engine."), helpcontext(0x0000013a)]
+        HRESULT VolumeMax([out, retval] long* Value);
+        [id(0x0000000e), propget, hidden, helpstring("Returns the minimum pitch allowed by this engine.")]
+        HRESULT PitchMin([out, retval] long* Value);
+        [id(0x0000000f), propget, hidden, helpstring("Returns the maximum pitch allowed by this engine.")]
+        HRESULT PitchMax([out, retval] long* Value);
+        [id(0x00000007), propget, hidden, helpstring("Returns/sets the TTS pitch.")]
+        HRESULT Pitch([out, retval] long* Value);
+        [id(0x00000007), propput, hidden, helpstring("Returns/sets the TTS pitch.")]
+        HRESULT Pitch([in] long Value);
+        [id(0x00000002), propget, helpstring("Returns/sets the TTS volume."), helpcontext(0x000000ac)]
+        HRESULT Volume([out, retval] long* Value);
+        [id(0x00000002), propput, helpstring("Returns/sets the TTS volume."), helpcontext(0x000000ac)]
+        HRESULT Volume([in] long Value);
+        [id(0x00000008), helpstring("Uninitializes and unloads the TTS engine."), helpcontext(0x000000e8)]
+        HRESULT UnRegister();
+    };
+
+    [
+      uuid(7C91B687-5B5F-11D1-9B43-00609720FF2C),
+      helpstring("Dragon VoiceText Automation Class")
+    ]
+    coclass VTxtAuto {
+        [default] interface IVTxtAuto;
+    };
+
+    [
+      odl,
+      uuid(3538B8D3-924A-11D1-9B43-00609720FF2C),
+      helpstring("IDgnVoiceTxt Interface"),
+      helpcontext(0x0000002f),
+      dual,
+      oleautomation
+    ]
+    interface IDgnVoiceTxt : IDispatch {
+        [id(0x60020000), helpstring("Register application with VoiceText."), helpcontext(0x000000e7)]
+        HRESULT Register(
+                        [in] BSTR SiteName, 
+                        [in] BSTR AppName);
+        [id(0x60020001), helpstring("Speak the text."), helpcontext(0x00000035)]
+        HRESULT Speak(
+                        [in] BSTR Text, 
+                        [in, optional] VARIANT Flags);
+        [id(0x60020002), helpstring("Stop speaking the text."), helpcontext(0x00000039)]
+        HRESULT StopSpeaking();
+        [id(0x60020008), propget, helpstring("Returns/sets the TTS speed."), helpcontext(0x00000038)]
+        HRESULT Speed([out, retval] long* Value);
+        [id(0x60020008), propput, helpstring("Returns/sets the TTS speed."), helpcontext(0x00000038)]
+        HRESULT Speed([in] long Value);
+        [id(0x6002000a), propget, helpstring("Returns/sets the Enabled/Disabled state."), helpcontext(0x000000e6)]
+        HRESULT Enabled([out, retval] VARIANT_BOOL* Value);
+        [id(0x6002000a), propput, helpstring("Returns/sets the Enabled/Disabled state."), helpcontext(0x000000e6)]
+        HRESULT Enabled([in] VARIANT_BOOL Value);
+        [id(0x6002000c), propget, helpstring("Returns the speaking state."), helpcontext(0x00000032)]
+        HRESULT IsSpeaking([out, retval] VARIANT_BOOL* Value);
+        [id(0x60020006), helpstring("Fast forward the text."), helpcontext(0x000000ce)]
+        HRESULT AudioFastForward();
+        [id(0x60020003), helpstring("Pause speaking the text."), helpcontext(0x000000cf)]
+        HRESULT AudioPause();
+        [id(0x60020004), helpstring("Resume speaking the text."), helpcontext(0x000000d0)]
+        HRESULT AudioResume();
+        [id(0x60020005), helpstring("Rewind the text."), helpcontext(0x000000d1)]
+        HRESULT AudioRewind();
+        [id(0x0000000a), propget, helpstring("Returns the minimum speed allowed by this engine."), helpcontext(0x00000139)]
+        HRESULT SpeedMin([out, retval] long* Value);
+        [id(0x0000000b), propget, helpstring("Returns the maximum speed allowed by this engine."), helpcontext(0x00000138)]
+        HRESULT SpeedMax([out, retval] long* Value);
+        [id(0x0000000c), propget, helpstring("Returns the minimum volume allowed by this engine."), helpcontext(0x0000013b)]
+        HRESULT VolumeMin([out, retval] long* Value);
+        [id(0x0000000d), propget, helpstring("Returns the maximum volume allowed by this engine."), helpcontext(0x0000013a)]
+        HRESULT VolumeMax([out, retval] long* Value);
+        [id(0x0000000e), propget, hidden, helpstring("Returns the minimum pitch allowed by this engine.")]
+        HRESULT PitchMin([out, retval] long* Value);
+        [id(0x0000000f), propget, hidden, helpstring("Returns the maximum pitch allowed by this engine.")]
+        HRESULT PitchMax([out, retval] long* Value);
+        [id(0x00000007), propget, hidden, helpstring("Returns/sets the TTS pitch.")]
+        HRESULT Pitch([out, retval] long* Value);
+        [id(0x00000007), propput, hidden, helpstring("Returns/sets the TTS pitch.")]
+        HRESULT Pitch([in] long Value);
+        [id(0x00000002), propget, helpstring("Returns/sets the TTS volume."), helpcontext(0x000000ac)]
+        HRESULT Volume([out, retval] long* Value);
+        [id(0x00000002), propput, helpstring("Returns/sets the TTS volume."), helpcontext(0x000000ac)]
+        HRESULT Volume([in] long Value);
+        [id(0x00000008), helpstring("Uninitializes and unloads the TTS engine."), helpcontext(0x000000e8)]
+        HRESULT UnRegister();
+    };
+
+    [
+      uuid(CD311AC2-934C-11D1-9B43-00609720FF2C),
+      helpstring("Dragon VoiceText Event interface"),
+      helpcontext(0x0000002f),
+      hidden
+    ]
+    dispinterface _DDgnVTxtEvents {
+        properties:
+        methods:
+            [id(0x00000001), helpstring("Occurs when the text-to-speech engine starts speaking."), helpcontext(0x00000037)]
+            void SpeakingStarted();
+            [id(0x00000002), helpstring("Occurs when speaking is finished and no text remains in the playback queue."), helpcontext(0x00000036)]
+            void SpeakingDone();
+    };
+
+    [
+      uuid(3538B8D4-924A-11D1-9B43-00609720FF2C),
+      helpstring("Dragon VoiceText Control"),
+      helpcontext(0x0000002f)
+    ]
+    coclass DgnVoiceTxt {
+        [default] interface IDgnVoiceTxt;
+        [default, source] dispinterface _DDgnVTxtEvents;
+    };
+
+    [
+      odl,
+      uuid(9A809F60-4A46-11D1-A48F-00A024A3A678),
+      helpstring("IDgnMicBtn Interface"),
+      helpcontext(0x0000003c),
+      hidden,
+      dual,
+      nonextensible,
+      oleautomation
+    ]
+    interface IDgnMicBtn : IDispatch {
+        [id(0x00000001), propget, helpstring("Enables/disables the mic button."), helpcontext(0x000000e9)]
+        HRESULT Enabled([out, retval] VARIANT_BOOL* Value);
+        [id(0x00000001), propput, helpstring("Enables/disables the mic button."), helpcontext(0x000000e9)]
+        HRESULT Enabled([in] VARIANT_BOOL Value);
+        [id(0x00000002), propget, helpstring("Returns/sets the microphone state."), helpcontext(0x00000040)]
+        HRESULT MicState([out, retval] DgnMicStateConstants* Value);
+        [id(0x00000002), propput, helpstring("Returns/sets the microphone state."), helpcontext(0x00000040)]
+        HRESULT MicState([in] DgnMicStateConstants Value);
+        [id(0x00000003), propget, helpstring("Returns/sets a value indicating whether to send VU Meter notifications."), helpcontext(0x00000044)]
+        HRESULT VUMeterNotify([out, retval] VARIANT_BOOL* Value);
+        [id(0x00000003), propput, helpstring("Returns/sets a value indicating whether to send VU Meter notifications."), helpcontext(0x00000044)]
+        HRESULT VUMeterNotify([in] VARIANT_BOOL Value);
+        [id(0x00000004), propget, helpstring("Returns/sets value determining whether Mic Button registers automatically."), helpcontext(0x0000003d)]
+        HRESULT AutoRegister([out, retval] VARIANT_BOOL* Value);
+        [id(0x00000004), propput, helpstring("Returns/sets value determining whether Mic Button registers automatically."), helpcontext(0x0000003d)]
+        HRESULT AutoRegister([in] VARIANT_BOOL Value);
+        [id(0x00000005), helpstring("Registers DgnMicBtn control."), helpcontext(0x000000ea)]
+        HRESULT Register([in, optional] VARIANT Flags);
+        [id(0x00000006), helpstring("Unregisters DgnMicBtn control."), helpcontext(0x000000eb)]
+        HRESULT UnRegister();
+        [id(0x00000007), propget, helpstring("Indicates whether microphone is paused."), helpcontext(0x000001ec)]
+        HRESULT Paused([out, retval] VARIANT_BOOL* Value);
+    };
+
+    typedef [helpstring("Constants describing the microphone state."), helpcontext(0x00000040)]
+    enum {
+        dgnmicDisabled = 0,
+        dgnmicOff = 1,
+        dgnmicOn = 2,
+        dgnmicSleeping = 3,
+        dgnmicPause = 4,
+        dgnmicResume = 5
+    } DgnMicStateConstants;
+
+    [
+      odl,
+      uuid(FF1C91B0-EB80-11D2-A6B0-00105AC979CC)
+    ]
+    interface IDgnMicrophone : IUnknown {
+        HRESULT _stdcall Register(
+                        [in] unsigned long dwFlags, 
+                        [in] GUID* riid, 
+                        [in] IUnknown* pNotifySinkIUnknown);
+        HRESULT _stdcall UnRegister();
+        HRESULT _stdcall MicStateGet(
+                        [in, out] DgnMicStateConstants* pMicState, 
+                        [in, out] long* pbPaused);
+        HRESULT _stdcall MicStateSet([in] DgnMicStateConstants MicState);
+        HRESULT _stdcall VUMeterNotifyGet([in, out] long* pbSendVUMeter);
+        HRESULT _stdcall VUMeterNotifySet([in] long bSendVUMeter);
+    };
+
+    [
+      uuid(F23FBF80-4B4A-11D1-A48F-00A024A3A678),
+      helpstring("DgnMicBtn Event interface"),
+      hidden
+    ]
+    dispinterface _DDgnMicBtnEvents {
+        properties:
+        methods:
+            [id(0x00000001), helpstring("Occurs when the microphone state changes."), helpcontext(0x0000003f)]
+            void MicState([in, out] short* NewState);
+            [id(0x00000002), helpstring("Occurs when the microphone VU meter level changes."), helpcontext(0x00000043)]
+            void VUMeter(
+                            [in, out] long* Level, 
+                            [in, out] DgnMicVUConstants* VUState);
+    };
+
+    typedef [helpstring("Constants describing the VU meter state."), helpcontext(0x00000043)]
+    enum {
+        dgnmicvuMicOff = 0,
+        dgnmicvuNoise = 1,
+        dgnmicvuSpeech = 2,
+        dgnmicvuClipping = 3
+    } DgnMicVUConstants;
+
+    [
+      odl,
+      uuid(FF1C91B1-EB80-11D2-A6B0-00105AC979CC)
+    ]
+    interface IDgnMicrophoneNotifySink : IUnknown {
+        HRESULT _stdcall MicStateChanged(
+                        [in] DgnMicStateConstants MicState, 
+                        [in] long bPaused);
+        HRESULT _stdcall VUMeter(
+                        [in] unsigned short wLevel, 
+                        [in] DgnMicVUConstants VUState);
+    };
+
+    [
+      uuid(9A809F62-4A46-11D1-A48F-00A024A3A678),
+      helpstring("Dragon Mic Button Control"),
+      helpcontext(0x0000003c)
+    ]
+    coclass DgnMicBtn {
+        [default] interface IDgnMicBtn;
+        interface IDgnMicrophone;
+        [default, source] dispinterface _DDgnMicBtnEvents;
+    };
+
+    [
+      odl,
+      uuid(E4BF99E1-5C60-11D1-A498-00A024A3A678),
+      helpstring("IDgnDictEditAuto Interface"),
+      helpcontext(0x00000045),
+      hidden,
+      dual,
+      nonextensible,
+      oleautomation
+    ]
+    interface IDgnDictEditAuto : IDispatch {
+        [id(0x00000001), helpstring("Attaches Dictation-Edit object to edit control specified by hWndEditCtl and initializes NaturallySpeaking server."), helpcontext(0x000000f7)]
+        HRESULT Register(
+                        [in] long hWndEditCtl, 
+                        [in, optional] VARIANT Flags);
+        [id(0x00000002), helpstring("Attaches Dictation-Edit object to edit control specified by name and initializes NaturallySpeaking server."), helpcontext(0x0000004b)]
+        HRESULT RegisterName(
+                        [in] BSTR Name, 
+                        [in, optional] VARIANT Flags);
+        [id(0x00000003), helpstring("Detaches Dictation-Edit object from edit control and unregisters from server."), helpcontext(0x000000fa)]
+        HRESULT UnRegister();
+        [id(0x00000005), propget, helpstring("Returns/sets a value indicating whether the user can dictate into the attached edit control."), helpcontext(0x000000ed)]
+        HRESULT Enabled([out, retval] VARIANT_BOOL* Value);
+        [id(0x00000005), propput, helpstring("Returns/sets a value indicating whether the user can dictate into the attached edit control."), helpcontext(0x000000ed)]
+        HRESULT Enabled([in] VARIANT_BOOL Value);
+        [id(0x00000004), propget, helpstring("Returns the hWnd of the registered edit control."), helpcontext(0x00000049)]
+        HRESULT hWndEdit([out, retval] long* hWnd);
+        [id(0x00000006), helpstring("Bring up the Correction Dialog for this Dictation-Edit object."), helpcontext(0x000000ec)]
+        HRESULT CorrectionDialog([in, optional] VARIANT Reason);
+        [id(0x00000007), propget, helpstring("Returns/sets whether to show the NaturallySpeaking Results box."), helpcontext(0x000000f9)]
+        HRESULT ShowResultsBox([out, retval] VARIANT_BOOL* Show);
+        [id(0x00000007), propput, helpstring("Returns/sets whether to show the NaturallySpeaking Results box."), helpcontext(0x000000f9)]
+        HRESULT ShowResultsBox([in] VARIANT_BOOL Show);
+        [id(0x00000008), helpstring("Sets the screen position of the NaturallySpeaking Results box."), helpcontext(0x000000f8)]
+        HRESULT SetResultsBoxPos(
+                        [in] long Left, 
+                        [in] long Top, 
+                        [in] long Right, 
+                        [in] long Bottom);
+        [id(0x00000009), helpstring("Executes the NaturallySpeaking Find New Words feature."), helpcontext(0x000000ee)]
+        HRESULT FindNewWords([in, optional] VARIANT FileName);
+        [id(0x0000000a), helpstring("Initiates recorded-speech playback on the specified text range."), helpcontext(0x000000ef)]
+        HRESULT Playback(
+                        [in] long Start, 
+                        [in] long Length);
+        [id(0x0000000b), helpstring("Terminates any currently playing recorded-speech playback."), helpcontext(0x000000f5)]
+        HRESULT PlaybackStop();
+        [id(0x0000000c), helpstring("Speeds up currently playing recorded-speech playback."), helpcontext(0x000000f0)]
+        HRESULT PlaybackAccel();
+        [id(0x0000000d), helpstring("Slows down currently playing recorded-speech playback."), helpcontext(0x000000f2)]
+        HRESULT PlaybackBrake();
+        [id(0x000003e8), propget, hidden, helpstring("Returns underlying IVoiceDictation interface pointer.")]
+        HRESULT IVoiceDictation([out, retval] IUnknown** ppUnk);
+        [id(0x000003e9), propget, hidden, helpstring("Returns the recognition results associated with the last CommandRecognize.")]
+        HRESULT LastResults([out, retval] IUnknown** ppUnk);
+    };
+
+    [
+      odl,
+      uuid(247704F0-DAE5-11D2-8EA1-0060080D71B2),
+      helpstring("IDgnDictEditAuto2 Interface"),
+      helpcontext(0x00000045),
+      hidden,
+      dual,
+      nonextensible,
+      oleautomation
+    ]
+    interface IDgnDictEditAuto2 : IDgnDictEditAuto {
+        [id(0x00000064), propget, helpstring("Returns TRUE if transcribing.")]
+        HRESULT Transcribing([out, retval] VARIANT_BOOL* Value);
+        [id(0x00000065), helpstring("Transcribe from wav file.")]
+        HRESULT TranscribeFile([in] BSTR File);
+        [id(0x00000066), helpstring("Stop Transcribing.")]
+        HRESULT TranscribeStop();
+        [id(0x00000067), propget, helpstring("Returns/sets handle of top-level window associated with dictation.")]
+        HRESULT hWndActivate([out, retval] long* hWnd);
+        [id(0x00000067), propput, helpstring("Returns/sets handle of top-level window associated with dictation.")]
+        HRESULT hWndActivate([in] long hWnd);
+    };
+
+    [
+      odl,
+      uuid(BBB2EEF0-F0EB-11D2-99EB-00105AC97946)
+    ]
+    interface IDgnDictEditA : IUnknown {
+        HRESULT _stdcall Register(
+                        [in] wireHWND hWndEdit, 
+                        [in] unsigned long dwFlags, 
+                        [in] GUID* riid, 
+                        [in] IUnknown* pNotifySinkIUnknown);
+        HRESULT _stdcall UnRegister();
+        HRESULT _stdcall EnabledGet([in, out] long* pbValue);
+        HRESULT _stdcall EnabledSet([in] long bValue);
+        HRESULT _stdcall HwndEditGet([in, out] wireHWND* phWnd);
+        HRESULT _stdcall CorrectionDialog([in] unsigned long dwReason);
+        HRESULT _stdcall ShowResultsBoxGet([in, out] long* pbShow);
+        HRESULT _stdcall ShowResultsBoxSet([in] long bShow);
+        HRESULT _stdcall ResultsBoxPosSet(
+                        [in] long lLeft, 
+                        [in] long lTop, 
+                        [in] long lRight, 
+                        [in] long lBottom);
+        HRESULT _stdcall FindNewWords([in] LPSTR pszFilename);
+        HRESULT _stdcall Playback(
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwLength);
+        HRESULT _stdcall PlaybackStop();
+        HRESULT _stdcall PlaybackAccel();
+        HRESULT _stdcall PlaybackBrake();
+        HRESULT _stdcall LastResultsGet([in, out] IUnknown** ppUnk);
+        HRESULT _stdcall TranscribingGet([in, out] long* pbTranscribing);
+        HRESULT _stdcall TranscribeFile([in] LPSTR pszFile);
+        HRESULT _stdcall TranscribeStop();
+        HRESULT _stdcall HwndActivateGet([in, out] wireHWND* phWnd);
+        HRESULT _stdcall HwndActivateSet([in] wireHWND hWnd);
+    };
+
+    [
+      odl,
+      uuid(4E28F4B0-D705-11D2-AE48-00609720295E)
+    ]
+    interface IDgnDictEditW : IUnknown {
+        HRESULT _stdcall Register(
+                        [in] wireHWND hWndEdit, 
+                        [in] unsigned long dwFlags, 
+                        [in] GUID* riid, 
+                        [in] IUnknown* pNotifySinkIUnknown);
+        HRESULT _stdcall UnRegister();
+        HRESULT _stdcall EnabledGet([in, out] long* pbValue);
+        HRESULT _stdcall EnabledSet([in] long bValue);
+        HRESULT _stdcall HwndEditGet([in, out] wireHWND* phWnd);
+        HRESULT _stdcall CorrectionDialog([in] unsigned long dwReason);
+        HRESULT _stdcall ShowResultsBoxGet([in, out] long* pbShow);
+        HRESULT _stdcall ShowResultsBoxSet([in] long bShow);
+        HRESULT _stdcall ResultsBoxPosSet(
+                        [in] long lLeft, 
+                        [in] long lTop, 
+                        [in] long lRight, 
+                        [in] long lBottom);
+        HRESULT _stdcall FindNewWords([in] LPWSTR pszFilename);
+        HRESULT _stdcall Playback(
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwLength);
+        HRESULT _stdcall PlaybackStop();
+        HRESULT _stdcall PlaybackAccel();
+        HRESULT _stdcall PlaybackBrake();
+        HRESULT _stdcall LastResultsGet([in, out] IUnknown** ppUnk);
+        HRESULT _stdcall TranscribingGet([in, out] long* pbTranscribing);
+        HRESULT _stdcall TranscribeFile([in] LPWSTR pszFile);
+        HRESULT _stdcall TranscribeStop();
+        HRESULT _stdcall HwndActivateGet([in, out] wireHWND* phWnd);
+        HRESULT _stdcall HwndActivateSet([in] wireHWND hWnd);
+    };
+
+    [
+      odl,
+      uuid(1BFF04B0-EB76-11D2-A6B0-00105AC979CC)
+    ]
+    interface IDgnDictEditNotifySink : IUnknown {
+        HRESULT _stdcall TextChanged();
+        HRESULT _stdcall TextSelChanged();
+        HRESULT _stdcall PlaybackBeginning();
+        HRESULT _stdcall PlaybackStopped();
+        HRESULT _stdcall PlaybackNowPlaying(
+                        [in] unsigned long dwNumInfos, 
+                        [in] DGNNOWPLAYINGINFO* pNowPlayingInfo);
+        HRESULT _stdcall PlaybackNoSpeech(
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwNumChars);
+        HRESULT _stdcall TranscriptionStopped();
+        HRESULT _stdcall RecognitionStarting();
+    };
+
+    typedef [public]
+    __MIDL___MIDL_itf_dgnvcmd_0000_0001 DGNNOWPLAYINGINFO;
+
+    typedef struct tag__MIDL___MIDL_itf_dgnvcmd_0000_0001 {
+                
+unsigned long dwStart;
+                
+unsigned long dwNumChars;
+                
+uint64 qDuration;
+    } __MIDL___MIDL_itf_dgnvcmd_0000_0001;
+
+    [
+      uuid(4E3060D0-4FDE-11D1-A491-00A024A3A678),
+      helpstring("DgnDictEdit Event interface"),
+      hidden
+    ]
+    dispinterface _DDgnDictEditEvents {
+        properties:
+        methods:
+            [id(0x00000001), helpstring("Occurs when text is being dictated into the associated edit control."), helpcontext(0x00000061)]
+            void TextChanged();
+            [id(0x00000002), helpstring("Occurs when the current selection in the associated edit control is being changed by voice."), helpcontext(0x00000062)]
+            void TextSelChanged();
+            [id(0x00000003), helpstring("Occurs when a recorded-speech playback starts."), helpcontext(0x000000f1)]
+            void PlaybackBeginning();
+            [id(0x00000004), helpstring("Occurs when a recorded-speech playback stops."), helpcontext(0x000000f6)]
+            void PlaybackStopped();
+            [id(0x00000005), helpstring("Occurs while an utterance is being played back."), helpcontext(0x000000f4)]
+            void PlaybackNowPlaying([in, out] NowPlayingInfos** PlayInfos);
+            [id(0x00000006), helpstring("Occurs when recorded-speech playback reaches a section with no speech."), helpcontext(0x000000f3)]
+            void PlaybackNoSpeech(
+                            [in, out] long* Start, 
+                            [in, out] long* NumChars);
+            [id(0x00000007), helpstring("Occurs when transcription stops.")]
+            void TranscriptionStopped();
+            [id(0x00000008), helpstring("Occurs when a recognition starts.")]
+            void RecognitionStarting();
+    };
+
+    [
+      odl,
+      uuid(18686430-AFD3-11D1-A4B6-00A024A3A678),
+      helpstring("NowPlayingInfo collection."),
+      helpcontext(0x00000096),
+      dual,
+      oleautomation
+    ]
+    interface NowPlayingInfos : IDispatch {
+        [id(00000000), propget, helpstring("Given an integer index, returns one of the NowPlayingInfo objects in the collection."), helpcontext(0x0000010a)]
+        HRESULT Item(
+                        [in] long Index, 
+                        [out, retval] NowPlayingInfo** NPI);
+        [id(0x00000001), propget, helpstring("Returns number of NowPlayingInfo objects in collection."), helpcontext(0x00000109)]
+        HRESULT Count([out, retval] long* Value);
+        [id(0xfffffffc), propget, restricted]
+        HRESULT _NewEnum([out, retval] IUnknown** ppUnk);
+    };
+
+    [
+      odl,
+      uuid(18686431-AFD3-11D1-A4B6-00A024A3A678),
+      helpstring("NowPlayingInfo object."),
+      helpcontext(0x00000092),
+      dual,
+      oleautomation
+    ]
+    interface NowPlayingInfo : IDispatch {
+        [id(0x00000001), propget, helpstring("Returns Start offset of the word or phrase."), helpcontext(0x00000093)]
+        HRESULT Start([out, retval] long* Start);
+        [id(0x00000002), propget, helpstring("Returns number of characters in the word or phrase."), helpcontext(0x00000094)]
+        HRESULT NumChars([out, retval] long* NumChars);
+        [id(0x00000003), propget, helpstring("Returns duration in milliseconds for word or phrase."), helpcontext(0x00000095)]
+        HRESULT Duration([out, retval] long* Duration);
+    };
+
+    [
+      uuid(E4BF99E2-5C60-11D1-A498-00A024A3A678),
+      helpstring("Dragon Dictation Edit Control"),
+      helpcontext(0x00000045)
+    ]
+    coclass DgnDictEdit {
+        [default] interface IDgnDictEditAuto2;
+        interface IDgnDictEditAuto;
+        interface IDgnDictEditA;
+        interface IDgnDictEditW;
+        [default, source] dispinterface _DDgnDictEditEvents;
+    };
+
+    [
+      odl,
+      uuid(A0E850E2-91DB-11D1-96DC-0080C72FD13C),
+      helpstring("IDgnDictCustomAuto Interface"),
+      helpcontext(0x000000ad),
+      hidden,
+      dual,
+      nonextensible,
+      oleautomation
+    ]
+    interface IDgnDictCustomAuto : IDispatch {
+        [id(0x00000001), helpstring("Registers client with DgnDictCustom control."), helpcontext(0x00000106)]
+        HRESULT Register([in, optional] VARIANT Flags);
+        [id(0x00000014), helpstring("Detaches client from DgnDictCustom control."), helpcontext(0x000001bc)]
+        HRESULT UnRegister();
+        [id(0x00000002), helpstring("Locks the internal DgnDictCustom buffer."), helpcontext(0x00000066)]
+        HRESULT Lock([in, optional] VARIANT Reserved);
+        [id(0x00000003), helpstring("Unlocks the internal DgnDictCustom buffer."), helpcontext(0x0000006d)]
+        HRESULT UnLock();
+        [id(0x00000004), propget, helpstring("Returns/sets handle of top-level window associated with dictation."), helpcontext(0x00000243)]
+        HRESULT hWndActivate([out, retval] long* hWnd);
+        [id(0x00000004), propput, helpstring("Returns/sets handle of top-level window associated with dictation."), helpcontext(0x00000243)]
+        HRESULT hWndActivate([in] long hWnd);
+        [id(0x00000005), propget, helpstring("Activate/Deactivate dictation."), helpcontext(0x000000fb)]
+        HRESULT Active([out, retval] VARIANT_BOOL* Value);
+        [id(0x00000005), propput, helpstring("Activate/Deactivate dictation."), helpcontext(0x000000fb)]
+        HRESULT Active([in] VARIANT_BOOL Value);
+        [id(0x00000006), helpstring("Defines the visible range of text in the document."), helpcontext(0x0000006e)]
+        HRESULT VisibleTextSet(
+                        [in] long Start, 
+                        [in] long Length);
+        [id(0x00000007), helpstring("Sets the text in the specified range."), helpcontext(0x0000006c)]
+        HRESULT TextSet(
+                        [in] BSTR Text, 
+                        [in, optional] VARIANT Start, 
+                        [in, optional] VARIANT Length);
+        [id(0x00000008), helpstring("Returns the text in the specified range."), helpcontext(0x00000069)]
+        HRESULT TextGet(
+                        [in, out] BSTR* Text, 
+                        [in, optional] VARIANT Start, 
+                        [in, optional] VARIANT Length);
+        [id(0x00000009), helpstring("Specifies the current selection."), helpcontext(0x0000006b)]
+        HRESULT TextSelSet(
+                        [in] long Start, 
+                        [in] long Length);
+        [id(0x0000000a), helpstring("Retrieves the range of the current selection."), helpcontext(0x0000006a)]
+        HRESULT TextSelGet(
+                        [in, out] long* Start, 
+                        [in, out] long* Length);
+        [id(0x0000000b), helpstring("Bring up the Correction Dialog for this DgnDictCustom."), helpcontext(0x000000fc)]
+        HRESULT CorrectionDialog([in, optional] VARIANT Reason);
+        [id(0x0000000c), propget, helpstring("Returns/sets whether to show the NaturallySpeaking Results box."), helpcontext(0x00000108)]
+        HRESULT ShowResultsBox([out, retval] VARIANT_BOOL* Show);
+        [id(0x0000000c), propput, helpstring("Returns/sets whether to show the NaturallySpeaking Results box."), helpcontext(0x00000108)]
+        HRESULT ShowResultsBox([in] VARIANT_BOOL Show);
+        [id(0x0000000d), helpstring("Sets the screen position of the NaturallySpeaking Results box."), helpcontext(0x00000107)]
+        HRESULT SetResultsBoxPos(
+                        [in] long Left, 
+                        [in] long Top, 
+                        [in] long Right, 
+                        [in] long Bottom);
+        [id(0x0000000e), helpstring("Executes the NaturallySpeaking Find New Words feature."), helpcontext(0x000000fd)]
+        HRESULT FindNewWords([in, optional] VARIANT FileName);
+        [id(0x0000000f), helpstring("Initiates recorded-speech playback on the specified text range."), helpcontext(0x000000fe)]
+        HRESULT Playback(
+                        [in] long Start, 
+                        [in] long Length);
+        [id(0x00000010), helpstring("Terminates any currently playing recorded-speech playback."), helpcontext(0x00000104)]
+        HRESULT PlaybackStop();
+        [id(0x00000011), helpstring("Speeds up currently playing recorded-speech playback."), helpcontext(0x000000ff)]
+        HRESULT PlaybackAccel();
+        [id(0x00000012), helpstring("Slows down currently playing recorded-speech playback."), helpcontext(0x00000101)]
+        HRESULT PlaybackBrake();
+        [id(0x00000013), propget, helpstring("Returns/sets the new-line string."), helpcontext(0x00000113)]
+        HRESULT LineTerminator([out, retval] BSTR* String);
+        [id(0x00000013), propput, helpstring("Returns/sets the new-line string."), helpcontext(0x00000113)]
+        HRESULT LineTerminator([in] BSTR String);
+        [id(0x000003e8), propget, hidden, helpstring("Returns underlying IVoiceDictation interface pointer.")]
+        HRESULT IVoiceDictation([out, retval] IUnknown** ppUnk);
+        [id(0x000003e9), propget, hidden, helpstring("Returns the recognition results associated with the last CommandRecognize.")]
+        HRESULT LastResults([out, retval] IUnknown** ppUnk);
+    };
+
+    [
+      odl,
+      uuid(A0ED4821-DAFF-11D2-8EA1-0060080D71B2),
+      helpstring("IDgnDictCustomAuto2 Interface"),
+      helpcontext(0x000000ad),
+      hidden,
+      dual,
+      nonextensible,
+      oleautomation
+    ]
+    interface IDgnDictCustomAuto2 : IDgnDictCustomAuto {
+        [id(0x00000064), propget, helpstring("Returns TRUE if transcribing.")]
+        HRESULT Transcribing([out, retval] VARIANT_BOOL* Value);
+        [id(0x00000065), helpstring("Transcribe from wav file.")]
+        HRESULT TranscribeFile([in] BSTR File);
+        [id(0x00000066), helpstring("Stop Transcribing.")]
+        HRESULT TranscribeStop();
+    };
+
+    [
+      odl,
+      uuid(60AF4690-F371-11D2-A6B3-00105AC979CC)
+    ]
+    interface IDgnDictCustomA : IUnknown {
+        HRESULT _stdcall Register(
+                        [in] unsigned long dwFlags, 
+                        [in] GUID* riid, 
+                        [in] IUnknown* pNotifySinkIUnknown);
+        HRESULT _stdcall UnRegister();
+        HRESULT _stdcall Lock([in] unsigned long dwReserved);
+        HRESULT _stdcall UnLock();
+        HRESULT _stdcall HwndActivateGet([in, out] wireHWND* phWnd);
+        HRESULT _stdcall HwndActivateSet([in] wireHWND hWnd);
+        HRESULT _stdcall ActiveGet([in, out] long* pbActive);
+        HRESULT _stdcall ActiveSet([in] long bActive);
+        HRESULT _stdcall VisibleTextSet(
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwLength);
+        HRESULT _stdcall TextSet(
+                        [in] LPSTR pszText, 
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwLength);
+        HRESULT _stdcall TextGet(
+                        [in, out] LPSTR* ppszText, 
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwLength);
+        HRESULT _stdcall TextSelSet(
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwLength);
+        HRESULT _stdcall TextSelGet(
+                        [in, out] unsigned long* pdwStart, 
+                        [in, out] unsigned long* pdwLength);
+        HRESULT _stdcall TranscribingGet([in, out] long* pbTranscribing);
+        HRESULT _stdcall TranscribeFile([in] LPSTR pszFilename);
+        HRESULT _stdcall TranscribeStop();
+        HRESULT _stdcall CorrectionDialog([in] unsigned long dwReason);
+        HRESULT _stdcall ShowResultsBoxGet([in, out] long* pbShow);
+        HRESULT _stdcall ShowResultsBoxSet([in] long bShow);
+        HRESULT _stdcall ResultsBoxPosSet(
+                        [in] long lLeft, 
+                        [in] long lTop, 
+                        [in] long lRight, 
+                        [in] long lBottom);
+        HRESULT _stdcall FindNewWords([in] LPSTR pszFilename);
+        HRESULT _stdcall Playback(
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwLength);
+        HRESULT _stdcall PlaybackStop();
+        HRESULT _stdcall PlaybackAccel();
+        HRESULT _stdcall PlaybackBrake();
+        HRESULT _stdcall LineTerminatorGet([in, out] LPSTR* ppszSeparator);
+        HRESULT _stdcall LineTerminatorSet([in] LPSTR pszSeparator);
+        HRESULT _stdcall LastResultsGet([in, out] IUnknown** ppUnk);
+    };
+
+    [
+      odl,
+      uuid(60AF4691-F371-11D2-A6B3-00105AC979CC)
+    ]
+    interface IDgnDictCustomW : IUnknown {
+        HRESULT _stdcall Register(
+                        [in] unsigned long dwFlags, 
+                        [in] GUID* riid, 
+                        [in] IUnknown* pNotifySinkIUnknown);
+        HRESULT _stdcall UnRegister();
+        HRESULT _stdcall Lock([in] unsigned long dwReserved);
+        HRESULT _stdcall UnLock();
+        HRESULT _stdcall HwndActivateGet([in, out] wireHWND* phWnd);
+        HRESULT _stdcall HwndActivateSet([in] wireHWND hWnd);
+        HRESULT _stdcall ActiveGet([in, out] long* pbActive);
+        HRESULT _stdcall ActiveSet([in] long bActive);
+        HRESULT _stdcall VisibleTextSet(
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwLength);
+        HRESULT _stdcall TextSet(
+                        [in] LPWSTR pszText, 
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwLength);
+        HRESULT _stdcall TextGet(
+                        [in, out] LPWSTR* ppszText, 
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwLength);
+        HRESULT _stdcall TextSelSet(
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwLength);
+        HRESULT _stdcall TextSelGet(
+                        [in, out] unsigned long* pdwStart, 
+                        [in, out] unsigned long* pdwLength);
+        HRESULT _stdcall TranscribingGet([in, out] long* pbTranscribing);
+        HRESULT _stdcall TranscribeFile([in] LPWSTR pszFilename);
+        HRESULT _stdcall TranscribeStop();
+        HRESULT _stdcall CorrectionDialog([in] unsigned long dwReason);
+        HRESULT _stdcall ShowResultsBoxGet([in, out] long* pbShow);
+        HRESULT _stdcall ShowResultsBoxSet([in] long bShow);
+        HRESULT _stdcall ResultsBoxPosSet(
+                        [in] long lLeft, 
+                        [in] long lTop, 
+                        [in] long lRight, 
+                        [in] long lBottom);
+        HRESULT _stdcall FindNewWords([in] LPWSTR pszFilename);
+        HRESULT _stdcall Playback(
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwLength);
+        HRESULT _stdcall PlaybackStop();
+        HRESULT _stdcall PlaybackAccel();
+        HRESULT _stdcall PlaybackBrake();
+        HRESULT _stdcall LineTerminatorGet([in, out] LPWSTR* ppszSeparator);
+        HRESULT _stdcall LineTerminatorSet([in] LPWSTR pszSeparator);
+        HRESULT _stdcall LastResultsGet([in, out] IUnknown** ppUnk);
+    };
+
+    [
+      uuid(D51E41C0-91F5-11D1-96DC-0080C72FD13C),
+      helpstring("DgnDictCustom Event interface"),
+      hidden
+    ]
+    dispinterface _DDgnDictCustomEvents {
+        properties:
+        methods:
+            [id(0x00000001), helpstring("Occurs when the dictation object must synchronize with the client's contents."), helpcontext(0x00000064)]
+            void GetChanges(
+                            [in, out] VARIANT_BOOL* HaveChanges, 
+                            [in, out] long* Start, 
+                            [in, out] long* NumChars, 
+                            [in, out] BSTR* Text, 
+                            [in, out] long* SelStart, 
+                            [in, out] long* SelNumChars, 
+                            [in, out] long* VisibleStart, 
+                            [in, out] long* VisibleNumChars);
+            [id(0x00000002), helpstring("Occurs when the dictation object's contents have changed, so the client must resynchronize."), helpcontext(0x00000067)]
+            void MakeChanges(
+                            [in, out] long* Start, 
+                            [in, out] long* NumChars, 
+                            [in, out] BSTR* Text, 
+                            [in, out] long* SelStart, 
+                            [in, out] long* SelNumChars);
+            [id(0x00000003), helpstring("Occurs when a recorded-speech playback starts."), helpcontext(0x00000100)]
+            void PlaybackBeginning();
+            [id(0x00000004), helpstring("Occurs when a recorded-speech playback stops."), helpcontext(0x00000105)]
+            void PlaybackStopped();
+            [id(0x00000005), helpstring("Occurs while an utterance is being played back."), helpcontext(0x00000103)]
+            void PlaybackNowPlaying([in, out] NowPlayingInfos** PlayInfos);
+            [id(0x00000006), helpstring("Occurs when recorded-speech playback reaches a section with no speech."), helpcontext(0x00000102)]
+            void PlaybackNoSpeech(
+                            [in, out] long* Start, 
+                            [in, out] long* NumChars);
+            [id(0x00000007), helpstring("Occurs when transcription stops.")]
+            void TranscriptionStopped();
+    };
+
+    [
+      odl,
+      uuid(60AF4692-F371-11D2-A6B3-00105AC979CC)
+    ]
+    interface IDgnDictCustomNotifySinkA : IUnknown {
+        HRESULT _stdcall RecognitionStarting();
+        HRESULT _stdcall MakeChanges(
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwNumChars, 
+                        [in] LPSTR pszText, 
+                        [in] unsigned long dwSelStart, 
+                        [in] unsigned long dwSelNumChars);
+        HRESULT _stdcall PlaybackBeginning();
+        HRESULT _stdcall PlaybackStopped();
+        HRESULT _stdcall PlaybackNowPlaying(
+                        [in] unsigned long dwNumInfos, 
+                        [in] DGNNOWPLAYINGINFO* pNowPlayingInfo);
+        HRESULT _stdcall PlaybackNoSpeech(
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwNumChars);
+        HRESULT _stdcall TranscriptionStopped();
+    };
+
+    [
+      odl,
+      uuid(60AF4693-F371-11D2-A6B3-00105AC979CC)
+    ]
+    interface IDgnDictCustomNotifySinkW : IUnknown {
+        HRESULT _stdcall RecognitionStarting();
+        HRESULT _stdcall MakeChanges(
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwNumChars, 
+                        [in] LPWSTR pszText, 
+                        [in] unsigned long dwSelStart, 
+                        [in] unsigned long dwSelNumChars);
+        HRESULT _stdcall PlaybackBeginning();
+        HRESULT _stdcall PlaybackStopped();
+        HRESULT _stdcall PlaybackNowPlaying(
+                        [in] unsigned long dwNumInfos, 
+                        [in] DGNNOWPLAYINGINFO* pNowPlayingInfo);
+        HRESULT _stdcall PlaybackNoSpeech(
+                        [in] unsigned long dwStart, 
+                        [in] unsigned long dwNumChars);
+        HRESULT _stdcall TranscriptionStopped();
+    };
+
+    [
+      uuid(A0E850E3-91DB-11D1-96DC-0080C72FD13C),
+      helpstring("Dragon Dictation Custom Control"),
+      helpcontext(0x000000ad)
+    ]
+    coclass DgnDictCustom {
+        [default] interface IDgnDictCustomAuto2;
+        interface IDgnDictCustomAuto;
+        interface IDgnDictCustomA;
+        interface IDgnDictCustomW;
+        [default, source] dispinterface _DDgnDictCustomEvents;
+    };
+};

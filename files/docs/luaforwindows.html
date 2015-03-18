@@ -1,0 +1,1409 @@
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<base target="_top">
+<style type="text/css">
+  
+
+
+/* default css */
+
+table {
+  font-size: 1em;
+  line-height: inherit;
+  border-collapse: collapse;
+}
+
+
+tr {
+  
+  text-align: left;
+  
+}
+
+
+div, address, ol, ul, li, option, select {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+p {
+  margin: 0px;
+}
+
+
+pre {
+  font-family: Courier New;
+  white-space: pre-wrap;
+  margin:0;
+}
+
+body {
+  margin: 6px;
+  padding: 0px;
+  font-family: Verdana, sans-serif;
+  font-size: 10pt;
+  background-color: #ffffff;
+  color: #000;
+}
+
+
+img {
+  -moz-force-broken-image-icon: 1;
+}
+
+@media screen {
+  html.pageview {
+    background-color: #f3f3f3 !important;
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+  
+
+  body {
+    min-height: 1100px;
+    
+    counter-reset: __goog_page__;
+  }
+  
+  * html body {
+    height: 1100px;
+  }
+  /* Prevent repaint errors when scrolling in Safari. This "Star-7" css hack
+     targets Safari 3.1, but not WebKit nightlies and presumably Safari 4.
+     That's OK because this bug is fixed in WebKit nightlies/Safari 4 :-). */
+  html*#wys_frame::before {
+    content: '\A0';
+    position: fixed;
+    overflow: hidden;
+    width: 0;
+    height: 0;
+    top: 0;
+    left: 0;
+  }
+  
+  .pageview body {
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 2px solid #bbb;
+    border-bottom: 2px solid #bbb;
+    width: 648px !important;
+    margin: 15px auto 25px;
+    padding: 40px 50px;
+  }
+  /* IE6 */
+  * html {
+    overflow-y: scroll;
+  }
+  * html.pageview body {
+    overflow-x: auto;
+  }
+  
+
+  
+    
+    
+    .writely-callout-data {
+      display: inline-block;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      margin-left: -1px;
+    }
+    
+
+    .writely-footnote-marker {
+      background-image: url('MISSING');
+      background-color: transparent;
+      background-repeat: no-repeat;
+      width: 7px;
+      overflow: hidden;
+      height: 16px;
+      vertical-align: top;
+
+      
+      -moz-user-select: none;
+    }
+    .editor .writely-footnote-marker {
+      cursor: move;
+    }
+    .writely-footnote-marker-highlight {
+      background-position: -15px 0;
+      -moz-user-select: text;
+    }
+    .writely-footnote-hide-selection ::-moz-selection, .writely-footnote-hide-selection::-moz-selection {
+      background: transparent;
+    }
+    .writely-footnote-hide-selection ::selection, .writely-footnote-hide-selection::selection {
+      background: transparent;
+    }
+    .writely-footnote-hide-selection {
+      cursor: move;
+    }
+
+    /* Comments */
+    .writely-comment-yellow {
+      background-color: #ffffd7;
+    }
+    .writely-comment-orange {
+      background-color: #ffe3c0;
+    }
+    .writely-comment-pink {
+      background-color: #ffd7ff;
+    }
+    .writely-comment-green {
+      background-color: #d7ffd7;
+    }
+    .writely-comment-blue {
+      background-color: #d7ffff;
+    }
+    .writely-comment-purple {
+      background-color: #eed7ff;
+    }
+
+  
+
+
+  
+  .br_fix span+br:not(:-moz-last-node) {
+    
+    position:relative;
+    
+    left: -1ex
+    
+  }
+
+  
+  #cb-p-tgt {
+    font-size: 8pt;
+    padding: .4em;
+    background-color: #ddd;
+    color: #333;
+  }
+  #cb-p-tgt-can {
+    text-decoration: underline;
+    color: #36c;
+    font-weight: bold;
+    margin-left: 2em;
+  }
+  #cb-p-tgt .spin {
+    width: 16px;
+    height: 16px;
+    background: url(//ssl.gstatic.com/docs/clipboard/spin_16o.gif) no-repeat;
+  }
+}
+
+h6 { font-size: 8pt }
+h5 { font-size: 8pt }
+h4 { font-size: 10pt }
+h3 { font-size: 12pt }
+h2 { font-size: 14pt }
+h1 { font-size: 18pt }
+
+blockquote {padding: 10px; border: 1px #DDD dashed }
+
+.webkit-indent-blockquote { border: none; }
+
+a img {border: 0}
+
+.pb {
+  border-width: 0;
+  page-break-after: always;
+  /* We don't want this to be resizeable, so enforce a width and height
+     using !important */
+  height: 1px !important;
+  width: 100% !important;
+}
+
+.editor .pb {
+  border-top: 1px dashed #C0C0C0;
+  border-bottom: 1px dashed #C0C0C0;
+}
+
+div.google_header, div.google_footer {
+  position: relative;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+
+/* Table of contents */
+.editor div.writely-toc {
+  background-color: #f3f3f3;
+  border: 1px solid #ccc;
+}
+.writely-toc > ol {
+  padding-left: 3em;
+  font-weight: bold;
+}
+ol.writely-toc-subheading {
+  padding-left: 1em;
+  font-weight: normal;
+}
+/* IE6 only */
+* html writely-toc ol {
+  list-style-position: inside;
+}
+.writely-toc-none {
+  list-style-type: none;
+}
+.writely-toc-decimal {
+  list-style-type: decimal;
+}
+.writely-toc-upper-alpha {
+  list-style-type: upper-alpha;
+}
+.writely-toc-lower-alpha {
+  list-style-type: lower-alpha;
+}
+.writely-toc-upper-roman {
+  list-style-type: upper-roman;
+}
+.writely-toc-lower-roman {
+  list-style-type: lower-roman;
+}
+.writely-toc-disc {
+  list-style-type: disc;
+}
+
+/* Ordered lists converted to numbered lists can preserve ordered types, and
+   vice versa. This is confusing, so disallow it */
+ul[type="i"], ul[type="I"], ul[type="1"], ul[type="a"], ul[type="A"] {
+  list-style-type: disc;
+}
+
+ol[type="disc"], ol[type="circle"], ol[type="square"] {
+  list-style-type: decimal;
+}
+
+/* end default css */
+
+
+  /* default print css */
+  @media print {
+    body {
+      padding: 0;
+      margin: 0;
+    }
+
+    div.google_header, div.google_footer {
+      display: block;
+      min-height: 0;
+      border: none;
+    }
+
+    div.google_header {
+      flow: static(header);
+    }
+
+    /* used to insert page numbers */
+    div.google_header::before, div.google_footer::before {
+      position: absolute;
+      top: 0;
+    }
+
+    div.google_footer {
+      flow: static(footer);
+    }
+
+    /* always consider this element at the start of the doc */
+    div#google_footer {
+      flow: static(footer, start);
+    }
+
+    span.google_pagenumber {
+      content: counter(page);
+    }
+
+    span.google_pagecount {
+      content: counter(pages);
+    }
+
+    .endnotes {
+      page: endnote;
+    }
+
+    /* MLA specifies that endnotes title should be 1" margin from the top of the page. */
+    @page endnote {
+      margin-top: 1in;
+    }
+
+    callout.google_footnote {
+      
+      display: prince-footnote;
+      footnote-style-position: inside;
+      /* These styles keep the footnote from taking on the style of the text
+         surrounding the footnote marker. They can be overridden in the
+         document CSS. */
+      color: #000;
+      font-family: Verdana;
+      font-size: 10.0pt;
+      font-weight: normal;
+    }
+
+    /* Table of contents */
+    #WritelyTableOfContents a::after {
+      content: leader('.') target-counter(attr(href), page);
+    }
+
+    #WritelyTableOfContents a {
+      text-decoration: none;
+      color: black;
+    }
+
+    /* Comments */
+    .writely-comment-yellow {
+      background-color: #ffffd7;
+    }
+    .writely-comment-orange {
+      background-color: #ffe3c0;
+    }
+    .writely-comment-pink {
+      background-color: #ffd7ff;
+    }
+    .writely-comment-green {
+      background-color: #d7ffd7;
+    }
+    .writely-comment-blue {
+      background-color: #d7ffff;
+    }
+    .writely-comment-purple {
+      background-color: #eed7ff;
+    }
+  }
+
+  @page {
+    @top {
+      content: flow(header);
+    }
+    @bottom {
+      content: flow(footer);
+    }
+    @footnotes {
+      border-top: solid black thin;
+      padding-top: 8pt;
+    }
+  }
+  /* end default print css */
+
+
+/* custom css */
+
+
+/* end custom css */
+
+/* ui edited css */
+
+body {
+  font-family: Verdana;
+  
+  font-size: 10.0pt;
+  line-height: normal;
+  background-color: #ffffff;
+}
+/* end ui edited css */
+
+
+/* editor CSS */
+.editor a:visited {color: #551A8B}
+.editor table.zeroBorder {border: 1px dotted gray}
+.editor table.zeroBorder td {border: 1px dotted gray}
+.editor table.zeroBorder th {border: 1px dotted gray}
+
+
+.editor div.google_header, .editor div.google_footer {
+  border: 2px #DDDDDD dashed;
+  position: static;
+  width: 100%;
+  min-height: 2em;
+}
+
+.editor .misspell {background-color: yellow}
+
+.editor .writely-comment {
+  font-size: 9pt;
+  line-height: 1.4;
+  padding: 1px;
+  border: 1px dashed #C0C0C0
+}
+
+
+/* end editor CSS */
+
+</style>
+
+  
+  <title>luaforwindows</title>
+
+</head>
+
+<body 
+    
+    >
+    
+    
+    
+<div class=Section1 id=cxsx0>
+  <a id=top name=top></a><br id=eov41>
+  <hr id=ve-l0 noshade style=HEIGHT:25px;WIDTH:100%>
+  <h1 id=d7pr0 style=MARGIN-LEFT:40px>
+    <span class=GramE id=cxsx2><font face=verdana>Lua for Windows – A Short Introduction.</font></span>
+  </h1>
+  <p class=MsoBodyText id=cxsx6 style=MARGIN-LEFT:120px>
+    <font id=anho0 size=3><font face=verdana><a href=#part1 id=vsa4 target=_self title="1. What is Lua?">1. What is Lua?</a><br id=cxsx8>
+    <a href=#part2 id=ay8t target=_self title="2. What is Lua for Windows?">2. What is Lua for Windows?</a><br id=cxsx9>
+    <a href=#part3 id=hqas target=_self title="3. What comes with Lua for Windows?">3. What comes with Lua for Windows?</a><br id=cxsx10>
+    <a href=#part4 id=mp-g target=_self title="4. Using Lua for Windows.">4. Using Lua for Windows.</a><br id=cxsx11>
+    &nbsp;&nbsp; <a href=#part41 id=ms.r target=_self title="4.1 Running Lua Programs.">4.1 Running Lua Programs.</a><br id=cxsx12>
+    &nbsp;&nbsp; <a href=#part42 id=kkrg target=_self title="4.2 Editing Lua Programs.">4.2 Editing Lua Programs.</a><br id=cxsx13>
+    &nbsp;&nbsp; <a href=#part43 id=o253 target=_self title="4.3 Debugging Lua Programs.">4.3 Debugging Lua Programs.</a><br id=cxsx14>
+    &nbsp;&nbsp; <a href=#part44 id=hm6y target=_self title="4.4 Using Lua without command console.">4.4 Using Lua without command console.</a><br id=cxsx15>
+    <a href=#part5 id=p6nr target=_self title="5. Concise Overview of Lua Programming Language.">5. Concise Overview of Lua Programming Language.</a><br id=cxsx16>
+    <a href=#part6 id=yl5- target=_self title="6. Libraries included with Lua for Windows.">6. Libraries included with Lua for Windows.</a><br id=cxsx17>
+    <a href=#part7 id=i.ed target=_self title="7. Learn more about Lua.">7. Learn more about Lua.</a><br id=cxsx18>
+    </font></font><font id=iu81 size=3><a href=#part8 id=rb:e target=_self title="8. Acknowledgments.">8. Acknowledgments.</a></font>
+  </p>
+  <p class=MsoBodyText id=n_fq>
+    <br id=cxsx20>
+  </p>
+  <hr id=ve-l1 noshade style=HEIGHT:25px;WIDTH:100%>
+  <h2 id=mfi10>
+    <a id=part1 name=part1></a><font face=verdana>1. What is Lua?</font>
+  </h2>
+  <div id=xax_ style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px;TEXT-ALIGN:left>
+    Lua is a small, fast, interpreted scripting language. Lua is the result of a merger of a configuration language (SOL) and a data entry language (DEL) . Lua's original goal was to be an extensible embedded scripting language inside software applications. Lua has been highly successful as an embedded scripting language and is used in many games, firmware and software applications. With the recent addition of modules, Lua now has a standard method to load libraries. Lua together with Lua libraries enables a complete standalone scripting language.&nbsp;<br id=eov43>
+    <br id=eov44>
+    Lua’s unique focus on extensibility, simplicity, efficiency and portability make it a small yet powerful scripting language. Lua is often used as a Domain Specific Language due to its small size, embeddability and portability.&nbsp; Lua supports a small set of general features and provides meta-mechanisms to allow the programmer to support programming styles of their choice.&nbsp;<br id=eov45>
+    <br id=eov46>
+    Lua was developed by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, and Waldemar Celes at the Pontifical University of Rio de Janeiro (PUC-Rio), in Brazil.<br id=eov47>
+    <br id=eov48>
+    Lua means Moon in Portuguese, so be ready for libraries with references to space or the moon, and enjoy.<br id=jtwm1>
+    <a href=#top id=u7yk target=_self title="Back to top of document.">^</a><br id=eov49>
+  </div>
+  <div id=eov42 style=MARGIN-LEFT:40px>
+    <br id=eov410>
+  </div>
+  <h2 id=nthd0>
+    <a id=part2 name=part2></a><font face=verdana>2. What is Lua for Windows?</font>
+  </h2>
+  <p class=MsoBodyText id=n_fq0 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px;TEXT-ALIGN:left>
+    Lua for Windows is a 'batteries included environment' for the Lua scripting language on Windows.
+  </p>
+  <p class=MsoBodyText id=n_fq1 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px;TEXT-ALIGN:left>
+  </p>
+  <p class=MsoBodyText id=n_fq2 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px;TEXT-ALIGN:left>
+    Lua for Windows combines Lua binaries, Lua libraries with a Lua-capable editor in a single install package for the Microsoft Windows operating system. Lua for Windows contains everything you need to write, run and debug Lua scripts on Windows. A wide variety of libraries and examples are included that are ready to use with Microsoft Windows. Lua for Windows runs on Windows 2000 and newer versions of Windows. Lua and its associated libraries are also available for other operating systems, so most scripts will be automatically cross-platform. <a href=http://docs.google.com/RawDocContents?docID=dfxf6f4d_19gbt5shdb&amp;justBody=false&amp;revision=_latest&amp;timestamp=1213702923806&amp;editMode=true&amp;strip=true#top id=n_fq3 title="Back to top of document."></a>
+  </p>
+  <p class=MsoBodyText id=jtwm2 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px;TEXT-ALIGN:left>
+    <a href=http://docs.google.com/RawDocContents?docID=dfxf6f4d_19gbt5shdb&amp;justBody=false&amp;revision=_latest&amp;timestamp=1213702923806&amp;editMode=true&amp;strip=true#top id=jtwm3 title="Back to top of document."></a><font id=jtwm4 size=2><a href=luaforwindows.html#top id=zama title="Back to top of document.">^</a></font>
+  </p>
+  <p class=MsoBodyText id=n_fq4 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px;TEXT-ALIGN:left>
+    <br id=y9ya0>
+  </p>
+  <h2 id=dd520>
+    <a id=part3 name=part3></a><font face=verdana>3. What comes with Lua for Windows?</font>
+  </h2>
+  <div id=t9jj0 style=MARGIN-LEFT:40px>
+    <font face=verdana>Lua for Windows comes with</font>:<br id=cxsx49>
+  </div>
+  <div id=mi.x3 style=TEXT-ALIGN:left>
+    <table border=0 cellpadding=0 cellspacing=2 class=zeroBorder id=eov411 style=HEIGHT:101px;MARGIN-LEFT:80px;TEXT-ALIGN:left;WIDTH:599px>
+      <tbody id=eov412>
+      <tr id=eov413>
+        <td id=eov414>
+          Lua Interpreter:
+        </td>
+        <td id=eov415>
+          Start/Programs/Lua/Lua (Command Line)
+        </td>
+      </tr>
+      <tr id=eov416>
+        <td id=eov417>
+          <font face=verdana><font id=pd3q59 size=2>Lua Reference:</font></font>
+        </td>
+        <td id=eov418>
+          <font face=verdana><font id=n_fq9 size=2>Start/Programs/Lua/Documentation/Lua 5.1 Reference Manual.</font></font> &nbsp; &nbsp; &nbsp; &nbsp;
+        </td>
+      </tr>
+      <tr id=eov419>
+        <td id=eov420>
+          <font face=verdana><font id=n_fq11 size=2>Quick Lua Tour: </font></font>
+        </td>
+        <td id=eov421>
+          <font face=verdana><font id=n_fq13 size=2>Start/Programs/Lua/Lua Examples/QuickLuaTour.lua</font></font>
+        </td>
+      </tr>
+      <tr id=eov422>
+        <td id=eov423>
+          <font face=verdana><font id=pd3q60 size=2>Examples:</font></font>
+        </td>
+        <td id=eov424>
+          <font face=verdana><font id=n_fq15 size=2>Start/Programs/Lua/Lua Examples.</font></font>
+        </td>
+      </tr>
+      <tr id=eov425>
+        <td id=eov426>
+          <font face=verdana><font id=pd3q62 size=2>Documents:</font></font>
+        </td>
+        <td id=eov427>
+          <font face=verdana><font id=n_fq17 size=2>Start/Programs/Lua/Documentation.</font></font>
+        </td>
+      </tr>
+      <tr id=eov428>
+        <td id=eov429>
+          Libraries:
+        </td>
+        <td id=eov430>
+          <a href=#part6 id=a3hp target=_self title="See Section 6. Libraries included with Lua for Windows">See Section 6. Libraries included with Lua for Windows</a>.&nbsp;<a href=#top id=jtwm6 target=_self title="Back to top of document."></a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div id=mi.x6 style=MARGIN-LEFT:40px;TEXT-ALIGN:left>
+    <font id=jtwm7 size=2><a href=luaforwindows.html#top id=jtwm8 title="Back to top of document.">^</a><br id=jtwm9>
+    </font>
+  </div>
+  <h2 id=y30n0>
+    <a id=part4 name=part4></a><font face=verdana>4. Using Lua for Windows.</font>
+  </h2>
+  <h3 id=y30n2>
+    <font face=verdana>&nbsp;&nbsp; <span class=GramE id=i0nb><a id=qdl1 name=part41></a>4.1&nbsp; Running</span> Lua Programs.</font>&nbsp;
+  </h3>
+  <div id=jtwm10 style=MARGIN-LEFT:40px>
+    The interpreter can be run by typing lua.exe from command prompt:<br id=eov432>
+  </div>
+  <div id=n_fq20 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px;TEXT-ALIGN:left>
+    <div id=eov433 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+      C:\&gt;lua.exe<br id=eov434>
+      Lua 5.1.4&nbsp; Copyright (C) 1994-2008 Lua.org, PUC-Rio<br id=eov435>
+      &gt;<br id=eov436>
+    </div>
+    Type in print("hello") press enter, should get back hello<br id=eov437>
+    &nbsp; &nbsp; &nbsp; &nbsp; &gt; print("hello")&nbsp;<br id=eov438>
+    <div id=eov439 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+      hello<br>
+      &gt;<br id=eov441>
+      <br id=eov442>
+    </div>
+    To run Lua Script from command line, <span class=SpellE id=cxsx82>goto</span> directory containing <span class=SpellE id=cxsx83>Lua</span> script and type in name of script at command prompt.&nbsp;<br id=xax_0>
+    <br id=cxsx86>
+  </div>
+  <p class=MsoBodyText id=n_fq21 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana>From Explorer double click on .<span class=SpellE id=cxsx87>lua</span>&nbsp;file and Lua interpreter will run that .lua file.</font>
+  </p>
+  <p class=MsoBodyText id=n_fq23 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana>&nbsp;&nbsp;<br id=cxsx89>
+    From Start/Programs/Lua/SciTE, edit <span class=SpellE id=cxsx90>lua</span> script from SciTE press F5 to run.&nbsp;</font>
+  </p>
+  <p class=MsoBodyText id=jtwm11 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana><a href=#top id=jblj target=_self title="Back to top of document">^</a></font>
+  </p>
+  <h3 id=qf621>
+    <font face=verdana>&nbsp;&nbsp; <span class=GramE id=i08p><a id=syu3 name=part42></a>4.2&nbsp; Editing</span> Lua Programs.</font>
+  </h3>
+  <p class=MsoBodyText id=n_fq27 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana>From explorer or command line use any text editor you wish. &nbsp;</font><font face=verdana>Save with .lua file name extension and run as decribed above.</font>
+  </p>
+  <p class=MsoBodyText id=n_fq30 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <br id=cxsx99>
+    <font face=verdana>From Start/Programs/Lua/SciTE, use SciTE editor to edit a Lua script.&nbsp;</font><a href=#top id=ymmf target=_self title="Back to top of document"></a>
+  </p>
+  <p class=MsoBodyText id=jtwm13 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana><a href=#top id=jtwm15 target=_self title="Back to top of document">^</a></font><br id=cxsx104>
+  </p>
+  <h3 id=qf622>
+    <font face=verdana>&nbsp;&nbsp; <span class=GramE id=hckn><a id=m0r3 name=part43></a>4.3&nbsp; Debugging</span> Lua Programs.</font>
+  </h3>
+  <p class=MsoBodyText id=n_fq34 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana>From Start/Programs/Lua/SciTE , open your <span class=SpellE id=cxsx108>Lua</span> script, then&nbsp;<br id=cxsx109>
+    </font><font face=verdana>Press ALT-R to starting Debug/Continue,</font>
+  </p>
+  <p class=MsoBodyText id=n_fq37 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana>&nbsp; &nbsp; &nbsp; &nbsp; F9 to toggle breakpoints,<br id=cxsx111>
+    &nbsp; &nbsp; &nbsp; &nbsp; ALT-C to step one line at a time,<br id=cxsx112>
+    </font><font face=verdana>&nbsp; &nbsp; &nbsp; &nbsp; ALT-N to step over,</font>
+  </p>
+  <p class=MsoBodyText id=n_fq40 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana>&nbsp; &nbsp; &nbsp; &nbsp; ALT-M to step out,</font>
+  </p>
+  <p class=MsoBodyText id=n_fq42 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana>&nbsp; &nbsp; &nbsp; &nbsp; ALT-K to kill debug session,</font>
+  </p>
+  <p class=MsoBodyText id=n_fq44 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana>&nbsp; &nbsp; &nbsp; &nbsp; ALT-L to show local variables,</font>
+  </p>
+  <p class=MsoBodyText id=n_fq46 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana>&nbsp; &nbsp; &nbsp; &nbsp; ALT-I to inspect variable,</font>
+  </p>
+  <p class=MsoBodyText id=n_fq48 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana>&nbsp; &nbsp; &nbsp; &nbsp; ALT-CTRL-B for stack stack,</font>
+  </p>
+  <p class=MsoBodyText id=n_fq50 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana>&nbsp; &nbsp; &nbsp; &nbsp; ALT-W to watch variable,</font>
+  </p>
+  <p class=MsoBodyText id=n_fq52 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana>&nbsp; &nbsp; &nbsp; &nbsp; ALT-G goto a specific line as debugging.</font>
+  </p>
+  <p class=MsoBodyText id=n_fq54 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+  </p>
+  <p class=MsoBodyText id=n_fq55 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana>SciTE also has toolbar buttons for most common debug operations.</font>&nbsp;<a href=#top id=ok9x target=_self title="Back to top of document"></a>
+  </p>
+  <p class=MsoBodyText id=jtwm16 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana><a href=#top id=jtwm18 target=_self title="Back to top of document">^</a>&nbsp;</font><br id=h861>
+  </p>
+  <h3 id=qf624>
+    <font face=verdana>&nbsp;&nbsp; <a id=po86 name=part44></a>4.4 Using Lua without command console.</font>
+  </h3>
+  <p class=MsoBodyText id=n_fq61 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana><span class=GramE id=cxsx120>To run Lua scripts without a command console use wlua.exe. GUI examples from&nbsp;</span></font><font face=verdana>IUP library have been renamed to *.wlua and run without a &nbsp;console. For example, from Start/Programs/Lua/Lua Examples <span class=SpellE id=cxsx124>go to</span> <span class=SpellE id=cxsx125>iup\elem\iupmenu</span> directory and double click on <span class=SpellE id=cxsx127>iupmenu.wlua</span> to run a GUI app.&nbsp;</font>
+  </p>
+  <p class=MsoBodyText id=jtwm19 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <font face=verdana><a href=#top id=ng9g target=_self title="Back to top of document">^</a></font>
+  </p>
+  <h2 class=MsoBodyText id=n_fq66>
+    <a id=part5 name=part5></a><font face=verdana>5. <span class=GramE id=cxsx131>Concise Overview of Lua Programming Language.</span></font>
+  </h2>
+  <div id=q.bg0 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px;TEXT-ALIGN:left>
+    Lua is a simple yet powerful dynamically typed programming language. Lua is one of the fastest, if not fastest, interpreted scripting languages available, see <a href=http://dada.perl.it/shootout/craps.html id=cxsx136>http://dada.perl.it/shootout/craps.html</a>.<br id=eov447>
+    <br id=cxsx137>
+  </div>
+  <div id=gv-b0 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px;TEXT-ALIGN:left>
+    Lua has 8 basic types: nil, boolean, number, string, table, function, thread<span class=GramE id=cxsx139>,</span> userdata.<br id=t6:i>
+    <br id=gc7z>
+    Numbers are floating point values. Strings are non-mutable. Table is the basic data structure used to represent complex data.&nbsp;
+  </div>
+  <p class=MsoBodyText id=n_fq68 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px;TEXT-ALIGN:left>
+  </p>
+  <div id=q.bg1 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px;TEXT-ALIGN:left>
+    Lua has 21 reserved keywords: and, break, do, else, <span class=SpellE id=cxsx143>elseif</span>, end, false, for<span class=GramE id=cxsx144>,</span> function, if, in, local, nil, not, or, repeat, return, then, true, until, while.<br id=eov448>
+    <br id=cxsx147>
+  </div>
+  <div id=q.bg2 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px;TEXT-ALIGN:left>
+    Lua has 6 control structures: do end block statement, if statement<span class=GramE id=cxsx149>, </span>while statement, repeat until statement, for statement and break statement.<br id=t6:i0>
+    <br id=eov449>
+  </div>
+  <div id=fbdo1 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px;TEXT-ALIGN:left>
+    Lua has multiple assignments and&nbsp; return multiple values from functions.<br id=etui>
+    <br id=ky_50>
+    Lua has garbage collection, closures, tail calls, coercion, <span class=SpellE id=cxsx153>co-routines</span>, first order functions, meta-mechanisms and loadable libraries.<br id=t6:i1>
+    <br id=eov450>
+    Lua is a multi-paradigm language and uses meta-mechanisms to extend Lua to support different styles of programming including object-oriented and functional styles.<br id=c8c8>
+    <br id=n_fq69>
+    Lua is a very powerful; condensed scripting language.<br id=jtwm21>
+    <a href=#top id=irjz target=_self title="Back to top of document.">^</a><br id=mlwj30>
+  </div>
+  <h2 id=d7pr1>
+    <a id=part6 name=part6></a>6. Libraries included with Lua for Windows
+  </h2>
+  <table border=1 cellpadding=0 cellspacing=0 class=MsoNormalTable id=pg.f style="BORDER:1pt outset #444444;HEIGHT:754px;MARGIN-LEFT:40px;WIDTH:656px">
+    <tbody id=o2f:2>
+    <tr id=z1ve2>
+      <td id=z1ve3 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:3 style=MARGIN-RIGHT:0pt;TEXT-ALIGN:center>
+          <b>Library<br id=wb-l1>
+          </b>
+        </p>
+      </td>
+      <td id=pb8.0 style="BORDER:1pt inset #444444" valign=center>
+        <p align=center id=o2f:6 style=MARGIN-RIGHT:0pt;TEXT-ALIGN:center>
+          <b><font face=verdana><font id=pd3q0 size=2>Version </font></font></b>
+        </p>
+      </td>
+      <td id=z1ve5 style="BORDER:1pt inset #444444">
+        <p id=o2f:10 style=MARGIN-RIGHT:0pt;TEXT-ALIGN:center>
+          <b><font face=verdana><font id=pd3q1 size=2>Description</font></font></b>
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve9>
+      <td id=z1ve10 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:14 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q2 size=2>Alien</font></font>
+        </p>
+      </td>
+      <td id=pb8.3 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:17 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q3 size=2>0.5.0</font></font>
+        </p>
+      </td>
+      <td id=z1ve12 style="BORDER:1pt inset #444444">
+        <p id=o2f:20 style=MARGIN:0pt>
+          <font face=verdana><font id=pd3q4 size=2>Provides access to functions in an unknown or new .dll.</font></font>
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve16>
+      <td id=z1ve17 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:23 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q5 size=2>IUP</font></font>
+        </p>
+      </td>
+      <td id=pb8.5 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:26 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q6 size=2>3.5.0</font></font>
+        </p>
+      </td>
+      <td id=z1ve19 style="BORDER:1pt inset #444444">
+        <p id=o2f:29 style=MARGIN:0pt>
+          <font face=verdana><font id=pd3q7 size=2>Light Portable Graphical User Interface library.</font></font>
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve23>
+      <td id=z1ve24 style="BORDER:1pt inset #444444" valign=center>
+        <font face=verdana><font id=pd3q8 size=2>CD</font></font>
+      </td>
+      <td id=pb8.7 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:35 style=MARGIN-RIGHT:0pt>
+          5.4.1
+        </p>
+      </td>
+      <td id=z1ve26 style="BORDER:1pt inset #444444">
+        <p id=o2f:38 style=MARGIN:0pt>
+          <font face=verdana><font id=pd3q9 size=2>Canvas Draw: A </font></font>platform-independent graphic library.
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve30>
+      <td id=z1ve31 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:41 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q10 size=2>IM</font></font>
+        </p>
+      </td>
+      <td id=pb8.9 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:44 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q11 size=2>3.6.3</font></font>
+        </p>
+      </td>
+      <td id=z1ve33 style="BORDER:1pt inset #444444">
+        <p id=o2f:47 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q12 size=2>A toolkit for Digital Imaging. </font></font>
+        </p>
+      </td>
+    </tr>
+    <tr id=bycb0>
+      <td id=bycb1 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:50 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q13 size=2>Ex</font></font>
+        </p>
+      </td>
+      <td id=pb8.11 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:53 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q14 size=2>Jan 07</font></font>
+        </p>
+      </td>
+      <td id=bycb3 style="BORDER:1pt inset #444444" valign=top>
+        <p id=o2f:56 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q15 size=2>Adds environment, file system, I/O (Locking and pipes), and process control.</font></font>
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve37>
+      <td id=z1ve38 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:59 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q16 size=2>LPeg</font></font>
+        </p>
+      </td>
+      <td id=pb8.13 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:62 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q17 size=2>0.10</font></font>
+        </p>
+      </td>
+      <td id=z1ve40 style="BORDER:1pt inset #444444">
+        <p id=o2f:65 style=MARGIN:0pt>
+          <font face=verdana>Pattern</font>-matching library based on Parsing Expression Grammars (PEGs).
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve44>
+      <td id=z1ve45 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:68 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q18 size=2>Lua-GD</font></font>
+        </p>
+      </td>
+      <td id=pb8.15 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:71 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q19 size=2>2.9.33r2</font></font>
+        </p>
+      </td>
+      <td id=z1ve47 style="BORDER:1pt inset #444444">
+        <p id=o2f:74 style=MARGIN:0pt>
+          <font face=verdana><font id=pd3q20 size=2>Image manipulation library based on Thomas </font>Boutell’s<font id=pd3q21 size=2> GD library.</font></font>
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve51>
+      <td id=z1ve52 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:77 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q22 size=2>LuaCOM</font></font>
+        </p>
+      </td>
+      <td id=pb8.17 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:80 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q23 size=2>1.4</font></font>
+        </p>
+      </td>
+      <td id=z1ve54 style="BORDER:1pt inset #444444">
+        <p id=o2f:83 style=MARGIN:0pt>
+          <font face=verdana><font id=pd3q24 size=2>Enable use &amp; implementation of Microsoft’s Component Object Model.</font></font>
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve58>
+      <td id=z1ve59 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:86 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q25 size=2>LuaCURL</font></font>
+        </p>
+      </td>
+      <td id=pb8.19 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:89 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q26 size=2>1.0</font></font>
+        </p>
+      </td>
+      <td id=z1ve61 style="BORDER:1pt inset #444444">
+        <p id=o2f:92 style=MARGIN:0pt>
+          <font face=verdana>Interface</font> to Internet browsing capabilities based on the cURL library.
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve65>
+      <td id=z1ve66 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:95 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q27 size=2>Date</font></font>
+        </p>
+      </td>
+      <td id=pb8.21 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:98 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q28 size=2>2</font></font>
+        </p>
+      </td>
+      <td id=z1ve68 style="BORDER:1pt inset #444444">
+        <p id=o2f:101 style=MARGIN:0pt>
+          <font face=verdana><font id=pd3q29 size=2>Date and Time library for Lua.</font></font>
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve72>
+      <td id=z1ve73 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:104 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q30 size=2>LuaDoc</font></font>
+        </p>
+      </td>
+      <td id=pb8.23 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:107 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q31 size=2>3.01</font></font>
+        </p>
+      </td>
+      <td id=z1ve75 style="BORDER:1pt inset #444444">
+        <p id=o2f:110 style=MARGIN:0pt>
+          <font face=verdana>Documentation</font> tool for Lua source code.
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve79>
+      <td id=z1ve80 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:113 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q32 size=2>LuaExpat</font></font>
+        </p>
+      </td>
+      <td id=pb8.25 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:116 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q33 size=2>1.1.0</font></font>
+        </p>
+      </td>
+      <td id=z1ve82 style="BORDER:1pt inset #444444">
+        <p id=o2f:119 style=MARGIN:0pt>
+          <font face=verdana>Lua</font> interface to XML Expat parsing library.
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve86>
+      <td id=z1ve87 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:122 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q34 size=2>LuaFileSystem</font></font>
+        </p>
+      </td>
+      <td id=pb8.27 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:125 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q35 size=2>1.4.2</font></font>
+        </p>
+      </td>
+      <td id=z1ve89 style="BORDER:1pt inset #444444">
+        <p id=o2f:128 style=MARGIN:0pt>
+          <font face=verdana>Access</font> the directory structure and file attributes.
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve93>
+      <td id=z1ve94 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:131 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q36 size=2>LuaLogging</font></font>
+        </p>
+      </td>
+      <td id=pb8.29 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:134 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q37 size=2>1.2.0</font></font>
+        </p>
+      </td>
+      <td id=z1ve96 style="BORDER:1pt inset #444444">
+        <p id=o2f:137 style=MARGIN:0pt>
+          <font face=verdana><font id=pd3q38 size=2>Logging features in Lua, based on log4j.</font></font>
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve100>
+      <td id=z1ve101 style="BORDER:1pt inset #444444" valign=center>
+        <font face=verdana><font id=pd3q39 size=2>LuaProfiler</font></font>
+      </td>
+      <td id=pb8.31 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:143 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q40 size=2>2.0.1</font></font>
+        </p>
+      </td>
+      <td id=z1ve103 style="BORDER:1pt inset #444444">
+        <p id=o2f:146 style=MARGIN:0pt>
+          <font face=verdana>Time</font> profiler designed to find bottlenecks in Lua programs.
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve107>
+      <td id=z1ve108 style="BORDER:1pt inset #444444" valign=center>
+        <font face=verdana><font id=pd3q41 size=2>LuaSocket</font></font>
+      </td>
+      <td id=pb8.33 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:152 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q42 size=2>2.0.2</font></font>
+        </p>
+      </td>
+      <td id=z1ve110 style="BORDER:1pt inset #444444">
+        <p id=o2f:155 style=MARGIN:0pt>
+          <font face=verdana>Lua</font> interface to support HTTP,FTP,SMTP, MIME, URL &amp; LTN12.
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve114>
+      <td id=z1ve115 style="BORDER:1pt inset #444444" valign=center>
+        <font face=verdana><font id=pd3q43 size=2>LuaSQL</font></font>
+      </td>
+      <td id=pb8.35 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:161 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q44 size=2>2.1.1</font></font>
+        </p>
+      </td>
+      <td id=z1ve117 style="BORDER:1pt inset #444444">
+        <p id=o2f:164 style=MARGIN:0pt>
+          <font face=verdana>Lua</font> interface for PostgreSQL, ODBC, MySQL, SQLite, Oracle, and ADO dbms.
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve121>
+      <td id=z1ve122 style="BORDER:1pt inset #444444" valign=center>
+        <font face=verdana><font id=pd3q45 size=2>LuaUnit</font></font>
+      </td>
+      <td id=pb8.37 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:172 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q46 size=2>1.3</font></font>
+        </p>
+      </td>
+      <td id=z1ve124 style="BORDER:1pt inset #444444">
+        <p id=o2f:175 style=MARGIN:0pt>
+          <font face=verdana>Testing</font> framework for Lua.
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve128>
+      <td id=z1ve129 style="BORDER:1pt inset #444444" valign=center>
+        <font face=verdana><font id=pd3q47 size=2>LuaZip</font></font>
+      </td>
+      <td id=pb8.39 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:181 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q48 size=2>1.2.3</font></font>
+        </p>
+      </td>
+      <td id=z1ve131 style="BORDER:1pt inset #444444">
+        <p id=o2f:184 style=MARGIN:0pt>
+          <font face=verdana>Read</font> files from zip files.
+        </p>
+      </td>
+    </tr>
+    <tr id=gmx40>
+      <td id=gmx41 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:187 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q49 size=2>stdlib</font></font>
+        </p>
+      </td>
+      <td id=pb8.41 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:190 style=MARGIN-RIGHT:0pt>
+          <font face=verdana size=2>21</font>
+        </p>
+        <br>
+      </td>
+      <td id=gmx43 style="BORDER:1pt inset #444444" valign=top>
+        <p id=o2f:193 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q51 size=2>Library of modules for common programming tasks, including list, table and functional operations, regexps, objects, pretty-printing and getopt. </font></font>
+        </p>
+      </td>
+    </tr>
+    <tr id=gmx45>
+      <td id=gmx46 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:196 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q52 size=2>lrexlib</font></font>
+        </p>
+      </td>
+      <td id=pb8.43 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:199 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q53 size=2>2.2</font></font>
+        </p>
+      </td>
+      <td id=gmx48 style="BORDER:1pt inset #444444" valign=top>
+        <p id=o2f:202 style=MARGIN-RIGHT:0pt>
+          <font face=verdana><font id=pd3q54 size=2>Regular expression library for Lua.</font></font>
+        </p>
+      </td>
+    </tr>
+    <tr id=z1ve135>
+      <td id=z1ve136 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:205 style=MARGIN:0pt>
+          <font face=verdana><font id=pd3q55 size=2>MD5</font></font>
+        </p>
+      </td>
+      <td id=pb8.45 style="BORDER:1pt inset #444444" valign=center>
+        <p id=o2f:208 style=MARGIN-RIGHT:0pt>
+          1.1.2
+        </p>
+      </td>
+      <td id=z1ve138 style="BORDER:1pt inset #444444">
+        <p id=o2f:211 style=MARGIN:0pt>
+          <font face=verdana><font id=pd3q56 size=2>Basic</font></font> cryptographic facilities for Lua.
+        </p>
+      </td>
+    </tr>
+    <tr id=k-np>
+      <td id=k-np0 valign=center>
+        Copas<br id=k-np1>
+      </td>
+      <td id=k-np2 valign=center>
+        1.1.5<br id=k-np3>
+      </td>
+      <td id=k-np4 valign=top>
+        Dispatcher based on coroutines that can be used by TCP/IP servers.<br id=k-np5>
+      </td>
+    </tr>
+    <tr id=k-np6>
+      <td id=k-np7 valign=center>
+        Coxpcall<br id=k-np8>
+      </td>
+      <td id=k-np9 valign=center>
+        1.13<br id=k-np10>
+      </td>
+      <td id=k-np11 valign=top>
+        Encapsulates the protected calls with a coroutine based loop,<br id=xxsc>
+        so errors can be dealed without the usual pcall/xpcall issues with coroutines.<br id=k-np12>
+      </td>
+    </tr>
+    <tr id=vzbi>
+      <td id=vzbi0 valign=center>
+        Rings<br id=vzbi1>
+      </td>
+      <td id=vzbi2 valign=center>
+        1.2.2<br id=vzbi3>
+      </td>
+      <td id=vzbi4 valign=top>
+        Provides a way to create new Lua states from within Lua. It also offers a simple way to communicate between the creator (master) and the created (slave) states.
+      </td>
+    </tr>
+    <tr id=x6aa>
+      <td id=x6aa0 valign=center>
+        LOOP<br id=x6aa1>
+      </td>
+      <td id=x6aa2 valign=center>
+        2.3 Beta<br id=x6aa3>
+      </td>
+      <td id=x6aa4 valign=top>
+        LOOP stands for Lua Object-Oriented Programming and is a set of packages for supporting different models of object-oriented programming in the Lua language.
+      </td>
+    </tr>
+    <tr id=u0z0>
+      <td id=u0z00 valign=top>
+        LuaTask<br id=u0z01>
+      </td>
+      <td id=u0z02 valign=top>
+        1.6.4<br id=u0z03>
+      </td>
+      <td id=u0z04 valign=top>
+        Implements a concurrent and independent Lua execution<br id=rqyv>
+        environment model.<br id=u0z05>
+      </td>
+    </tr>
+    <tr id=u0z06>
+      <td id=u0z07 valign=top>
+        LuaInterface<br id=u0z08>
+      </td>
+      <td id=u0z09 valign=top>
+        1.5.3<br id=u0z010>
+      </td>
+      <td id=u0z011 valign=top>
+        Integration between the Lua language and Microsoft .NET platform's Common Language Runtime (CLR).
+      </td>
+    </tr>
+    <tr id=zh0c>
+      <td id=zh0c0 valign=top>
+        wxLua<br id=zh0c1>
+      </td>
+      <td id=zh0c2 valign=top>
+        2.8.10<br id=zh0c3>
+      </td>
+      <td id=zh0c4 valign=top>
+        Lua binding to the <a href=http://wxwidgets.org/ id=a2ro title=wxWidgets>wxWidgets</a> library<br id=zh0c5>
+      </td>
+    </tr>
+    <tr>
+      <td valign=top>
+        lpack<br>
+      </td>
+      <td valign=top>
+        29 Jun 2007 19:27:20<br>
+      </td>
+      <td valign=top>
+        Lua library for packing and unpacking binary data<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign=top>
+        VStruct<br>
+      </td>
+      <td valign=top>
+        1.0.2<br>
+      </td>
+      <td valign=top>
+        Provides functions for manipulating binary data<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign=top>
+        LuaBitOps<br>
+      </td>
+      <td valign=top>
+        1.0.1<br>
+      </td>
+      <td valign=top>
+        Lua BitOp is a C extension module for Lua 5.1 which adds bitwise operations on numbers.
+      </td>
+    </tr>
+    <tr>
+      <td valign=top>
+        LuaXML<br>
+      </td>
+      <td valign=top>
+        1.3<br>
+      </td>
+      <td valign=top>
+        A module that maps between Lua and XML without much ado<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign=top>
+        Lanes<br>
+      </td>
+      <td valign=top>
+        2.0.4<br>
+      </td>
+      <td valign=top>
+        Provides the possibility to run multiple Lua states in parallel.<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign=top>
+        MetaLua<br>
+      </td>
+      <td valign=top>
+        0.5-rc1<br>
+      </td>
+      <td valign=top>
+        A complete macro system with full compatibility with Lua 5.1 sources and bytecode: clean, elegant semantics and syntax, amazing expressive power, good performances, near-universal portability.
+      </td>
+    </tr>
+    <tr>
+      <td valign=top>
+        LuaGL<br>
+      </td>
+      <td valign=top>
+        1.3<br>
+      </td>
+      <td valign=top>
+        It’s a library that provides access to all of the OpenGL functionality from Lua.<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign=top>
+        Penlight<br>
+      </td>
+      <td valign=top>
+        0.9.4<br>
+      </td>
+      <td valign=top>
+        Penlight is a set of pure Lua libraries, with only lfs dependency, for extended operations on tables, lists and strings, partially implementing some useful parts of the Python libaries.
+      </td>
+    </tr>
+    <tr>
+      <td valign=top>
+        lbase64<br>
+      </td>
+      <td valign=top>
+        for Lua 5.1<br>
+      </td>
+      <td valign=top>
+        A <a href=http://en.wikipedia.org/wiki/Base64>base64</a> library for Lua.
+      </td>
+    </tr>
+    <tr>
+      <td valign=top>
+        gzio<br>
+      </td>
+      <td valign=top>
+        0.9.0<br>
+      </td>
+      <td valign=top>
+        The Lua gzip file I/O module emulates the standard I/O module, but operates on compressed gzip format files.
+      </td>
+    </tr>
+    <tr>
+      <td valign=top>
+        Markdown<br>
+      </td>
+      <td valign=top>
+        0.32<br>
+      </td>
+      <td valign=top>
+        This is an implementation of the popular text markup language <a href=http://daringfireball.net/projects/markdown id=dqo2 title=Markdown>Markdown</a> in pure Lua.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        LuaRS232
+      </td>
+      <td>
+        1.0.0
+      </td>
+      <td>
+        Lua binding to librs232 which is a cross-platform rs232 (serial) library.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        LeMock
+      </td>
+      <td>
+        0.6
+      </td>
+      <td>
+        <font color=#181818>LeMock (Lua Easy Mock) is a mock creation module intended for use together with a unit test framework such as LuaUnit, lunit or lunity.</font><br>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Oil
+      </td>
+      <td>
+        0.4-beta
+      </td>
+      <td>
+        <font face="verdana, arial, helvetica, sans-serif">It is a simple, efficient and flexible object request broker written in the Lua language.</font><br>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        LuaJSON
+      </td>
+      <td>
+        1.2.2
+      </td>
+      <td>
+        JSON parser/encoder for Lua Parses JSON using LPEG for speed and flexibility. Depending on parser/encoder options, various values are preserved as best as possible
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div id=eov452 style=MARGIN-LEFT:40px>
+    <a href=#top id=sqf4 target=_self title="Back to top of document.">^</a><br id=mlwj33>
+  </div>
+  <h2 id=gjc:0>
+    <a id=7._Learn_more_about_Lua._ name=7._Learn_more_about_Lua._></a><a id=part7 name=part7></a>7. Learn more about Lua.
+  </h2>
+  <h3 id=gjc:1 style=MARGIN-LEFT:40px>
+    Books:
+  </h3>
+  <div id=kqwo1 style=MARGIN-LEFT:40px>
+    <div id=jtwm22 style=MARGIN-LEFT:40px>
+      <p id=mlwj28>
+        <font face=verdana>Programming in Lua, 2<sup>nd</sup> Edition by Robert Ierusalimschy. </font>
+      </p>
+      <p id=kqwo3>
+        <font face=verdana>This book is also referred to as the Blue PIL. The first </font>
+      </p>
+      <p id=kqwo6>
+        <font face=verdana>edition is free online at <a href=http://www.lua.org/pil/ id=cxsx235>http://www.lua.org/pil/</a>. </font>
+      </p>
+      <br id=cxsx236>
+      <p id=kqwo9>
+        <font face=verdana>Lua Reference Manual, by R. Ierusalimschy, L. H. de <span class=SpellE id=cxsx238>Figueiredo</span>, W. <span class=SpellE id=cxsx239>Celes.&nbsp;</span></font>
+      </p>
+      <p id=kqwo10>
+        <font face=verdana>Available online at <a href=http://www.lua.org/manual/5.1/ id=cxsx241>http://www.lua.org/manual/5.1/</a>. </font>
+      </p>
+      <br id=cxsx243>
+      <p id=kqwo15>
+        <font face=verdana>Beginning Lua Programming by Kurt Jung &amp; Aaron Brown.&nbsp; </font>
+      </p>
+      <p id=kqwo16>
+        <font face=verdana>Covers many aspects of Lua programming &amp; Lua libraries.&nbsp;</font>
+      </p>
+      <p id=jtwm23>
+      </p>
+    </div>
+  </div>
+  <h3 id=gjc:2 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    Web Sites:
+  </h3>
+  <div id=xn1g0 style=MARGIN-LEFT:80px;MARGIN-RIGHT:40px>
+    <a href=http://www.lua.org/ id=cxsx249>http://www.lua.org</a> - Home for the Lua Programming Language.<br id=cxsx250>
+    <a href=http://lua-users.org/wiki/TutorialDirectory id=cxsx251>http://lua-users.org/wiki/TutorialDirectory</a> - Lua tutorials.<br id=cxsx252>
+    <a href=http://luaforge.net/ id=cxsx253>http://luaforge.net/</a> - Home for most Lua Libraries.<br id=cxsx254>
+    <a href=http://en.wikipedia.org/wiki/Lua_%28programming_language%29 id=cxsx255>http://en.wikipedia.org/wiki/Lua_(programming_language)</a> - Description of Lua.&nbsp;<br id=eov454>
+  </div>
+  <div id=jtwm25 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px>
+    <a href=luaforwindows.html#top id=a99v title="Back to top of document.">^</a><br id=mlwj37>
+  </div>
+  <h2 id=q0cz1>
+    <a id=part8 name=part8></a>8. Acknowledgments.
+  </h2>
+  <div id=mfge22 style=MARGIN-LEFT:40px;MARGIN-RIGHT:40px;TEXT-ALIGN:left>
+    Thanks to Ryan Pusztai for writing <span class=SpellE id=cxsx261>Inno</span> Setup scripts from which Lua for Windows is created, and for gathering all the Lua libraries together.<br id=cxsx263>
+    <br id=cxsx264>
+    <font face=verdana>Thanks to </font>Neil Hodgson (Scintilla) , Dave Nicols (clidebugger),<span class=nfakPe id=jm460> and especially Steve</span> <span class=nfakPe id=jm462>Donovan</span> (integrating Lua debugging into SciTE) as well as all the others who worked on SciTE.<br id=cxsx266>
+    <br id=cxsx267>
+    <font face=verdana>Special thanks to Roberto <span class=GramE id=cxsx268>Ierusalimschy, <span class=SpellE id=cxsx269>Luiz</span></span> Henrique de <span class=SpellE id=cxsx270>Figueiredo</span>, and <span class=SpellE id=cxsx272>Waldemar</span> <span class=SpellE id=cxsx273>Celes</span> for creating the Lua programming language.</font><br id=cxsx274>
+    <br id=cxsx275>
+    <font face=verdana>And special thanks to all the individuals who created these great Lua libraries; these libraries make Lua for Windows possible. &nbsp;</font><br id=jtwm26>
+    <a href=#top id=n-im target=_self title="Back to top of document.">^</a> &nbsp;<br id=w7tp0>
+  </div>
+  <br id=eov455>
+  <hr id=n_fq106 noshade style=HEIGHT:25px;WIDTH:100%>
+  <p class=MsoBodyText id=n_fq107>
+  </p>
+  <p class=MsoBodyText id=cxsx277>
+    <br id=w7tp1>
+  </p>
+</div>
+<br id=d04l></body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+	<title>LuaExpat: XML Expat parsing for the Lua programming language</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div id="container">
+	
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+        <img alt="LuaExpat logo" src="luaexpat.png"/>
+	</a></div>
+	<div id="product_name"><big><strong>LuaExpat</strong></big></div>
+	<div id="product_description">XML Expat parsing for the Lua programming language</div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+<h1>LuaExpat</h1>
+	<ul>
+		<li><a href="index.html">Home</a>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+				<li><a href="index.html#history">History</a></li>
+				<li><a href="index.html#references">References</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact</a></li>
+			</ul>
+		</li>
+		<li><a href="manual.html">Manual</a>
+			<ul>
+				<li><a href="manual.html#introduction">Introduction</a></li>
+				<li><a href="manual.html#installation">Installation</a></li>
+				<li><a href="manual.html#parser">Parser Objects</a></li>
+			</ul>
+		</li>
+		<li><strong>Examples</strong></li>
+		<li><a href="lom.html">Lua Object Model</a></li>
+        <li><a href="http://luaforge.net/projects/luaexpat/">Project</a>
+            <ul>
+                <li><a href="http://luaforge.net/tracker/?group_id=13">Bug Tracker</a></li>
+                <li><a href="http://luaforge.net/scm/?group_id=13">CVS</a></li>
+            </ul>
+        </li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+<h2><a name="examples"></a>Examples</h2>
+
+<p>The code excerpt below creates a parser with 2 callbacks and
+feeds a test string to it. The parsing of the test string triggers
+the callbacks, printing the results.</p>
+
+<pre class="example">
+require"lxp"
+
+local count = 0
+callbacks = {
+    StartElement = function (parser, name)
+        io.write("+ ", string.rep(" ", count), name, "\n")
+        count = count + 1
+    end,
+    EndElement = function (parser, name)
+        count = count - 1
+        io.write("- ", string.rep(" ", count), name, "\n")
+    end
+}
+
+p = lxp.new(callbacks)
+
+for l in io.lines() do  -- iterate lines
+    p:parse(l)          -- parses the line
+    p:parse("\n")       -- parses the end of line
+end
+p:parse()               -- finishes the document
+p:close()               -- closes the parser
+</pre>
+
+<p>For a test string like</p>
+
+<pre class="example">
+&lt;elem1&gt;
+    text
+    &lt;elem2/&gt;
+    more text
+&lt;/elem1&gt;
+</pre>
+
+<p>The example would print</p>
+
+<pre class="example">
++ elem1
+    + elem2
+    - elem2
+- elem1
+</pre>
+
+<p>Note that the text parts are not handled since the corresponding
+callback (<em>CharacterData</em>) has not been defined. Also note
+that defining this callback after the call to lxp.new would make no
+difference. But had the callback table been defined as</p>
+
+<pre class="example">
+callbacks = {
+    StartElement = function (parser, name)
+        io.write("+ ", string.rep(" ", count), name, "\n")
+        count = count + 1
+    end,
+    EndElement = function (parser, name)
+        count = count - 1
+        io.write("- ", string.rep(" ", count), name, "\n")
+    end,
+    CharacterData = function (parser, string)
+        io.write("* ", string.rep(" ", count), string, "\n")
+    end
+}
+</pre>
+
+<p>The results would have been</p>
+
+<pre class="example">
++ elem1
+* text
+    + elem2
+    - elem2
+* more text
+- elem1
+</pre>
+
+<p>Another example would be the use of <em>false</em> as a
+placeholder for the callback. Suppose that we would like to print
+only the text associated with <em>elem2</em> elements and that the
+XML sample is</p>
+
+<pre class="example">
+ &lt;elem1&gt;
+    text
+    &lt;elem2&gt;
+        inside text
+    &lt;/elem2&gt;
+    more text
+&lt;/elem1&gt;
+</pre>
+
+<p>We could define the new callback table as</p>
+
+<pre class="example">
+callbacks = {
+    StartElement = function (parser, name)
+      if name == "elem2" then
+        -- redefines CharacterData behaviour
+        callbacks.CharacterData = function (parser, string)
+          io.write(string, "\n")
+        end
+      end
+    end,
+
+    EndElement = function (parser, name)
+      if name == "elem2" then
+        callbacks.CharacterData = false -- restores placeholder
+      end
+    end,
+
+    CharacterData = false               -- placeholder
+}
+</pre>
+
+<p>The results would have been</p>
+
+<pre class="example">
+inside text
+</pre>
+
+<p>Note that this example assumes no other elements are present
+inside elem2 tags.</p>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+	<p><small>
+	$Id: examples.html,v 1.5 2006/03/23 00:19:37 carregal Exp $
+	</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+
+</body>
+</html> 

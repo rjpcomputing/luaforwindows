@@ -1,0 +1,29 @@
+#!/bin/sh
+
+LUA="lua /Users/maia/Work/proj/dtest/trunk/debuglua.lua"
+
+echo "Starting interface repository ..."
+$LUA ird.lua --port=3001 CosNaming.idl CosEvent.idl &
+pids="$pids $!"
+trap "kill $pids > /dev/null 2> /dev/null" 0
+
+sleep 3
+
+echo "Starting naming service ..."
+$LUA nsd.lua --port=3002 \
+             --ir=corbaloc::localhost:3001/InterfaceRepository &
+pids="$pids $!"
+trap "kill $pids > /dev/null 2> /dev/null" 0
+
+sleep 3
+
+echo "Starting event channel ..."
+$LUA channeld.lua --name=MyEventChannel \
+                  --ir=corbaloc::localhost:3001/InterfaceRepository \
+                  --ns=corbaloc::localhost:3002/NamingService &
+pids="$pids $!"
+trap "kill $pids > /dev/null 2> /dev/null" 0
+
+sleep 3
+
+echo "Demo finished."

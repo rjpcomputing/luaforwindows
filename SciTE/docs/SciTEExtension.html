@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="SciTE" />
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>
+      SciTE Extension Interface
+    </title>
+    <style type="text/css">
+        .example {
+            color: #00A000;
+            font-weight: bold;
+        }
+        DIV.example {
+            background: #F7FCF7;
+            border: 1px solid #C0D7C0;
+            margin: 0.3em 3em;
+            padding: 0.3em 0.6em;
+            font-size: 80%;
+        }
+    </style>
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    <table bgcolor="#000000" width="100%" cellspacing="0" cellpadding="0" border="0">
+      <tr>
+        <td>
+          <img src="SciTEIco.png" border="3" height="64" width="64" alt="Scintilla icon" />
+        </td>
+        <td>
+          <a href="index.html" style="color:white;text-decoration:none"><font size="5">
+	  SciTE Extension Interface</font></a>
+        </td>
+      </tr>
+    </table>
+    <h3>
+       Purpose.
+    </h3>
+	<p>Some people want to create enhanced versions of the SciTE editor, while
+	still receiving the benefits of new SciTE features. This could be for an
+	editor designed for a particular environment such as developing games,
+	to incorporate a scripting capability within SciTE or to allow SciTE to be
+	controlled by another process through an IPC mechanism.</p>
+	<p>There are two example extensions.
+	The <a href="SciTEDirector.html">SciTE Director Interface</a> allows
+	SciTE on Windows to be controlled by an external application such as a
+	project manager.
+	The <a href="SciTELua.html">SciTE Lua Scripting Extension</a> is an
+	integration of the Lua scripting language into SciTE, done using the Extension
+	interface.</p>
+    <h3>
+       Extension Interface.
+    </h3>
+    <div class="example">
+	bool Initialise(ExtensionAPI *host_);<br />
+	bool Finalise();<br />
+	bool Clear();<br />
+	bool Load(const char *filename);<br />
+	bool InitBuffer(int index);<br />
+	bool ActivateBuffer(int index);<br />
+	bool RemoveBuffer(int index);<br />
+	bool OnOpen(const char *path);<br />
+	bool OnSwitchFile(const char *path);<br />
+	bool OnSave(const char *path);<br />
+	bool OnChar(char ch);<br />
+	bool OnExecute(const char *s);<br />
+	bool OnSavePointReached();<br />
+	bool OnSavePointLeft();<br />
+	bool OnStyle(unsigned int, int, int, Accessor *);<br />
+	bool OnDoubleClick();<br />
+	bool OnUpdateUI();<br />
+	bool OnMarginClick();<br />
+	bool OnMacro(const char *, const char *);<br />
+	bool SendProperty(const char *);<br />
+	bool OnKey(int keyval, int modifiers);<br />
+	bool OnDwellStart(int pos, const char *word);<br />
+	bool OnClose(const char *filename);<br />
+    </div>
+	<p>An extension must implement the Extension interface defined in scite/src/Extender.h
+	Only the first 4 methods must be implemented although an implementation can be as
+	simple as just returning false. The other methods have empty default implementations.
+	Methods added to this interface in the future should have default implementations so
+	existing extensions will continue to compile.</p>
+	<p>Each method returns a bool indicating whether the method handled all processing that
+	is needed and so no additional processing is required. Normally, false is returned to indicate
+	that further processing may be done.</p>
+	<p>The extension should use the Initialise and Finalise methods to allocate
+	and deallocate resources. The ExtensionAPI pointer should be saved in the
+	Initialise method so the extension can communicate back to SciTE.</p>
+	<p>The Clear and Load methods are used to support extensions that need
+	to load a resource such as a script file when a file is opened. When a file is
+	opened in SciTE, first the extension is asked to clear any data associated with
+	the previous file through Clear. Then SciTE checks for a property called
+	"extension" which matches the file name, so for x.cpp, looks for extension.*.cpp.
+	A file with this name is searched for in standard property file locations and if found
+	Load is called with the path as an argument.</p>
+	<p>The InitBuffer, ActivateBuffer, and RemoveBuffer methods provide the necessary hooks
+	so that extensions have a mechanism to associate data with a specific buffer, similar
+	to the way SciTE itself remembers the monospace setting of each buffer.  InitBuffer is
+	called whenever a new document is opened in a given buffer.  The buffer might be a newly
+	allocated one, or it might be recycled if the maximum number of buffers has been reached.
+	Once the buffer has been initialized, it will be the active buffer.  Thereafter,
+	ActivateBuffer is called whenever the user switches to another loaded buffer.
+	RemoveBuffer is called when an existing buffer is closed.  Thereafter, the indexes of
+	the buffers that come after the removed buffer are shifted down by one.  After
+	RemoveBuffer, the extension will receive an InitBuffer or ActivateBuffer to establish
+	the new active buffer.</p>
+	<p>OnExecute is called only when an extension command is executed. These are
+	indicated in properties as subsystem 3.</p>
+	<p>Other methods are called upon events occurring in SciTE allowing an extension
+	to respond to those events.</p>
+    <h3>
+       ExtensionAPI Interface.
+    </h3>
+	<div class="example">
+	enum Pane { paneEditor=1, paneOutput=2, paneFindOutput=3 };<br />
+	sptr_t Send(Pane p, unsigned int msg, uptr_t wParam=0, sptr_t lParam=0);<br />
+	char *Range(Pane p, int start, int end);<br />
+	void Remove(Pane p, int start, int end);<br />
+	void Insert(Pane p, int pos, const char *s);<br />
+	void Trace(const char *s);<br />
+	char *Property(const char *key);<br />
+	void SetProperty(const char *key, const char *val);<br />
+	uptr_t GetInstance();<br />
+	void ShutDown();<br />
+	void Perform(const char *actions);<br />
+	void DoMenuCommand(int cmdID);<br />
+	void UpdateStatusBar(bool bUpdateSlowData);<br />
+    	</div>
+	<p>An extension can call back into SciTE using this interface which is a simplified
+	way to access the functionality of SciTE.</p>
+	<p>As well as the normal editor pane and output pane, this interface allows for
+	a future feature where a third pane may be used for the output of search
+	commands. This is currently mapped to the output pane.</p>
+	<p>Send allows sending messages to the Scintilla control contained in each pane.</p>
+	<p>Range retrieves text from the pane. This must be deleted with delete[].
+	Remove and Insert are used to remove and insert text in a pane.</p>
+	<p>Trace displays a string at the end of the output pane.</p>
+	<p>SciTE's properties can be read and written with Property and
+	SetProperty. The result from Property should be deleted with delete[].</p>
+	<p>GetInstance is Windows specific and returns the HINSTANCE of
+	the application which is needed when accessing platform facilities.</p>
+	<p>ShutDown is equivalent to the user choosing the Quit menu item.
+	If there are any unsaved files loaded, then the user is asked whether to save them
+	and may cancel from this dialog. So under some circumstances, the application will
+	continue to run after ShutDown is called.</p>
+	<p>Perform takes a string containing an action, a ':' character, and an argument.
+	Currently the only known action is open and then the argument is a path.
+	This is used by the <a href="SciTEDirector.html">Director extension</a>
+	to relay commands from another application.
+	In the future more actions will be possible through this method.</p>
+    <h3>
+       Attaching the extension.
+    </h3>
+    	<p>Extensions are currently added explicitly by code in the start up function.
+	On Windows, the DirectorExtension is attached with code similar to this simplified
+	example:</p>
+	<div class="example">
+DirectorExtension director;<br />
+Extension *extender = &director;<br />
+//...<br />
+SciTEWin MainWind(extender);
+</div>
+	<p>It would be better to move to an implicit attachment mechanism similar to the
+	way lexers are attached to Scintilla, determining which extensions are used
+	by simply linking their object files into SciTE. It would also be good to
+	allow run-time attachment of extensions housed in DLLs or shared object libraries.</p>
+    <h3>
+       Multiplexing.
+    </h3>
+	<p>SciTE supports multiple extensions at a time. A multiplexer extension
+	maintains a list of extensions and calls each in turn for each method. Once an extension
+	returns true indicating processing should stop, the multiplexer returns without traversing
+	any remaining list members. However, for some methods such as Initialise and Finalise,
+	the remaining extensions are traversed regardless of the return value of the previous
+	extension.</p>
+    <h3>
+       Thread safety.
+    </h3>
+	<p>In general, SciTE is a single threaded application.  However, on Windows, command
+	tools call OnExecute from a separate worker thread.  The SingleThreadExtension adapter
+	class can be used to wrap an extension so that OnExecute calls are marshalled to the
+	main thread.  Of course, this is not necessary if your extension is thread safe, or
+	if it does not implement OnExecute, or if it is a GTK-specific extension.
+  </body>
+</html>
+

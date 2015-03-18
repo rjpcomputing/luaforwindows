@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>LuaSQL: Database connectivity for the Lua programming language</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div id="container">
+	
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+		<img alt="LuaSQL logo" src="luasql.png"/>
+	</a></div>
+	<div id="product_name"><big><b>LuaSQL</b></big></div>
+	<div id="product_description">Database connectivity for the Lua programming language</div>
+</div> <!-- id="product" -->
+
+<div id="main">
+	
+<div id="navigation">
+<h1>LuaSQL</h1>
+	<ul>
+		<li><a href="index.html">Home</a>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact us</a></li>
+			</ul>
+		</li>
+		<li><a href="manual.html">Manual</a>
+			<ul>
+				<li><a href="manual.html#introduction">Introduction</a></li>
+				<li><a href="manual.html#compiling">Compiling</a></li>
+				<li><a href="manual.html#installation">Installation</a></li>
+				<li><a href="manual.html#errors">Error handling</a></li>
+				<li><a href="manual.html#drivers">Drivers</a></li>
+				<li><a href="manual.html#environment_object">Environment</a></li>
+				<li><a href="manual.html#connection_object">Connection</a></li>
+				<li><a href="manual.html#cursor_object">Cursor</a></li>
+				<li><a href="manual.html#postgres_extensions">PostgreSQL</a></li>
+				<li><a href="manual.html#mysql_extensions">MySQL</a></li>
+				<li><a href="manual.html#oracle_extensions">Oracle</a></li>
+			</ul>
+		</li>
+		<li><strong>Examples</strong></li>
+		<li><a href="history.html">History</a></li>
+        <li><a href="http://luaforge.net/projects/luasql/">Project</a>
+            <ul>
+                <li><a href="http://luaforge.net/tracker/?group_id=12">Bug Tracker</a></li>
+                <li><a href="http://luaforge.net/scm/?group_id=12">CVS</a></li>
+            </ul>
+        </li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+	
+<h2><a name="examples"></a>Examples</h2>
+
+<p>Here is an example of the basic use of the library.
+After that, another example shows how to create an
+<a href="#iterator_example">iterator</a> over the result of a SELECT
+query.</p>
+
+
+<h3><a name="basic_use"></a>Basic use</h3>
+<pre class="example">
+-- load driver
+require "luasql.postgres"
+-- create environment object
+env = assert (luasql.postgres())
+-- connect to data source
+con = assert (env:connect("luasql-test"))
+-- reset our table
+res = con:execute"DROP TABLE people"
+res = assert (con:execute[[
+  CREATE TABLE people(
+    name  varchar(50),
+    email varchar(50)
+  )
+]])
+-- add a few elements
+list = {
+  { name="Jose das Couves", email="jose@couves.com", },
+  { name="Manoel Joaquim", email="manoel.joaquim@cafundo.com", },
+  { name="Maria das Dores", email="maria@dores.com", },
+}
+for i, p in pairs (list) do
+  res = assert (con:execute(string.format([[
+    INSERT INTO people
+    VALUES ('%s', '%s')]], p.name, p.email)
+  ))
+end
+-- retrieve a cursor
+cur = assert (con:execute"SELECT name, email from people")
+-- print all rows, the rows will be indexed by field names
+row = cur:fetch ({}, "a")
+while row do
+  print(string.format("Name: %s, E-mail: %s", row.name, row.email))
+  -- reusing the table of results
+  row = cur:fetch (row, "a")
+end
+-- close everything
+cur:close()
+con:close()
+env:close()
+</pre>
+
+<p>And the output of this script should be:</p>
+
+<pre class="example">
+Name: Jose das Couves, E-mail: jose@couves.com
+Name: Manoel Joaquim, E-mail: manoel.joaquim@cafundo.com
+Name: Maria das Dores, E-mail: maria@dores.com
+</pre>
+
+
+<h3><a name="iterator_example"></a>Iterator use</h3>
+<p>It may be useful to offer an iterator for the resulting rows:</p>
+
+<pre class="example">
+function rows (connection, sql_statement)
+  local cursor = assert (connection:execute (sql_statement))
+  return function ()
+    return cursor:fetch()
+  end
+end
+</pre>
+
+<p>Here is how the iterator is used:</p>
+ 
+<pre class="example">
+require "luasql.mysql"
+env = assert (luasql.mysql())
+con = assert (env:connect"my_db")
+for id, name, address in rows (con, "select * from contacts") do
+  print (string.format ("%s: %s", name, address))
+end
+</pre>
+
+<p>The above implementation relies on the garbage collector to close
+the cursor. It could be improved to give better error messages
+(including the SQL statement)
+or to explicitly close the cursor
+(by checking whether there are no more rows).</p>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
+	<p><small>$Id: examples.html,v 1.15 2007/10/30 01:10:49 carregal Exp $</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+
+</body>
+</html>

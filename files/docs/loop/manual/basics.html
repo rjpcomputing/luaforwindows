@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Basic Concepts</title>
+	<style type="text/css" media="all"><!--
+		@import "../loop.css";
+		@import "../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../index.html", title="">Home</a></li>
+	<li><a href="../release/index.html", title="Installation">Install</a></li>
+	<li><a href="index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="intro.html", title="Introduction">Intro</a></li>
+			<li><strong>Basics</strong></li>
+			<li><a href="models.html", title="Class Models">Models</a></li>
+			<li><a href="classops.html", title="Class Features">Classes</a></li>
+			<li><a href="components.html", title="Component Models">Comps</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../library/index.html", title="Class Library">Library</a></li>
+	<li><a href="../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Basic Concepts</h1>
+
+<p>All LOOP class models present a set of common functionalities, as is presented in this section. For instance, all models are presented as sub-packages of the LOOP package. Therefore, to require a particular model you should use the following command:</p>
+
+<pre>
+-- use the LOOP model named 'simple'
+-- for classes with simple inheritance
+local oo = require "loop.simple"
+</pre>
+
+<h2><a name="classes">Declaring Classes</a></h2>
+
+<p>All object models currently provided by LOOP are based on classes to implement behavioral sharing. Therefore, to create a LOOP object you must first define a class for it using the operation <code>class(definition)</code>. This operation receives a table that must be used as the class. Generally, a LOOP class can be seen as the meta-table of all objects of that class, <i>i.e.</i> it contains the meta-methods that defines the behavior of its instances. Since object classes usually are also used to define common features provided by all instances, every LOOP class has a default implementation of the <code>__index</code> meta-method that retrieves fields from the class. This way, every field defined by the class is shared by all its instances. For example, suppose the following class definition.</p>
+
+<pre>
+-- model with no inheritance
+local oo = require "loop.base"
+
+local Date = oo.class{
+  -- default field values
+  day   = 1,
+  month = 1,
+  year  = 1900,
+}
+function Date:addyears(years)
+  self.year = self.year + years
+end
+function Date:__tostring()
+  return string.format("%d/%d/%d",
+                       self.month,
+                       self.day,
+                       self.year)
+end
+</pre>
+
+<p>The class <code>Date</code> defines the fields <code>day</code>, <code>month</code>, <code>year</code> with default values and provides the implementation of the method <code>addyear</code> and the <code>__tostring</code> meta-method that is used by the tostring function of Lua base library. Therefore, all instances of class <code>Date</code> will share this behavior.</p> 
+
+<h2><a name="objects">Creating Objects</a></h2>
+
+<p>Suppose the following code that creates an instance of class <code>Date</code> and uses it to find out the next birthday of a person.</p>
+
+<pre>
+function input(message, validator)
+  print(message)
+  return assert(validator(io.read()))
+end
+
+local day   = input("Enter the day of your birth"  , tonumber)
+local month = input("Enter the month of your birth", tonumber)
+local year  = input("Enter the year of your birth" , tonumber)
+local age   = input("Enter your age"               , tonumber)
+
+-- new Date instance that overrides default values
+local birthday = Date {
+  day   = day,
+  month = month,
+  year  = year,
+}
+birthday:addyears(age + 1)
+print("Your next birthday will be on", birthday)
+</pre>
+
+<p>All classes of LOOP models can be instantiated like in the example above that is using the class as a constructor that receives the values used to create an instance and returns it. Alternatively, instances can be created by the operation <code>new</code> that receives as parameters the class and the values used to create the instance.</p>
+
+<h2><a name="__init">Initializing Objects</a></h2>
+
+<p>The default way instances are created is using the first argument informed as the object that must become an instance of the class. That is why the above example passes a table for the class in order to create the instance. However, this behavior can be redefined by the definition of the <code>__init</code> field on the class. This field works like a meta-method that is used to create instances of a class. The function stored at field <code>__init</code> receives the class and all the values provided to the class constructor. For example, suppose that we want to change the class <code>Date</code> so it can be instantiated from a tripe of numbers instead of a table containing possible replacements of default attribute values, then we can use the code provided below.</p>
+
+<pre>
+function Date:__init(month, day, year)
+  -- self is the class
+  return oo.rawnew(self, {
+    day   = day,
+    month = month,
+    year  = year,
+  })
+end
+</pre>
+
+<p>The <code>rawnew</code> function is used to forcefully turn a table into an instance of a class without calling the <code>__init</code> function. The <code>rawnew</code> function can be roughly comparable to the setmetatable function of Lua with switched parameters (actually that is its implementation in most LOOP models). The main purpose of the <code>__init</code> function is to initialize a table so it can be turned into an instance of a class. This way the class may define may different semantics for the constructor. For example, consider the two following types of constructors.</p>
+
+<pre>
+function Constructed:__init(...)
+  -- creates and initialize a brand
+  -- new instance with the values of
+  -- provided parameters
+  return oo.rawnew(self, { ... })
+end
+
+function Mutant:__init(object)
+  object = object or {}
+  -- optionally checks if the object
+  -- presents the expected state
+  -- and turns it into an instance
+  return oo.rawnew(self, object)
+end
+</pre>
+
+<p>When <code>Constructed</code> constructor is called, it always return a brand new instance, so it is not possible to properly make an existing table an instance of <code>Constructed</code> (unless using the <code>rawnew</code> function). On the other hand, the constructor of <code>Mutant</code> class can be used to initialize the table properly prior to the actual instantiation performed by <code>rawnew</code>.</p>
+
+<h2><a name="introsp">Introspection Mechanisms</a></h2>
+
+<p>Finally, all LOOP models provide introspection operations like <code>classof(object)</code>, <code>isclass(table)</code>, <code>instanceof(object, class)</code>, <code>memberof(class, name)</code> and <code>members(class)</code> for retrieving the LOOP class of an object, check whether a table is a class of the LOOP model, check whether an object is an instance of a given class, get the value of a member defined in a class, and iterating through all class members, respectively.</p>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

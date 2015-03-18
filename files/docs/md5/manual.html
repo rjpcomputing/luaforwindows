@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>MD5: Cryptographic Library for Lua</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo">
+        <a href="http://www.keplerproject.org"><img alt="MD5 logo" src="md5.png"/></a>
+    </div>
+	<div id="product_name"><big><strong>MD5</strong></big></div>
+	<div id="product_description">Cryptographic Library for Lua</div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+<div id="navigation">
+<h1>MD5</h1>
+	<ul>
+		<li><a href="index.html">Home</a>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+				<li><a href="index.html#history">History</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact us</a></li>
+			</ul>
+		</li>
+		<li><strong>Manual</strong>
+			<ul>
+				<li><a href="manual.html#introduction">Introduction</a></li>
+				<li><a href="manual.html#building">Building</a></li>
+				<li><a href="manual.html#installation">Installation</a></li>
+				<li><a href="manual.html#reference">Reference</a>
+                    <ul>
+                        <li><a href="manual.html#lua_api">Lua API</a></li>
+                        <li><a href="manual.html#c_api">C API</a></li>
+                    </ul>
+                </li>
+			</ul>
+		</li>
+        <li><a href="http://luaforge.net/projects/md5/">Project</a>
+            <ul>
+                <li><a href="http://luaforge.net/tracker/?group_id=155">Bug Tracker</a></li>
+                <li><a href="http://luaforge.net/scm/?group_id=155">CVS</a></li>
+            </ul>
+        </li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+<h2><a name="introduction"></a>Introduction</h2>
+
+<p>
+MD5 offers basic cryptographic facilities for Lua 5.1:
+a hash (digest) function, a pair crypt/decrypt based on MD5 and CFB,
+and a pair crypt/decrypt based on DES with 56-bit keys.
+</p>
+
+<p>
+MD5 is free software and uses the same <a href="license.html">license</a>
+as Lua.
+</p>
+
+<h2><a name="building"></a>Building</h2>
+
+<p>
+If you are using Unix MD5 offers a Makefile and a separate configuration file,
+<code>config</code>, which should be edited to suit the particularities of the target platform
+before running <code>make</code>.
+The file has some definitions like paths to the external libraries,
+compiler options and the like. One important definition is the Lua version,
+which is not obtained from the installed software.
+</p>
+
+<p>
+If you want to build MD5 on Windows MD5 offers the equivalent <code>config.win</code>
+and <code>Makefile.win</code> files to be used with Microsoft Visual Studio 2005.
+</p>
+
+<h2><a name="installation"></a>Installation</h2>
+
+<p>
+The easiest way to install MD5 is to use <a href="http://www.luarocks.org">LuaRocks</a>:
+</p>
+
+<pre class="example">
+luarocks install md5
+</pre>
+
+<p>
+If you prefer to install the files manually and are using Unix, the build generates
+two compiled binary files, <code>core.so</code> and <code>des56.so</code>.
+The first should be copied to a directory called <code>md5</code>
+in your <a href="http://www.lua.org/manual/5.1/manual.html#pdf-package.cpath">C path</a>.
+Just copy the second to a directory in your Lua C path.
+</p>
+
+<p>
+Windows users can use the binary version of MD5 available at
+<a href="http://luaforge.net/projects/md5/files">LuaForge</a>.</p>
+
+<p>
+In both Unix and Windows systems the file <code>md5.lua</code> should be copied to a directory in your
+<a href="http://www.lua.org/manual/5.1/manual.html#pdf-package.path">Lua path</a>.
+</p>
+
+<h2><a name="reference"></a>Reference</h2>
+
+<h3><a name="lua_api"></a>Lua API</h3>
+
+<p>All MD5-based functions are registered inside a table <code>md5</code>.</p>
+
+<dl>
+    <dt><strong>md5.sum (message)</strong></dt>
+    <dd>Computes the MD5 message-digest of the string <code>message</code>.
+        This function takes as input a message of arbitrary length and content
+        and returns as output a 128-bit "fingerprint" (or "message digest")
+        of the input.<br />
+        The output is formated as a binary string with 16 characters.
+        It is conjectured that it is computationally infeasible to produce
+        two messages having the same message digest, or to produce any
+        message having a given pre-specified target message digest.
+        (see <a href="ftp://ftp.isi.edu/in-notes/rfc1321.txt">RFC 1321</a>)
+    </dd>
+
+    <dt><strong>md5.sumhexa (message)</strong></dt>
+    <dd>Similar to <code>md5.sum</code>, but returns its value as a
+        string of 32 hexadecimal digits.
+    </dd>
+
+    <dt><strong>md5.crypt (message, key [,seed])</strong></dt>
+    <dd>Encrypts a string, using MD5 in CFB (Cipher-feedback mode).
+        <code>message</code> is an arbitrary binary string to be encrypted.
+        <code>key</code> is an arbitrary binary string to be used as a key.
+        <code>seed</code> is an arbitrary binary string to be used as a seed;
+        Returns the cyphertext (as a binary string).<br />
+        
+        If no seed is provided, the function uses the result of
+        <code>os.time()</code> as a seed. It is recommended that you use
+        different seeds for each message;  the seed itself is not private,
+        and should contain no private data, because it goes plain in the
+        beginning of the encrypted message.<br />
+        
+        The length of the cyphertext is the length of the message plus the
+        length of the seed plus one.
+    </dd>
+
+    <dt><strong>md5.decrypt (message, key)</strong></dt>
+    <dd>Decrypts a string. The input <code>message</code> must be the result of
+        a previous call to <code>crypt</code>. For any <code>msg</code>,
+        <code>key</code>, and <code>seed</code>, we have that
+        <pre>md5.decrypt(md5.crypt(msg, key, seed), key) == msg</pre>
+    </dd>
+
+    <dt><strong>md5.exor (s1, s2)</strong></dt>
+    <dd>Does a bit-a-bit exclusive or of strings <code>s1</code> and <code>s2</code>.
+        Both strings must have the same length, which will be also the length of
+        the resulting string.
+    </dd>
+</dl>
+
+<p>The DES-based functions are registered inside a table <code>des56</code>.</p>
+
+<dl>
+    <dt><strong>des56.crypt (message, key)</strong></dt>
+    <dd>Encrypts a string, using DES with a 56-bit key.
+        <code>message</code> is an arbitrary binary string to be encrypted.
+        <code>key</code> is an 8-byte binary string to be used as a key.
+        Returns the cyphertext (as a binary string).<br />
+    </dd>
+
+    <dt><strong>des56.decrypt (message, key)</strong></dt>
+    <dd>Decrypts a string. The input <code>message</code> must be the result of
+        a previous call to <code>des56.crypt</code>. For any <code>msg</code>
+        and <code>key</code>, we have that
+        <pre>des56.decrypt(des56.crypt(msg, key), key) == msg</pre>
+    </dd>
+
+</dl>
+
+<h3><a name="c_api"></a>C API</h3>
+
+<p>The following functions are declared in <code>md5.h</code></p>
+
+<dl>
+    <dt><strong>int luaopen_md5_core (lua_State *L)</strong></dt>
+    <dd>Opens the library and registers the "md5" Lua functions in the given state.</dd>
+    
+    <dt><strong>void md5 (const char *message, long len, char *output)</strong></dt>
+    <dd>Computes the MD5 message-digest of <code>message</code>.
+        <code>len</code> is the length of <code>message</code>.
+        <code>output</code> is a buffer that receives the result;
+        it must have at least 16 bytes (128 bits).
+    </dd>
+</dl>
+
+<p>The following function is declared in <code>ldes56.h</code></p>
+    
+<dl>
+    <dt><strong>int luaopen_des56 (lua_State *L)</strong></dt>
+    <dd>Opens the library and registers the "des56" Lua functions in the given state.</dd>
+</dl>
+
+
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+    <p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
+    <p><small>$Id: manual.html,v 1.14 2008/05/12 20:51:27 carregal Exp $</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+
+</body>
+</html> 

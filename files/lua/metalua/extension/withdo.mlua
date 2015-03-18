@@ -1,0 +1,30 @@
+-- RAII in metalua.
+--
+-- Write:
+-- with var_1, var_2... = val_1, val_2... do
+--    ...
+-- end
+--
+-- will assign val_n to var_n foreach n, and guaranty that var_n:close() will be called,
+-- no matter what, even if the body causes an error, even if it returns, even
+-- if another :close() call causes an error, etc. No. Matter. What.
+
+require 'metalua.extension.trycatch'
+
+function withdo_builder (x)
+   local names, vals, body = unpack(x)
+   for i = #names, 1, -1 do
+      local name, val = names[i], vals[i]
+      body = trycatch_builder{ { `Set{ {name}, {val} }, body }, -- try-block
+                               { }, -- catch-block
+                               { +{ print ("closing "..-{`String{name[1]}}) },
+                                 `Invoke{ name, `String "close" } } }
+   end
+   table.insert(body, 1, `Local{ names })
+   return body
+end
+
+mlp.lexer:add 'with'
+mlp.stat:add{
+   'with', mlp.id_list, '=', mlp.expr_list, 'do', mlp.block, 'end',
+   builder = withdo_builder }

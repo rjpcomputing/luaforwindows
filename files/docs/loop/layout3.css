@@ -1,0 +1,29 @@
+/* All the content boxes belong to the content class. */
+.content {
+	position:relative; /* Position is declared "relative" to gain control of stacking order (z-index). */
+	width:auto;
+	min-width:120px;
+	max-width:600px;
+	margin:0px 147px 20px 147px;
+	padding:10px;
+	z-index:3; /* This allows the content to overlap the right menu in narrow windows in good browsers. */
+	}
+
+#Menu {
+	position:absolute;
+	left:0px;
+	z-index:2;
+}
+
+#Board {
+	position:absolute;
+	top:80px;
+	right:0px;
+	padding:0px 0px 0px 10px;
+	border-left:1px dashed #ccc;
+	z-index:1;
+	width:120px;
+	font-size:80%;
+	}
+/* Again, "be nice to Opera 5". */
+body>#Board {width:120px;}

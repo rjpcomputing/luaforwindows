@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Thread Scheduler with I/O</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																																																																																																																											<li><a href="../../index.html", title="">Home</a></li>
+																																																																																																																																											<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																																																																																																																											<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																																																																																																																											<li><a href="../index.html", title="Class Library">Library</a>
+																																																																																																																																												<div class="outside"><div class="inside"><ul>
+																																																																																																																																													<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																																																																																																																														</li>
+																																																																																																																																														<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																																																																																																																															</li>
+																																																																																																																																															<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																																																																																																																																</li>
+																																																																																																																																																<li><a href="../overview.html#object", title="Objects">object</a>
+																																																																																																																																																	</li>
+																																																																																																																																																	<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																																																																																																																																		</li>
+																																																																																																																																																		<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																																																																																																																																			</li>
+																																																																																																																																																		</ul></div></div>
+																																																																																																																																																	</li>
+																																																																																																																																																	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																																																																																																																																	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																																																																																																																																</ul></div></div>
+																																																																																																																																															
+</div>
+
+<div class="content">
+<h1>Thread Scheduler with I/O</h1>
+<h2><code>loop.thread.IOScheduler</code></h2><br>
+<p>Subclass of <code><a href="Scheduler.html">Scheduler</a></code> that offers support for introduction of synchronous I/O operations integrated with the scheduler.
+This class offers support to implement I/O operations that switch execution for other threads until the I/O channel is ready.
+This class is useful for implementation of I/O operations integrated with the cooperative scheduling mechanism in order to maximize the processing time.</p>
+
+<p>The instances of this class have two more lists mapping I/O channels (<i>e.g.</i> socket or file) to the suspended threads that should be resumed when the channel becomes ready for reading or writing.
+Additionally, it uses a provided function (<i>e.g.</i> <code>socket.select</code> function of <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> package) to select I/O channels ready for access.</p>
+
+<h2>Behavior</h2>
+
+<h3>Initialization</h3>
+
+<dl>
+	
+	<dt><code><b>IOScheduler</b>([object])</code></dt>
+	<dd>
+	Executes the same initialization of its superclass <code><a href="Scheduler.html">Scheduler</a></code> with value provided by <code>object</code> and additionally creates the lists used to map channels to blocked threads (<i>i.e.</i> <code>reading</code> and <code>writing</code>).
+	</dd>
+	
+</dl>
+
+<h3>Fields</h3>
+
+<dl>
+	
+	<dt><code><b>select</b></code> [required]</dt>
+	<dd>
+		Function that implements the same API of <code>socket.select</code> function of <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> package but can select channels of any type supported by the <code>IOScheduler</code> instance.
+	</dd>
+	
+	<dt><code><b>sleep</b></code> [required]</dt>
+	<dd>
+		Function that suspends the execution of the application for the ammount of seconds given as argument.
+		This function called when the scheduler is idle and no thread is blocked on I/O channels.
+	</dd>
+	
+</dl>
+
+<h3>Methods</h3>
+
+<dl>
+	
+	<dt><code><b>remove</b>(coroutine)</code></dt>
+	<dd>
+		Redefinition of superclass method in order to also remove the <code>coroutine</code> from the lists of I/O blocked threads.
+	</dd>
+	
+	<dt><code><b>register</b>(coroutine)</code></dt>
+	<dd>
+		Redefinition of superclass method in order to check if the registering  <code>coroutine</code> is not already registered in the lists of I/O blocked threads.
+	</dd>
+
+	<dt><code><b>step</b>()</code></dt>
+		Redefinition of superclass method that also unblocks waiting threads when their I/O channels are ready for access.
+	<dd>
+		
+	</dd>
+	
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	<li>
+		This class was mainly devised for use with the asynchronous support provided by <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library for socket channels.
+		Therefore, it may not cope very well with other asynchronous I/O libraries.
+	</li>
+	<li>
+		This class is not very scalable nor efficient due to constrains imposed by <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> API.
+		Mainly due to the <code>socket.select</code> function.
+	</li>
+</ul>
+
+<h2>Examples</h2>
+
+See class <code><a href="CoSocket.html">CoSocket</a></code>.
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>LuaSQL: Database connectivity for the Lua programming language</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+		<img alt="LuaSQL logo" src="luasql.png"/>
+	</a></div>
+	<div id="product_name"><big><strong>LuaSQL</strong></big></div>
+	<div id="product_description">Database connectivity for the Lua programming language</div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+<h1>LuaSQL</h1>
+	<ul>
+		<li><a href="index.html">Home</a>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact us</a></li>
+			</ul>
+		</li>
+		<li><strong>Manual</strong>
+			<ul>
+				<li><a href="manual.html#introduction">Introduction</a></li>
+				<li><a href="manual.html#compiling">Compiling</a></li>
+				<li><a href="manual.html#installation">Installation</a></li>
+				<li><a href="manual.html#errors">Error handling</a></li>
+				<li><a href="manual.html#drivers">Drivers</a></li>
+				<li><a href="manual.html#environment_object">Environment</a></li>
+				<li><a href="manual.html#connection_object">Connection</a></li>
+				<li><a href="manual.html#cursor_object">Cursor</a></li>
+				<li><a href="manual.html#postgres_extensions">PostgreSQL</a></li>
+				<li><a href="manual.html#mysql_extensions">MySQL</a></li>
+				<li><a href="manual.html#oracle_extensions">Oracle</a></li>
+			</ul>
+		</li>
+		<li><a href="examples.html">Examples</a></li>
+		<li><a href="history.html">History</a></li>
+        <li><a href="http://luaforge.net/projects/luasql/">Project</a>
+            <ul>
+                <li><a href="http://luaforge.net/tracker/?group_id=12">Bug Tracker</a></li>
+                <li><a href="http://luaforge.net/scm/?group_id=12">CVS</a></li>
+            </ul>
+        </li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+<h2><a name="introduction"></a>Introduction</h2>
+<p>LuaSQL is a simple interface from Lua to a number of database management systems.
+It includes a set of drivers to some popular databases
+(currently PostgreSQL, ODBC, MySQL, SQLite, Oracle, and ADO;
+ Interbase and Sybase are in our plans).
+LuaSQL defines a simple object-oriented API.
+All drivers should implement this common API,
+but each one is free to offer extensions.</p>
+
+<p>LuaSQL defines one single global variable,
+a table called <code>luasql</code>.
+This table is used to store the initialization methods of the
+loaded drivers.
+These methods are used to create an
+<a href="#environment_object">environment object</a>
+which is used to create a
+<a href="#connection_object">connection object</a>.
+A connection object can execute SQL statements and eventually
+create a
+<a href="#cursor_object">cursor object</a>
+which is used to retrieve data.
+</p>
+<p>
+LuaSQL is free software and uses the same
+<a href="license.html">license</a>
+as Lua 5.1.
+</p>
+
+
+<h2><a name="compiling"></a>Compiling</h2>
+
+<p>LuaSQL is distributed as a set of C source files:
+a pair of common source and header files (<code>luasql.h</code> and <code>luasql.c</code>);
+and one source file for each driver.
+Each driver should be compiled with the luasql.c file to generate a library.
+This library can be linked to the application or dynamically loaded. 
+The initialization function is <code>luaopen_luasql<em>drivername</em></code> and it is a Lua
+<a href="http://www.lua.org/manual/5.1/manual.html#pdf-require"><code>open-library</code></a> compatible function.
+</p>
+
+<h2><a name="installation"></a>Installation</h2>
+
+<p>All LuaSQL drivers follow the
+<a href="http://www.keplerproject.org/compat">package model</a>
+for Lua 5.1 and therefore should be "installed" in your
+<code>package.path</code>.</p>
+
+<p>Windows users can use the compiled versions of LuaSQL available at
+<a href="http://luaforge.net/projects/luasql/files">LuaForge</a></p>
+
+<p>In order to use LuaSQL with ADO, make sure that you have
+ <a href="http://www.tecgraf.puc-rio.br/~rcerq/luacom">LuaCOM 1.3</a>
+ for Lua 5.1 installed.</p>
+
+<h2><a name="errors"></a>Error handling</h2>
+<p>
+LuaSQL is just an abstraction layer that communicates between Lua
+and a database system.
+Therefore errors can occur on both levels, that is,
+inside the database client or inside LuaSQL driver.
+</p>
+<p>
+Errors such as malformed SQL statements, unknown table names etc.
+are called <em>database errors</em> and
+will be reported by the function/method returning <code>nil</code> followed
+by the error message provided by the database system.
+Errors such as wrong parameters, absent connection, invalid objects etc.,
+called <em>API errors</em>,
+are usually program errors and so will raise a Lua error.
+</p>
+<p>
+This behavior will be followed by all functions/methods
+described in this document unless otherwise stated.
+</p>
+
+<h2><a name="drivers"></a>Drivers</h2>
+
+<p>
+A LuaSQL driver allows the use of the LuaSQL API with a database management system
+that corresponds to the driver. To use a driver you have to load it in the
+<code>luasql</code> table. The example below
+</p>
+
+<pre class="example">
+require "luasql.odbc"
+</pre>
+
+<p>
+loads the ODBC driver in the <code>luasql</code> table. Note that you can have more than one
+driver loaded at the same time doing something like:
+</p>
+
+<pre class="example">
+require "luasql.odbc"
+require "luasql.oci8"
+</pre>
+
+<p>
+This example also shows that the driver name not always correspond to the
+Database name, but to the driver name in the file system. Since it refers to
+the OCI8 API, the Oracle driver has the name <code>oci8</code> instead of
+<code>oracle</code>.
+</p>
+
+<p>
+Some drivers, such as the MySQL, have libraries for a number of database versions that
+use the same file name (<code>mysql</code>). In this case it is not possible to
+load more than one version of the MySQL driver in the <code>luasql</code> table.
+</p>
+
+<h2><a name="environment_object"></a>Environment Objects</h2>
+
+<p>An environment object is created by calling the driver's initialization
+function that is stored in the <code>luasql</code> table, indexed with the same
+name as the driver (odbc, postgres etc). For example,
+</p>
+
+<pre class="example">
+env = luasql.odbc()
+</pre>
+
+<p>will try to create an environment object using the ODBC driver.</p>
+
+<h4>Methods</h4>
+
+<dl class="reference">
+
+	<dt><a name="env_close"></a><strong><code>env:close()</code></strong></dt>
+	<dd>Closes the environment <code>env</code>.
+	Only successful if all connections pertaining to it were closed first.<br/>
+	Returns: <code>true</code> in case of success; <code>false</code> when
+	the object is already closed.</dd>
+	
+	<dt><a name="env_connect"></a><strong><code>env:connect(sourcename[,username[,password]])</code></strong></dt>
+	<dd>Connects to a data source specified in <code>sourcename</code> using 
+	<code>username</code> and <code>password</code> if they are supplied.<br/>
+	The <code>sourcename</code> may vary according to each driver.
+	Some use a simple database name, like PostgreSQL, MySQL and SQLite;
+	the ODBC driver expects the name of the DSN;
+	the Oracle driver expects the service name;
+	See also: <a href="#postgres_extensions">PostgreSQL</a>,
+		and <a href="#mysql_extensions">MySQL</a> extensions.<br/>
+	Returns: a <a href="#connection_object">connection object</a>.</dd>
+
+</dl>
+
+
+<h2><a name="connection_object"></a>Connection Objects</h2>
+
+<p>A connection object contains specific attributes and parameters of a
+single data source connection.
+A connection object is created by calling the
+<code><a href="#env_connect">environment:connect</a></code>
+method.</p>
+
+<h4>Methods</h4>
+
+<dl class="reference">
+
+	<dt><a name="conn_close"></a><strong><code>conn:close()</code></strong></dt>
+	<dd>Closes the connection <code>conn</code>.
+	Only successful if all cursors pertaining to it have been closed and the connection is still open.<br/>
+	Returns: <code>true</code> in case of success and <code>false</code> in case of failure.</dd>
+	
+	
+	<dt><a name="conn_commit"></a><strong><code>conn:commit()</code></strong></dt>
+	<dd>Commits the current transaction.
+	This feature might not work on database systems that do not implement
+	transactions.<br/>
+	Returns: <code>true</code> in case of success and <code>false</code> when
+	the operation could not be performed or when it is not implemented.</dd>
+	
+	
+	<dt><a name="conn_execute"></a><strong><code>conn:execute(statement)</code></strong></dt>
+	<dd>Executes the given SQL <code>statement</code>.<br/>
+	Returns: a <a href="#cursor_object">cursor object</a>
+	if there are results, or the number of rows affected by the command otherwise.</dd>
+	
+	
+	<dt><a name="conn_rollback"></a><strong><code>conn:rollback()</code></strong></dt>
+	<dd>Rolls back the current transaction.
+	This feature might not work on database systems that do not implement
+	transactions.<br/>
+	Returns: <code>true</code> in case of success and <code>false</code> when
+	the operation could not be performed or when it is not implemented.</dd>
+	
+	
+	<dt><a name="conn_setautocommit"></a><strong><code>conn:setautocommit(boolean)</code></strong></dt>
+	<dd>Turns on or off the "auto commit" mode.
+	This feature might not work on database systems that do not implement
+	transactions.
+	On database systems that do not have the concept of "auto commit mode",
+	but do implement transactions, this mechanism is implemented by the driver.
+	<br/>
+	Returns: <code>true</code> in case of success and <code>false</code> when
+	the operation could not be performed or when it is not implemented.</dd>
+
+</dl>
+
+
+<h2><a name="cursor_object"></a>Cursor Objects</h2>
+
+<p>A cursor object contains methods to retrieve data resulting from an
+executed statement. A cursor object is created by using the
+<code><a href="#conn_execute">connection:execute</a></code>
+function.
+See also <a href="#postgres_extensions">PostgreSQL</a>
+and <a href="#oracle_extensions">Oracle</a> extensions.</p>
+
+<h4>Methods</h4>
+
+<dl class="reference">
+
+	<dt><a name="cur_close"></a><strong><code>cur:close()</code></strong></dt>
+	<dd>Closes this cursor.<br/>
+	Returns: <code>true</code> in case of success and <code>false</code> when
+	the object is already closed.</dd>
+	
+	
+	<dt><a name="cur_fetch"></a><strong><code>cur:fetch([table[,modestring]])</code></strong></dt>
+	<dd>Retrieves the next row of results.<br/>
+	If <code>fetch</code> is called without parameters,
+	the results will be returned directly to the caller.
+	If <code>fetch</code> is called with a table, the results will be copied
+	into the table and the changed table will be returned.
+	In this case, an optional <code>modestring</code> parameter can be used.
+	It is just a string indicating how the resulting table should be constructed.
+	The mode string can contain:
+	<dl>
+	  <dt><strong>"n"</strong></dt><dd>the resulting table will have numerical indices (default)</dd>
+	  <dt><strong>"a"</strong></dt><dd>the resulting table will have alphanumerical indices</dd>
+	</dl>
+	<br/>
+	The <em>numerical indices</em> are the positions of the fields in the SELECT
+	statement;
+	the <em>alphanumerical indices</em> are the names of the fields.<br/>
+	The optional <code>table</code> parameter is a table that should be
+	used to store the next row.
+	This allows the use of a unique table for many fetches, which
+	can improve the overall performance.<br/>
+	There is no guarantee about the types of the results: they may or may not be converted to adequate Lua types by the driver.
+	In the current implementation,
+	the PostgreSQL and MySQL drivers return all values as strings
+	while the ODBC and Oracle drivers convert them to Lua types.<br/>
+	Returns: data, as above, or <code>nil</code> if there are no more rows.
+	Note that this method could return <code>nil</code> as a valid result.</dd>
+	
+	
+	<dt><a name="cur_colnames"></a><strong><code>cur:getcolnames()</code></strong></dt>
+	<dd>Returns: a list (table) of column names.</dd>
+	
+	
+	<dt><a name="cur_coltypes"></a><strong><code>cur:getcoltypes()</code></strong></dt>
+	<dd>Returns: a list (table) of column types.</dd>
+
+</dl>
+
+<p><a name="extensions"></a></p>
+
+<h2><a name="postgres_extensions"></a>PostgreSQL Extensions</h2>
+
+<p>Besides the basic functionality provided by all drivers,
+the Postgres driver also offers these extra features:</p>
+
+<dl class="reference">
+  <dt><strong><code>env:connect(sourcename[,username[,password[,hostname[,port]]]])</code></strong></dt>
+  <dd>In the PostgreSQL driver, this method adds two optional parameters
+    that indicate the hostname and port to connect.
+    Also, the first parameter can contain all connection information,
+    as stated in the documentation for <code>PQconnectdb</code> function
+    in the PostgreSQL manual
+    (e.g. <small><code>environment:connect("dbname=&lt;<em>name</em>&gt; user=&lt;<em>username</em>&gt;")</code></small>) <br/>
+    See also: <a href="#environment_object">environment objects</a><br/>
+    Returns: a <a href="#connection_object">connection object</a></dd>
+
+  <dt><strong><code>cur:numrows()</code></strong></dt>
+  <dd>See also: <a href="#cursor_object">cursor objects</a><br/>
+    Returns: the number of rows in the query result.</dd>
+</dl>
+
+
+<h2><a name="mysql_extensions"></a>MySQL Extensions</h2>
+
+<p>Besides the basic functionality provided by all drivers,
+the MySQL driver also offers these extra features:</p>
+
+<dl class="reference">
+  <dt><strong><code>env:connect(sourcename[,username[,password[,hostname[,port]]]])</code></strong></dt>
+  <dd>In the MySQL driver, this method adds two optional parameters
+    that indicate the hostname and port to connect.
+    See also: <a href="#environment_object">environment objects</a><br/>
+    Returns: a <a href="#connection_object">connection object</a></dd>
+
+  <dt><strong><code>cur:numrows()</code></strong></dt>
+  <dd>See also: <a href="#cursor_object">cursor objects</a><br/>
+    Returns: the number of rows in the query result.</dd>
+</dl>
+
+<p>Notes:</p>
+
+<p>This driver is compatible with versions 4.0, 4.1 and 5.0 of the
+MySQL API. Only from version 4.1 MySQL provides support for transactions by using
+BDB or INNODB tables.
+Therefore, with version 4.0 or without one of these types of tables, the
+methods <code>commit</code>, <code>rollback</code> and
+<code>setautocommit</code> will not work.</p>
+
+<p>If you are using LuaSQL 2.0, <strong><code>cur:numrows()</code></strong>
+is available only in version 2.0.2 or later.</p>
+
+
+<h2><a name="oracle_extensions"></a>Oracle Extensions</h2>
+
+<p>Besides the basic functionality provided by all drivers,
+the Oracle driver also offers this extra feature:</p>
+
+<dl class="reference">
+  <dt><strong><code>cur:numrows()</code></strong></dt>
+  <dd>See also: <a href="#cursor_object">cursor objects</a><br/>
+    Returns: the number of rows in the query result.</dd>
+</dl>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
+	<p><small>$Id: manual.html,v 1.25 2007/10/30 01:10:49 carregal Exp $</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+
+</body>
+</html> 

@@ -1,0 +1,41 @@
+// TestSafeArray.idl : IDL source for TestSafeArray.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (TestSafeArray.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+	[
+		object,
+		uuid(353BD90E-14BD-47A8-AEB7-99C05C37E084),
+		dual,
+		helpstring("ITest Interface"),
+		pointer_default(unique)
+	]
+	interface ITest : IDispatch
+	{
+		[id(1), helpstring("method GetArray")] HRESULT GetArray([out, retval] SAFEARRAY(BSTR)* array);
+		[id(2), helpstring("method SetArray")] HRESULT SetArray([in, out] SAFEARRAY(BSTR)* array);
+		[id(3), helpstring("method GetArray432")] HRESULT GetArray432([out, retval] SAFEARRAY(BSTR)* array);
+	};
+
+[
+	uuid(A330C547-E474-44BC-98A8-BC5089BBA0DA),
+	version(1.0),
+	helpstring("TestSafeArray 1.0 Type Library")
+]
+library TESTSAFEARRAYLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(EC6D6D8D-2D13-4759-92D8-538DFE1CDAAA),
+		helpstring("Test Class")
+	]
+	coclass Test
+	{
+		[default] interface ITest;
+	};
+};

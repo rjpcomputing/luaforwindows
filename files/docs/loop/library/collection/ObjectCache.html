@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Object Cache</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+													<li><a href="../../index.html", title="">Home</a></li>
+													<li><a href="../../release/index.html", title="Installation">Install</a></li>
+													<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+													<li><a href="../index.html", title="Class Library">Library</a>
+														<div class="outside"><div class="inside"><ul>
+															<li><a href="../overview.html#collection", title="Collections">collection</a>
+																</li>
+																<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																	</li>
+																	<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																		</li>
+																		<li><a href="../overview.html#object", title="Objects">object</a>
+																			</li>
+																			<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																				</li>
+																				<li><a href="../overview.html#thread", title="Threading">thread</a>
+																					</li>
+																				</ul></div></div>
+																			</li>
+																			<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																			<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																		</ul></div></div>
+																	
+</div>
+
+<div class="content">
+<h1>Object Cache</h1>
+<h2><code>loop.collection.ObjectCache</code></h2><br>
+<p>Class of objects that cache values for different key values.
+Whenever the value of a given a key is requested, a function is used to retrieve the corresponding value that is also cached for further requests of the same key.
+If the key value is collected as garbage, the cache entry becomes garbage as well.
+This class is useful for implementing optimizations that avoid re-evaluation of complex operations or duplication of similar objects.</p>
+
+<p><code>ObjectCache</code> class defines the <code>__index</code> meta-method so that it uses the method <code>retrieve</code> of its instance to retrieve values for keys not already mapped by the instance.
+If the instance does not provide the method <code>retrieve</code> then it uses the value of field <code>default</code> as the value for keys not mapped.
+Anyway, the values retrieved for each key are stored in the instance with the corresponding key as index thus further requests for the same key work just like a simple table indexing.</p>
+
+<h2>Behavior</h2>
+
+<h3>Fields</h3>
+
+<dl>
+	
+	<dt><code><b>default</b></code>: any [optional]</dt>
+	<dd>
+		Default value used for missing keys.
+		By default this field is nil and may be defined for each instance.
+		This field is only used if no <code>retrieve</code> method is avaliable.
+	</dd>
+	
+</dl>
+
+<h3>Methods</h3>
+
+<dl>
+	
+	<dt><code><b>retrieve</b>(key)</code> [optional]</dt>
+	<dd>
+		Method used to retrieve values for a missing key which value is provided by <code>key</code>.
+		By default this field is nil and may be defined for each instance.
+	</dd>
+
+</dl>
+
+<h3>Meta-Fields</h3>
+
+<dl>
+	
+	<dt><code>__<b>index</b> = function</code></dt>
+	<dd>
+		Uses the method <code>retrieve</code> of the instance to retrieve the value requested.
+		Alternatively, it uses the value of field <code>default</code> as the value requested.
+		Anyway, it stores the value obtained in the object with the index provided.
+	</dd>
+
+	<dt><code>__<b>mode</b> = "k"</code></dt>
+	<dd>
+		Defines that cached keys are weak references thus cached entries are collected if their keys becomes garbage.
+	</dd>
+
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	<li>Mapping the key <code>"retrieve"</code> may lead to unexpected results.</li>
+	<li>When using the field <code>default</code>, mapping the key <code>"default"</code> may lead to unexpected results either.</li>
+</ul>
+
+<h2>Examples</h2>
+
+<h3><a name="FriendlyPrint">Function that prints friendly names for values</a></h3>
+
+<pre>
+local ObjectCache = require "loop.collection.ObjectCache"
+
+local names = ObjectCache()
+
+function names:retrieve(value)
+  local type = type(value)
+  local id = rawget(self, type) or 0
+  self[type] = id + 1
+  local label = {}
+  repeat
+    label[#label + 1] = string.byte("A") + (id % 26)
+    id = math.floor(id / 26)
+  until id <= 0
+  return string.format("%s %s", type, string.char(unpack(label)))
+end
+
+function print(...)
+  for i=1, select("#", ...) do
+    local value = select(i, ...)
+    local type = type(value)
+    if type == "nil" or type == "boolean" or type == "number" or type == "string" then
+      io.write(tostring(value))
+    else
+      io.write(names[value])
+    end
+  end
+  io.write("\n")
+end
+
+for name, value in pairs(_G)        do names[value] = name               end
+for name, value in pairs(coroutine) do names[value] = "coroutine."..name end
+for name, value in pairs(package)   do names[value] = "package."..name   end
+for name, value in pairs(string)    do names[value] = "string."..name    end
+for name, value in pairs(table)     do names[value] = "table."..name     end
+for name, value in pairs(math)      do names[value] = "math."..name      end
+for name, value in pairs(io)        do names[value] = "io."..name        end
+for name, value in pairs(os)        do names[value] = "os."..name        end
+
+
+
+function f() end
+
+t = { 1, true, {}, f, math.sin, _G }
+
+print("value of f is ",f)
+print("value of t is ",t)
+for i, value in ipairs(t) do
+  print("  value of t[",i,"] is ",t[i])
+end
+</pre>
+
+<!--
+<h3>Objects which methods carry an implicit "self"</h3>
+
+<pre>
+local oo          = require "loop.simple"
+local ObjectCache = require "loop.collection.ObjectCache"
+
+
+-- class of object that initialize object as a cache
+-- of values retrieved from the actual object and
+-- replace methods by closures that carry an implicit
+-- 'self' parameter.
+--
+local CachedObject = oo.class()
+
+function CachedObject:__init(actual)
+  actual = oo.rawnew(self, actual)
+  
+  self = ObjectCache()
+  
+  function self:retrieve(field)
+    local value = actual[field]
+    if type(value) == "function" then
+      return function(...) return value(self, ...) end
+    else
+      return value
+    end
+  end
+  
+  return self
+end
+
+
+-- class of object that inherites the behavior of the
+-- previous class and defines an operation to write
+-- a message on the standard output.
+--
+local Messager = oo.class({}, CachedObject)
+
+function Messager:say(text)
+  print(string.format("message for '%s': %s", self.name, text))
+end
+
+
+-- instantiation of object and invocation of method
+-- with the '.' operator instead of ':'
+--
+local m = Messager{ name = "John Doe" }
+m.say("Hello John ?")
+m.say("How are you ?")
+m.say("I hope you be fine.")
+m.say("Bye.")
+</pre>
+-->
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

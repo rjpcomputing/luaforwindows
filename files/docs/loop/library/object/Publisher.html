@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Event Publisher</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																																																																																							<li><a href="../../index.html", title="">Home</a></li>
+																																																																																																							<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																																																																																							<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																																																																																							<li><a href="../index.html", title="Class Library">Library</a>
+																																																																																																								<div class="outside"><div class="inside"><ul>
+																																																																																																									<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																																																																																										</li>
+																																																																																																										<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																																																																																											</li>
+																																																																																																											<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																																																																																												</li>
+																																																																																																												<li><a href="../overview.html#object", title="Objects">object</a>
+																																																																																																													</li>
+																																																																																																													<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																																																																																														</li>
+																																																																																																														<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																																																																																															</li>
+																																																																																																														</ul></div></div>
+																																																																																																													</li>
+																																																																																																													<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																																																																																													<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																																																																																												</ul></div></div>
+																																																																																																											
+</div>
+
+<div class="content">
+<h1>Event Publisher</h1>
+<h2><code>loop.object.Publisher</code></h2><br>
+<p>Class of objects that delegate all method executions to a group of subscriber objects.
+Such objects behave like instances of <a href="Wrapper.html">Wrapper</a> but delegate method invocations to a group of objects instead of a single one.
+This class is useful to implement event notification mechanisms or to let event notifications destined for a single object to be captured by many.</p>
+
+<p>Like in the <a href="Wrapper.html">Wrapper</a> class, only one single special method is used to spread the call event for all delegated methods of all publishers without creating temporary closures or any other kind of structure.
+However, this mechanisms only work for method calls done with the <code>:</code> operator.
+Again, similar to the <a href="Wrapper.html">Wrapper</a>, the <code>self</code> parameter is properly replaced by the destiny object in every method call.
+The publisher object can also be invoked as a function or can receive key-value mappings (<i>i.e</i> <code>newindex</code> event).
+In such cases the same event is perfomed over the delegated objects.
+Such objects are stored in the publisher object with any valid table key.</p>
+
+<h2>Behavior</h2>
+
+<h3>Meta-Fields</h3>
+
+<dl>
+	
+	<dt><code><b>__index</b></code></dt>
+	<dd>
+		Setup the special delegation method in order to delegate the execution of the method indexed to all objects stored in the publisher.
+	</dd>
+	
+	<dt><code><b>__newindex</b></code></dt>
+	<dd>
+		Delegates any key-value mapping performed on the publisher to the objects stored in the publisher.
+	</dd>
+	
+	<dt><code><b>__call</b></code></dt>
+	<dd>
+		Delegates calls performed on the publisher to the objects stored in the publisher.
+	</dd>
+	
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	<li>Use function <a href="http://www.lua.org/manual/5.1/manual.html#pdf-rawset"><code>rawset</code></a> to store objects in the publisher otherwise the <code>newindex</code> event will be propagated to the deletaged objects.</li>
+	<li>Only one single Lua function is used to perform the delegation of all methods indexed in every <code>Publisher</code> instance.
+	Therefore all indexed methods of the <code>Publisher</code> instance itself are the same function no matter if they are have different names.</li>
+	<li>The <code>:</code> operator guarantees that the method index and execution is an atomic operation thus it is guaranteed that the setup performed by meta-method <code>__index</code> on the delegation function is preserved until the delegation method execution.
+	If the method index and execution are not performed atomically the results are unpredictable because the delegation function settings may change by another method invocation.</li>
+	<li>If you register an object in the publisher with a string key then you won't be able to invoke methods with that name.</li>
+</ul>
+
+<h2>Examples</h2>
+
+<h3><a name="DoubleFile">File handler that outputs to two different files.</a></h3>
+
+<pre>
+local Publisher = require "loop.object.Publisher"
+
+file = Publisher{
+	io.stderr,
+	assert(io.open("errors.log", "w")),
+}
+
+file:write("This text is being written ")
+file:write("into two files simultaneously.")
+
+file:close() -- 'io.stderr' is now closed.
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

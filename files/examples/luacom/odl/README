@@ -1,0 +1,9 @@
+Description:
+This example shows how to generate TLB's with the Luacom extended API. The
+API is undocumented, and can change in future releases. The Microsoft IDL
+compiler (MIDL) must be in your path.
+
+Files:
+  - idltest.lua: generates a sample type library.
+  - register.lua: generates a type library and implements a COM object
+    from it.

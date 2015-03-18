@@ -1,0 +1,484 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Component Models</title>
+	<style type="text/css" media="all"><!--
+		@import "../loop.css";
+		@import "../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../index.html", title="">Home</a></li>
+	<li><a href="../release/index.html", title="Installation">Install</a></li>
+	<li><a href="index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="intro.html", title="Introduction">Intro</a></li>
+			<li><a href="basics.html", title="Basic Concepts">Basics</a></li>
+			<li><a href="models.html", title="Class Models">Models</a></li>
+			<li><a href="classops.html", title="Class Features">Classes</a></li>
+			<li><strong>Comps</strong></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../library/index.html", title="Class Library">Library</a></li>
+	<li><a href="../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Component Models</h1>
+
+<p>The LOOP project extends the Lua programming language to support popular object-oriented programming features combined with adaptive and reflection mechanisms. Additionally, it also supports other programming paradigms related to the object concept like component-based development. Similar to the class models, the component model also provides dynamic features like reflection support.</p>
+
+<h2><a name="general">General Model</a></h2> 
+
+<p>Similarly to the class model, the component model is also provided by a set of packages that present different features.
+Basically, the component model is implemented by two kinds of packages: component and port packages.
+A component package provides means to define and create components with different features and the port packages provides different implementations of ports used to link components together.
+In the examples below, we assume that a component package is loaded in variable <code>component</code> and a port package is loaded in variable <code>port</code>.
+The packages provided by LOOP that implement the model described in this section are listed below.</p>
+
+<dl>
+	<dt>Component packages:</dt>
+	<dd>
+		<ul>
+			<li><code>loop.component.base</code></li>
+			<li><code>loop.component.wrapped</code></li>
+			<li><code>loop.component.contained</code></li>
+			<li><code>loop.component.dynamic</code></li>
+		</ul>
+	</dd>
+	<dt>Port packages:</dt>
+	<dd>
+		<ul>
+			<li><code>loop.component.base</code></li>
+			<li><code>loop.component.intercepted</code></li>
+		</ul>
+	</dd>
+</dl>
+
+<h3><a name="ports">Ports</a></h3>
+
+<p>The LOOP component model defines only two kinds of ports, called facets and receptacles.
+Each port is identified by a unique name on the component.
+Component systems are assembled connecting facets to receptacles.</p>
+
+<p>A facet is a port that provides some functionality by means of an interface, <i>i.e.</i> values and methods.
+Facet represents the functionalities provided by the component.
+In LOOP, a facet is realized by an object that provides the values and methods of the facet.
+A component can have multiple facets and even facets providing the same service with different features, <i>e.g.</i> performance.</p>
+
+<p>On the other hand, a receptacle is a port that requires some functionality through an interface.
+Receptacles defines the explicit dependencies of the component.
+A receptacle is realized as a table field that holds a reference to the object that provides the required functionality, <i>i.e.</i> the object connected to the receptacle.
+LOOP also defines the concept of multiple receptacles, <i>i.e.</i> receptacles that can hold multiple references simultaneously.
+Multiple receptacles are realized as a table containing the references to all objects connected to the receptacle.
+Multiple receptacles provides the following operations that may be used to access the objects connected.</p>
+
+<dl>
+	<dt><code>receptacle:__bind(object [, id])</code></dt>
+	<dd>Binds <code>bind</code> to the receptacle using the optional parameter <code>id</code> as the connection identifier and returns the connection identifier used.</dd>
+	<dt><code>receptacle:__unbind(id)</code></dt>
+	<dd>Removes de connection identified by parameter <code>id</code>.</dd>
+	<dt><code>receptacle:__hasany()</code></dt>
+	<dd>Returns a non-nil value if there is any object connected to the receptacle.</dd>
+	<dt><code>receptacle:__get(id)</code></dt>
+	<dd>Returns the object connected to the receptacle with identifier <code>id</code>.</dd>
+	<dt><code>receptacle:__all()</code></dt>
+	<dd>Returns an iterator that can be used in a <code>for</code> statement to iterate over all objects connected to the receptacle with the following construction<br>
+	<code>for conn_id, object in receptacle:__all() do ... end</code></dd>
+</dl>
+
+<p>There are three different types of multiple receptacles, as described below.</p>
+
+<dl>
+	<dt><code>ListReceptacle</code></dt>
+	<dd>Accepts connections and automatically generates identifiers, therefore it ignores the identifier provided to <code>__bind</code> method.</dd>
+	<dt><code>HashReceptacle</code></dt>
+	<dd>Accepts connections with application-defined identifiers, therefore it is necessary to provide an identifier to the <code>__bind</code> method.</dd>
+	<dt><code>SetReceptacle</code></dt>
+	<dd>Accepts only one connection for each object and uses the object as the connection identifier, therefore it also ignores the identifier provided to <code>__bind</code> method.</dd>
+</dl>
+
+<h3><a name="templates">Templates</a></h3>
+
+<p>A component is a computational element that provides a set of ports that can be connected to other components or objects in order to assemble a computational system.
+The set of ports provided by a component is defined by a template.
+A component template is realized as an object that maps port names to a specific port type.
+The code below illustrates the definition of a component template.</p>
+
+<pre>
+local DispatcherTemplate = component.Template{
+  requester = port.Facet,
+  scheduler = port.Receptacle,
+  objectmap = port.HashReceptacle,
+}
+</pre>
+
+<p>Component templates are responsible to create all the infrastructure necessary for the execution of a component implementation.</p>
+
+<h3><a name="factories">Factories</a></h3>
+
+<p>Once a component template is defined we can create factories of components that follow that template.
+For example, consider the following class that is used as the constructor of implementations of components of the template defined above.</p>
+
+<a name="implexample"></a>
+<pre>
+-- implementation
+Requester = oo.class{ context = false }
+function Requester:push(request)
+  local object = self.context.objectmap[request.object_key]
+  if object then
+    local operation = object[request.operation] or
+                      self.defaultops and self.defaultops[request.operation]
+    if operation then
+      self.context.scheduler:start(operation, object, unpack(request.params))
+    end
+  end
+end
+
+-- factory
+DispatcherFactory = DispatcherTemplate{ requester = Requester }
+
+-- component
+local dispatcher = DispatcherFactory()
+</pre>
+
+
+<p>To create a factory, we use a component template as the factory constructor.
+Such constructor gets as parameter the factory definition, <i>i.e.</i> a table containing the constructor of each facet defined by the template.
+The constructor of each facet must be a callable object (<i>e.g.</i> function or class) that returns a new implementation for the facet of each new component created by the factory.
+In the example above, we create a factory of components that follow the template <code>DispatcherTemplate</code> and each facet <code>requester</code> is an instance of class <code>Requester</code>.</p>
+
+<p>Alternatively, a factory may also define a constructor for the component itself aside from the constructor of its facets.
+The component constructor is defined by index 1 or using the special name <code>__component</code> in the factory definition.
+If a constructor is provided for the component then all facets that do not have a specific constructor defined are implemented by the implementation returned by the component constructor.
+For example, we can create a factory of dispatcher components similar to the one described above using the following code:</p>
+
+<pre>
+-- factory with component implementation that also implement all facets
+OtherDispatcherFactory = DispatcherTemplate{ Requester }
+</pre>
+
+<p>When a component is created, the component implementation's constructor is executed first if it is provided.
+This constructor receives as parameter all the values passed to the factory.
+After that, the constructor of each facet is executed.
+The facet constructors receive as parameter the field of the component implementation that matches the name of the facet plus a reference to this component implementation.
+Therefore, the component implementation may provide an initialization object to the provided the facet constructor.
+For example, the following code will create a component which the <code>requester</code> facet has the field <code>defaultops</code> defined.</p>
+
+<pre>
+-- component
+local dispatcher = DispatcherFactory{
+  requester = { -- object passed to class 'Requester'
+    defaultops = {
+      getid = function(self)
+        return self.id
+      end,
+    }
+  }
+}
+</pre>
+
+A similar approach may be used to define initial values for the receptacles, like in the example below.
+
+<pre>
+-- component
+local dispatcher = DispatcherFactory{
+  objectmap = _G, -- allow disptach to global objects.
+}
+</pre>
+
+
+<h3><a name="implementation">Implementation</a></h3>
+
+<p>A single component instance may be made of different objects that are responsible to implement different facets.
+In addition to that, the component is also made of its receptacles that contains references to its dependencies.
+All this information if provided to the component by the context object.
+The context object is a table that maps the name of each port to its implementation, in case of facets, or to the objects connected in case of receptacles.
+Additionally, the context object also contains the factory that created the object and the component implementation at indexes <code>__factory</code> and <code>__component</code>, respectively.</p>
+
+<p>The context object is provided to the component's implementation and each facet implementation by field <code>context</code>.
+If the implementation object provides the field context with a value different from <code>nil</code>, then this field is changed to hold the context object, like in the <a href="#implexample">example of the section above</a>.</p>
+
+<p>Alternatively, if the field <code>context</code> is a function then this function is called as a method of the implementation object that receives the context object as a parameter.
+The invocation of the <code>context</code> function also signals that all implementation objects are created, so it is useful if some part of the component needs to perform some initialization only when the whole component's implementation is created.
+Since the order in which the implementation objects are created is not defined, the <code>context</code> method may also be used to initialize some state of the object that is dependable of the others component's implementation objects, like in the example below.</p>
+
+<pre>
+-- facet 'requester' implementation
+Requester = oo.class()
+
+function Requester:context(context)
+  self.context = context
+  -- check if the 'defaultops' are defined in the component's implementation
+  self.defaultops = self.defaultops or context.__component.defaultops
+end
+</pre>
+
+<h3><a name="assembly">Assembly</a></h3>
+
+<p>Once components are created they shall be assembled by connection of their ports.
+Connections are typically established by setting a facet of a component to the receptacle of another.
+However, in case of multiple receptacles, this is done by operation <code>__bind</code> provided by this kind receptacles.
+The following example is extracted from the basic kernel architecture of the <a href="http://oil.luaforge.net/">OiL</a> ORB.</p>
+
+<pre>
+-- CLIENT SIDE
+ClientBroker = component.Template{
+  broker     = port.Facet,
+  proxies    = port.Receptacle,
+  references = port.Receptacle,
+}
+ObjectProxies = component.Template{
+  proxies = port.Facet,
+  invoker = port.Receptacle,
+}
+OperationInvoker = component.Template{
+  invoker   = port.Facet,
+  requester = port.Receptacle,
+}
+
+-- SERVER SIDE
+ServerBroker = component.Template{
+  broker     = port.Facet,
+  objects    = port.Receptacle,
+  acceptor   = port.Receptacle,
+  references = port.Receptacle,
+}
+RequestDispatcher = component.Template{
+  objects    = port.Facet,
+  dispatcher = port.Facet,
+}
+RequestReceiver = component.Template{
+  acceptor   = port.Facet,
+  dispatcher = port.Receptacle,
+  listener   = port.Receptacle,
+}
+
+function assemble(components)
+  setfenv(1, components) -- to avoid the 'components.' prefix.
+  
+  -- Client side
+  OperationInvoker.requester = OperationRequester.requests
+  ObjectProxies.invoker      = OperationInvoker.invoker
+  ClientBroker.proxies       = ObjectProxies.proxies
+  ClientBroker.references    = ObjectReferrer.references
+  
+  -- Server side
+  RequestReceiver.listener   = RequestListener.listener
+  RequestReceiver.dispatcher = RequestDispatcher.dispatcher
+  ServerBroker.objects       = RequestDispatcher.objects
+  ServerBroker.acceptor      = RequestReceiver.acceptor
+  ServerBroker.references    = ObjectReferrer.references
+end
+</pre>
+
+<h3><a name="instrospection">Introspection</a></h3>
+
+<p>All LOOP component packages provide some introspection functions that are used to retrieve information about the structure of the components like the type of their ports or their implementations, like is listed below.</p>
+
+<dl>
+	<dt><code>factoryof(component)</code></dt>
+	<dd>Returns the factory object that was used to create the component <code>component</code>.</dd>
+	<dt><code>templateof(component|factory)</code></dt>
+	<dd>Returns the template of a component or the template used by a component factory.</dd>
+	<dt><code>ports(template)</code></dt>
+	<dd>Returns an iterator for all ports defined by a component template.
+	The iteration variables get the name of the current port and the kind of the port that is one of the field of the port package like <code>port.Facet</code> or <code>port.HashReceptacle</code>.</dd>
+	<dt><code>segmentof(component, portname)</code></dt>
+	<dd>Returns the implementation of the port with name <code>portname</code> of component <code>component</code>.</dd>
+</dl>
+
+<!--
+<p>Additionally, each port package maps port kinds to their names, therefore to print the ports of a component you can use the following code:</p>
+<pre>
+for name, kind in component.ports(component.templateof(MyComp)) do
+  print("port "..name.." is a "..port[kind])
+end
+</pre>
+-->
+
+<h2><a name="packages">Component Packages</a></h2>
+
+<p>The component package that implements the standard model is <code>loop.component.contained</code>.
+This package makes no assumption about the component's implementation objects, therefore these objects may be userdata or even non-indexable values like functions or threads.
+This is because the template provided by this package creates additional objects to represent the component's external interface, which is provided to clients to access the component ports, and also the context object, which is the component's internal interface.
+The figure bellow illustrates the schema of components created with templates of package <code>loop.component.contained</code>.</p>
+
+<div align="center"><img src="contained.jpg"></div>
+
+<p>Alternatively, LOOP also provides other component packages that provide templates that avoid creation of additional objects for each component like <code>loop.component.wrapped</code> that creates only one additional object to represent the component external interface, but uses the component's implementation itself as the context object and therefore stores all ports values (facet implementation and receptacle connections) and the factory in the component's implementation object.
+This results that the component's implementation object can access all ports using the <code>self</code> parameter and avoid an additional table index to get the context object.
+The only advantage of providing an additional object for the external interface of the component is to be able to provide an alternative external view like is used by ports with support for interception like is described in section <a href="#intercept">Interception</a>.</p>
+
+<p>The component package <code>loop.component.base</code> provides the lightest template implementation.
+Such templates use the component's object implementation both as the external and internal interface of the component, and therefore are very similar to ordinary objects, however they provide all the features described in the <a href="#general">first section</a>.</p>
+
+<h2><a name="intercept">Port Interception</a></h2>
+
+<p>Package <code>loop.component.intercepted</code> is a port package that provides implementation of component ports with support for interception.
+When a component template is created with ports from this package, interceptors may be registered in the component to be executed whenever an access is performed on its ports.</p>
+
+<p>Interceptors may be defined for each component, or for all components created from a given factory, or even for all components of a given template.
+The interceptors are registered by the use of the following function provided by the <code>loop.component.intercepted</code> package.</p>
+
+<dl>
+	<dt><code>intercept(component|factory|template, portname, event [, interceptor])</code></dt>
+	<dd>Sets <code>interceptor</code> as the interceptor to be invoked when event <code>event</code> is triggered in port with name <code>portname</code> of the component or components defined by the first parameter.
+	If the <code>interceptor</code> is omitted or is <code>nil</code> then the interceptor registered for that event is removed.
+	The possible values for <code>event</code> are:
+	<ul>
+		<li><code>"method"</code>: a port's method is invoked.</li>
+		<li><code>"call"</code>: the port is invoked like a function.</li>
+		<li><code>"index"</code>: a port's field is indexed (this event always precede the <code>"method"</code> event).</li>
+		<li><code>"newindex"</code>: a port's field is set.</li>
+	</ul></dd>
+</dl>
+
+<p><strong>WARNING:</strong>
+There is a current limitation that intercepted ports cannot provide fields that contains function values. Such fields can only be methods, <i>i.e.</i> functions that are invoked immediately after they are indexed and take the <code>self</code> parameter.</p>
+
+<h3><a name="interceptors">Interceptors</a></h3>
+
+<p>Interceptors are ordinary objects that may provide methods <code>before</code> and <code>after</code>.
+The semantics provided by these methods (the <code>self</code> parameter is implict) are described below.</p>
+
+<dl>
+	<dt><code>before(request, ...)</code></dt>
+	<dd>Receives the <code>request</code> table that contains the following fields:
+	<ul>
+		<li><code>context</code>: context object of the component.</li>
+		<li><code>port</code>: name of the port being intercepted.</li>
+		<li><code>object</code>: implementation object of the facet or object connected to the receptacle.</li>
+		<li><code>event</code>: kind of the event that triggered the interception (<code>"method"</code>, <code>"call"</code>, <code>"index"</code>, or <code>"newindex"</code>).</li>
+		<li><code>method</code>: if <code>event</code> is <code>"method"</code> then this field is provided with the function that implements the method being invoked.</li>
+		<li><code>field</code>: if <code>event</code> is <code>"index"</code> or  <code>"newindex"</code> then this field is provided with the name of the field being accessed.</li>
+	</ul>
+	In addition to the <code>request</code> table this method also receive additional parameters that differ depending on the event that triggered the interception.
+	In case of <code>"method"</code> and <code>"call"</code> these parameters are the parameters of the call, including the <code>self</code> parameter in case of method invocations.
+	In case of <code>"index"</code> these parameters are only the name of the indexed field.
+	In case of <code>"newindex"</code> these parameters are the name of the indexed field and the new value being set to it.
+	<br>
+	This method must always return the values that must be used as the parameters of the actual event being intercepted.
+	Therefore, to allow that the event be performed with unchanged parameters the method must return the additional parameters provided (<i>i.e.</i> the expression <code>...</code>)
+	<br>
+	Finally, this method may cancel the event so it is not delegated to the component implementation.
+	This is done by definition of field <code>cancel</code> of table <code>request</code> provided as the first parameter of the method.
+	In this case, the values returned by this method are used as the return values passed to the client of the event intercepted.	</dd>
+	
+	<dt><code>after(request, ...)</code></dt>
+	<dd>Receives the same <code>request</code> table that was provided to the <code>before</code> method for the this triggered event.
+	Therefore, if some value is stored in the <code>request</code> table in the execution of the <code>before</code> method, such value is available in this table as well.
+	The additional parameters are the return values of the triggered event.
+	In case of <code>"method"</code> and <code>"call"</code> these parameters are the return values of the call.
+	In case of <code>"index"</code> these parameters are only the value of the indexed field.
+	In case of <code>"newindex"</code> no additional parameters are provided.
+	<br>
+	Similar to the <code>before</code> method, this method must always return the values that must be used as the return values of the actual event being intercepted.
+	Therefore, to allow that the event be performed with unchanged return values the method must return the additional parameters provided (<i>i.e.</i> the expression <code>...</code>)	</dd>
+</dl>
+
+<h3>Example</h3>
+
+<pre>
+ProfilerInterceptor = {}
+
+function ProfilerInterceptor:before(request, ...)
+  if request.event == "index" then
+    local field = ...
+    self.lastindexed = field
+  elseif request.event == "method" then
+    -- should work because method index and invocation are atomic
+    request.name = self.lastindexed
+    request.start = os.time()
+  end
+  return ...
+end
+
+function ProfilerInterceptor:after(request, ...)
+  if request.event == "method" then
+    print(string.format("operation %s.%s(...) spent at least %d seconds.",
+      request.port,
+      request.name,
+      os.difftime(os.time(), request.start)
+    ))
+  end
+  return ...
+end
+
+local component = require "loop.component.base"
+local port      = require "loop.component.intercepted"
+
+local MyTemplate = component.Template{
+  myfacet      = port.Facet,
+  myreceptacle = port.Receptacle,
+}
+
+port.intercept(MyTemplate, "myfacet", "index", ProfilerInterceptor)
+port.intercept(MyTemplate, "myfacet", "method", ProfilerInterceptor)
+port.intercept(MyTemplate, "myreceptacle", "index", ProfilerInterceptor)
+port.intercept(MyTemplate, "myreceptacle", "method", ProfilerInterceptor)
+</pre>
+
+<h2><a name="dynamic">Dynamic Changes</a></h2>
+
+<p>Package <code>loop.component.dynamic</code> is a component package that provides templates that can be changed dynamically and reflect such changes on all its instances.
+This package provides operations to add and remove ports of all components of a given template or factory or also from a single instance.
+When a new facet is added, it is possible to define the implementation of that facet that will be instantiated for each component instance on demand following the same implementation protocol used for ordinary facet implementations.
+The functions provided by the <code>loop.component.dynamic</code> package are described below.</p>
+
+<h3>Functions</h3>
+
+<dl>
+	<dt><code>addport(component|factory|template, portname, portkind [, constructor])</code></dt>
+	<dd>Defines a dynamic port with name <code>portname</code> of the kind specified by parameter <code>portkind</code> that may be any port kind provided by packages <code>loop.component.base</code> or <code>loop.component.intercepted</code>.
+	The parameter <code>constructor</code> is used in addition of facets to define the constructor of their implementation objects.</dd>
+	
+	<dt><code>removeport(component|factory|template, portname)</code></dt>
+	<dd>Removes a dynamic port that was added by function <code>addport</code> described above.
+	It is not possible to remove ports that were not added dynamically.</dd>
+</dl>
+
+<h3>Example</h3>
+
+<pre>
+local component = require "loop.component.dynamic"
+local port      = require "loop.component.base"
+local iport     = require "loop.component.intercepted"
+
+local MyTemplate = component.Template()
+
+component.addport(MyTemplate, "inspector", port.Facet, oo.class{
+  context = function(self, context)
+    self.context = context
+  end,
+  getfieldof = function(self, port, field)
+    self.context[port][field]
+  end,
+})
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

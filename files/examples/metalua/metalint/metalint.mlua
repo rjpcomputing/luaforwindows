@@ -1,0 +1,294 @@
+-{ extension 'match' }
+-{ extension 'log' }
+
+require 'strict'
+require 'metalua.compiler'
+
+local VERBOSE          = false
+local PARSING_OWN_DECL = false
+local MY_GLOBALS       = { }
+local LOAD_SOURCE      = nil
+local DECLARATIONS     = { }
+local AUTOLOCALS       = { }
+
+
+local function debug_print(...)
+   if VERBOSE then return printf(...) end
+end
+
+-- Lexer --
+decl_lexer = lexer.lexer:clone()
+decl_lexer:add{ 'module', 'free', 'end', 'private' }
+
+-- Parser --
+
+-- Merge two decl together
+local function merge (x, y)
+   --$log('merge', x, y)
+   for k, v in pairs (y) do
+      match x[k], v with
+      | `Free, _ | `Atom{x}, `Atom{x} -> -- pass
+      | _, `Free | nil, _ -> x[k] = v
+      | `Module{ _, mod_x }, `Module{ _, mod_y } -> merge (mod_x, mod_y)
+      | _, _ ->
+        $log("Merge failure", x[k], v)
+        error ("Can't merge type elements")
+      end
+   end
+end
+
+-- break mutual dependency between decl_elem_parser and decl_parser
+local _decl_elem_parser = |...| decl_elem_parser(...)
+
+-- Parse a name, presented as an `Id or a `String
+local function name(lx)
+   local a = lx:next()
+   if a.tag=='String' or a.tag=='Id' then return a[1]
+   else error("Name expected, got "..table.tostring(a,'nohash')) end
+end
+
+function decl_builder(x)
+   --$log('decl_builder', x)
+   local r = { }
+   for y in ivalues(x) do
+      if y.tag ~= 'Private' then merge (r, {[y[1]]=y}) end
+   end
+   return r
+end
+
+decl_parser = gg.list{
+   gg.sequence{ _decl_elem_parser, gg.optkeyword ';', builder = |x|x[1] },
+   terminators = 'end', builder = decl_builder }
+
+decl_elem_parser = gg.multisequence{
+   { 'module', name, decl_parser, 'end', builder = |x| `Module{x[1], x[2]} },
+   { 'free', name, builder = |x| `Free{x[1]} },
+   { 'private', _decl_elem_parser, builder = |x| PARSING_OWN_DECL and x[1] or `Private },
+   default = gg.sequence{ name, builder = |x| `Atom{x[1]} } }
+
+decl_elem_parser.transformers:add (function(x) x.loader = LOAD_SOURCE end)
+
+function parse_decl_lib (libname)
+   debug_print ("Loading decl lib "..libname)
+   local fd, msg = package.findfile (libname, os.getenv 'LUA_DPATH' or "?.dlua")
+   if not fd then error ("Can't find declaration file for "..libname) end
+   local src = fd:read '*a'
+   fd:close()
+   return parse_decl_expr (src)
+end
+
+function parse_decl_expr (src)
+   local lx = decl_lexer:newstream (src)
+   local r  = decl_parser (lx)
+   --$log('result of parse_decl', r)
+   merge(DECLARATIONS, r)
+   return r
+end
+
+function parse_decl_file (filename)
+   debug_print ("Loading decl file "..filename)
+   local src = mlc.luastring_of_luafile (filename)
+   return parse_decl_expr (src)
+end
+
+-- AST checker --
+require 'walk.id'
+
+local function index_autolocal (e, loader)
+   --$log('index_autolocals', loader)
+   local is_mine = false
+   local function get_name(x)
+      match x with
+      | `Index{ y, `String{key} } -> return get_name(y)..'~'..key
+      | `Invoke{ y, `String{key}, _ } -> 
+         error('autolocals for invocation not implemented '..table.tostring(x))
+      | `Id{ name } -> is_mine = MY_GLOBALS[name]; return '~'..name
+      | _ -> error(table.tostring(x)..'\n')
+      end
+   end
+   local name = get_name(e)
+   if is_mine then return end -- Don't index my own global vars
+   local x = AUTOLOCALS[name]
+   if not x then x={ }; AUTOLOCALS[name] = x end
+   table.insert(x, { e, loader })
+end
+
+local walk_cfg = { id = { }, stat = { }, expr = { } }
+
+function walk_cfg.id.free(x, ...)
+   --$log('in free id walker', x)
+   local parents = {...}
+   local dic = DECLARATIONS
+   local name = x[1]
+   for p in ivalues (parents) do
+      local decl = dic[name]
+      if not decl then error("Not declared: "..name) end
+      match p with
+      | `Index{ _x, `String{n} } | `Invoke{ _x, `String{n}, ...} if _x==x ->
+         match decl with
+         | `Free{...} -> break
+         | `Atom{...} -> error (name.." is not a module")
+         | `Module{ _, dic2 } -> dic, name, x = dic2, n, p
+         end
+      | _ -> -- x == last checked variable
+         debug_print("Checked "..table.tostring(x, 'nohash')..
+                  ", found in "..table.tostring(decl.loader, 'nohash'))
+         index_autolocal (x, decl.loader)
+         break
+      end
+   end
+end
+
+local function try_load_decl (kind, mod_name)
+   local success, r = pcall(_G['parse_decl_'..kind], mod_name) 
+   if not success then 
+      debug_print("Warning, error when trying to load %s:\n%s", mod_name, r)
+   else
+      return r
+   end   
+end
+
+local function call_walker(x)
+   --$log('in call walker', x)
+   match x with
+   | `Call{ `Id 'require', `String{ mod_name } } ->
+      if not DECLARATIONS[mod_name] then 
+         LOAD_SOURCE = `Require{x}
+         try_load_decl('lib', mod_name) 
+      end
+   | `Module{ `Id 'module', _ } -> -- no package.seeall
+      DECLARATIONS = { }           -- reset declarations
+   | _ -> -- pass
+   end
+end
+   
+walk_cfg.expr.down = call_walker
+walk_cfg.stat.down = call_walker
+
+local CHECKED_AST, CHECKED_NAME
+
+function check_src_file(name)
+   debug_print ("Checking file "..name)
+   CHECKED_NAME = name
+   CHECKED_AST  = mlc.ast_of_luafile (name)
+   --$log(ast,'nohash')
+   PARSING_OWN_DECL = true
+   local x = try_load_decl('lib', name:gsub("%.m?lua$", ""))
+   for name in keys(x) do MY_GLOBALS[name] = true end
+   PARSING_OWN_DECL = false
+   walk_id.block (walk_cfg, CHECKED_AST)
+   printf("File %s checked successfully", name)
+end
+
+local function replace_autolocals ()
+   local top_defs, req_defs = { }, { }
+   for k, v in pairs (AUTOLOCALS) do
+      local original = table.shallow_copy(v[1][1])
+      local loader   = v[1][2]
+      match loader with
+      | `Require{ r } ->
+         local defs =  req_defs[r] 
+         if not defs then defs={ }; req_defs[r]=defs end
+         defs[k] = original
+      | `Base | `Directive ->
+         top_defs[k] = original
+      end
+      for exlo in ivalues (v) do 
+         local expr, this_loader = unpack(exlo)
+         assert (this_loader[1]==loader[1] and this_loader.tag==loader.tag,
+                 "Autolocal lost by homonymous declarations")
+         expr <- `Id{k}
+      end
+   end
+
+   -- Insert beginning-of-file local declarations
+   local top_locals = `Local{ { }, { } }
+   for k, v in pairs(top_defs) do
+      table.insert(top_locals[1], `Id{k})
+      table.insert(top_locals[2], v)
+   end
+   table.insert (CHECKED_AST, 1, top_locals)
+   
+   -- Insert declarations after require() statements
+   for req_stat, renamings in pairs (req_defs) do
+      local req_locals = `Local{ { }, { } }
+      local r2 = table.shallow_copy(req_stat)
+      req_stat <- { r2, req_locals }; req_stat.tag = nil
+      for k, v in pairs (renamings) do
+         table.insert(req_locals[1], `Id{k})
+         table.insert(req_locals[2], v)
+      end
+   end
+
+   if clopts_cfg.debug then table.print(CHECKED_AST, 'nohash', 60) end
+   local chunk = mlc.luacstring_of_ast (CHECKED_AST)
+   local f = io.open (CHECKED_NAME:gsub('%.m?lua', '')..'.luac', 'w')
+   f:write(chunk)
+   f:close()
+end
+
+-- RAM dumper --
+
+function decl_dump(name, f)
+   match type(f) with
+   | 'nil'      -> f=io.stdout
+   | 'string'   -> f=io.open(f, 'w') or error ("Can't open file "..f)
+   | 'userdata' -> -- pass
+   | t          -> error ("Invalid target file type "..t)
+   end
+   local indentation, acc, seen = 0, { }, { }
+   local function esc(n)
+      if n:gmatch "[%a_][%w_]*" and not decl_lexer.alpha[n] then return n else return '"'..n..'"' end
+   end
+   local function add_line(...) table.insert(acc, table.concat{'  ':rep(indentation), ...}) end
+   local function rec(n, v)
+      if seen[v] then add_line ('free ', esc(n), ";")
+      elseif type(v)=='table' then
+         seen[v] = true
+         add_line ('module ', esc(n))
+         indentation += 1
+         for n2, v2 in pairs(v) do
+            if type(n2)=='string' then rec (n2, v2) end
+         end
+         indentation -= 1
+         add_line 'end;'
+      else
+         add_line (esc(n), ';')
+      end
+   end
+   rec(name, _G[name])
+   for line in ivalues (acc) do
+      f:write(line, '\n')
+   end
+   if f~=io.stdout then f:close() end
+end
+
+
+-- options handling --
+require 'clopts'
+
+local cl_parser = clopts {
+   check_src_file,
+
+   {  short = 'd', long = 'debug', type = 'boolean', 
+      usage = 'print debug traces', action = function(x) VERBOSE=x end },
+
+   {  short = 'l', long = 'decl_lib', type = 'string*', usage = 'load decl lib', 
+      action = function (x) LOAD_SOURCE=`Directive; return parse_decl_lib(x) end },
+
+   {  short = 'f', long = 'decl_file', type = 'string*', usage = 'load decl file',
+      action = function (x) LOAD_SOURCE=`Directive; return parse_decl_file(x) end },
+
+   {  short = 'x', long = 'decl_expr', type = 'string*',
+      usage = 'decl expression to eval',
+      action = function (x) LOAD_SOURCE=`Directive; return parse_decl_expr(x) end },
+
+   {  short = 'a', long = 'autolocals', type = 'boolean', 
+      usage = 'compiles the program with autolocals' } }
+
+LOAD_SOURCE = `Base
+try_load_decl('lib', 'base')
+clopts_cfg = cl_parser (...)
+if clopts_cfg.autolocals then
+   replace_autolocals()
+end

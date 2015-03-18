@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>MD5: Cryptographic Library for Lua</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div id="container">
+	
+<div id="product">
+	<div id="product_logo">
+        <a href="http://www.keplerproject.org"><img alt="MD5 logo" src="md5.png"/></a>
+    </div>
+	<div id="product_name"><big><strong>MD5</strong></big></div>
+	<div id="product_description">Cryptographic Library for Lua</div>
+</div> <!-- id="product" -->
+
+<div id="main">
+	
+<div id="navigation">
+
+<h1>MD5</h1>
+	<ul>
+		<li><strong>Home</strong>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+				<li><a href="index.html#history">History</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact us</a></li>
+			</ul>
+		</li>
+		<li><a href="manual.html">Manual</a>
+			<ul>
+				<li><a href="manual.html#introduction">Introduction</a></li>
+				<li><a href="manual.html#building">Building</a></li>
+				<li><a href="manual.html#installation">Installation</a></li>
+				<li><a href="manual.html#reference">Reference</a>
+                    <ul>
+                        <li><a href="manual.html#lua_api">Lua API</a></li>
+                        <li><a href="manual.html#c_api">C API</a></li>
+                    </ul>
+                </li>
+			</ul>
+		</li>
+        <li><a href="http://luaforge.net/projects/md5/">Project</a>
+            <ul>
+                <li><a href="http://luaforge.net/tracker/?group_id=155">Bug Tracker</a></li>
+                <li><a href="http://luaforge.net/scm/?group_id=155">CVS</a></li>
+            </ul>
+        </li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+<h2><a name="overview"></a>Overview</h2>
+
+<p>
+MD5 offers basic cryptographic facilities for 
+<a href="http://www.lua.org">Lua</a> 5.1:
+a hash (digest) function, a pair crypt/decrypt based on MD5 and CFB,
+and a pair crypt/decrypt based on DES with 56-bit keys.
+</p>
+
+<p>
+MD5 is free software and uses the same <a href="license.html">license</a>
+as Lua.
+</p>
+
+<h2><a name="status"></a>Status</h2>
+
+<p>MD5 version 1.1.2 for Lua 5.1 is now available for
+<a href="#download">download</a>.</p>
+
+<h2><a name="download"></a>Download</h2>
+
+<p>
+MD5 can be downloaded in source code from its
+<a href="http://luaforge.net/projects/md5/files">LuaForge</a>
+page. If you are using LuaBinaries 5.1.x, a Windows
+precompiled version of MD5 can also be found at the same LuaForge page.
+</p>
+
+<p>You can also install MD5 using <a href="http://www.luarocks.org">LuaRocks</a>:</p>
+
+<pre class="example">
+luarocks install md5
+</pre>
+
+<h2><a name="history"></a>History</h2>
+
+<dl class="history">
+    <dt><strong>Version 1.1.2</strong> [12/May/2008]</dt>
+	<dd><ul>
+		<li>Fixed bug in 64-bit systems</li>
+		<li>Fixed the Windows makefile to accept longer directory names
+		(patch by Alessandro Hecht and Ignacio Burgue&ntilde;o).</li> 
+	</ul></dd>
+	
+    <dt><strong>Version 1.1.1</strong> [28/Nov/2007]</dt>
+    <dd>
+    <ul>
+        <li>Added DES56 tests (by Mauricio Bomfim)</li>
+        <li>Updated DES56 source to the latest release from Stuart Levy</li>
+    </ul>
+    </dd>
+    
+    <dt><strong>Version 1.1.0</strong> [30/Oct/2007]</dt>
+    <dd>
+    Added DES56 crypt/decrypt functions.
+    </dd>
+
+    <dt><strong><a href="http://keplerproject.org/md5/1.0/">Version 1.0.2</a></strong> [08/May/2007]</dt>
+    <dd>
+    <ul>
+        <li>Added a nmake version for Lua 5.1</li>
+        <li>Windows binaries for Lua 5.1.2</li>
+    </ul>
+    </dd>
+
+    <dt><strong><a href="http://keplerproject.org/md5/1.0/">Version 1.0.1</a></strong> [21/Aug/2006]</dt>
+    <dd>
+    <ul>
+        <li>Adapted to work with both Lua 5.0 and Lua 5.1</li>
+        <li>Windows binaries for Lua 5.0.3</li>
+    </ul>
+    </dd>
+
+    <dt><strong><a href="http://keplerproject.org/md5/1.0/">Version 1.0.0</a></strong></dt>
+    <dd>
+    <ul>
+        <li>First public version</li>
+    </ul>
+    </dd>
+</dl>
+
+<h2><a name="credits"></a>Credits</h2>
+
+<p>MD5 was designed and implemented by
+Roberto Ierusalimschy and Marcela Oz&oacute;rio Suarez. The DES 56 C library was implemented by Stuart Levy
+and uses a MIT license too.
+The current distribution was packed by Tom&aacute;s Guisasola and F&aacute;bio Mascarenhas
+as part of the <a href="http://www.keplerproject.org">Kepler Project</a>.</p>
+
+<h2><a name="contact"></a>Contact us</h2>
+
+<p>For more information please
+<a href="mailto:info-NO-SPAM-THANKS@keplerproject.org">contact us</a>.
+Comments are welcome!</p>
+
+<p>You can also reach other Kepler developers and users on the Kepler Project
+<a href="http://luaforge.net/mail/?group_id=104">mailing list</a>.</p>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+    <p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
+    <p><small>$Id: index.html,v 1.20 2008/05/12 20:51:27 carregal Exp $</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+
+</body>
+</html> 

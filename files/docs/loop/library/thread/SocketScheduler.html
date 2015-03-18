@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Thread Scheduler with Sockets</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																																																																																																																																							<li><a href="../../index.html", title="">Home</a></li>
+																																																																																																																																																							<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																																																																																																																																							<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																																																																																																																																							<li><a href="../index.html", title="Class Library">Library</a>
+																																																																																																																																																								<div class="outside"><div class="inside"><ul>
+																																																																																																																																																									<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																																																																																																																																										</li>
+																																																																																																																																																										<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																																																																																																																																											</li>
+																																																																																																																																																											<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																																																																																																																																												</li>
+																																																																																																																																																												<li><a href="../overview.html#object", title="Objects">object</a>
+																																																																																																																																																													</li>
+																																																																																																																																																													<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																																																																																																																																														</li>
+																																																																																																																																																														<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																																																																																																																																															</li>
+																																																																																																																																																														</ul></div></div>
+																																																																																																																																																													</li>
+																																																																																																																																																													<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																																																																																																																																													<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																																																																																																																																												</ul></div></div>
+																																																																																																																																																											
+</div>
+
+<div class="content">
+<h1>Thread Scheduler with Sockets</h1>
+<h2><code>loop.thread.SocketScheduler</code></h2><br>
+<p>Subclass of <code><a href="IOScheduler.html">IOScheduler</a></code> that includes an integrated instance of <code><a href="CoSocket.html">CoSocket</a></code> to provide a socket API.
+This class is simply a shortcut for the creation of a thread scheduler with an integrated socket API using the classes provided in the <code>loop.thread</code> package.</p>
+
+<p>Each instance contains an integrated instance of <code><a href="CoSocket.html">CoSocket</a></code> and defines the fields required by <code><a href="IOScheduler.html">IOScheduler</a></code> using functions provided by <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library.</p>
+
+<h2>Behavior</h2>
+
+<h3>Initialization</h3>
+
+<dl>
+	
+	<dt><code><b>SocketScheduler</b>([object])</code></dt>
+	<dd>
+		Makes <code>object</code> an instance of <code>SocketScheduler</code> associating it with an instance of <code><a href="CoSocket.html">CoSocket</a></code>.
+	</dd>
+	
+</dl>
+
+<h3>Fields</h3>
+
+<dl>
+	
+	<dt><code><b>time</b></code></dt>
+	<dd>
+		Field used by superclass <code><a href="Scheduler.html">Scheduler</a></code>.
+		The default value of this field is redefined to the <code>socket.gettime</code> function of the <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library.
+	</dd>
+	
+	<dt><code><b>select</b></code></dt>
+	<dd>
+		Field required by superclass <code><a href="IOScheduler.html">IOScheduler</a></code>.
+		The default value of this field is defined to the <code>socket.select</code> function of the <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library.
+	</dd>
+	
+	<dt><code><b>sleep</b></code></dt>
+	<dd>
+		Field required by superclass <code><a href="IOScheduler.html">IOScheduler</a></code>.
+		The value of this field is defined to the <code>socket.sleep</code> function of the <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library.
+	</dd>
+	
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	<li>This class can be used as an instance of itself, therefore all methods can be executed over the class itself.</li>
+</ul>
+
+<h2>Examples</h2>
+
+<h3><a name="ScriptServer">Script Execution Server</a></h3>
+
+<pre>
+--------------------------------------------------------------------------------
+-- Server Script ---------------------------------------------------------------
+
+local oo        = require "loop.base"
+local scheduler = require "loop.thread.SocketScheduler"
+local socket    = scheduler.socket
+
+local Env = oo.class{ __index = _G }
+
+scheduler:register(coroutine.create(function()
+  local port = socket:bind("localhost", 2809)
+  local channel, errmsg
+  repeat
+    channel, errmsg = port:accept()
+    if channel then
+      local chunk, errmsg = channel:receive()
+      if chunk then
+        chunk, errmsg = loadstring(chunk)
+        if chunk then
+          setfenv(chunk, Env{ channel = channel })
+          chunk = coroutine.create(chunk)
+          scheduler:register(chunk)
+          scheduler.traps[chunk] = function(thread, success, errmsg)
+            if not success then
+              -- trap is executed outside a scheduled co-routine
+              -- therefore the call is made over the original
+              -- socket provided by LuaSocket library.
+              channel.__object:send(errmsg)
+              channel.__object:close()
+            end
+          end
+        end
+      end
+      if errmsg then
+        channel:send(errmsg)
+        channel:close()
+      end
+    end
+  until errmsg
+  port:close()
+end))
+
+scheduler:run()
+
+
+
+--------------------------------------------------------------------------------
+-- Client Script ---------------------------------------------------------------
+
+local socket = require "socket"
+
+local script = [[
+  local name = os.tmpname()
+  os.execute("dir C: > "..name)
+  local file = io.open(name)
+  channel:send(file:read("*a"))
+  file:close()
+  os.remove(name)
+  channel:close()
+]]
+
+local channel = assert(socket.connect("localhost", 2809))
+assert(channel:send(script:gsub("\n", " ").."\n"))
+print(assert(channel:receive("*a")))
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

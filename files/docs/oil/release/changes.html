@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Release Notes</title>
+	<style type="text/css" media="all"><!--
+		@import "../oil.css";
+		@import "../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../index.html", title="">Home</a></li>
+	<li><a href="index.html", title="Installation">Install</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><strong>Changes</strong></li>
+			<li><a href="previous.html", title="Previous Releases">Previous</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../manual/index.html", title="User Manual">Manual</a></li>
+	<li><a href="../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Release Notes</h1>
+<h2>What's new?</h2>
+<ul>
+	<li>Deferred calls, a.k.a. "futures" (see demo deferred);</li>
+	<li>ORB shutdown operation (see demo selfcall);</li>
+	<li>CORBA request interception (see demo interceptors);</li>
+	<li>CORBA's <code>_is_equivalent</code> operation;</li>
+	<li>Customizable component-based architecture (see section <a href="../manual/arch/index.html">Internal Architecture</a> from the <a href="../manual/index.html">User Manual</a>);</li>
+	<li>IDL large numbers: long long, unsigned long long, long double (see file <code>config</code>);<br>
+		<strong>NOTE:</strong> Lua must be changed so lua_Number is <code>long double</code>.
+	</li>
+</ul>
+
+<h2>What changed?</h2>
+<dl>
+	<dt>Library API</dt>
+	<dd>
+		<p><strong>Note:</strong> To use the old API, require <code>oil.compat</code> instead of <code>oil</code>.</p>
+		New auxiliary funtions in module <code>oil</code>.
+		<ul>
+			<li><code>oil.VERSION</code> to check OiL's version.</li>
+			<li><code>oil.tasks</code> instead of <code>scheduler</code>.</li>
+			<li><code>oil.sleep(time)</code> instead of <code>scheduler.sleep(time)</code>.</li>
+			<li><code>oil.pcall(func, ...)</code> instead of <code>scheduler.pcall(func, ...)</code>.</li>
+			<li><code>oil.time()</code> as an alternative to <code>socket.gettime()</code>.</li>
+			<li><code>oil.main(func)</code> instead of <code>scheduler.new(func, ...); scheduler.run()</code>.</li>
+			<li><code>oil.newthread(func, ...)</code> instead of <code>scheduler.start(func, ...)</code>.</li>
+			<li><code>oil.writeto(file, text)</code> replaces the similar to <code>oil.writeIOR(obj, file)</code>.</li>
+			<li><code>oil.readfrom(file)</code> instead of <code>oil.readIOR(file)</code>.</li>
+		</ul>
+		Operations related to the ORB are provided by the <code>broker</code> object, such as:
+		<ul>
+			<li><code>broker.types</code> as an improved alternative to <code>oil.getLIR()</code>.</li>
+			<li><code>broker:loadidl(idlspec)</code> instead of <code>oil.loadidl(idlspec)</code>.</li>
+			<li><code>broker:loadidlfile(idlfile)</code> instead of <code>oil.loadidlfile(idlfile)</code>.</li>
+			<li><code>broker:setIR(irprx)</code> instead of <code>oil.getIR(irprx)</code>.</li>
+			<li><code>broker:getIR()</code> instead of <code>oil.getIR()</code>.</li>
+			<li><code>broker:getLIR()</code> instead of <code>oil.getLIR()</code>.</li>
+			<li><code>broker:narrow(proxy [, interface])</code> instead of <code>oil.narrow(proxy [, interface])</code>.</li>
+			<li><code>broker:newproxy(strref [, interface])</code> instead of <code>oil.newproxy(impl [, interface])</code>.</li>
+			<li><code>broker:newservant(impl [, key, interface])</code> instead of <code>oil.newservant(impl [, interface, key])</code>.</li>
+			<li><code>broker:tostring(object)</code> instead of <code>obj:_ior()</code>.</li>
+			<li><code>broker:deactivate(obj|key|impl)</code> improved alternative to <code>obj:_deactivate()</code>.</li>
+			<li><code>broker:newencoder()</code> to create a CDR encoder.</li>
+			<li><code>broker:newdecoder(string)</code> to create a CDR decoder.</li>
+			<li><code>broker:newexcept(body)</code> as an alternative to <code>oil.Exception(body)</code>.</li>
+			<li><code>broker:setexcatch(func, type)</code> to set exception handlers.</li>
+			<li><code>broker:run()</code> instead of <code>oil.run()</code>.</li>
+			<li><code>broker:pending()</code> instead of <code>oil.pending()</code>.</li>
+			<li><code>broker:step()</code> instead of <code>oil.step()</code>.</li>
+			<li><code>broker:shutdown()</code> to shutdown the ORB.</li>
+			<li><code>broker:setinterceptor(iceptor, side)</code> to set interceptors.</li>
+		</ul>
+	</dd>
+	<dt>Integrated CORBA's IR</dt>
+	<dd>
+		<ul>
+			<li>Ability to change IR definitions;</li>
+			<li>Ability to load module parts using different <code>oil.loadidl*</code> calls;</li>
+			<li>Consistent storage of all IDL definitions, not only interfaces;</li>
+			<li>Standard CORBA exceptions are loaded by default;</li>
+			<li>Ability to import any definition from the remote delegated IR (oil.setIR);</li>
+		</ul>
+	</dd>
+	<dt>CORBA's GIOP implementation</dt>
+	<dd>
+		<ul>
+			<li>Support for marshaling of typecode <code>null</code> and anys containing values of type <code>null</code>;</li>
+			<li><code>nil</code> values used as <code>any</code> are automatically coded as <code>null</code>;</li>
+			<li>Any's now provide the field _anytype to identify the IDL type of the value;</li>
+			<li>Sequences with <code>nil</code> values can have field <code>n</code> to define its size;</li>
+			<li>Automatic reconnections when connection is closed.<br>
+				<strong>WARN</strong>: Operation invocation may be issued many times if no reply is sent (no at-most-once guarantees);<br>
+			</li>
+		</ul>
+	</dd>
+	<dt>Object Proxies</dt>
+	<dd>
+		<ul>
+			<li><code>oil.narrow</code> and <code>proxy:_narrow</code> now accepts any valid interface specification, i.e. repID, absoulute name, IDL descriptor, or remote IR object;</li>
+			<li>The function used to handle exceptions can be defined for all proxies of a given interface by function <code>oil.setexcatch(handler [, interface])</code>. If no interface is provided then the handler is set for all proxies. Previously, this handler could only be set for individual proxies by field <code>__exceptions</code>;</li>
+			<li>Now, if the exception handler function returns (i.e. not raise a Lua error) then the exception is ignored and the values returned are used as the results of the invocation that raised in the original exception;</li>
+			<li>Addition of <code>oil.deactivate(<corbaobj | implobj | objkey> [, interface])</code> that removes an object from the ORB;</li>
+		</ul>
+	</dd>
+	<dt>Servant Objects</dt>
+	<dd>
+		<ul>
+			<li>Automatically generated object keys start with <code>'\0'</code> to provide a way for the application to avoid collisions with defined keys;</li>
+			<li>A single Lua object can be used as implementation of different CORBA objects created with automatic keys as long as they implement different interfaces because object keys now contains the interface descriptor hash-code.<br>
+				<strong>WARN:</strong> Each time a Lua object is used as an object with a different interface a new CORBA object is created for each interface, which will be the actual (i.e. most specific) interface of the new CORBA object.
+				To avoid implicit creation of different CORBA objects with different interfaces for a single Lua object, set the <code>__type</code> field of the objet meta-table (i.e. its class) to the interface (repID, absolute name, IDL descriptor, or remote IR object) that should be used;<br>
+			</li>
+			<li>The interface of an implicitly created CORBA object can also be defined by field <code>__type</code> of the object implementation itself (in older versions, only the <code>__type</code> field of the metatable could be used);</li>
+		</ul>
+	</dd>
+	<dt>Verbose Support</dt>
+	<dd>
+		<ul>
+			<li>Prints parameter values and objects;</li>
+			<li>New level distribution:
+				<ol>
+					<li>Operation invocation and dispatching;</li>
+					<li>GIOP request and reply processing;</li>
+					<li>Mutual exclusion channel access (concurrent mode);</li>
+					<li>GIOP message creation and handling (i.e. requests and replies);</li>
+					<li>Socket channels creation and handling (i.e. connection and transport);</li>
+					<li>Value (un)marshaling;</li>
+					<li>Hexadecimal view of marshaled streams;</li>
+					<li>Creation of IDL descriptors and internal IR operation;</li>
+				</ol>
+			</li>
+		</ul>
+	</dd>
+	<dt>Development Support</dt>
+	<dd>
+		<ul>
+			<li>Utility script to create Lua scripts that feed the internal IR with descriptions described in IDL files;</li>
+			<li>New demo about exception handling;</li>
+			<li>Unix shell scripts for execution of demos;</li>
+		</ul>
+	</dd>
+</dl>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>LuaSQL: Database connectivity for the Lua programming language</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div id="container">
+	
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+		<img alt="LuaSQL logo" src="luasql.png"/>
+	</a></div>
+	<div id="product_name"><big><strong>LuaSQL</strong></big></div>
+	<div id="product_description">Database connectivity for the Lua programming language</div>
+</div> <!-- id="product" -->
+
+<div id="main">
+	
+<div id="navigation">
+<h1>LuaSQL</h1>
+	<ul>
+		<li><a href="index.html">Home</a>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact us</a></li>
+			</ul>
+		</li>
+		<li><a href="manual.html">Manual</a>
+			<ul>
+				<li><a href="manual.html#introduction">Introduction</a></li>
+				<li><a href="manual.html#compiling">Compiling</a></li>
+				<li><a href="manual.html#installation">Installation</a></li>
+				<li><a href="manual.html#errors">Error handling</a></li>
+				<li><a href="manual.html#drivers">Drivers</a></li>
+				<li><a href="manual.html#environment_object">Environment</a></li>
+				<li><a href="manual.html#connection_object">Connection</a></li>
+				<li><a href="manual.html#cursor_object">Cursor</a></li>
+				<li><a href="manual.html#postgres_extensions">PostgreSQL</a></li>
+				<li><a href="manual.html#mysql_extensions">MySQL</a></li>
+				<li><a href="manual.html#oracle_extensions">Oracle</a></li>
+			</ul>
+		</li>
+		<li><a href="examples.html">Examples</a></li>
+		<li><strong>History</strong></li>
+        <li><a href="http://luaforge.net/projects/luasql/">Project</a>
+            <ul>
+                <li><a href="http://luaforge.net/tracker/?group_id=12">Bug Tracker</a></li>
+                <li><a href="http://luaforge.net/scm/?group_id=12">CVS</a></li>
+            </ul>
+        </li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+<h2><a name="history"></a>History</h2>
+
+<dl class="history">
+    <dt><strong>LuaSQL 2.1.1</strong> [29/Oct/2007]</dt>
+    <dd>
+    <ul>
+        <li>Fixed a bug in the SQLite3 error handling (patch by David Burgess)</li>
+        <li>Fixed bug
+        <a href="http://luaforge.net/tracker/?group_id=12&amp;atid=166&amp;func=detail&amp;aid=1770">[#1770]</a>
+        for SQLite 3 (found by Enrico Tassi, patch by Marc Nijdam)</li>
+        <li>Fixed bug
+        <a href="http://luaforge.net/tracker/?group_id=12&amp;atid=166&amp;func=detail&amp;aid=1834">[#1834]</a>
+        for SQLite 3 (found by Savin Zlobec, patch by Marc Nijdam)</li>
+    </ul>
+    </dd>
+
+    <dt><strong>LuaSQL 2.1.0</strong> [29/Aug/2007]</dt>
+    <dd>
+    <ul>
+        <li>Added support for SQLite 3</li>
+        <li>Bug correction: freeing PGresults in the Postgres driver (thanks to Michael Broughton)</li>
+        <li>Corrected memory leak when no cursor created (thanks to Klaus Ripke)</li>
+        <li>Corrected bug avoiding duplicate access to stack</li>
+    </ul>
+    </dd>
+    
+    <dt><strong><a href="http://www.keplerproject.org/luasql/2.0/">LuaSQL 2.0.2</a></strong> [26/Jun/2006]</dt>
+    <dd>
+    <ul>
+        <li><a href="manual.html#mysql_extensions">numrows</a> method added to MySQL driver.</li>
+        <li>Added a <code>config</code> for the <code>makefile</code>.</li>
+        <li>Added configuration for the UnixODBC driver.</li>
+        <li>Bug fixes to the SQLite driver (bug found by Mike Petersen).</li>
+        <li>Bug fixes to the JDBC, OCI8 and ADO drivers.</li>
+        <li>Improved tests.</li>
+        <li>Updated documentation.</li>
+    </ul>
+    </dd>
+
+    <dt><strong><a href="http://www.keplerproject.org/luasql/2.0/">LuaSQL 2.0.1</a></strong> [02/Jun/2005]</dt>
+    <dd>
+    <ul>
+        <li>Bug fixes to the ODBC driver.</li>
+    </ul>
+    </dd>
+
+    <dt><strong><a href="http://www.keplerproject.org/luasql/2.0/">LuaSQL 2.0.0</a></strong> [22/Mar/2005]</dt>
+    <dd>
+    <ul>
+        <li>Added ADO driver and some bug fixes to the ODBC driver.</li>
+    </ul>
+    </dd>
+
+    <dt><strong><a href="http://www.keplerproject.org/luasql/2.0/">LuaSQL 2.0 Beta 3</a></strong> [23/Dec/2004]</dt>
+    <dd>
+    <ul>
+        <li>Minor bug fixes.</li>
+    </ul>
+    </dd>
+
+    <dt><strong><a href="http://www.keplerproject.org/luasql/2.0/">LuaSQL 2.0 Beta 2</a></strong> [26/Nov/2004]</dt>
+    <dd>
+    <ul>
+        <li>Bug fixes</li>
+        <li>New SQLite and JDBC drivers</li>
+        <li>LuaSQL now follows the <a href="http://www.keplerproject.org/compat/">package model</a>
+        for Lua 5.1 (see <a href="manual.html#installation">Installation</a> section for more details).</li>
+    </ul>
+    </dd>
+
+    <dt><strong><a href="http://www.keplerproject.org/luasql/2.0/">LuaSQL 2.0 Beta</a></strong> [10/Nov/2003]</dt>
+</dl>
+
+<h2>Changes from previous versions</h2>
+
+<p>Version 2.x has some design changes and implementation improvements compared to version 1.0:</p>
+
+<ul>
+  <li>New <code>fetch</code> method: more eficient and more flexible</li>
+  <li>New <code>setautocommit</code> method</li>
+  <li>Lua 5.0 and 5.1 compatible</li>
+  <li>Dynamically loadable or statically linked</li>
+  <li>New drivers for Oracle and MySQL databases</li>
+</ul>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
+	<p><small>$Id: history.html,v 1.18 2007/10/30 01:10:49 carregal Exp $</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+
+</body>
+</html> 

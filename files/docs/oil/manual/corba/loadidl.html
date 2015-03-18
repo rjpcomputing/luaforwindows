@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Loading IDL</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="../basics/index.html", title="Basic Concepts">Basics</a></li>
+			<li><a href="index.html", title="CORBA Support">CORBA</a>
+				<div class="outside"><div class="inside"><ul>
+					<li><a href="config.html", title="Configuration Options">Config</a></li>
+					<li><strong>IDL</strong></li>
+					<li><a href="mapping.html", title="Value Mapping">Mapping</a></li>
+					<li><a href="features.html", title="Additional Features">Features</a></li>
+					<li><a href="intercept.html", title="Intercepting Invocations">Intercept</a></li>
+				</ul></div></div>
+			</li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="../arch/index.html", title="Internal Architecture">Arch</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Loading IDL</h1>
+<p>All the CORBA support provided by OiL is based on interface and typing information.
+OiL stores all this information in a internal type repository, which implements a CORBA Interface Repository.
+Once an IDL interface definition is stored in this repository, OiL is able to create servants and proxies with that interface.
+OiL provides three ways to load an interface or type, as described below.</p>
+
+<h2>IDL Specifications</h2>
+
+<p>The most common way to load interface definitions is to load an IDL specification using method <a href="../basics/brokers.html#loadidl"><code>loadidl</code></a><code>(idlspec)</code> e <a href="../basics/brokers.html#loadidlfile"><code>loadidlfile</code></a><code>(filepath)</code> of CORBA brokers.
+In this case, the IDL specification is parsed to produce descriptions that are stored in the internal type repository, as illustrated in the example below.</p>
+
+<pre>
+require "oil"
+
+oil.main(function()
+  local broker = oil.init()
+  
+  broker:loadidl[[
+    interface Hello {
+      void say();
+    };
+  ]]
+  
+  broker:writeto("hello.ior",
+    broker:tostring(
+      broker:newservant(hello, nil, "Hello")))
+  broker:run()
+end)
+</pre>
+
+<h2>Remote Interface Repository</h2>
+
+<p>An alternative to the use of IDL specifications is to acquire the interface definition from a remote CORBA Interface Repository (IR) that already contains them.
+This can be done by method <a href="../basics/brokers.html#setIR"><code>setIR</code></a><code>(ir_proxy)</code> of CORBA brokers.
+This method receives as argument an OiL proxy to the remote IR.
+Whenever OiL finds the name of a interface or type that it does not known, it then checks this remote IR and reads the definition.
+However, this is only done for the first time.
+Once OiL learns about an interface, it does not read its definition again, even if the original definition changes in the remote IR.
+The code below shows how to setup the remote IR.</p>
+
+<pre>
+require "oil"
+
+oil.main(function()
+  local broker = oil.init()
+  
+  -- create proxy for a CORBA IR
+  -- and set it as the remote IR
+  broker:setIR(       
+    broker:newproxy(  
+      oil.readfrom("ir.ior")))
+  
+  broker:writeto("hello.ior",
+    broker:tostring(
+      broker:newservant(hello, nil, "Hello")))
+  broker:run()
+end)</pre>
+
+<p>CORBA brokers also provide the method <a href="../basics/brokers.html#getIR"><code>getIR</code></a><code>()</code> to get the current remote IR being used.
+Furthermore, the OiL's internal type repository also implements the CORBA IR interface, therefore, all interface and type definitions can be accessed remotely by CORBA IR clients.
+In particular, another CORBA broker can be configured to retrieve definition from the internal type repository of another CORBA broker.
+To get the servant of the internal IR, use method <a href="../basics/brokers.html#getLIR"><code>getLIR</code></a><code>()</code> of CORBA brokers.</p>
+
+<h2>Lua Constructors</h2>
+
+<p>Finally, another way to provide interface and type descriptions is to create them using the constructors provided by module <code>oil.corba.idl</code> and register them in the internal IR.
+For a description of these constructors, check section <a href="mapping.html">Value Mapping</a>.
+The code below shows how to create and register descriptions of the <code>Hello</code> interface in the internal type repository.</p>
+
+<pre>
+require "oil"
+
+oil.main(function()
+  local idl = require "oil.corba.idl"
+  local broker = oil.init()
+  
+  broker.types:put(
+    idl.interface{
+      defintions = {
+        say = idl.operation(),
+      }
+    }
+  )
+  
+  broker:writeto("hello.ior",
+    broker:tostring(
+      broker:newservant(hello, nil, "Hello")))
+  broker:run()
+end)
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>LuaZip: Reading files inside zip files</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div id="container">
+	
+<div id="product">
+	<div id="product_logo">
+        <a href="http://www.keplerproject.org"><img alt="LuaZip logo" src="luazip-128.png"/></a>
+    </div>
+	<div id="product_name"><big><strong>LuaZip</strong></big></div>
+	<div id="product_description">Reading files inside zip files</div>
+</div> <!-- id="product" -->
+
+<div id="main">
+	
+<div id="navigation">
+<h1>LuaZip</h1>
+	<ul>
+		<li><a href="index.html">Home</a>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+				<li><a href="index.html#history">History</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact</a></li>
+			</ul>
+		</li>
+		<li><strong>Manual</strong>
+			<ul>
+				<li><a href="manual.html#introduction">Introduction</a></li>
+				<li><a href="manual.html#building">Building</a></li>
+				<li><a href="manual.html#installation">Installation</a></li>
+				<li><a href="manual.html#reference">Reference</a></li>
+			</ul>
+		</li>
+		<li><a href="examples.html">Examples</a></li>
+        <li><a href="http://luaforge.net/projects/luazip/">Project</a>
+            <ul>
+                <li><a href="http://luaforge.net/tracker/?group_id=8">Bug Tracker</a></li>
+                <li><a href="http://luaforge.net/scm/?group_id=8">CVS</a></li>
+            </ul>
+        </li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+
+<h2><a name="introduction"></a>Introduction</h2>
+
+<p>LuaZip is a lightweight <a href="http://www.lua.org">Lua</a> extension library
+that can be used to read files stored inside zip files. It uses 
+<a href="http://zziplib.sourceforge.net">zziplib</a> to do all the hard work.</p>
+
+<p>The API exposed to Lua is very simple and very similiar to the usual file handling 
+functions provided by the
+<a href="http://www.lua.org/manual/5.0/manual.html#5.6">I/O Lua standard library</a>.
+In fact, the API is so similar that parts of this manual are extracted from the Lua manual, 
+copyrighted by Tecgraf, PUC-Rio.</p>
+
+<h2><a name="building"></a>Building</h2>
+
+<p>
+LuaZip could be built to Lua 5.0 or to Lua 5.1.
+In both cases, the language library and headers files for the target version
+must be installed properly.
+</p>
+
+<p>
+LuaZip offers a Makefile and a separate configuration file,
+<code>config</code>, which should be edited to suit your installation
+before runnig <code>make</code>.
+The file has some definitions like paths to the external libraries,
+compiler options and the like.
+One important definition is the version of Lua language,
+which is not obtained from the installed software.
+</p>
+
+<p>LuaZip compilation depends on 
+<a href="http://zziplib.sourceforge.net">zziplib 0.13.49</a> and
+<a href="http://www.zlib.net/">zlib 1.2.3</a>.
+</p>
+
+<h2><a name="installation"></a>Installation</h2>
+
+<p>The LuaZip compiled binary should be copied to a directory in your
+<a href="http://www.lua.org/manual/5.1/manual.html#pdf-package.cpath">C path</a>.
+Lua 5.0 users should also install <a href="http://www.keplerproject.org/compat">Compat-5.1</a>.</p>
+
+
+<h2><a name="reference"></a>Reference</h2>
+
+<dl>
+    <dt><strong>zip.open (filename)</strong></dt>
+    <dd>This function opens a zip file and returns a new zip file handle. In case of 
+    error it returns nil and an error message. Unlike <code>io.open</code>, there is no
+    <code>mode</code> parameter, as the only supported mode is "read".</dd>
+
+    <dt><strong>zip.openfile (filename [, extensions]])</strong></dt>
+    <dd>This function opens a file and returns a file handle. In case of 
+    error it returns nil and an error message. Unlike <code>io.open</code>, there is no
+    <code>mode</code> parameter, as the only supported mode is "read".<br/>
+    This function implements a virtual file system based on optionally compressed files.
+    Instead of simply looking for a file at a given path, this function goes recursively up 
+    through all path separators ("/") looking for zip files there. If it finds a zip file, 
+    this function use the remaining path to open the requested file.<br/>
+    The optional parameter <em>extensions</em> allows the use of file extensions other than .zip
+    during the lookup. It can be a string corresponding to the extension or an indexed table
+    with the lookup extensions sequence.</dd>
+
+    <dt><strong>zfile:close ()</strong></dt>
+    <dd>This function closes a zfile opened by <code>zip.open</code></dd>
+
+    <dt><strong>zfile:files ()</strong></dt>
+    <dd>Returns an iterator function that returns a new table containing the
+    following information each time it is called:
+    <ul>
+        <li><code>filename</code>: the full path of a file</li>
+        <li><code>compressed_size</code>: the compressed size of the file in bytes</li>
+        <li><code>uncompressed_size</code>: the uncompressed size of the file in bytes</li>
+    </ul>
+    </dd>
+    
+    <dt><strong>zfile:open (filename)</strong></dt>
+    <dd>This function opens a file that is stored inside the zip file opened by <code>zip.open</code>.<br/>
+    The filename may contain the full path of the file contained inside the zip. The
+    directory separator must be '/'.<br/>
+    Unlike <code>f:open</code>, there is no <code>mode</code> parameter, as the only 
+    supported mode is "read".</dd>
+    
+    <dt><strong>file:read (format1, ...)</strong></dt>
+    <dd>Reads a <code>file</code> according to the given formats, which specify what to read.<br/>
+    For each format, the function returns a string with the characters read, or nil if it cannot read
+    data with the specified format. When called without formats, it uses a default format that reads
+    the entire next line (see below).<br/>
+    The available formats are:
+    <ul>
+    	<li><code>"*a"</code>: reads the whole file, starting at the current position. On end of file, it
+    	returns the empty string.</li>
+    	<li><code>"*l"</code>: reads the next line (skipping the end of line), returns nil on end of file.
+    	This is the default format.</li>
+    	<li><code><i>number</i></code>: reads a string with up to that number of characters, returning nil
+    	on end of file.</li>
+    </ul>
+    <br/>
+    Unlike the standard I/O read, the format <code>"*n"</code> is not supported.</dd>
+
+    <dt><strong>file:seek ([whence] [, offset])</strong></dt>
+    <dd>Sets and gets the file position, measured from the beginning of the file, to the position given
+    by <code>offset</code> plus a base specified by the string <code>whence</code>, as follows:
+    <ul>
+	    <li><code>set</code>: base is position 0 (beginning of the file);</li>
+	    <li><code>cur</code>: base is current position;</li>
+	    <li><code>end</code>: base is end of file;</li>
+    </ul>
+    In case of success, function <code>seek</code> returns the final file position, measured in bytes 
+    from the beginning of the file. If this function fails, it returns nil, plus an error string.
+    The default value for <code>whence</code> is <code>"cur"</code>, and for <code>offset</code> is 0.
+    Therefore, the call <code>file:seek()</code> returns the current file position, without changing
+    it; the call <code>file:seek("set")</code> sets the position to the beginning of the file (and returns 0);
+    and the call <code>file:seek("end")</code> sets the position to the end of the file, and returns its
+    size.</dd>
+
+    <dt><strong>file:close ()</strong></dt>
+    <dd>This function closes a file opened by <code>zfile:open</code>.</dd>
+
+    <dt><strong>file:lines ()</strong></dt>
+    <dd>Returns an iterator function that returns a new line from the file each time it is called.
+    Therefore, the construction<br/>
+    <pre class="example">for line in file:lines() do ... end</pre>
+    will iterate over all lines of the file.</dd>
+</dl>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+	<p><small>$Id: manual.html,v 1.12 2007/06/18 18:47:05 carregal Exp $</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+
+</body>
+</html> 

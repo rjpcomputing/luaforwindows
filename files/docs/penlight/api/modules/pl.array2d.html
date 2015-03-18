@@ -1,0 +1,815 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Penlight Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Penlight</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/pl.html">pl</a></li>
+  <li><a href="../modules/pl.Date.html">pl.Date</a></li>
+  <li><a href="../modules/pl.List.html">pl.List</a></li>
+  <li><a href="../modules/pl.Map.html">pl.Map</a></li>
+  <li><a href="../modules/pl.MultiMap.html">pl.MultiMap</a></li>
+  <li><a href="../modules/pl.OrderedMap.html">pl.OrderedMap</a></li>
+  <li><a href="../modules/pl.Set.html">pl.Set</a></li>
+  <li><a href="../modules/pl.app.html">pl.app</a></li>
+  <li><strong>pl.array2d</strong></li>
+  <li><a href="../modules/pl.class.html">pl.class</a></li>
+  <li><a href="../modules/pl.comprehension.html">pl.comprehension</a></li>
+  <li><a href="../modules/pl.config.html">pl.config</a></li>
+  <li><a href="../modules/pl.data.html">pl.data</a></li>
+  <li><a href="../modules/pl.dir.html">pl.dir</a></li>
+  <li><a href="../modules/pl.file.html">pl.file</a></li>
+  <li><a href="../modules/pl.func.html">pl.func</a></li>
+  <li><a href="../modules/pl.input.html">pl.input</a></li>
+  <li><a href="../modules/pl.lapp.html">pl.lapp</a></li>
+  <li><a href="../modules/pl.lexer.html">pl.lexer</a></li>
+  <li><a href="../modules/pl.luabalanced.html">pl.luabalanced</a></li>
+  <li><a href="../modules/pl.operator.html">pl.operator</a></li>
+  <li><a href="../modules/pl.path.html">pl.path</a></li>
+  <li><a href="../modules/pl.permute.html">pl.permute</a></li>
+  <li><a href="../modules/pl.pretty.html">pl.pretty</a></li>
+  <li><a href="../modules/pl.seq.html">pl.seq</a></li>
+  <li><a href="../modules/pl.sip.html">pl.sip</a></li>
+  <li><a href="../modules/pl.strict.html">pl.strict</a></li>
+  <li><a href="../modules/pl.stringio.html">pl.stringio</a></li>
+  <li><a href="../modules/pl.stringx.html">pl.stringx</a></li>
+  <li><a href="../modules/pl.tablex.html">pl.tablex</a></li>
+  <li><a href="../modules/pl.template.html">pl.template</a></li>
+  <li><a href="../modules/pl.test.html">pl.test</a></li>
+  <li><a href="../modules/pl.text.html">pl.text</a></li>
+  <li><a href="../modules/pl.utils.html">pl.utils</a></li>
+  <li><a href="../modules/pl.xml.html">pl.xml</a></li>
+</ul>
+<h2>Topics</h2>
+<ul>
+  <li><a href="../topics/01-introduction.md.html">01-introduction.md</a></li>
+  <li><a href="../topics/02-arrays.md.html">02-arrays.md</a></li>
+  <li><a href="../topics/03-strings.md.html">03-strings.md</a></li>
+  <li><a href="../topics/04-paths.md.html">04-paths.md</a></li>
+  <li><a href="../topics/05-dates.md.html">05-dates.md</a></li>
+  <li><a href="../topics/06-data.md.html">06-data.md</a></li>
+  <li><a href="../topics/07-functional.md.html">07-functional.md</a></li>
+  <li><a href="../topics/08-additional.md.html">08-additional.md</a></li>
+  <li><a href="../topics/09-discussion.md.html">09-discussion.md</a></li>
+</ul>
+<h2>Examples</h2>
+<ul>
+  <li><a href="../examples/seesubst.lua.html">seesubst.lua</a></li>
+  <li><a href="../examples/sipscan.lua.html">sipscan.lua</a></li>
+  <li><a href="../examples/symbols.lua.html">symbols.lua</a></li>
+  <li><a href="../examples/test-cmp.lua.html">test-cmp.lua</a></li>
+  <li><a href="../examples/test-data.lua.html">test-data.lua</a></li>
+  <li><a href="../examples/test-listcallbacks.lua.html">test-listcallbacks.lua</a></li>
+  <li><a href="../examples/test-pretty.lua.html">test-pretty.lua</a></li>
+  <li><a href="../examples/test-symbols.lua.html">test-symbols.lua</a></li>
+  <li><a href="../examples/testapp.lua.html">testapp.lua</a></li>
+  <li><a href="../examples/testclone.lua.html">testclone.lua</a></li>
+  <li><a href="../examples/testconfig.lua.html">testconfig.lua</a></li>
+  <li><a href="../examples/testglobal.lua.html">testglobal.lua</a></li>
+  <li><a href="../examples/testinputfields.lua.html">testinputfields.lua</a></li>
+  <li><a href="../examples/testinputfields2.lua.html">testinputfields2.lua</a></li>
+  <li><a href="../examples/testxml.lua.html">testxml.lua</a></li>
+  <li><a href="../examples/which.lua.html">which.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>pl.array2d</code></h1>
+
+<p>Operations on two-dimensional arrays.</p>
+<p> See <a href="../topics/02-arrays.md.html#Operations_on_two_dimensional_tables">The Guide</a></p>
+
+<p> Dependencies: <a href="../modules/pl.utils.html#">pl.utils</a> , <a href="../modules/pl.tablex.html#">pl.tablex</a> </p>
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#size">size&nbsp;(t)</a></td>
+	<td class="summary">return the row and column size.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#column">column&nbsp;(a, key)</a></td>
+	<td class="summary">extract a column from the 2D array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map">map&nbsp;(f, a, arg)</a></td>
+	<td class="summary">map a function over a 2D array</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#reduce_rows">reduce_rows&nbsp;(f, a)</a></td>
+	<td class="summary">reduce the rows using a function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#reduce_cols">reduce_cols&nbsp;(f, a)</a></td>
+	<td class="summary">reduce the columns using a function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#reduce2">reduce2&nbsp;(opc, opr, a)</a></td>
+	<td class="summary">reduce a 2D array into a scalar, using two operations.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map2">map2&nbsp;(f, ad, bd, a, b, arg)</a></td>
+	<td class="summary">map a function over two arrays.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#product">product&nbsp;(f, t1, t2)</a></td>
+	<td class="summary">cartesian product of two 1d arrays.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#flatten">flatten&nbsp;(t)</a></td>
+	<td class="summary">flatten a 2D array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#reshape">reshape&nbsp;(t, nrows, co)</a></td>
+	<td class="summary">reshape a 2D array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#swap_rows">swap_rows&nbsp;(t, i1, i2)</a></td>
+	<td class="summary">swap two rows of an array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#swap_cols">swap_cols&nbsp;(t, j1, j2)</a></td>
+	<td class="summary">swap two columns of an array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#extract_rows">extract_rows&nbsp;(t, ridx)</a></td>
+	<td class="summary">extract the specified rows.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#extract_cols">extract_cols&nbsp;(t, cidx)</a></td>
+	<td class="summary">extract the specified columns.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#remove_row">remove_row&nbsp;(t, i)</a></td>
+	<td class="summary">remove a row from an array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#remove_col">remove_col&nbsp;(t, j)</a></td>
+	<td class="summary">remove a column from an array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#parse_range">parse_range&nbsp;(s)</a></td>
+	<td class="summary">parse a spreadsheet range.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#range">range&nbsp;(t, rstr)</a></td>
+	<td class="summary">get a slice of a 2D array using spreadsheet range notation.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#slice">slice&nbsp;(t, i1, j1, i2, j2)</a></td>
+	<td class="summary">get a slice of a 2D array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#set">set&nbsp;(t, value, i1, j1, i2, j2)</a></td>
+	<td class="summary">set a specified range of an array to a value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#write">write&nbsp;(t, f, fmt, i1, j1, i2, j2)</a></td>
+	<td class="summary">write a 2D array to a file.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#forall">forall&nbsp;(t, row_op, end_row_op, i1, j1, i2, j2)</a></td>
+	<td class="summary">perform an operation for all values in a 2D array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#move">move&nbsp;(dest, di, dj, src, i1, j1, i2, j2)</a></td>
+	<td class="summary">move a block from the destination to the source.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#iter">iter&nbsp;(a, indices, i1, j1, i2, j2)</a></td>
+	<td class="summary">iterate over all elements in a 2D array, with optional indices.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#columns">columns&nbsp;(a)</a></td>
+	<td class="summary">iterate over all columns.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#new">new&nbsp;(rows, cols, val)</a></td>
+	<td class="summary">new array of specified dimensions</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "size"></a>
+    <strong>size&nbsp;(t)</strong>
+    </dt>
+    <dd>
+    return the row and column size. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a 2d array</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>number of rows</li>
+        <li>number of cols</li>
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "column"></a>
+    <strong>column&nbsp;(a, key)</strong>
+    </dt>
+    <dd>
+    extract a column from the 2D array. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>a</em></code>:  2d array</li>
+       <li><code><em>key</em></code>:  an index or key</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        1d array
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "map"></a>
+    <strong>map&nbsp;(f, a, arg)</strong>
+    </dt>
+    <dd>
+    map a function over a 2D array 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>f</em></code>:  a function of at least one argument</li>
+       <li><code><em>a</em></code>:  2d array</li>
+       <li><code><em>arg</em></code>:  an optional extra argument to be passed to the function.</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        2d array
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "reduce_rows"></a>
+    <strong>reduce_rows&nbsp;(f, a)</strong>
+    </dt>
+    <dd>
+    reduce the rows using a function. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>f</em></code>:  a binary function</li>
+       <li><code><em>a</em></code>:  2d array</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        1d array
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/pl.tablex.html#reduce">pl.tablex.reduce</a>
+    </ul>
+</dd>
+    <dt>
+    <a name = "reduce_cols"></a>
+    <strong>reduce_cols&nbsp;(f, a)</strong>
+    </dt>
+    <dd>
+    reduce the columns using a function. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>f</em></code>:  a binary function</li>
+       <li><code><em>a</em></code>:  2d array</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        1d array
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/pl.tablex.html#reduce">pl.tablex.reduce</a>
+    </ul>
+</dd>
+    <dt>
+    <a name = "reduce2"></a>
+    <strong>reduce2&nbsp;(opc, opr, a)</strong>
+    </dt>
+    <dd>
+    reduce a 2D array into a scalar, using two operations. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>opc</em></code>:  operation to reduce the final result</li>
+       <li><code><em>opr</em></code>:  operation to reduce the rows</li>
+       <li><code><em>a</em></code>:  2D array</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map2"></a>
+    <strong>map2&nbsp;(f, ad, bd, a, b, arg)</strong>
+    </dt>
+    <dd>
+    map a function over two arrays. 
+ They can be both or either 2D arrays
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>f</em></code>:  function of at least two arguments</li>
+       <li><code><em>ad</em></code>:  order of first array</li>
+       <li><code><em>bd</em></code>:  order of second array</li>
+       <li><code><em>a</em></code>:  1d or 2d array</li>
+       <li><code><em>b</em></code>:  1d or 2d array</li>
+       <li><code><em>arg</em></code>:  optional extra argument to pass to function</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        2D array, unless both arrays are 1D
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "product"></a>
+    <strong>product&nbsp;(f, t1, t2)</strong>
+    </dt>
+    <dd>
+    cartesian product of two 1d arrays. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>f</em></code>:  a function of 2 arguments</li>
+       <li><code><em>t1</em></code>:  a 1d table</li>
+       <li><code><em>t2</em></code>:  a 1d table</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">product('..',{1,2},{'a','b'}) == {{'1a','2a'},{'1b','2b'}}</pre>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        2d table
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "flatten"></a>
+    <strong>flatten&nbsp;(t)</strong>
+    </dt>
+    <dd>
+    flatten a 2D array. 
+ (this goes over columns first.)
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  2d table</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">flatten {{1,2},{3,4},{5,6}} == {1,2,3,4,5,6}</pre>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        a 1d table
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "reshape"></a>
+    <strong>reshape&nbsp;(t, nrows, co)</strong>
+    </dt>
+    <dd>
+    reshape a 2D array. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  2d array</li>
+       <li><code><em>nrows</em></code>:  new number of rows</li>
+       <li><code><em>co</em></code>:  column-order (Fortran-style) (default false)</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        a new 2d array
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "swap_rows"></a>
+    <strong>swap_rows&nbsp;(t, i1, i2)</strong>
+    </dt>
+    <dd>
+    swap two rows of an array. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a 2d array</li>
+       <li><code><em>i1</em></code>:  a row index</li>
+       <li><code><em>i2</em></code>:  a row index</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "swap_cols"></a>
+    <strong>swap_cols&nbsp;(t, j1, j2)</strong>
+    </dt>
+    <dd>
+    swap two columns of an array. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a 2d array</li>
+       <li><code><em>j1</em></code>:  a column index</li>
+       <li><code><em>j2</em></code>:  a column index</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "extract_rows"></a>
+    <strong>extract_rows&nbsp;(t, ridx)</strong>
+    </dt>
+    <dd>
+    extract the specified rows. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  2d array</li>
+       <li><code><em>ridx</em></code>:  a table of row indices</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "extract_cols"></a>
+    <strong>extract_cols&nbsp;(t, cidx)</strong>
+    </dt>
+    <dd>
+    extract the specified columns. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  2d array</li>
+       <li><code><em>cidx</em></code>:  a table of column indices</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "remove_row"></a>
+    <strong>remove_row&nbsp;(t, i)</strong>
+    </dt>
+    <dd>
+    remove a row from an array. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a 2d array</li>
+       <li><code><em>i</em></code>:  a row index</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "remove_col"></a>
+    <strong>remove_col&nbsp;(t, j)</strong>
+    </dt>
+    <dd>
+    remove a column from an array. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a 2d array</li>
+       <li><code><em>j</em></code>:  a column index</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "parse_range"></a>
+    <strong>parse_range&nbsp;(s)</strong>
+    </dt>
+    <dd>
+    parse a spreadsheet range. 
+ The range can be specified either as &lsquo;A1:B2&rsquo; or &lsquo;R1C1:R2C2&rsquo;;
+ a special case is a single element (e.g &lsquo;A1&rsquo; or &lsquo;R1C1&rsquo;)
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s</em></code>:  a range.</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>start col</li>
+        <li>start row</li>
+        <li>end col</li>
+        <li>end row</li>
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "range"></a>
+    <strong>range&nbsp;(t, rstr)</strong>
+    </dt>
+    <dd>
+    get a slice of a 2D array using spreadsheet range notation.  @see parse_range
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a 2D array</li>
+       <li><code><em>rstr</em></code>:  range expression</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        a slice
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <li><a href="../modules/pl.array2d.html#parse_range">array2d.parse_range</a></li>
+         <li><a href="../modules/pl.array2d.html#slice">array2d.slice</a></li>
+    </ul>
+</dd>
+    <dt>
+    <a name = "slice"></a>
+    <strong>slice&nbsp;(t, i1, j1, i2, j2)</strong>
+    </dt>
+    <dd>
+    get a slice of a 2D array.  Note that if the specified range has
+ a 1D result, the rank of the result will be 1.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a 2D array</li>
+       <li><code><em>i1</em></code>:  start row (default 1)</li>
+       <li><code><em>j1</em></code>:  start col (default 1)</li>
+       <li><code><em>i2</em></code>:  end row   (default N)</li>
+       <li><code><em>j2</em></code>:  end col   (default M)</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        an array, 2D in general but 1D in special cases.
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "set"></a>
+    <strong>set&nbsp;(t, value, i1, j1, i2, j2)</strong>
+    </dt>
+    <dd>
+    set a specified range of an array to a value. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a 2D array</li>
+       <li><code><em>value</em></code>:  the value (may be a function)</li>
+       <li><code><em>i1</em></code>:  start row (default 1)</li>
+       <li><code><em>j1</em></code>:  start col (default 1)</li>
+       <li><code><em>i2</em></code>:  end row   (default N)</li>
+       <li><code><em>j2</em></code>:  end col   (default M)</li>
+    </ul>
+
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/pl.tablex.html#set">tablex.set</a>
+    </ul>
+</dd>
+    <dt>
+    <a name = "write"></a>
+    <strong>write&nbsp;(t, f, fmt, i1, j1, i2, j2)</strong>
+    </dt>
+    <dd>
+    write a 2D array to a file. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a 2D array</li>
+       <li><code><em>f</em></code>:  a file object (default stdout)</li>
+       <li><code><em>fmt</em></code>:  a format string (default is just to use tostring)</li>
+       <li><code><em>i1</em></code>:  start row (default 1)</li>
+       <li><code><em>j1</em></code>:  start col (default 1)</li>
+       <li><code><em>i2</em></code>:  end row   (default N)</li>
+       <li><code><em>j2</em></code>:  end col   (default M)</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "forall"></a>
+    <strong>forall&nbsp;(t, row_op, end_row_op, i1, j1, i2, j2)</strong>
+    </dt>
+    <dd>
+    perform an operation for all values in a 2D array. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  2D array</li>
+       <li><code><em>row_op</em></code>:  function to call on each value</li>
+       <li><code><em>end_row_op</em></code>:  function to call at end of each row</li>
+       <li><code><em>i1</em></code>:  start row (default 1)</li>
+       <li><code><em>j1</em></code>:  start col (default 1)</li>
+       <li><code><em>i2</em></code>:  end row   (default N)</li>
+       <li><code><em>j2</em></code>:  end col   (default M)</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "move"></a>
+    <strong>move&nbsp;(dest, di, dj, src, i1, j1, i2, j2)</strong>
+    </dt>
+    <dd>
+    move a block from the destination to the source. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>dest</em></code>:  a 2D array</li>
+       <li><code><em>di</em></code>:  start row in dest</li>
+       <li><code><em>dj</em></code>:  start col in dest</li>
+       <li><code><em>src</em></code>:  a 2D array</li>
+       <li><code><em>i1</em></code>:  start row (default 1)</li>
+       <li><code><em>j1</em></code>:  start col (default 1)</li>
+       <li><code><em>i2</em></code>:  end row   (default N)</li>
+       <li><code><em>j2</em></code>:  end col   (default M)</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "iter"></a>
+    <strong>iter&nbsp;(a, indices, i1, j1, i2, j2)</strong>
+    </dt>
+    <dd>
+    iterate over all elements in a 2D array, with optional indices. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>a</em></code>:  2D array</li>
+       <li><code><em>indices</em></code>:  with indices (default false)</li>
+       <li><code><em>i1</em></code>:  start row (default 1)</li>
+       <li><code><em>j1</em></code>:  start col (default 1)</li>
+       <li><code><em>i2</em></code>:  end row   (default N)</li>
+       <li><code><em>j2</em></code>:  end col   (default M)</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        either value or i,j,value depending on indices
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "columns"></a>
+    <strong>columns&nbsp;(a)</strong>
+    </dt>
+    <dd>
+    iterate over all columns. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>a</em></code>:  a 2D array</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        each column in turn
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "new"></a>
+    <strong>new&nbsp;(rows, cols, val)</strong>
+    </dt>
+    <dd>
+    new array of specified dimensions 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>rows</em></code>:  number of rows</li>
+       <li><code><em>cols</em></code>:  number of cols</li>
+       <li><code><em>val</em></code>:  initial value; if it&rsquo;s a function then use <code>val(i,j)</code></li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        new 2d array
+    </ol>
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

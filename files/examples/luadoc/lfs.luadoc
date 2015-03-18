@@ -1,0 +1,79 @@
+
+--- LuaFileSystem is a Lua library developed to complement the set of functions 
+-- related to file systems offered by the standard Lua distribution.
+-- LuaFileSystem offers a portable way to access the underlying directory 
+-- structure and file attributes.
+
+module "lfs"
+
+--- Returns a table with the file attributes corresponding to
+--    <code>filepath</code> (or <code>nil</code> followed by an error message
+--    in case of error).
+--    If the second optional argument is given, then only the value of the
+--    named attribute is returned (this use is equivalent to
+--    <code>lfs.attributes(filepath).aname</code>, but the table is not created
+--    and only one attribute is retrieved from the O.S.).
+--    The attributes are described as follows;
+--    attribute <code>mode</code> is a string, all the others are numbers,
+--    and the time related attributes use the same time reference of
+--    <a href="http://www.lua.org/manual/5.0/manual.html#5.7"><code>os.time</code></a>.
+function attributes (filepath, aname)
+
+--- Changes the current working directory to the given
+--    <code>path</code>.<br />
+--    Returns <code>true</code> in case of success or <code>nil</code> plus an
+--    error string.
+function chdir (path)
+
+--- Returns a string with the current working directory or <code>nil</code>
+--  plus an error string.
+function currentdir ()
+
+---    Lua iterator over the entries of a given directory.
+--    Each time the iterator is called it returns a string with an entry of the
+--    directory; <code>nil</code> is returned when there is no more entries.
+--    Raises an error if <code>path</code> is not a directory.
+function dir (path)
+
+--- Locks a file or a part of it. This function works on <em>open files</em>; the
+--    file handle should be specified as the first argument.
+--    The string <code>mode</code> could be either
+--    <code>r</code> (for a read/shared lock) or <code>w</code> (for a
+--    write/exclusive lock). The optional arguments <code>start</code>
+--    and <code>length</code> can be used to specify a starting point and
+--    its length; both should be numbers.<br />
+--    Returns <code>true</code> if the operation was successful; in
+--    case of error, it returns <code>nil</code> plus an error string.
+function lock (filehandle, mode, start, length)
+
+--- Creates a new directory. The argument is the name of the new
+--    directory.<br />
+--    Returns <code>true</code> if the operation was successful;
+--    in case of error, it returns <code>nil</code> plus an error string.
+function mkdir (dirname)
+
+--- Removes an existing directory. The argument is the name of the directory.<br />
+--    Returns <code>true</code> if the operation was successful;
+--    in case of error, it returns <code>nil</code> plus an error string.
+function rmdir (dirname)
+
+--- Set access and modification times of a file. This function is
+--    a bind to <code>utime</code> function. The first argument is the
+--    filename, the second argument (<code>atime</code>) is the access time,
+--    and the third argument (<code>mtime</code>) is the modification time.
+--    Both times are provided in seconds (which should be generated with
+--    Lua standard function <code>os.date</code>).
+--    If the modification time is omitted, the access time provided is used;
+--    if both times are omitted, the current time is used.<br />
+--    Returns <code>true</code> if the operation was successful;
+--    in case of error, it returns <code>nil</code> plus an error string.
+function touch (filepath, atime, mtime)
+
+--- Unlocks a file or a part of it. This function works on
+--    <em>open files</em>; the file handle should be specified as the first
+--    argument. The optional arguments <code>start</code> and
+--    <code>length</code> can be used to specify a starting point and its
+--    length; both should be numbers.<br />
+--    Returns <code>true</code> if the operation was successful;
+--    in case of error, it returns <code>nil</code> plus an error string.
+function unlock (filehandle, start, length)

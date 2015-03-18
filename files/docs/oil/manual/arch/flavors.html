@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Using Flavors</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="../basics/index.html", title="Basic Concepts">Basics</a></li>
+			<li><a href="../corba/index.html", title="CORBA Support">CORBA</a></li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="index.html", title="Internal Architecture">Arch</a>
+				<div class="outside"><div class="inside"><ul>
+					<li><a href="layers.html", title="Defining Layers">Layers</a></li>
+					<li><strong>Flavors</strong></li>
+					<li><a href="core.html", title="Core Architecture">Core</a></li>
+					<li><a href="rmi.html", title="RMI Architecture">RMI</a></li>
+				</ul></div></div>
+			</li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Using Flavors</h1>
+<p><a href="../basics/brokers.html">Brokers</a> are created merging components assemblies from different layers.
+The layers used to create a broker are denominated its <em>flavor</em>.
+The flavor used in the creation of a broker is provided by field <code>flavor</code> of the configuration table passed as argument of function <a href="../basics/module.html#init"><code>oil.init</code></a><code>(config)</code>.
+The value of this field must be a string with the names of the different layers separated by semicolons (<code>;</code>), like in the example below:</p>
+
+<pre>
+broker = oil.init{
+  flavor = "intercepted;corba;typed;base"
+}
+</pre>
+
+<p>The order the layer names in the flavor string is important because layers are created from left to right.
+Therefore, the components of left-most layers are created first and shall not be replaced by components from other layers.
+Generally, more specific layers must appear first.
+In particular, extensions layers must come before the layer they extend.
+In the example above, the extension layer <a href="rmi.html#intercepted">intercepted</a> comes first then the extended layer <a href="rmi.html#corba">corba</a>.
+The same is true for extension layer <a href="core.html#typed">typed</a> and extended layer <a href="core.html#base">base</a>.
+Theoretically, complementary layers can come in any order relative to one another.
+However, it is a good practice to put RMI layers first than the core layer because the RMI layer might extend the core layer in some way.
+See section <a href="index.html#layer">Architectural Layers</a> for the list of layers defined by OiL.</p>
+
+<p>The flavor is a feature used to help the creation of brokers from combination of assemblies defined as architectural layers.
+For a description about the definition of layers see section <a href="layers.html">Defining Layers</a>.
+However, you do not have to define a new layer to can create different assemblies.
+Moreover, you can provide a flavor that completes a partial assembly you provide to function <a href="../basics/module.html#init"><code>oil.init</code></a>.
+As an example, consider the following code that provides RMI components and completes the broker assembly with components from layer <a href="core.html#base">base</a>.</p>
+
+<pre>
+-- create assembly
+broker = oil.init{
+  flavor = "cooperative;base",
+  OperationRequester = MyProtocolRequester(),
+  ObjectReferrer     = MyProtocolReferrer(),
+  RequestListener    = MyProtocolListener(),
+}
+-- make connections from your components
+-- to components from layer 'base'
+broker.OperationRequester.sockets = broker.BasicSystem.sockets
+broker.RequestListener.sockets    = broker.BasicSystem.sockets
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

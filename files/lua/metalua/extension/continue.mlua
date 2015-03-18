@@ -1,0 +1,53 @@
+require "metalua.walk"
+
+----------------------------------------------------------------------
+-- * [loop_tags] are the tags of statements which support continue.
+-- * [loop_keywords] are the initial keywords which trigger the parsing
+--   of these statements: they're indeed indexed by keyword in [mlp.stat].
+----------------------------------------------------------------------
+
+local loop_tags = table.transpose{ "Forin", "Fornum", "While", "Repeat" }
+local loop_keywords = { "for", "while", "repeat" }
+
+----------------------------------------------------------------------
+-- This function takes the AST of a continue-enabled loop, parse
+-- its body to find all instances of [`Continue]. If any of them
+-- is found ([label~=nil]), they're transformed in [`Goto{...}], and
+-- the corresponding label is added at the end of the loop's body.
+--
+-- Caveat: if a [continue] appears in the non-body part of a loop
+-- (and therefore is relative to some enclosing loop), it isn't
+-- handled, and therefore causes a compilation error. This could
+-- only happen due in a [`Stat{ }], however, since [`Function{ }]
+-- cuts the search for [`Continue].
+----------------------------------------------------------------------
+local function loop_transformer (ast)
+   local label
+   local cfg = { stat = { }; expr = { } }
+
+   function cfg.stat.down (x)
+      if loop_tags[x.tag] then return 'break'
+      elseif x.tag=='Continue' then
+         if not label then label = mlp.gensym 'continue' end
+         x <- `Goto{ label }
+      end
+   end
+
+   function cfg.expr.down (x)
+      return x.tag=='Function' and 'break'
+   end
+
+   local loop_body = ast.tag=="Repeat" and ast[1] or ast[#ast]
+   walk.block (cfg, loop_body)
+   if label then table.insert (loop_body, `Label{ label }) end
+end
+
+----------------------------------------------------------------------
+-- Register the transformer for each kind of loop:
+----------------------------------------------------------------------
+for keyword in values (loop_keywords) do
+   mlp.stat:get(keyword).transformers:add (loop_transformer)
+end
+
+mlp.lexer:add "continue"
+mlp.stat:add{ "continue", builder = ||`Continue }

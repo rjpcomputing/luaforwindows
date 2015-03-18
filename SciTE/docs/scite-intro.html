@@ -1,0 +1,346 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>A Quick SciTE Tour</title>
+	<style type="text/css"><!--
+body {
+	padding-left: 2em;
+	}
+pre {
+	background-color: #eeeeff
+	}
+
+--></style>
+</head>
+<body>
+<h1  id="T1">A Quick SciTE Tour</h1>
+
+<ul>
+    <li><a href="#T2">Editing With SciTE</a>
+    <ul>
+        <li><a href="#T3">Configuring SciTE</a></li>
+        <li><a href="#T4">Opening And Browsing Files</a></li>
+        <li><a href="#T5">Selecting Text</a></li>
+        <li><a href="#T6">Abbreviations and Completing Text</a></li>
+    </ul></li>
+    <li><a href="#T7">Running Programs</a></li>
+    <li><a href="#T8">Using Lua Interactively</a></li>
+    <li><a href="#T9">Debugging Programs</a></li>
+</ul>
+
+
+
+<p><img src="SciTEIco.png" alt="SciTE"/></p>
+
+<p>SciTE is a general-purpose programmer's editor that also allows you to
+debug Lua scripts. It is very extendable using its own built-in Lua
+interpreter, in fact the debugger support is almost entirely done in Lua.
+With SciTE as you can do step by step debugging of  Lua source, set
+breakpoints, watch variables,  trace the stack,  inspect variables and more.</p>
+
+<h2  id="T2">Editing With SciTE</h2>
+
+<p>The SciTE window consists of the following parts:</p>
+
+<ul>
+    <li>caption bar ('title')</li>
+    <li>menu</li>
+    <li>toolbar (can hide this with <code>View|Tool Bar</code>)</li>
+    <li>tabbar (with a tab for each open file, or 'buffer')</li>
+    <li>edit window</li>
+    <li>output pane (will open automatically if any output or errors are generated)</li>
+    <li>status bar (usually shows line and column number)</li>
+</ul>
+
+<p>The edit window has three margins:</p>
+
+<ul>
+    <li>line numbers (usually invisible, use <code>View|Line Numbers</code> to show)</li>
+    <li>marker margin (shows markers, breakpoints, etc. Can click here to select a line)</li>
+    <li>fold margin (clicking on a fold margin will 'collapse' the folded block)</li>
+</ul>
+
+<p>Simple editing with SciTE with easy because it uses standard Windows editing
+conventions. In particular, if you have used Visual Studio you will find many of
+the shortcuts familiar. However, it is a good exercise to know what an editor can
+do for you, and learn a few shortcuts, because with a little work you can save a
+lot of time when performing your editing tasks. The only way to learn is to experiment,
+and always remember that <code>Edit|Undo (Ctrl+Z)</code> is your friend - no mistake is
+permanent.</p>
+
+<h3  id="T3">Configuring SciTE</h3>
+
+<p><a name="options"/></p>
+
+<p>SciTE is a very configurable editor. To set global options,
+open the options file using <code>Options|Open Global Options File</code>.
+If you prefer not to have the full file path in the caption bar, then you
+would edit <code>title.full.path</code> to be 0 (zero) like so, and save this file.</p>
+
+<pre><code>title.full.path=0
+</code></pre>
+
+<p>Simularly, if you would prefer not to see line numbers by default, then set
+<code>line.margin.visible</code> to 0. View the SciTE Help file with <code>Help|SciTE Help</code> to see
+a full list of available <em>properties</em>. Some changes will only be visible after restarting SciTE.</p>
+
+<h3  id="T4">Opening And Browsing Files</h3>
+
+<p>There will be a 'Edit with SciTE' on the right-mouse context menu when
+selecting a Lua file. Once SciTE is launched, you can also drag and drop
+files onto SciTE to open them. By default, <code>File|Open</code> will open files in the
+same directory as the current file.</p>
+
+<p>Once files are open, you can move to them by either clicking on the
+appropriate tab, or going to the Buffers menu. Alt+1, Alt+2, etc will let you
+go directly to the file in that particular tab. Ctrl+Tab will switch between the
+two recently used buffers. F12 will provide a drop-down list
+of open files in recently-used order; you can move in this list with the up
+and down keys.</p>
+
+<p>It is useful to set bookmarks in longer scripts, so you can revisit them
+again. A bookmark can be set or unset with <code>Search|Toggle Bookmark (Ctrl-F2)</code>
+and <code>Search|Next bookmark (F2)</code> will move to the next bookmark.
+<code>Search|Go to... (Ctrl+G)</code> will take you to a specific line.
+(To see line numbers, use <code>View|Line Numbers</code>)</p>
+
+<p><code>File|Open Selected Filename (Ctrl+Shift+O)</code> will try to open a filename at the cursor.
+For instance, if the line was <code>require "date"</code> and the cursor was on 'date', it will open
+<code>date.lua</code>, either in the current directory, or on the Lua path.</p>
+
+<p>A very useful operation is <code>Search|Find in Files (Ctrl+Shift+F)</code> which will search for a word
+or phrase in the current directory and any subdirectories. The results will appear in
+the Output Pane; double-clicking on a result will take you to that place in the file. (You can
+use F4 to quickly go through all occurances.)</p>
+
+<p>A good way to get an overview of a whole file is <code>View|Toggle All Folds</code>.</p>
+
+<h3  id="T5">Selecting Text</h3>
+
+<p>It is always possible to select text using the mouse, and to select a line
+just click in the left-most margin.  Dragging the mouse in the left-most margin will
+select a range of lines. The usual meaning of double-clicking is to select a word,
+but this SciTE version generalizes this action to select a whole string or comment.</p>
+
+<p>If you have defined a bookmark, then you can select all the text following it up to the cursor.
+This is useful if you want to move a section of a file; place the bookmark at
+the top of the section, go to the end of the section, and then select with <code>Alt+F2</code>.</p>
+
+<p>A useful shortcut is <code>Edit|Block Select (Ctrl+Shift+A)</code> which intelligently selects the current block; if you position the cursor on the first line of a function, it will select all of that function.
+There is a complementary 'smart paste' operation <code>Edit|Smart Paste (Ctrl+Shift+V)</code> which
+inserts the contents of the clipboard and tries to adjust the block to the current indentation, leaving the block selected in case the paste was not as smart as it thought!  Once a block is
+selected, it can be indented with <code>Tab</code> and un-indented with <code>Ctrl+Tab</code>.</p>
+
+<h3  id="T6">Abbreviations and Completing Text</h3>
+
+<p>Writing code involves a lot of repetitive typing, and SciTE can help you code faster. This version
+comes with a set of predefined abbreviations to make Lua programming easier; for instance, if you type 'if' and press <code>Ctrl+B</code> (<code>Edit|Expand Abbreviation</code>) then SciTE will insert this:</p>
+
+<pre><code>if then
+
+end
+</code></pre>
+
+<p>and the cursor will be positioned just after 'if', ready for you to type the condition. Likewise, 'for' <code>Ctrl+B</code> will give you:</p>
+
+<pre><code>for k,v in pairs( ) do
+
+end
+</code></pre>
+
+<p>with the cursor placed in the brackets after 'pairs'. Please note that abbreviations are
+inserted properly, respecting your indentation. If you find yourself typing some patterns out
+repeatedly, then consider adding a custom abbreviation. To do this you can edit
+<code>abbrev.properties</code> (in the same directory as <code>SciTE.exe</code>.)</p>
+
+<p>Another general feature is <em>autocompletion</em>. This examines your document and provides a set of suggested complete words. Unlike the similar feature in OpenOffice, it will present you with a drop-down list of possible candidates.  This can be a godsend if you find yourself writing long variable names like <code>SearchCompletedList</code> repeatedly. (If you prefer, you can switch off automatic word completion by
+setting <code>autocompleteword.automatic</code> to 0 (<a href="#options">see setting options</a>), and then you can use
+<code>Edit|Complete Word (Ctrl+Enter)</code> to get a list of suggested words.)</p>
+
+<p>For working with Lua code specifically, there is also <code>Edit|Complete Symbol (Ctrl+I)</code>. This
+uses the supplied Lua <em>api file</em> to complete the library function. For example,
+if I type 'st' in a Lua file, then  <code>Ctrl+I</code> will supply a drop-down list of all Lua library functions
+that begin with 'st', such as 'string.byte','string.char', etc. Furthermore, if you then choose one of these functions, then as soon as you enter '(' SciTE will provide a <em>calltip</em> with
+the parameters and a helpful one-line summary. This will also happen whenever you have typed
+one of these library functions in directly.</p>
+
+<p><img src="calltip.png" alt="calltip"/></p>
+
+<h2  id="T7">Running Programs</h2>
+
+<p><img src="toolbar.png" alt="toolbar"/></p>
+
+<p><code>Tools|Go (F5)</code> <img src="run.png" alt="run"/> will run the current script. (This operation is also available
+from the toolbar as the green arrow) If the script needs command-line
+parameters, up to four parameters can be specified with <code>View|Parameters</code>.
+If you have a runaway program stuck in a loop then <code>Tools|Stop Executing (Ctrl+Break)</code>
+will kill it; the icon next to the Run icon will be enabled and can also be used.</p>
+
+<p>Any output or errors will appear in the Output pane; If the execution of
+a script fails, then the error line is automatically shown. This can also be achieved by
+clicking on a error message. (Or by using <code>Tools|Next Message (F4)</code>, which is useful if
+there are many compile errors. This also works for the results of <code>Search|Find in Files</code>)</p>
+
+<p>The Output pane also supports the usual selection and clipboard operations; these are
+also available through the right-click context menu. To open or close the
+Output pane, use F8.</p>
+
+<h2  id="T8">Using Lua Interactively</h2>
+
+<p>The little prompt icon <img src="prompt.png" alt="prompt"/> will put you into a Lua interactive prompt. This
+prompt is different from the usual Lua prompt because tables will be printed
+out nicely. Plus, it is now easy to copy stuff to the clipboard.</p>
+
+<pre><code>&gt; = 5*2
+10
+&gt; t = {1,2,3}
+&gt; = t
+{1,2,3}
+</code></pre>
+
+<p>This Lua prompt will automatically stay in the same directory as the current
+file, which is very useful for testing small bits of code. For instance, save
+this as 'sqr.lua':</p>
+
+<pre><code>function sqr(x)
+  return x*x
+end
+</code></pre>
+
+<p>You can now move to the output pane (just click it with the mouse, or
+<code>Ctrl-F6</code> if you prefer using the keyboard), load the file using <code>dofile "sqr.lua"</code>
+and type <code>sqr(10)</code></p>
+
+<pre><code>&gt; dofile 'sqr.lua'
+&gt; sqr(10)
+100
+&gt; sqr('10')
+100
+&gt; sqr('bonzo')
+stdin:1: attempt to perform arithmetic on local 'x' (a string value)
+...
+</code></pre>
+
+<p>You now understand the limitations of your simple function; it cannot
+square things which cannot be converted into numbers. (The icon next
+to the Lua prompt icon has the same effect as typing <code>dofile</code> directly.</p>
+
+<p>Another feature which can be very useful is that three commands are
+available (<code>cd</code>, <code>dir</code> and <code>edit</code>) which work like DOS commands.
+For example:</p>
+
+<pre><code>&gt; dir *.lua
+controller.lua
+remdebug
+remdebug.lua
+&gt; cd
+C:\Program Files\SciTE\scite-debug\remDebug
+&gt; cd remdebug
+&gt; dir
+engine.lua
+&gt; edit engine.lua
+</code></pre>
+
+<p>Where <code>edit</code> will open the file in SciTE.</p>
+
+<p>Generally, interactive Lua is the best place to learn about the available
+libraries and to test out things like string patterns, etc.  The idea is that
+writing longer programs is easier once you have tested tricky bits
+interactively.</p>
+
+<p>To leave the Lua prompt, just type quit.</p>
+
+<h2  id="T9">Debugging Programs</h2>
+
+<p>Debugging involves running your program in a controlled environment where
+you can stop at specified lines called breakpoints, and then move a line at
+a time, called stepping. Single-stepping goes to the next line that will be
+executed, and will enter functions, whereas 'stepping over' will step over
+any function calls and stop at the line after the call. Here is an example
+script ('script1.lua'); note that the line numbers are not part of the program!
+(script1.lua is available in the scite-debug\tests directory)</p>
+
+<pre><code>01 function two(x)
+02   print(x)
+03 end
+04 function one(y)
+05   print(y)
+06   two('go')
+07   print('there')
+08 end
+09
+10 one('dolly')
+</code></pre>
+
+<p>When you start the debugger, it will stop at the first executable line.
+You can now single-step your way to the code of interest, but it's easier
+to set a breakpoint using F9 and then use <code>Debug|Run</code> again to continue.
+The stopped line is shown with a green background, and the text on the
+status bar changes to 'active'.  Set a breakpoint for line 10 and continue.</p>
+
+<p>Single-stepping will then lead you to line 5; stepping again will put
+you on line 6. If you now single-step again, you will enter the function two
+at line 2; if you had stepped over, you would have directly proceeded to
+line 7.</p>
+
+<p>When stopped, you can inspect any value in two different ways; by letting
+the mouse hover over a variable (called 'tooltip evaluation') or explicitly
+using <code>Debug|Inspect</code> or the toolbar inspect icon. In this case the value will
+be written out to the Output pane. For example, when stopped at line 2,
+hovering the mouse over 'x' will give the tooltip "x = 'go'". Hovering over 'y'
+in line 4 will give no value, because y is a local variable which is only
+meaningful when you are in function one.</p>
+
+<p>When you are stopped at line 2, you can print out the call stack
+<code>Debug|Backtrace, ctrl+alt+B</code>:</p>
+
+<pre><code>[1] two in script1.lua:2 ***
+[2] one in script1.lua:6
+[3] main in script1.lua:10
+[4] C in [C]:-1
+</code></pre>
+
+<p>Moving 'up' (alt+U) means going back to the point where two() was called;
+moving up again gets you to where one() was called at line 10. Simularly,
+you can now move down. The call stack gets <em>deeper</em>, which is why
+moving <em>down</em> gets you back to the current position. You can always
+move to a particular stack frame by double-clicking on one of the lines in
+the stack trace.  When you have moved to a particular stack frame, the
+context changes so that the local variables at that point become available
+again. But note that in this case the execution point is still at line 2, so if
+you single-step again you will go back to the 'bottom' of the stack and
+move onto line 3.</p>
+
+<p>If your program crashes at any point, the line changes to red and a stack
+trace is automatically printed. Note that the program is not dead! You can
+inspect any values you like, move up and down the stacktrace, etc. To
+finish the program, either kill it with <code>Debug|Kill (alt+K)</code> or just by contining
+<code>Debug|Run, alt+R</code>. (The red icon at the end of the toolbar achieves the
+same result.)</p>
+
+<p>It is often useful to watch how a variable changes, which is set with
+<code>Debug|Watch</code>. Each time you stop at a line, watch expressions will be
+printed out in the Output Pane.</p>
+
+<p>All these operations are available on the toolbar, but there are keyboard
+shortcuts as well:</p>
+
+<pre><code>F9     set breakpoint at current line
+alt+R  start debugging; if stopped at a line, continue execution.
+alt+C  single step to the next line
+alt+N  step over functions ('next line')
+alt+G  run until cursor ('go to')
+alt+I  inspect expression at cursor
+alt+W  add expression to watches
+alt+U  go up to the function that called this function
+alt+D  go down to the function that was called from here
+ctrl+alt+B backtrace
+</code></pre>
+
+<p>Once your Lua script is fully debugged, you can run it from the command
+line by typing in the name of the script at the command line or double
+clicking on the Lua script file from Windows Explorer.</p>
+
+
+</body></html>

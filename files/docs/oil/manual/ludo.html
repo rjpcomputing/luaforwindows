@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: LuDO Support</title>
+	<style type="text/css" media="all"><!--
+		@import "../oil.css";
+		@import "../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../index.html", title="">Home</a></li>
+	<li><a href="../release/index.html", title="Installation">Install</a></li>
+	<li><a href="index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="basics/index.html", title="Basic Concepts">Basics</a></li>
+			<li><a href="corba/index.html", title="CORBA Support">CORBA</a></li>
+			<li><strong>LuDO</strong></li>
+			<li><a href="arch/index.html", title="Internal Architecture">Arch</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>LuDO Support</h1>
+<p>LuDO stands for Lua Distributed Objects.
+It is an RMI technology specifically designed for use within the Lua language.
+Moreover, it is intended to be as simple as possible so its implementation can be easily comprehended by developers interested in development of support for other RMI technologies in OiL.
+Below, we describe the main characteristics of LuDO.</p>
+
+<h2>Configuration Options</h2>
+
+<p>LuDO brokers are typically created using one of the following flavors (for more information about flavors, see section <a href="arch/flavors.html">Using Flavors</a>):</p>
+
+<pre>
+ludo;base
+ludo;cooperative;base
+</pre>
+
+<p>LuDO accepts only two configuration options that defines the host and port where invocations must be send to, as described below.</p>
+
+<table>
+	<tr>
+		<td valign="top"><code>host</code></td>
+		<td valign="top"><b>string</b></td>
+		<td valign="top">[optional]</td>
+		<td>Host name or IP address. If none is provided the ORB binds to all current net interfaces.</td>
+	</tr>
+	<tr>
+		<td valign="top"><code>port</code></td>
+		<td valign="top"><b>number</b></td>
+		<td valign="top">[optional]</td>
+		<td>Host port the ORB must listen. If none is provided, the ORB tries to bind to a port in the range [2809; 9999].</td>
+	</tr>
+</table>
+
+<p>Below is an example that illustrates how to initiate a LuDO broker:</p>
+
+<pre>
+require "oil"
+
+oil.main(function()
+  local broker = oil.init{
+    flavor = "ludo;cooperative;base",
+    host = "myhostname",
+    port = "8080",
+  }
+  
+  ...
+  
+  broker:run()
+end)
+</pre>
+
+<h2>Value Mapping</h2>
+
+<p>Similar to Lua, LuDO does not provide support for interfaces or method signatures.
+Instead, it relies on dynamic typing, and remote methods can be invoked with any number of parameters and can return any number of values.
+However, such values must be values serializable by method implemented by class <a href="http://loop.luaforge.net/library/serial/Serializer.html">loop.serial.Serializer</a>, which includes Lua functions without upvalues shared with other functions.
+In particular, objects are transferred by copy and not by reference.
+Therefore, if you pass an object as parameter to a remote method, it will be copied to the remote context and all changes performed on the remote copy will not be reflected in the original object.
+To send objects by reference, you have to explicitly create a proxy for the object and send the proxy, which will be copied to the remote context.
+Such situation is illustrated in the code below.</p>
+
+<hr>
+
+<strong>Server</strong>
+<pre>
+require "oil"
+
+oil.main(function()
+  local broker = oil.init{flavor="ludo;cooperative;base"}
+  
+  local Invoker = {}
+  function Invoker:invoke(object, method, ...)
+    object[method](object, ...)
+  end
+  
+  oil.writeto("invoker.ref",
+    broker:tostring(
+      broker:newservant(Invoker)))
+  
+  broker:run()
+end)
+</pre>
+
+<hr>
+
+<strong>Client</strong>
+<pre>
+require "oil"
+
+oil.main(function()
+  local broker = oil.init{flavor="ludo;cooperative;base"}
+  oil.newthread(broker.run, broker)
+  
+  local Hello = {}
+  function Hello:say(who)
+    print(string.format("Hello, %s!", tostring(who)))
+  end
+  
+  local Invoker = broker:newproxy(oil.readfrom("invoker.ref"))
+  
+  -- object 'Hello' is copied to the remote context
+  -- thus the message is printed on the remote host
+  Invoker:invoke(Hello, "say", "World")
+  
+  -- create a proxy for a servant from object 'Hello'
+  local proxy = 
+    broker:newproxy(
+      broker:tostring(
+        broker:newservant(Hello)))
+  
+  -- proxy to 'Hello' is copied to the remote context
+  -- thus the message is printed locally
+  Invoker:invoke(proxy, "say", "World")
+  
+  broker:shutdown()
+end)
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

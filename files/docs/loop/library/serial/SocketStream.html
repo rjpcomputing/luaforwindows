@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Socket Stream</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																																																																																																															<li><a href="../../index.html", title="">Home</a></li>
+																																																																																																																															<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																																																																																																															<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																																																																																																															<li><a href="../index.html", title="Class Library">Library</a>
+																																																																																																																																<div class="outside"><div class="inside"><ul>
+																																																																																																																																	<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																																																																																																																		</li>
+																																																																																																																																		<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																																																																																																																			</li>
+																																																																																																																																			<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																																																																																																																				</li>
+																																																																																																																																				<li><a href="../overview.html#object", title="Objects">object</a>
+																																																																																																																																					</li>
+																																																																																																																																					<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																																																																																																																						</li>
+																																																																																																																																						<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																																																																																																																							</li>
+																																																																																																																																						</ul></div></div>
+																																																																																																																																					</li>
+																																																																																																																																					<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																																																																																																																					<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																																																																																																																				</ul></div></div>
+																																																																																																																																			
+</div>
+
+<div class="content">
+<h1>Socket Stream</h1>
+<h2><code>loop.serial.SocketStream</code></h2><br>
+<p>Subclass of <code><a href="Serializer.html">Serializer</a></code> that serializes values into a socket object like the ones provided by the <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library.
+It is also used to restore values serialized using the serialization mechanism provided by <code><a href="Serializer.html">Serializer</a></code> that are transmitted by a socket.
+This class is useful to implement communication infrastructures.</p>
+
+<p>Instances of this class implement the <code>write</code> method required by <code><a href="Serializer.html">Serializer</a></code> in such way that the pieces of the serialized code are concatenated and sent directly through a socket.</p>
+
+<h2>Behavior</h2>
+
+<h3>Fields</h3>
+
+<dl>
+	
+	<dt><code><b>socket</b></code> [required]</dt>
+	<dd>
+		Socket object where the serialied code shall be written.
+		This socket is also used to receive the serialized code used to restore values.
+		In this case, the transfered code may contain sequences of serialized values separated by a null character followed by a newline character (<i>i.e.</i> <code>"\0\n"</code>).
+	</dd>
+	
+</dl>
+
+<h3>Methods</h3>
+
+<dl>
+	
+	<dt><code><b>put</b>(...)</code></dt>
+	<dd>
+		Serializes the arguments and writes the results in the socket defined by field <code>socket</code>.
+		The sequences of values serialized by this function are terminated by a null character followed by a newline character (<i>i.e.</i> <code>"\0\n"</code>).
+	</dd>
+	
+	<dt><code><b>get</b>()</code></dt>
+	<dd>
+		Each time this method is called, it reads all the data until a null character followed by a newline character (<i>i.e.</i> <code>"\0\n"</code>) and then use this code to restore values.
+		Therefore, each call of this method restores one of the set of values serialized and sent to the socket defined by field <code>socket</code>, in the same order they were originally serialized.
+		All the set of values received through the socket defined by field <code>socket</code> must be separated by a null character followed by a newline character (<i>i.e.</i> <code>"\0\n"</code>).
+	</dd>
+	
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	<li>Methods <code>serialize</code> and <code>load</code> of the superclass <code><a href="Serializer.html">Serializer</a></code> should not be used because they break the serialization policy used by this class.</li>
+</ul>
+
+<h2>Examples</h2>
+
+<h3><a name="NaiveORB">Naïve Object Request Broker</a></h3>
+
+<pre>
+--------------------------------------------------------------------------------
+-- Server Script ---------------------------------------------------------------
+
+-- exported object
+
+evaluator = {}
+
+function evaluator:repeats(count)
+  self.results = {}
+  self.count = count
+end
+
+function evaluator:execute(name, func, ...)
+  local time = socket.gettime()
+  for i=1, self.count do func(...) end
+  self.results[name] = socket.gettime() - time
+end
+
+function evaluator:report()
+  return self.count, self.results
+end
+
+
+
+-- server-side ORB
+
+local socket = require "socket"
+local Stream = require "loop.serial.SocketStream"
+
+local function dispatch(name, method, ...)
+  local object = _G[name]
+  if object then
+    if type(object[method]) == "function" then
+      return pcall(object[method], object, ...)
+    else
+      return false, "method '"..method.."' not provided"
+    end
+  else
+    return false, "object '"..name.."' not found"
+  end
+end
+
+local port = socket.bind("localhost", 2809)
+local channel, errmsg
+repeat
+  channel, errmsg = port:accept()
+  if channel then
+    local stream = Stream{ socket = channel }
+    stream:put(dispatch(stream:get()))
+    channel:close()
+  end
+until errmsg
+port:close()
+
+
+
+--------------------------------------------------------------------------------
+-- Client Script ---------------------------------------------------------------
+
+-- client-side ORB
+
+local socket = require "socket"
+local Stream = require "loop.serial.SocketStream"
+local oo     = require "loop.base"
+
+Proxy = oo.class()
+
+local function handleresults(success, ...)
+  if not success then error(...) end
+  return ...
+end
+
+function Proxy:__index(method)
+  return function(proxy, ...)
+    local stream = Stream{ socket = assert(socket.connect(proxy.host, proxy.port)) }
+    stream:put(proxy.name, method, ...)
+    return handleresults(stream:get())
+  end
+end
+
+
+
+-- remote object access
+
+evaluator = Proxy{
+  name = "evaluator",
+  host = "localhost",
+  port = 2809,
+}
+
+local function fat(n)
+  local res = 1
+  for i=1,n do
+    res = res * i
+  end
+  return res
+end
+
+local function fatrec(n)
+  if n == 0
+    then return 1
+    else return n*fatrec(n-1)
+  end
+end
+
+evaluator:repeats(999)
+evaluator:execute("iteractive", fat, 999)
+evaluator:execute("recursive" , fatrec, 999)
+local n, results = evaluator:report()
+print(n.." repetitions:")
+for name, result in pairs(results) do print("", name, result) end
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

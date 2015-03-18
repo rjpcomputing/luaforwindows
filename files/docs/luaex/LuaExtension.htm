@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD><TITLE>Lua Extension Library</TITLE>
+</HEAD>
+<BODY >
+A recent (Jan 2006) discussion on the mailing list has prompted me to attempt to design an extended API which extends the Lua API by adding functions to the os and io namespaces.<p>
+This is not a proposal to modify the Lua core, but a design proposal for an API which extends the Lua core.  This API is meant to provide a more complete programming environment for stand-alone Lua programs on today's popular operating systems (Windows, MacOSX and POSIX platforms).<p>
+There are <a href="http://luaforge.net/projects/lua-ex/">[implementations for POSIX and Windows]</a> hosted on <a href="http://luaforge.net" >LuaForge</a>.  These are highly usable implementations, but should be considered only for testing purposes while the API is still being standardized.<p>
+<H2>ex API</H2>
+<p>
+Note that all these functions return the standard (nil,"error message") on failure and that, unless otherwise specified, they return (true) on success.<p>
+<H3>Initialization</H3>
+<code>require "ex"</code><DL>
+<dt><dd>marks a Lua program which uses this API</DL>
+<p>
+<p>
+<H3>Environment</H3>
+<p>
+<pre>os.getenv(name)</pre><DL>
+<dt><dd>get an environment value</DL>
+<p>
+<pre>os.setenv(name, value)</pre><DL>
+<dt><dd>set/modify an environment value</DL>
+<p>
+<pre>os.setenv(name, nil)</pre><DL>
+<dt><dd>remove an environment value</DL>
+<p>
+<pre>os.environ()</pre><DL>
+<dt><dd>returns a copy of the environment (a simple Lua table)</DL>
+<p>
+<p>
+<H3>File system (mostly borrowing from LuaFilesystem<a href="/cgi-bin/wiki.pl?action=edit&amp;id=LuaFilesystem" >?</a>)</H3>
+<p>
+<pre>os.chdir(pathname)</pre><DL>
+<dt><dd>change working directory</DL>
+<p>
+<pre>os.mkdir(pathname)</pre><DL>
+<dt><dd>create a directory</DL>
+<p>
+<pre>os.remove(pathname)</pre><DL>
+<dt><dd>remove a file or directory</DL>
+<p>
+<pre>pathname = os.currentdir()</pre><DL>
+<dt><dd>get working directory path</DL>
+<p>
+<pre>for entry in os.dir(pathname) do ; end</pre><DL>
+<dt><dd>iterates over the entries in a directory.  The pathname argument is optional; if missing the current directory is used.<dt><dd>Special directory entries such as "." and ".." are not returned.</DL>
+<p>
+<pre>entry = os.dirent(pathname)
+entry = os.dirent(file)</pre><DL>
+<dt><dd>gets information about a directory entry via pathname or open file</DL>
+<p>
+Both the iterator function returned by os.dir() and the os.dirent() function return an 'entry' table.  This table contains at least the following fields:<p>
+<DL>
+<dt><dd>entry.name= the filename (Note that os.dirent() does need to set this field)<dt><dd>entry.type= "file" or "directory" (or an implementation-defined string)<dt><dd>entry.size= the file size in bytes</DL>
+<p>
+Implementations may add other fields or even methods.<p>
+<p>
+<H3>I/O (locking and pipes)</H3>
+<p>
+<pre>file:lock(mode, offset, length)
+io.lock(file, mode, offset, length)</pre><DL>
+<dt><dd>lock or unlock a file or a portion of a file; 'mode' is either "r" or "w" or "u"; 'offset' and 'length' are optional<dt><dd>A mode of "r" requests a read lock, "w" requests a write lock, and "u" releases the lock.  Note that the locks may be either advisory or mandatory.</DL>
+<p>
+<pre>file:unlock(offset, length)
+io.unlock(file, offset, length)</pre><DL>
+<dt><dd>equivalent to file:lock("u", offset, length) or io.lock(file, "u", offset, length)</DL>
+<p>
+Note that both file:lock() and file:unlock() extend the metatable for Lua file objects.<p>
+<pre>rd, wr = io.pipe()</pre><DL>
+<dt><dd>create a pipe; 'rd' and 'wr' are Lua file objects</DL>
+<p>
+<p>
+<H3>Process control</H3>
+<p>
+<pre>os.sleep(seconds)
+os.sleep(interval, unit)</pre><DL>
+<dt><dd>suspends program execution for interval/unit seconds; 'unit' defaults to 1 and either argument can be floating point.  The particular sub-second precision is implementation-defined.<dt><dd><pre class="code">
+<span class="library">os.sleep</span>(3.8) <span class="comment">-- sleep for 3.8 seconds</span>
+<span class="keyword">local</span> microseconds = 1e6
+<span class="library">os.sleep</span>(3800000, microseconds) <span class="comment">-- sleep for 3800000 µs</span>
+<span class="keyword">local</span> ticks = 100
+<span class="library">os.sleep</span>(380, ticks) <span class="comment">-- sleep for 380 ticks</span>
+</pre>
+</DL>
+<p>
+<pre>proc = os.spawn(filename)
+proc = os.spawn{filename, [args-opts]}
+proc = os.spawn{command=filename, [args-opts]} </pre><DL>
+<dt><dd>create a child process</DL>
+<p>
+<DL>
+<dt><dd>'filename' names a program.  If the (implementation-defined) pathname is not absolute, the program is found through an implementation-defined search method (the PATH environment variable on most systems).</DL>
+<p>
+<DL>
+<dt><dd>If specified, [args-opts] is one or more of the following keys:</DL>
+<p>
+<DL>
+<DL>
+<dt><dd>[1]..[n]= the command line arguments</DL>
+</DL>
+<p>
+<DL>
+<DL>
+<dt><dd>args= an array of command line arguments</DL>
+</DL>
+<p>
+<DL>
+<DL>
+<dt><dd>env= a table of environment variables</DL>
+</DL>
+<p>
+<DL>
+<DL>
+<dt><dd>stdin= stdout= stderr= io.file objects for standard input, output, and error respectively</DL>
+</DL>
+<p>
+<DL>
+<dt><dd>It is an error if both integer keys and an 'args' key are specified.</DL>
+<p>
+<DL>
+<dt><dd>An implementation may provide special behavior if a zeroth argument (options.args[0] or options[0]) is provided.</DL>
+<p>
+<DL>
+<dt><dd>The returned 'proc' userdatum has the following method:</DL>
+<p>
+<pre>exitcode = proc:wait()</pre><DL>
+<dt><dd>wait for child process termination; 'exitcode' is the code returned by the child process</DL>
+<p>
+<H3>Summary</H3>
+<p>
+All functions are also available under the ex namespace:<p>
+<DL>
+<dt><dd><pre>ex.getenv(name)
+ex.setenv(name, value)
+ex.environ()
+ex.chdir(pathname)
+ex.mkdir(pathname)
+ex.currentdir()
+ex.dir(pathname)
+ex.dirent(pathname)
+ex.lock(file, mode, offset, length)
+ex.unlock(file, offset, length)
+ex.pipe()
+ex.sleep(interval, [unit])
+ex.spawn(...)
+ex.wait(proc)</pre></DL>
+<p>
+Note that ex.getenv is here mostly for parallelism, but also because under Windows, using the SetEnvironmentVariable<a href="/cgi-bin/wiki.pl?action=edit&amp;id=SetEnvironmentVariable" >?</a>() API requires overriding the standard os.getenv implementation which uses getenv() to use GetEnvironmentVariable<a href="/cgi-bin/wiki.pl?action=edit&amp;id=GetEnvironmentVariable" >?</a>() instead.<p>
+<p>
+<H2>Examples</H2>
+<p>
+<DL>
+<dt><dd><pre class="code">
+<span class="library">require</span> <span class="string">"ex"</span>
+
+<span class="comment">-- run the echo command</span>
+proc = <span class="library">os.spawn</span><span class="string">"/bin/echo"</span>
+proc = <span class="library">os.spawn</span>{<span class="string">"/bin/echo"</span>, <span class="string">"hello"</span>, <span class="string">"world"</span>}
+proc = <span class="library">os.spawn</span>{command=<span class="string">"/bin/echo"</span>, <span class="string">"hello"</span>, <span class="string">"world"</span>}
+
+<span class="comment">-- run the id command</span>
+vars = { LANG=<span class="string">"fr_FR"</span> }
+proc = <span class="library">os.spawn</span>{<span class="string">"/bin/id"</span>, <span class="string">"-un"</span>, env=vars}
+proc = <span class="library">os.spawn</span>{command=<span class="string">"/bin/id"</span>, <span class="string">"-un"</span>, env=vars)
+
+<span class="comment">-- Useless use of cat</span>
+<span class="keyword">local</span> rd, wr = <span class="library">assert</span>(<span class="library">io.pipe</span>())
+<span class="keyword">local</span> proc = <span class="library">assert</span>(<span class="library">os.spawn</span>(<span class="string">"/bin/cat"</span>, {stdin=rd}))
+rd:close()
+wr:write(<span class="string">"Hello world\n"</span>)
+wr:close()
+proc:wait()
+
+<span class="comment">-- Run a program with a modified environment</span>
+<span class="keyword">local</span> env = <span class="library">os.environ</span>()
+env.LUA_PATH = <span class="string">"/usr/share/lib/lua/?.lua"</span>
+env.LUA_CPATH = <span class="string">"/usr/share/lib/lua/?.so"</span>
+<span class="keyword">local</span> proc = <span class="library">assert</span>(<span class="library">os.spawn</span>(<span class="string">"lua"</span>, {args = {<span class="string">"-e"</span>, <span class="string">'print"Hello world\n"'</span>}, env=env }))
+proc:wait()
+
+<span class="comment">-- popen2()</span>
+<span class="keyword">function</span> popen2(...)
+  <span class="keyword">local</span> in_rd, in_wr = <span class="library">io.pipe</span>()
+  <span class="keyword">local</span> out_rd, out_wr = <span class="library">io.pipe</span>()
+  <span class="keyword">local</span> proc, err = <span class="library">os.spawn</span>{stdin = in_rd, stdout = out_wr, ...}
+  in_rd:close(); out_wr:close()
+  <span class="keyword">if</span> <span class="keyword">not</span> proc <span class="keyword">then</span>
+    in_wr:close(); out_rd:close()
+    <span class="keyword">return</span> proc, err
+  <span class="keyword">end</span>
+  <span class="keyword">return</span> proc, out_rd, in_wr
+<span class="keyword">end</span>
+<span class="comment">-- usage:</span>
+<span class="keyword">local</span> p, i, o = <span class="library">assert</span>(popen2(<span class="string">"wc"</span>, <span class="string">"-w"</span>))
+o:write(<span class="string">"Hello world"</span>); o:close()
+<span class="library">print</span>(i:read<span class="string">"*l"</span>); i:close()
+p:wait()
+</pre>
+</DL>
+</body>
+</html>

@@ -1,0 +1,958 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Initializing Brokers</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="index.html", title="Basic Concepts">Basics</a>
+				<div class="outside"><div class="inside"><ul>
+					<li><a href="module.html", title="The oil Module">Module</a></li>
+					<li><strong>Brokers</strong></li>
+					<li><a href="servants.html", title="Registering Servants">Servants</a></li>
+					<li><a href="proxies.html", title="Using Remote Servants">Proxies</a></li>
+					<li><a href="threads.html", title="Cooperative Multithreading">Threads</a></li>
+				</ul></div></div>
+			</li>
+			<li><a href="../corba/index.html", title="CORBA Support">CORBA</a></li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="../arch/index.html", title="Internal Architecture">Arch</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Initializing Brokers</h1>
+<p>Brokers are the central concept of OiL.
+They maintain the list of active servants that are able to receive remote invocations.
+Brokers also create proxies that provide means to perform invocations on remote servants.
+Basically, brokers can be seen as the way invocation are performed through the distributed environment.</p>
+
+<h2><a name="creation">Creation</a></h2>
+
+<p>Brokers are created by operation <a href="module.html#init"><code>oil.init</code></a><code>([config])</code> that returns an initialized broker.
+The optional parameter <code>config</code> is a table containing the description of the parameters used to initialize the broker.
+If no parameter is informed, then a default broker is created and returned.
+All future calls to operation <a href="module.html#init"><code>oil.init</code></a><code>()</code> without parameters return the same default broker.
+The <code>config</code> table might contain field <code>flavor</code>, which defines the flavor used to create the new broker.
+For more information about flavors, check section <a href="../arch/flavors.html">Using Flavors</a>.
+Other additional fields are defined by the underlying RMI protocol selected for the broker.
+To get details about these additional fields, see the specific documentation of the RMI protocol that your intend to use.</p>
+
+<pre>require "oil"
+
+oil.main(function()
+  local broker = oil.init{
+    flavor = "intercepted;corba;typed;base",
+    host = "127.0.0.1",
+    port = 80,
+  }
+  broker:run()
+end)</pre>
+
+<h2>Start Up</h2>
+
+<p>Typically, the application calls method <a href="#run"><code>run</code></a> to start processing invocations sent to the broker.
+This method executes a continuously processing every invocation destined to a servant registered in the broker.
+The <a href="#run"><code>run</code></a> method only returns when the broker is shutdown.</p>
+
+<p>It is important to notice that no invocation will be performed until the method <a href="#run"><code>run</code></a> starts its execution.
+Therefore, if a remote operation requires some service provided by a local servant, then this operation should only be started after the <a href="#run"><code>run</code></a> is running.
+Otherwise, a deadlock shall take place.</p>
+
+<p>For example, suppose a <code>registry</code> servant that provides method <code>register(user)</code>.
+The implementation of this method accesses some fields of the object <code>user</code>.
+In such case, if <code>register(user)</code> is invoked before the method <a href="#run"><code>run</code></a> starts to execute and <code>user</code> is a local servant, then the <code>registry</code> will never be able to complete because <code>user</code>'s broker is not processing remote invocations yet.
+To avoid, this problem, a possible solution is to execute method <a href="#run"><code>run</code></a> in a separate thread like in the example below.
+For more information about threads, check section <a href="threads.html">Cooperative Multithreading</a></p>
+
+<pre>require "oil"
+
+oil.main(function()
+  local broker = oil.init()
+  
+  -- call broker:run() in a new thread
+  oil.newthread(broker.run, broker)
+  
+  
+  -- continue execution while other thread
+  -- processes remote invocations.
+  
+end)</pre>
+
+<h2>Processing</h2>
+
+<p>An alternative to method <a href="#run"><code>run</code></a>, which process invocations continuously, is to use a combination of methods <a href="#pending"><code>pending</code></a> and <a href="#step"><code>step</code></a>.
+The former indicates whether a remote invocation is pending to be processed or not.
+The later is used to process a single invocation request.
+If no invocation request is pending then <a href="#step"><code>step</code></a> blocks until an invocation request is received.
+The following code is somewhat equivalent to invoke method <a href="#run"><code>run</code></a>:</p>
+
+<pre>
+while broker:pending() do
+  broker:step()
+end
+</pre>
+
+<p>This model of execution is usefull to integrate OiL with other event loops when multithreading is not available.
+Note however, that while method <a href="#run"><code>run</code></a> is executing, there is not need to call method <a href="#step"><code>step</code></a>.</p>
+
+<h2>Shut Down</h2>
+
+<p>Method <a href="#shutdown"><code>shutdown</code></a> is used to stop the invocation processing being performed, and release all the resources currently used by the broker.
+After a call to this method, no additional invocation is accepted.
+Any further remote invocation results in errors raised in the client process.
+However, every pending invocation initiated before the call of <a href="#shutdown"><code>shutdown</code></a> are completed normally.
+This method can be called at any time when method <a href="#run"><code>run</code></a> is executing, otherwise an exception is raised.</p>
+
+<h2>Interface</h2>
+
+<h3>Fields</h3>
+<dl>
+	<dt><a href="#types"><b><code>types</code></b></a></dt> 
+	<dd>Internal interface repository used by the ORB.</dd>
+</dl>
+
+<h3>Methods</h3>
+<dl>
+	<dt><a href="#deactivate"><b><code>deactivate</code></b></a><code>(object)</code></dt>
+	<dd>Deactivates a servant by removing its implementation from the object map.</dd>
+	<dt><a href="#getIR"><b><code>getIR</code></b></a><code>()</code></dt>
+	<dd>Gets the Interface Repository used to retrieve interface definitions.</dd>
+	<dt><a href="#getLIR"><b><code>getLIR</code></b></a><code>()</code></dt>
+	<dd>Gets a reference to the integrated Interface Repository.</dd>
+	<dt><a href="#loadidl"><b><code>loadidl</code></b></a><code>(idlcode)</code></dt>
+	<dd>Loads an IDL definition into the internal Interface Repository.</dd>
+	<dt><a href="#loadidlfile"><b><code>loadidlfile</code></b></a><code>(filename)</code></dt>
+	<dd>Loads an IDL file into the internal Interface Repository.</dd>
+	<dt><a href="#narrow"><b><code>narrow</code></b></a><code>(proxy, [interface])</code></dt>
+	<dd>Narrows an object reference into some more specific interface.</dd>
+	<dt><a href="#newdecoder"><b><code>newdecoder</code></b></a><code>(stream)</code></dt>
+	<dd>Creates a new value decoder that marshal values into strings.</dd>
+	<dt><a href="#newencoder"><b><code>newencoder</code></b></a><code>()</code></dt>
+	<dd>Creates a new value encoder that marshal values into strings.</dd>
+	<dt><a href="#newexcept"><b><code>newexcept</code></b></a><code>(body)</code></dt>
+	<dd>Creates a new exception object with the given body.</dd>
+	<dt><a href="#newproxy"><b><code>newproxy</code></b></a><code>(reference, [interface])</code></dt>
+	<dd>Creates a proxy for a remote object defined by a textual reference.</dd>
+	<dt><a href="#newservant"><b><code>newservant</code></b></a><code>(impl [, key, interface])</code></dt>
+	<dd>Creates a new servant implemented in Lua that supports some interface.</dd>
+	<dt><a href="#pending"><b><code>pending</code></b></a><code>()</code></dt>
+	<dd>Checks whether there is some request pending.</dd>
+	<dt><a href="#run"><b><code>run</code></b></a><code>()</code></dt>
+	<dd>Runs the ORB main loop.</dd>
+	<dt><a href="#setclientinterceptor"><b><code>setclientinterceptor</code></b></a><code>([interceptor])</code></dt>
+	<dd>Sets a CORBA-specific interceptor for operation invocations in the client-size.</dd>
+	<dt><a href="#setexcatch"><b><code>setexcatch</code></b></a><code>(function, [interface])</code></dt>
+	<dd>Defines a exception handling function for proxies.</dd>
+	<dt><a href="#setIR"><b><code>setIR</code></b></a><code>(remoteIR)</code></dt>
+	<dd>Sets the Interface Repository used to retrieve interface definitions.</dd>
+	<dt><a href="#setserverinterceptor"><b><code>setserverinterceptor</code></b></a><code>([interceptor])</code></dt>
+	<dd>Sets a CORBA-specific interceptor for operation invocations in the server-size.</dd>
+	<dt><a href="#shutdown"><b><code>shutdown</code></b></a><code>()</code></dt>
+	<dd>Shuts down the ORB.</dd>
+	<dt><a href="#step"><b><code>step</code></b></a><code>()</code></dt>
+	<dd>Waits for an ORB request and process it.</dd>
+	<dt><a href="#tostring"><b><code>tostring</code></b></a><code>(object)</code></dt>
+	<dd>Returns textual information that identifies the servant.</dd>
+</dl>
+
+<h3>Definitions</h3>
+
+<dl>
+	<dt><a name="pending"><b><code>pending</code></b></a><code>()</code></dt>
+	<dd>
+	<p>
+		<b>Checks whether there is some request pending.</b>
+		Method used to check whether there is some unprocessed ORB request pending.
+		It returns <code>true</code> if there is some request pending that must be processed by the main ORB or <code>false</code> otherwise.<br>
+	<p>
+		<i>Return values</i>
+		<table>
+		<tr>
+			<td valign="top"><code>ispending</code></td>
+			<td valign="top"><b>boolean</b></td>
+			<td valign="top"></td>
+			<td>Indication that there is some request pending.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+while broker:pending() do
+  broker:step()
+end
+    </pre>
+	</dd>
+	
+	<dt><a name="step"><b><code>step</code></b></a><code>()</code></dt>
+	<dd>
+	<p>
+		<b>Waits for an ORB request and process it.</b>
+		Method used to wait for an ORB request and process it.
+		Only one single ORB request is processed at each call.
+		It returns <code>true</code> if no exception is raised during request processing, or <code>nil</code> and the raised exception otherwise.<br>
+	<p>
+		<i>Return values</i>
+		<table>
+		<tr>
+			<td valign="top"><code>success</code></td>
+			<td valign="top"><b>boolean</b></td>
+			<td valign="top"></td>
+			<td>Indication of success on request processing.</td>
+		</tr>
+		<tr>
+			<td valign="top"><code>exception</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top">[occasional]</td>
+			<td>Exception raised at request processing.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+while broker:step() do
+ print "One more request successfully processed!"
+end
+    </pre>
+	</dd>
+	
+	<dt><a name="run"><b><code>run</code></b></a><code>()</code></dt>
+	<dd>
+	<p>
+		<b>Runs the ORB main loop.</b>
+		Method used to process all remote requisitions continuously until some exception is raised.
+		This method implicitly initiates the ORB if it was not initialized yet.<br>
+	<p>
+		<i>Usage:</i>
+		<pre>broker:run()</pre>
+	</dd>
+	
+	<dt><a name="shutdown"><b><code>shutdown</code></b></a><code>()</code></dt>
+	<dd>
+	<p>
+		<b>Shuts down the ORB.</b>
+		Stops the ORB main loop if it is executing.
+		All pending requests will be properly handled by the ORB after this method returns.<br>
+	<p>
+		<i>Usage:</i>
+		<pre>broker:shutdown()</pre>
+	</dd>
+	
+	<dt><a name="types"><b><code>types</code></b></a></dt>
+	<dd>
+	<p>
+		<b>Internal Interface Repository used by OiL.</b>
+		This field holds a reference to the object that implement the CORBA's Interface Repository used by the main ORB.
+		It implements the API defined by CORBA's IR plus an operation <code>resolve(spec)</code> that return a registered IDL type description from a specification that might be an repository ID, an absolute name, an IDL description in Lua or an object from a remote IR.<br>
+	<p>
+		<i>Usage:</i>
+		<pre>
+local iface = broker.types:lookup("MyModule::MyInterface")
+local iface = broker.types:lookup_id("IDL:MyModule/MyInterface:1.0")
+    </pre>
+	</dd>
+	
+	<dt><a name="loadidl"><b><code>loadidl</code></b></a><code>(idlcode)</code></dt>
+	<dd>
+	<p>
+		<b>Loads an IDL definition into the internal Interface Repository.</b>
+		The IDL specified will be parsed by the LuaIDL compiler and the resulting
+		definitions are updated in the internal interface repository.
+		If any errors occurs during the parse no definitions are loaded into the IR.<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>idlcode</code></td>
+			<td valign="top"><b>string</b></td>
+			<td valign="top"></td>
+			<td>The IDL specification to be loaded into the internal IR</td>
+		</tr>
+		</table>
+	<p>
+		<i>Return values</i>
+		<table>
+		<tr>
+			<td valign="top"><code>...</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top"></td>
+			<td>IDL descriptors that represents the loaded definitions.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+broker:loadidl [[
+  interface Hello {
+    attribute boolean quiet;
+    readonly attribute unsigned long count;
+    string say_hello_to(in string msg);
+  };
+]]
+    </pre>
+	</dd>
+	
+	<dt><a name="loadidlfile"><b><code>loadidlfile</code></b></a><code>(filename)</code></dt>
+	<dd>
+	<p>
+		<b>Loads an IDL file into the internal Interface Repository.</b>
+		The IDL file specified will be parsed by the LuaIDL compiler and the resulting
+		definitions are updated in the internal interface repository.
+		If any errors occurs during the parse no definitions are loaded into the IR.<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>filename</code></td>
+			<td valign="top"><b>string</b></td>
+			<td valign="top"></td>
+			<td>Path to the IDL file that must be loaded</td>
+		</tr>
+		</table>
+	<p>
+		<i>Return values</i>
+		<table>
+		<tr>
+			<td valign="top"><code>...</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top"></td>
+			<td>IDL descriptors that represents the loaded definitions.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+broker:loadidlfile "/usr/local/corba/idl/CosNaming.idl"
+    </pre>
+	</dd>
+	
+	<dt><a name="getLIR"><b><code>getLIR</code></b></a><code>()</code></dt>
+	<dd>
+	<p>
+		<b>Gets a reference to the integrated Interface Repository.</b>
+		Method used to retrieve a reference to the integrated Interface Repository.
+		It returns a reference to the object that implements the internal Interface Repository and exports local cached interface definitions.<br>
+	<p>
+		<i>Return values:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>localIR</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top"></td>
+			<td>CORBA object that exports the internal Interface Repository.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+print("Local IR IOR is:", broker:tostring(broker:getLIR()))
+    </pre>
+	</dd>
+	
+	<dt><a name="setIR"><b><code>setIR</code></b></a><code>(remoteIR)</code></dt>
+	<dd>
+	<p>
+		<b>Sets the Interface Repository used to retrieve interface definitions.</b>
+		Method used to set the remote Interface Repository that must be used to retrieve interface definitions not stored in the internal IR.
+		Once these definitions are acquired, they are stored in the internal IR.<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>remoteIR</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top"></td>
+			<td>Proxy for the remote IR to be used</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+broker:setIR(broker:newproxy("corbaloc::coshost:8080/InterfaceRepository"))
+    </pre>
+	</dd>
+	
+	<dt><a name="getIR"><b><code>getIR</code></b></a><code>()</code></dt>
+	<dd>
+	<p>
+		<b> Gets the Interface Repository used to retrieve interface definitions.</b>
+		Method used to get a reference to the Interface Repository used to retrieve interface definitions not stored in the internal IR.<br>
+	<p>
+		<i>Return values:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>remoteIR</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top"></td>
+			<td>Proxy to the remote IR currently used.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+broker:getIR():lookup("::MyModule::MyInterface")
+    </pre>
+	</dd>
+	
+	<dt><a name="newservant"><b><code>newservant</code></b></a><code>(impl [, key, interface])</code></dt>
+	<dd>
+	<p>
+		<b> Creates a new servant from a table containing operations and attribute values.</b>
+		Method used to create a new servant from a table containing attribute values and operation implementations.
+		The value of <code>impl</code> is used as the implementation of the a servant with interface defined by parameter <code>interface</code> (e.g. repository ID or absolute name of a given IDL interface stored in the IR).
+		Optionally, an object key value may be specified to create persistent references.
+		The servant returned by this method offers all servant attributes and methods, as well as implicit basic operations like CORBA's <code>_interface</code> or <code>_is_a</code>.
+		After this call any requests which object key matches the key of the servant are dispatched to its implementation.<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>impl</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top"></td>
+			<td>Value used as the servant implementation (may be an indexable value, e.g. userdata with a metatable that defines the __index field)</td>
+		</tr>
+		<tr>
+			<td valign="top"><code>interface</code></td>
+			<td valign="top"><b>string</b></td>
+			<td valign="top"></td>
+			<td>Repository ID or absolute name of the interface the object supports</td>
+		</tr>
+		<tr>
+			<td valign="top"><code>key</code></td>
+			<td valign="top"><b>string</b></td>
+			<td valign="top">[optional]</td>
+			<td>User-defined object key used in creation of the object reference</td>
+		</tr>
+		</table>
+	<p>
+		<i>Return values:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>object</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top"></td>
+			<td>Servant created.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+broker:newservant({say_hello_to=print}, "Key", "::HelloWorld::Hello")
+broker:newservant({say_hello_to=print}, nil, "::HelloWorld::Hello")
+broker:newservant({say_hello_to=print}, nil, "IDL:HelloWorld/Hello:1.0")
+    </pre>
+	</dd>
+	
+	<dt><a name="deactivate"><b><code>deactivate</code></b></a><code>(object)</code></dt>
+	<dd>
+	<p>
+		<b>Deactivates a servant by removing its implementation from the object map.</b>
+		If <code>object</code> is a servant (i.e. the object returned by <code>newservant</code>) then it is deactivated.
+		Alternatively, the <code>object</code> parameter may be the servant's object key.
+		Only in the case that the servant was created with an implicitly created key by the ORB then the <code>object</code> can be the servant's implementation.
+		Since a single implementation object can be used to create many servants with different interface, in this case the <code>type</code> parameter must be provided with the exact servant's interface.<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>object</code></td>
+			<td valign="top"><b>table|string</b></td>
+			<td valign="top"></td>
+			<td>Servant's object key, servant's implementation or servant itself.</td>
+		</tr>
+		<tr>
+			<td valign="top"><code>interface</code></td>
+			<td valign="top"><b>string</b></td>
+			<td valign="top">[occasional]</td>
+			<td>Identification of the servant's interface (e.g. repository ID or absolute name).</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+broker:deactivate(broker:newservant(impl, "::MyInterface", "objkey"))
+broker:deactivate("objkey")
+broker:deactivate(impl, "MyInterface")
+    </pre>
+	</dd>
+	
+	<dt><a name="tostring"><b><code>tostring</code></b></a><code>(object)</code></dt>
+	<dd>
+	<p>
+		<b>Returns textual information that identifies the servant.</b>
+		This method is used to get textual information that references a servant or proxy like an IOR (Inter-operable Object Reference).<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>object</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top"></td>
+			<td>Servant's object key, servant's implementation or servant itself.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Return values:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>textualref</code></td>
+			<td valign="top"><b>string</b></td>
+			<td valign="top"></td>
+			<td>Textual reference to the servant.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+oil.writeto("ref.ior", broker:tostring(broker:newservant(impl, "::Hello")))
+    </pre>
+	</dd>
+	
+	<dt><a name="newproxy"><b><code>newproxy</code></b></a><code>(reference, [interface])</code></dt>
+	<dd>
+	<p>
+		<b>Creates a proxy for a remote object defined by a textual reference.</b>
+		The value of reference must be a string containing reference information of the object the new new proxy will represent like a stringfied IOR (Inter-operable Object Reference) or corbaloc.
+		Optionally, an interface supported by the remote object may be defined, in this case no attempt is made to determine the actual object interface, i.e. no network communication is made to check the object's interface.<br>
+	<p>
+		<i>Parameters</i>
+		<table>
+		<tr>
+			<td valign="top"><code>reference</code></td>
+			<td valign="top"><b>string</b></td>
+			<td valign="top"></td>
+			<td>Textual representation of object's reference the new proxy will represent.</td>
+		</tr>
+		<tr>
+			<td valign="top"><code>interface</code></td>
+			<td valign="top"><b>string</b></td>
+			<td valign="top">[optional]</td>
+			<td>Interface identification in the interface repository, like a repID or absolute name of a interface the remote object supports (no interface or type check is done).</td>
+		</tr>
+  	</table>
+	<p>
+		<i>Return values</i>
+		<table>
+		<tr>
+			<td valign="top"><code>proxy</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top"></td>
+			<td>Proxy to the referenced object.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+broker:newproxy("IOR:00000002B494...")
+broker:newproxy("IOR:00000002B494...", "HelloWorld::Hello")
+broker:newproxy("IOR:00000002B494...", "IDL:HelloWorld/Hello:1.0")
+broker:newproxy("corbaloc::host:8080/Key", "IDL:HelloWorld/Hello:1.0")
+    </pre>
+	</dd>
+
+	<dt><a name="narrow"><b><code>narrow</code></b></a><code>(proxy, [interface])</code></dt>
+	<dd>
+	<p>
+		<b>Narrows an object reference into some more specific interface.</b>
+		Method used to narrow an object proxy into some more specific interface.
+		If you wish to create a narrowed proxy from an IOR or corbaloc URL, use the <code>newproxy</code> method.
+		The interface the object reference must be narrowed into is defined by the repository ID or absolute name stored in parameter <code>interface</code>.
+		If no interface is defined, then the object reference is narrowed to the most specific interface supported by the COBRA object.
+		Note that in the former case, no attempt is made to determine the actual object interface, <em>i.e.</em> no network communication is made to check the object's interface.<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>proxy</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top"></td>
+			<td>Proxy of a CORBA object that must be narrowed</td>
+		</tr>
+		<tr>
+			<td valign="top"><code>interface</code></td>
+			<td valign="top"><b>string</b></td>
+			<td valign="top">[optional]</td>
+			<td>Repository Interface ID or absolute name of the interface the object reference must be narrowed into (no interface or type check is made)</td>
+		</tr>
+		</table>
+	<p>
+		<i>Return values:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>proxy</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top"></td>
+			<td>Proxy to the CORBA object narrowed into some interface supported by the CORBA object.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+broker:narrow(ns:resolve_str("HelloWorld"))
+broker:narrow(ns:resolve_str("HelloWorld"), "IDL:HelloWorld/Hello:1.0")
+broker:narrow(ns:resolve_str("HelloWorld"), "::HelloWorld::Hello")
+    </pre>
+	<p>
+		<i>See also:</i> <a href="#newproxy"><b><code>newproxy</code></b></a>
+	</dd>
+	
+	<dt><a name="newdecoder"><b><code>newdecoder</code></b></a><code>(stream)</code></dt>
+	<dd>
+	<p>
+		<b>Creates a new value decoder that extracts marshaled values from strings.</b>
+		The decoder reads CORBA's CDR encapsulated streams, <i>i.e.</i> includes an indication of the endianess used in value codification.<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>stream</code></td>
+			<td valign="top"><b>string</b></td>
+			<td valign="top"></td>
+			<td>String containing a stream with marshaled values.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Return values:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>decoder</code></td>
+			<td valign="top"><b>object</b></td>
+			<td valign="top"></td>
+			<td>Value decoder that provides operation 'get([type])' to unmarshal values from a marshaled stream.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+local decoder = broker:newdecoder(stream)
+val = decoder:get(oil.corba.idl.sequence{oil.corba.idl.long})
+val = decoder:get(broker.types:lookup("MyLongSeq"))
+    </pre>
+	</dd>
+	
+	<dt><a name="newencoder"><b><code>newencoder</code></b></a><code>()</code></dt>
+	<dd>
+	<p>
+		<b>Creates a new value encoder that marshal values into strings.</b>
+		The encoder marshals values in a CORBA's CDR encapsulated stream, <i>i.e.</i> includes an indication of the endianess used in value codification.<br>
+	<p>
+		<i>Return values:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>encoder</code></td>
+			<td valign="top"><b>object</b></td>
+			<td valign="top"></td>
+			<td>Value encoder that provides operation 'put(value, [type])' to marshal values and operation 'getdata()' to get the marshaled stream.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+local encoder = broker:newencoder()
+encoder:put({1,2,3}, oil.corba.idl.sequence{oil.corba.idl.long})
+encoder:put({1,2,3}, broker.types:lookup("MyLongSeq"))
+io.write(encoder:getdata())
+    </pre>
+	</dd>
+	
+	<dt><a name="newexcept"><b><code>newexcept</code></b></a><code>(body)</code></dt>
+	<dd>
+	<p>
+		<b>Creates a new exception object with the given body.</b>
+		The <code>body</code> must contain the values of the exceptions fields and must also contain the exception identification in index 1 (in CORBA this identification is the repository ID, absolute name, etc.).<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>body</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top"></td>
+			<td>Exception body with all its field values and exception ID.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Return values:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>exception</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top"></td>
+			<td>Exception that provides meta-method <code>__tostring</code> that provides a pretty-printing.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+error(broker:newexcept{ "::CORBA::INTERNAL", minor_code_value = 2 })
+    </pre>
+	</dd>
+	
+	<dt><a name="setexcatch"><b><code>setexcatch</code></b></a><code>(func [, interface])</code></dt>
+	<dd>
+	<p>
+		<b>Defines a exception handling function for proxies.</b>
+		The handling function receives the following parameters:<br>
+		<b>proxy</b>: object proxy that performed the operation.<br>
+		<b>exception</b>: exception/error raised.<br>
+		<b>operation</b>: descriptor of the operation that raised the exception.<br>
+		If the parameter <code>type</code> is provided, then the exception handling function will be applied only to proxies of that type (i.e. interface).
+		Exception handling functions are not cumulative.
+		For example, is the is an exception handling function defined for all proxies and other only for proxies of a given type, then the later will be used for proxies of that given type.
+		Additionally, exceptions handlers are not inherited through interface hierarchies.<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>func</code></td>
+			<td valign="top"><b>function</b></td>
+			<td valign="top"></td>
+			<td>Exception handling function.</td>
+		</tr>
+		</table>
+	<p>
+		<i>Return values:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>interface</code></td>
+			<td valign="top"><b>table</b></td>
+			<td valign="top">[optional]</td>
+			<td>Interface ID of a group of proxies (e.g. repID).</td>
+		</tr>
+		</table>
+	<p>
+		<i>Usage:</i>
+		<pre>
+broker:setexcatch(function(_, except) error(tostring(except)) end)
+    </pre>
+	</dd>
+	
+	<dt><a name="setclientinterceptor"><b><code>setclientinterceptor</code></b></a><code>([interceptor])</code></dt>
+	<dd>
+	<p>
+		<b>Sets a CORBA-specific interceptor for operation invocations in the client-size.</b>
+		The interceptor must provide the following operations:<br>
+		<ul>
+			<li>
+				<code>sendrequest(request)</code>: <code>request</code> structure is described below.
+				<table>
+				<tr>
+					<td valign="top"><code>response_expected</code></td>
+					<td valign="top"><b>boolean</b></td>
+					<td valign="top">[read-only]</td>
+					<td>Flag that indicates if the server must send a response for this request.</td>
+				</tr>
+				<tr>
+					<td valign="top"><code>object_key</code></td>
+					<td valign="top"><b>string</b></td>
+					<td valign="top">[read-only]</td>
+					<td>Key of the object the request is addressed to.</td>
+				</tr>
+				<tr>
+					<td valign="top"><code>operation</code></td>
+					<td valign="top"><b>string</b></td>
+					<td valign="top">[read-only]</td>
+					<td>Name of the operation being invoked.</td>
+				</tr>
+				<tr>
+					<td valign="top"><code>service_context</code></td>
+					<td valign="top"><b>table</b></td>
+					<td valign="top"></td>
+					<td>Defines the service context values. See <code>ServiceContextList</code> in CORBA specs.</td>
+				</tr>
+				<tr>
+					<td valign="top"><code>success</code></td>
+					<td valign="top"><b>boolean</b></td>
+					<td valign="top">[optional]</td>
+					<td>Set this value to cancel request and define the results:
+					<code>true</code> cancels the request and indicates to the application that invocation was successful;
+					<code>false</code> cancels the request and indicates to the application that invocation raised an exception.</td>
+				</tr>
+				</table>
+				<a name="#client-params-note">Note:</a> The integer indexes store the operation's parameter values and should also be used to store the results values if the request is canceled (see <a href="#client-return-note">note below</a>).
+				<br>
+				<br>
+			</li>
+			<li>
+				<code>receivereply(reply)</code>: <code>reply</code> structure is described below.
+				<table>
+				<tr>
+					<td valign="top"><code>service_context</code></td>
+					<td valign="top"><b>table</b></td>
+					<td valign="top">[read-only]</td>
+					<td>Service context present in reply message. See <code>ServiceContextList</code> in CORBA specs.</td>
+				</tr>
+				<tr>
+					<td valign="top"><code>reply_status</code></td>
+					<td valign="top"><b>string</b></td>
+					<td valign="top">[read-only]</td>
+					<td>Enumeration value that indicates the reply status. See <code>ReplyStatus</code> in CORBA specs.</td>
+				</tr>
+				<tr>
+					<td valign="top"><code>success</code></td>
+					<td valign="top"><b>boolean</b></td>
+					<td valign="top">[optional]</td>
+					<td>Set this value to cancel the reply and replace results:
+					<code>true</code> cancels the reply and indicates to the application that invocation was successful;
+					<code>false</code> cancels the reply and indicates to the application that invocation raised an exception.</td>
+				</tr>
+				</table>
+				<a name="client-return-note">Note:</a> The integer indexes store the results that will be sent as request result.
+				For successful invocations these values must be the operation's results (return, out and inout parameters) in the same order they appear in the IDL description.
+				For failed invocations, index 1 must be the exception that identifies the failure.
+			</li>
+		</ul>
+		<br>
+		The <code>request</code> and <code>reply</code> are the same table in a single invocation.
+		Therefore, the fields of <code>request</code> are also available in <code>reply</code> except for those defined in the description of <code>reply</code>.<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>interceptor</code></td>
+			<td valign="top"><b>object</b></td>
+			<td valign="top">[optional]</td>
+			<td>Interceptor object that must provide the interface described above. If no value or <code>nil</code> is provided the the current interceptor is unregistered from the ORB.</td>
+		</tr>
+		</table>
+	</dd>
+
+	<dt><a name="setserverinterceptor"><b><code>setserverinterceptor</code></b></a><code>([interceptor])</code></dt>
+	<dd>
+	<p>
+		<b>Sets a CORBA-specific interceptor for operation invocations in the server-size.</b>
+		The interceptor must provide the following operations:<br>
+		<ul>
+			<li>
+				<code>receiverequest(request)</code>: <code>request</code> structure is described below.
+				<table>
+				<tr>
+					<td valign="top"><code>service_context</code></td>
+					<td valign="top"><b>table</b></td>
+					<td valign="top">[read-only]</td>
+					<td>Service context present in reply message. See <code>ServiceContextList</code> in CORBA specs.</td>
+				</tr>
+				<tr>
+					<td valign="top"><code>request_id</code></td>
+					<td valign="top"><b>number</b></td>
+					<td valign="top">[read-only]</td>
+					<td>Number that identifies the request in the multiplexed channel.</td>
+				</tr>
+				<tr>
+					<td valign="top"><code>response_expected</code></td>
+					<td valign="top"><b>boolean</b></td>
+					<td valign="top">[read-only]</td>
+					<td>Flag that indicates if the server must send a response for this request.</td>
+				</tr>
+				<tr>
+					<td valign="top"><code>object_key</code></td>
+					<td valign="top"><b>string</b></td>
+					<td valign="top">[read-only]</td>
+					<td>Key of the object the request is addressed to.</td>
+				</tr>
+				<tr>
+					<td valign="top"><code>operation</code></td>
+					<td valign="top"><b>string</b></td>
+					<td valign="top">[read-only]</td>
+					<td>Name of the operation being invoked.</td>
+				</tr>
+				<tr>
+					<td valign="top"><code>servant</code></td>
+					<td valign="top"><b>object</b></td>
+					<td valign="top">[read-only]</td>
+					<td>Local object the invocation will be dispatched to.</td>
+				</tr>
+				<tr>
+					<td valign="top"><code>method</code></td>
+					<td valign="top"><b>function</b></td>
+					<td valign="top">[read-only]</td>
+					<td>Function that will be invoked on object <code>servant</code>.</td>
+				</tr>
+				<tr>
+					<td valign="top"><code>success</code></td>
+					<td valign="top"><b>boolean</b></td>
+					<td valign="top">[optional]</td>
+					<td>Set this value to cancel the request and define the results:
+					<code>true</code> cancels the request and indicates to the application that invocation was successful;
+					<code>false</code> cancels the request and indicates to the application that invocation raised an exception.</td>
+				</tr>
+				</table>
+				<a name="#server-params-note">Note:</a> The integer indexes store the operation's parameter values and should also be used to store the results values if the request is canceled (see <a href="#server-return-note">note below</a>).
+				<br>
+				<br>
+			</li>
+			<li>
+				<code>sendreply(reply)</code>: <code>reply</code> structure is described below.
+				<table>
+				<tr>
+					<td valign="top"><code>service_context</code></td>
+					<td valign="top"><b>table</b></td>
+					<td valign="top"></td>
+					<td>Set this value to define a service context values. See <code>ServiceContextList</code> in CORBA specs.</td>
+				</tr>
+				<tr>
+					<td valign="top"><code>success</code></td>
+					<td valign="top"><b>boolean</b></td>
+					<td valign="top">[optional]</td>
+					<td>Set this value to cancel the reply and replace results:
+					<code>true</code> cancels the reply and indicates to the application that invocation was successful;
+					<code>false</code> cancels the reply and indicates to the application that invocation raised an exception.</td>
+				</tr>
+				</table>
+				<a name="server-return-note">Note:</a> The integer indexes store the results that will be sent as request result.
+				For successful invocations these values must be the operation's results (return, out and inout parameters) in the same order they appear in the IDL description.
+				For failed invocations, index 1 must be the exception that identifies the failure.
+			</li>
+		</ul>
+		<br>
+		The <code>request</code> and <code>reply</code> are the same table in a single invocation.
+		Therefore, the fields of <code>request</code> are also available in <code>reply</code> except for those defined in the description of <code>reply</code>.<br>
+	<p>
+		<i>Parameters:</i>
+		<table>
+		<tr>
+			<td valign="top"><code>interceptor</code></td>
+			<td valign="top"><b>object</b></td>
+			<td valign="top">[optional]</td>
+			<td>Interceptor object that must provide the interface described above. If no value or <code>nil</code> is provided the the current interceptor is unregistered from the ORB.</td>
+		</tr>
+		</table>
+	</dd>
+</dl>	
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

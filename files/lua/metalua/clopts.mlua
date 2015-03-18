@@ -1,0 +1,204 @@
+--------------------------------------------------------------------------------
+-- Command Line OPTionS handler
+-- ============================
+--
+-- This lib generates parsers for command-line options. It encourages
+-- the following of some common idioms: I'm pissed off by Unix tools
+-- which sometimes will let you concatenate single letters options,
+-- sometimes won't, will prefix long name options with simple dashes
+-- instead of doubles, etc.
+--
+--------------------------------------------------------------------------------
+
+-- TODO:
+-- * add a generic way to unparse options ('grab everything')
+-- * doc
+-- * when a short options that takes a param isn't the last element of a series
+--   of shorts, take the remaining of the sequence as that param, e.g. -Ifoo
+-- * let unset strings/numbers with +
+-- * add a ++ long counterpart to +
+--
+
+-{ extension 'match' }
+
+function clopts(cfg)
+   local short, long, param_func = { }, { }
+   local legal_types = table.transpose{ 
+      'boolean','string','number','string*','number*','nil', '*' }
+
+   -----------------------------------------------------------------------------
+   -- Fill short and long name indexes, and check its validity
+   -----------------------------------------------------------------------------
+   for x in ivalues(cfg) do
+      local xtype = type(x)
+      if xtype=='table' then
+         if not x.type then x.type='nil' end
+         if not legal_types[x.type] then error ("Invalid type name "..x.type) end
+         if x.short then
+            if short[x.short] then error ("multiple definitions for option "..x.short) 
+            else short[x.short] = x end
+         end
+         if x.long then
+            if long[x.long] then error ("multiple definitions for option "..x.long) 
+            else long[x.long] = x end
+         end
+      elseif xtype=='function' then
+         if param_func then error "multiple parameters handler in clopts"
+         else param_func=x end
+      end
+   end
+
+   -----------------------------------------------------------------------------
+   -- Print a help message, summarizing how to use the command line
+   -----------------------------------------------------------------------------
+   local function print_usage(msg)
+      if msg then print(msg,'\n') end
+      print(cfg.usage or "Options:\n")
+      for x in values(cfg) do
+         if type(x) == 'table' then
+            local opts = { }
+            if x.type=='boolean' then 
+               if x.short then opts = { '-'..x.short..'/+'..x.short } end
+               if x.long  then table.insert (opts, '--'..x.long..'/++'..x.long) end
+            else
+               if x.short then opts = { '-'..x.short..' <'..x.type..'>' } end
+               if x.long  then table.insert (opts,  '--'..x.long..' <'..x.type..'>' ) end
+            end
+            printf("  %s: %s", table.concat(opts,', '), x.usage or '<undocumented>')
+         end
+      end
+      print''
+   end
+
+   -- Unless overridden, -h and --help display the help msg
+   local default_help = { action = | | print_usage() or os.exit(0);
+                          long='help';short='h';type='nil'}
+   if not short.h   then short.h   = default_help end
+   if not long.help then long.help = default_help end
+
+   -----------------------------------------------------------------------------
+   -- Helper function for options parsing. Execute the attached action and/or
+   -- register the config in cfg.
+   --
+   -- * cfg  is the table which registers the options
+   -- * dict the name->config entry hash table that describes options
+   -- * flag is the prefix '-', '--' or '+'
+   -- * opt  is the option name
+   -- * i    the current index in the arguments list
+   -- * args is the arguments list
+   -----------------------------------------------------------------------------
+   local function actionate(cfg, dict, flag, opt, i, args)
+      local entry = dict[opt]
+      if not entry then print_usage ("invalid option "..flag..opt); return false; end
+      local etype, name = entry.type, entry.name or entry.long or entry.short
+      match etype with
+      | 'string' | 'number' | 'string*' | 'number*' -> 
+         if flag=='+' or flag=='++' then 
+            print_usage ("flag "..flag.." is reserved for boolean options, not for "..opt)
+            return false
+         end
+         local arg = args[i+1]
+         if not arg then 
+            print_usage ("missing parameter for option "..flag..opt)
+            return false
+         end
+         if etype:strmatch '^number' then 
+            arg = tonumber(arg)
+            if not arg then 
+               print_usage ("option "..flag..opt.." expects a number argument")
+            end
+         end
+         if etype:strmatch '%*$' then 
+            if not cfg[name] then cfg[name]={ } end
+            table.insert(cfg[name], arg)
+         else cfg[name] = arg end
+         if entry.action then entry.action(arg) end
+         return i+2
+      | 'boolean' -> 
+         local arg = flag=='-' or flag=='--'
+         cfg[name] = arg
+         if entry.action then entry.action(arg) end
+         return i+1
+      | 'nil' -> 
+         cfg[name] = true;
+         if entry.action then entry.action() end
+         return i+1
+      | '*' -> 
+         local arg = table.isub(args, i+1, #args)
+         cfg[name] = arg
+         if entry.action then entry.action(arg) end
+         return #args+1
+      |  _ -> assert( false, 'undetected bad type for clopts action')
+      end
+   end
+
+   -----------------------------------------------------------------------------
+   -- Parse a list of commands: the resulting function
+   -----------------------------------------------------------------------------
+   local function parse(...)
+      local cfg = { }
+      if not ... then return cfg end
+      local args = type(...)=='table' and ... or {...}
+      local i, i_max = 1, #args
+      while i <= i_max do         
+         local arg, flag, opt, opts = args[i]
+         --printf('beginning of loop: i=%i/%i, arg=%q', i, i_max, arg)
+         if arg=='-' then
+            i=actionate (cfg, short, '-', '', i, args)
+            -{ `Goto 'continue' }
+         end
+
+         -----------------------------------------------------------------------
+         -- double dash option
+         -----------------------------------------------------------------------
+         flag, opt = arg:strmatch "^(%-%-)(.*)"
+         if opt then
+            i=actionate (cfg, long, flag, opt, i, args)
+            -{ `Goto 'continue' }
+         end
+
+         -----------------------------------------------------------------------
+         -- double plus option
+         -----------------------------------------------------------------------
+         flag, opt = arg:strmatch "^(%+%+)(.*)"
+         if opt then
+            i=actionate (cfg, long, flag, opt, i, args)
+            -{ `Goto 'continue' }
+         end
+
+         -----------------------------------------------------------------------
+         -- single plus or single dash series of short options
+         -----------------------------------------------------------------------
+         flag, opts = arg:strmatch "^([+-])(.+)"
+         if opts then 
+            local j_max, i2 = opts:len()
+            for j = 1, j_max do
+               opt = opts:sub(j,j)
+               --printf ('parsing short opt %q', opt)               
+               i2 = actionate (cfg, short, flag, opt, i, args)
+               if i2 ~= i+1 and j < j_max then 
+                  error ('short option '..opt..' needs a param of type '..short[opt])
+               end               
+            end
+            i=i2 
+            -{ `Goto 'continue' }
+         end
+
+         -----------------------------------------------------------------------
+         -- handler for non-option parameter
+         -----------------------------------------------------------------------         
+         if param_func then param_func(args[i]) end
+         if cfg.params then table.insert(cfg.params, args[i])
+         else cfg.params = { args[i] } end
+         i=i+1
+
+         -{ `Label 'continue' }
+         if not i then return false end
+      end -- </while>
+      return cfg
+   end
+
+   return parse
+end
+
+

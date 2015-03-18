@@ -1,0 +1,3 @@
+PL="../.."
+ldoc --dir . $PL/lua/pl
+

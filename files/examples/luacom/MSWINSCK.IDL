@@ -1,0 +1,199 @@
+// Generated .IDL file (by the OLE/COM Object Viewer)
+// 
+// typelib filename: MSWINSCK.OCX
+
+[
+  uuid(248DD890-BB45-11CF-9ABC-0080C7E7B78D),
+  version(1.0),
+  helpstring("Microsoft Winsock Control 6.0 (SP5)"),
+  helpfile("MSWNSK98.chm"),
+  helpcontext(0x00053020)
+]
+library MSWinsockLib
+{
+    // TLib :     // TLib : OLE Automation : {00020430-0000-0000-C000-000000000046}
+    importlib("stdole2.tlb");
+
+    // Forward declare all types defined in this typelib
+    interface IMSWinsockControl;
+    dispinterface DMSWinsockControlEvents;
+
+    typedef [uuid(248DD895-BB45-11CF-9ABC-0080C7E7B78D), helpstring("Protocol Constants"), helpcontext(0x0005304f)]
+    enum {
+        sckTCPProtocol = 0,
+        sckUDPProtocol = 1
+    } ProtocolConstants;
+
+    [
+      odl,
+      uuid(248DD892-BB45-11CF-9ABC-0080C7E7B78D),
+      helpstring("Winsock methods and events"),
+      helpcontext(0x00053038),
+      hidden,
+      dual,
+      nonextensible,
+      oleautomation
+    ]
+    interface IMSWinsockControl : IDispatch {
+        [id(0xfffffdd8), hidden]
+        HRESULT AboutBox();
+        [id(0x00000003), propget, helpstring("Returns/Sets the socket protocol"), helpcontext(0x0005303f)]
+        HRESULT Protocol([out, retval] ProtocolConstants* Protocol);
+        [id(0x00000003), propput, helpstring("Returns/Sets the socket protocol"), helpcontext(0x0005303f)]
+        HRESULT Protocol([in] ProtocolConstants Protocol);
+        [id(0x00000004), propget, helpstring("Returns the remote host IP address"), helpcontext(0x00053039)]
+        HRESULT RemoteHostIP([out, retval] BSTR* RemoteHostIP);
+        [id(0x00000005), propget, helpstring("Returns the local machine name"), helpcontext(0x0005303a)]
+        HRESULT LocalHostName([out, retval] BSTR* LocalHostName);
+        [id(0x00000006), propget, helpstring("Returns the local machine IP address"), helpcontext(0x0005303b)]
+        HRESULT LocalIP([out, retval] BSTR* LocalIP);
+        [id(0x00000007), propget, helpstring("Returns the socket handle"), helpcontext(0x0005303c)]
+        HRESULT SocketHandle([out, retval] long* SocketHandle);
+        [id(00000000), propget, hidden]
+        HRESULT _RemoteHost([out, retval] BSTR* RemoteHost);
+        [id(00000000), propput, hidden]
+        HRESULT _RemoteHost([in] BSTR RemoteHost);
+        [id(0x00000001), propget, helpstring("Returns/Sets the port to be connected to on the remote computer"), helpcontext(0x0005302c)]
+        HRESULT RemotePort([out, retval] long* RemotePort);
+        [id(0x00000001), propput, helpstring("Returns/Sets the port to be connected to on the remote computer"), helpcontext(0x0005302c)]
+        HRESULT RemotePort([in] long RemotePort);
+        [id(0x00000002), propget, helpstring("Returns/Sets the port used on the local computer"), helpcontext(0x0005302d)]
+        HRESULT LocalPort([out, retval] long* LocalPort);
+        [id(0x00000002), propput, helpstring("Returns/Sets the port used on the local computer"), helpcontext(0x0005302d)]
+        HRESULT LocalPort([in] long LocalPort);
+        [id(0x00000008), propget, helpstring("Returns the state of the socket connection"), helpcontext(0x0005302e)]
+        HRESULT State([out, retval] short* State);
+        [id(0x00000009), propget, helpstring("Returns the number of bytes received on this connection"), helpcontext(0x0005302f)]
+        HRESULT BytesReceived([out, retval] long* BytesReceived);
+        [id(0x00000040), helpstring("Connect to the remote computer"), helpcontext(0x00053030)]
+        HRESULT Connect(
+                        [in, optional] VARIANT RemoteHost, 
+                        [in, optional] VARIANT RemotePort);
+        [id(0x00000041), helpstring("Listen for incoming connection requests"), helpcontext(0x00053031)]
+        HRESULT Listen();
+        [id(0x00000042), helpstring("Accept an incoming connection request"), helpcontext(0x00053032)]
+        HRESULT Accept([in] long requestID);
+        [id(0x00000043), helpstring("Send data to remote computer"), helpcontext(0x00053033)]
+        HRESULT SendData([in] VARIANT data);
+        [id(0x00000044), helpstring("Retrieve data sent by the remote computer"), helpcontext(0x00053034)]
+        HRESULT GetData(
+                        [in, out] VARIANT* data, 
+                        [in, optional] VARIANT type, 
+                        [in, optional] VARIANT maxLen);
+        [id(0x00000045), helpstring("Look at incoming data without removing it from the buffer"), helpcontext(0x00053035)]
+        HRESULT PeekData(
+                        [in, out] VARIANT* data, 
+                        [in, optional] VARIANT type, 
+                        [in, optional] VARIANT maxLen);
+        [id(0x00000046), helpstring("Close current connection"), helpcontext(0x00053036)]
+        HRESULT Close();
+        [id(0x00000047), helpstring("Binds socket to specific port and adapter"), helpcontext(0x00053050)]
+        HRESULT Bind(
+                        [in, optional] VARIANT LocalPort, 
+                        [in, optional] VARIANT LocalIP);
+        [id(0x0000000a), propget, helpstring("Returns/Sets the name used to identify the remote computer"), helpcontext(0x0005302b)]
+        HRESULT RemoteHost([out, retval] BSTR* RemoteHost);
+        [id(0x0000000a), propput, helpstring("Returns/Sets the name used to identify the remote computer"), helpcontext(0x0005302b)]
+        HRESULT RemoteHost([in] BSTR RemoteHost);
+    };
+
+    [
+      uuid(248DD893-BB45-11CF-9ABC-0080C7E7B78D),
+      helpstring("Microsoft Winsock Control events"),
+      helpcontext(0x0005303d),
+      hidden
+    ]
+    dispinterface DMSWinsockControlEvents {
+        properties:
+        methods:
+            [id(0x00000006), helpstring("Error occurred"), helpcontext(0x00053048)]
+            void Error(
+                            short Number, 
+                            BSTR* Description, 
+                            long Scode, 
+                            BSTR Source, 
+                            BSTR HelpFile, 
+                            long HelpContext, 
+                            VARIANT_BOOL* CancelDisplay);
+            [id(00000000), helpstring("Occurs when data has been received from the remote computer"), helpcontext(0x00053049)]
+            void DataArrival(long bytesTotal);
+            [id(0x00000001), helpstring("Occurs connect operation is completed"), helpcontext(0x0005304a)]
+            void Connect();
+            [id(0x00000002), helpstring("Occurs when a remote client is attempting to connect"), helpcontext(0x0005304b)]
+            void ConnectionRequest(long requestID);
+            [id(0x00000005), helpstring("Occurs when the connection has been closed"), helpcontext(0x0005304c)]
+            void Close();
+            [id(0x00000003), helpstring("Occurs during process of sending data"), helpcontext(0x0005304d)]
+            void SendProgress(
+                            long bytesSent, 
+                            long bytesRemaining);
+            [id(0x00000004), helpstring("Occurs after a send operation has completed"), helpcontext(0x0005304e)]
+            void SendComplete();
+    };
+
+    [
+      uuid(248DD896-BB45-11CF-9ABC-0080C7E7B78D),
+      helpstring("Microsoft Winsock Control"),
+      helpcontext(0x00053037),
+      control
+    ]
+    coclass Winsock {
+        [default] interface IMSWinsockControl;
+        [default, source] dispinterface DMSWinsockControlEvents;
+    };
+
+    typedef [uuid(248DD894-BB45-11CF-9ABC-0080C7E7B78D), helpstring("State Constants"), helpcontext(0x00053052)]
+    enum {
+        sckClosed = 0,
+        sckOpen = 1,
+        sckListening = 2,
+        sckConnectionPending = 3,
+        sckResolvingHost = 4,
+        sckHostResolved = 5,
+        sckConnecting = 6,
+        sckConnected = 7,
+        sckClosing = 8,
+        sckError = 9
+    } StateConstants;
+
+    typedef [uuid(248DD891-BB45-11CF-9ABC-0080C7E7B78D), helpstring("Error Constants"), helpcontext(0x00053051)]
+    enum {
+        sckInvalidPropertyValue = 380,
+        sckGetNotSupported = 394,
+        sckSetNotSupported = 383,
+        sckOutOfMemory = 7,
+        sckBadState = 40006,
+        sckInvalidArg = 40014,
+        sckSuccess = 40017,
+        sckUnsupported = 40018,
+        sckInvalidOp = 40020,
+        sckOutOfRange = 40021,
+        sckWrongProtocol = 40026,
+        sckOpCanceled = 10004,
+        sckInvalidArgument = 10014,
+        sckWouldBlock = 10035,
+        sckInProgress = 10036,
+        sckAlreadyComplete = 10037,
+        sckNotSocket = 10038,
+        sckMsgTooBig = 10040,
+        sckPortNotSupported = 10043,
+        sckAddressInUse = 10048,
+        sckAddressNotAvailable = 10049,
+        sckNetworkSubsystemFailed = 10050,
+        sckNetworkUnreachable = 10051,
+        sckNetReset = 10052,
+        sckConnectAborted = 10053,
+        sckConnectionReset = 10054,
+        sckNoBufferSpace = 10055,
+        sckAlreadyConnected = 10056,
+        sckNotConnected = 10057,
+        sckSocketShutdown = 10058,
+        sckTimedout = 10060,
+        sckConnectionRefused = 10061,
+        sckNotInitialized = 10093,
+        sckHostNotFound = 11001,
+        sckHostNotFoundTryAgain = 11002,
+        sckNonRecoverableError = 11003,
+        sckNoData = 11004
+    } ErrorConstants;
+};

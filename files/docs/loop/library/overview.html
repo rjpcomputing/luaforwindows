@@ -1,0 +1,311 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Overview</title>
+	<style type="text/css" media="all"><!--
+		@import "../loop.css";
+		@import "../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+							<li><a href="../index.html", title="">Home</a></li>
+							<li><a href="../release/index.html", title="Installation">Install</a></li>
+							<li><a href="../manual/index.html", title="User Manual">Manual</a></li>
+							<li><a href="index.html", title="Class Library">Library</a>
+								<div class="outside"><div class="inside"><ul>
+									<li><a href="overview.html#collection", title="Collections">collection</a>
+										</li>
+										<li><a href="overview.html#compiler", title="Compiling">compiler</a>
+											</li>
+											<li><a href="overview.html#debug", title="Debugging">debug</a>
+												</li>
+												<li><a href="overview.html#object", title="Objects">object</a>
+													</li>
+													<li><a href="overview.html#serial", title="Serialization">serial</a>
+														</li>
+														<li><a href="overview.html#thread", title="Threading">thread</a>
+															</li>
+														</ul></div></div>
+													</li>
+													<li><a href="../contact.html", title="Contact People">Contact</a></li>
+													<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+												</ul></div></div>
+											
+</div>
+
+<div class="content">
+<h1>Overview</h1>
+
+<p>The LOOP package provides a library of classes implemented using its models.
+All classes included in its library were created or derived from actual implementations used in either academic or commercial applications, and many are reused in more than one application.
+Therefore, even though the classes presented here are provided mainly as use examples of LOOP models they are very useful for construction of software applications.</p>
+
+<p>Most of these classes were initially created as Lua conventional modules and were later converted to classes so it is straightforward to convert them back to modules that don't lay on LOOP.
+Some of these classes can even be used as an instance of itself thus avoiding the creation of singleton objects.
+However, in some scenarios, it is interesting to be able to have multiple instances.
+The LOOP Class Library is organized in six groups as presented below.</p>
+
+<h2><a name="collection">Collections</a></h2>
+
+<p>This group contains classes that implement different data structures that are particularly efficient in Lua.
+Some of these classes were specifically devised for the implementation of a particular class of the LOOP library and therefore are not very general.
+However, classes like <code>ObjectCache</code>, <code>UnorderedArray</code> and <code>OrderedSet</code> are very general and may be used in many different situations.</p>
+
+<dl>
+
+<dt><a href="collection/ObjectCache.html">Object Cache</a></dt>
+<dd>
+	<p>Class of objects that cache values for different key values.
+	Whenever the value of a given a key is requested, a function is used to retrieve the corresponding value that is then cached for further requests of the same key.
+	If the key value is collected as garbage, the cache entry becomes garbage as well.
+	This class is useful for implementing optimizations that avoid re-evaluation of complex operations or duplication of similar objects.</p>
+</dd>
+
+<dt><a href="collection/UnorderedArray.html">Unordered Array</a></dt>
+<dd>
+	<p>Class of objects that store a sequence of values as a Lua array but removes the elements from any position without shifting the following elements.
+	However it does not guarantee the order the values are stored in the array.
+	This class is useful for storing efficiently a sequence of values that may be iterated in any order and the number of elements varies constantly during interation.</p>
+</dd>
+
+<dt><a href="collection/UnorderedArraySet.html">Unordered Array-Set</a></dt>
+<dd>
+	<p>Class of objects that store a sequence of values as a Lua array like class <a href="UnorderedArray.html">UnorderedArray</a>.
+	However it additionally maps values to its current position in the array allowing efficient containment checks and location of a value in the array for removal.
+	This class is useful when it is necessary to store a set elements (no duplicates) as an array (<i>e.g.</i> to comply with some library API) but such elements are removed and inserted frequently or it is necessary to perform quick containment checks.</p>
+</dd>
+
+<dt><a href="collection/OrderedSet.html">Ordered Set</a></dt>
+<dd>
+	<p>Class of objects that store a set of values arranged in a particular order.
+	As a usual set, it does not allow duplicates and checks for containment efficiently.
+	The values are stored like a linked list, therefore the sequence can only be iterated in a single direction, <i>i.e.</i> cannot get the previous value.
+	Insertions and removals at any point of the sequence are done efficiently.
+	This class is useful for storing a large set of values without repetitions that are organized in a particular order and accepts frequent insertions and removals at any point of the sequence during interations.</p>
+</dd>
+
+<dt><a href="collection/PriorityQueue.html">Priority Queue</a></dt>
+<dd>
+	<p>Class of objects that store a set of values with associated weight values so that these values are arranged in the descending order of weight.
+	The values are stored like in the <a href="OrderedSet.html"><code>OrderedSet</code></a> class, but the values are sorted in descending order of weight.
+	This class is useful for implementing priority queues with no repeated values and which priorities are comparable values like numbers or strings.</p>
+</dd>
+
+<dt><a href="collection/MapWithArrayOfKeys.html">Map with Array of Keys</a></dt>
+<dd>
+	<p>Class of objects that store in a single table a mapping of non-integer key values to arbitrary values and a sequence of all the key values currently mapped.
+	The array of keys is stored just like the sequence stored by <a href="UnorderedArray.html"><code>UnorderedArray</code></a> instances.
+	This class is useful for storing a map of non-integer values and an array of its keys in a single table.</p>
+</dd>
+
+</dl>
+
+<h2><a name="compiler">Compiling</a></h2>
+
+<p>This group contains classes that implement utilities for parsing and compiling code.
+The examples are a utility to execute selected pieces of a Lua code and a parser of simple expressions composed by values and operators.
+Although these classes were actually devised for very specific applications they are likely to be reused in other contexts.</p>
+
+<dl>
+
+<dt><a href="compiler/Arguments.html">Argument Processor</a></dt>
+<dd>
+	<p>Class of objects that work as functions that takes string arguments passed as <em>varargs</em> and process them as command-line arguments to extract possible command-line options that may precede the actual arguments.
+	This class is useful to process command-line arguments passed to a Lua script.</p>
+</dd>
+
+
+<dt><a href="compiler/Conditional.html">Conditional Compiler</a></dt>
+<dd>
+	<p>Class of objects that executes selected pieces of a chunk of Lua code.
+	This class is useful for generating optimized functions that avoids condition tests or other constructions when such actions can be previously identified as unecessary.
+	Since the execution of the selected pieces of the code chunk may be relatively slow, this approach is preferable for creation of optmized function that are generated rarely but are evaluated constantly.</p>
+</dd>
+
+<dt><a href="compiler/Expression.html">Expression Parser</a></dt>
+<dd>
+	<p>Class of objects that parse simple expressions composed by values and operands with precedence.
+	The operands are always parsed from left to right.
+	Many restrictions are imposed to the expression grammar, however this class is useful for implementing simple expressions evaluators when Lua expressions are too expressive (<i>i.e.</i> control structures or first-class functions may lead to undesirable situations) or to create compilers of simple expressions.
+	All operators are parsed accordingly to their precedence that may be overhidden by the use of round brackets.</p>
+</dd>
+
+</dl>
+
+<h2><a name="debug">Debugging</a></h2>
+
+<p>This group contains classes useful for instrumentation of Lua code or implementation of logging mechanisms for applications.
+These classes usually perform slow operations or use of the debug API of Lua and therefore should not be used heavily in implementation of performance critical applications.</p>
+
+<dl>
+
+<dt><a href="debug/Viewer.html">Value Viewer</a></dt>
+<dd>
+	<p>Class of objects that generate human-readable textual representation of Lua values.
+	This class is typically used to print out value of variables, data structures or objects in a Lua application using a syntax similar to the Lua language.
+	It is useful for implementation of command line debug mechanisms.
+	This class can also be used as a simple serialization mechanism for a restricted set of Lua values.</p>
+</dd>
+
+<dt><a href="debug/Matcher.html">Value Matcher</a></dt>
+<dd>
+	<p>Class of objects used to compare pairs of values according to some criteria of similarity.
+	By default, it matches pairs of same values or structurally isomorphic tables (including their meta-tables).
+	Functions with same bytecodes, upvalue contents and isomorphic environments also match.
+	However, such matching criteria may be redefined.
+	This class is useful for implementing automated test mechanisms for Lua applications.</p>
+</dd>
+
+<dt><a href="debug/Inspector.html">Code Inspector</a></dt>
+<dd>
+	<p>Class of objects that implement a command-line prompt to access the lexical scope of a point in an application.
+	The command-line prompt also allows to navigate through active co-rotines and access the lexical scope of the point they are currently executing.
+	It is also possible to navigate to inactive functions in order to access the current value of their upvalues.
+	This class is useful for implementation of command-line debugging mechanisms.</p>
+</dd>
+
+<dt><a href="debug/Verbose.html">Verbose Manager</a></dt>
+<dd>
+	<p>Class of objects that provide operations to generate and manage verbose messages of a continuous application.
+	All messages are flagged and may be hierarchly organized in order to reflect the application structure.
+	The flagged messages can be turned on/off by flag or group of flags.
+	The messages also provide support for indentation in order to reflect the hierarchical structure of function calls in the application.
+	This class is useful for implementation of logging mechanisms in server applications.</p>
+</dd>
+
+</dl>
+
+<h2><a name="object">Objects</a></h2>
+
+<p>This group contains classes that implement usual features offered by most object models.
+Examples are a delegation model and a simple class to describe exception as objects.</p>
+
+<dl>
+
+<dt><a href="object/Exception.html">Exception Object</a></dt>
+<dd>
+	<p>Class of objects used to store structured error information that may be captured and processed by an application or used to produce human-readable error messages.
+	This class is useful to implement expection handling mechanisms.</p>
+</dd>
+
+<dt><a href="object/Wrapper.html">Object Wrapper</a></dt>
+<dd>
+	<p>Class of objects that create a wrapper around an object using an efficient delegation model that allows execution of delegated methods with the state of the delegated object, <i>i.e.</i> by replacing the <code>self</code> parameter.
+	This class is useful to implement wrappers that overwrites some of the operations of an object.</p>
+</dd>
+
+<dt><a href="object/Publisher.html">Event Publisher</a></dt>
+<dd>
+	<p>Class of objects that delegate all method executions to a group of subscriber objects.
+	Such objects behave like instances of <a href="Wrapper.html">Wrapper</a> but delegate method invocations to a group of objects instead of a single one.
+	This class is useful to implement event notification mechanisms or to let event notifications destined for a single object to be captured by many.</p>
+</dd>
+
+</dl>
+
+<h2><a name="serial">Serialization</a></h2>
+
+<p>This group contains classes that implement a flexible mechanism that serializes almost any value into a Lua code that can be concatenated with other chunks of code to produce complex automatic generated scripts.
+However, the serialization mechanism provided by these class face a strong limitation imposed by current implementation of Lua that does not provide means to restore function upvalues properly.</p>
+
+<dl>
+
+<dt><a href="serial/Serializer.html">Value Serializer</a></dt>
+<dd>
+	<p>Class of objects that serialize values by creating a chunk of Lua code that when executed creates an isomorphic image of the serialized value, <i>i.e.</i> an identical copy of the original value, that may include self-referecing tables and functions.
+	However there are some limitations, specifically related to function upvalues.
+	It is also possible to define custom serialization for <code>userdata</code>.
+	This class is useful to implement persistence mechanisms or remote communication infrastructure.</p>
+</dd>
+
+<dt><a href="serial/StringStream.html">String Stream</a></dt>
+<dd>
+	<p>Subclass of <code><a href="Serializer.html">Serializer</a></code> that serializes values into a string.
+	It is also used to restore values serialized in a string using the serialization mechanism provided by <code><a href="Serializer.html">Serializer</a></code>.
+	This class is useful to pack values into strings that can be stored in run-time memory or other sort of storage.</p>
+</dd>
+
+<dt><a href="serial/FileStream.html">File Stream</a></dt>
+<dd>
+	<p>Subclass of <code><a href="Serializer.html">Serializer</a></code> that serializes values into a file.
+	It is also used to restore values serialized in a file using the serialization mechanism provided by <code><a href="Serializer.html">Serializer</a></code>.
+	This class is useful to implement persitence mechanisms.</p>
+</dd>
+
+<dt><a href="serial/SocketStream.html">Socket Stream</a></dt>
+<dd>
+	<p>Subclass of <code><a href="Serializer.html">Serializer</a></code> that serializes values into a socket object like the ones provided by the <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library.
+	It is also used to restore values serialized using the serialization mechanism provided by <code><a href="Serializer.html">Serializer</a></code> that are transmitted by a socket.
+	This class is useful to implement communication infrastructures.</p>
+</dd>
+
+</dl>
+
+<h2><a name="thread">Threading</a></h2>
+
+<p>This group contains classes for supporting a multi-threading model based in the co-routines of Lua.
+In this model the execution switch is done explicitly by the programmer instead of using some automatic policy (<i>e.g.</i>, using timeslots) like in preemptive models.
+Such multi-threading model is called cooperative and is generally much simpler due to the absence of race conditions and less use of synchronization mechanisms.
+On the other hand, the programmer is left with the burden of guaranteeing that all independent threads are scheduled for execution properly from time to time.
+However, such task is usually trivial in the context of a single integrated application.</p>
+
+<dl>
+
+<dt><a href="thread/Scheduler.html">Thread Scheduler</a></dt>
+<dd>
+	<p>Class of objects that provides a scheduling policy for management of a collection of co-routines that represent independent threads of execution.
+	This class also provides some basic operations for synchronization of the scheduled threads.
+	This class is useful for implementation of multi-threading support in Lua applications.</p>
+</dd>
+
+<dt><a href="thread/IOScheduler.html">Thread Scheduler with I/O</a></dt>
+<dd>
+	<p>Subclass of <code><a href="Scheduler.html">Scheduler</a></code> that offers support for introduction of synchronous I/O operations integrated with the scheduler.
+	This class offers support to implement I/O operations that switch execution for other threads until the I/O channel is ready.
+	This class is useful for implementation of I/O operations integrated with the cooperative scheduling mechanism in order to maximize the processing time.</p>
+</dd>
+
+<dt><a href="thread/CoSocket.html">Cooperative Sockets</a></dt>
+<dd>
+	<p>Class of objects that implement a socket API integrated with an instance of <code><a href="IOScheduler.html">IOScheduler</a></code> similar to the one provided by the <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> library.
+	This class is useful to port or implement LuaSocket based applications with the cooperative multi-threading model provided by <code><a href="Scheduler.html">Scheduler</a></code> class.</p>
+</dd>
+
+<dt><a href="thread/SocketScheduler.html">Thread Scheduler with Sockets</a></dt>
+<dd>
+	<p>Subclass of <code><a href="IOScheduler.html">IOScheduler</a></code> that includes an integrated instance of <code><a href="CoSocket.html">CoSocket</a></code> to provide a socket API.
+	This class is simply a shortcut for the creation of a thread scheduler with an integrated socket API using the classes provided in the <code>loop.thread</code> package.</p>
+</dd>
+
+<dt><a href="thread/Timer.html">Event Timer</a></dt>
+<dd>
+	<p>Class of objects that triggers a function continuously in a regular rate.
+	It also avoids accumulation of triggering events if the function execution overlaps the time of the next event.
+	In such case, the overlapped event is canceled.
+	This class is useful to implement monitors that are executed from time to time in a cooperative multi-threaded application.</p>
+</dd>
+
+</dl>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

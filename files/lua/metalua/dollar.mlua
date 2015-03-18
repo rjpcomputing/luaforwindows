@@ -1,0 +1,24 @@
+-- TODO: support modules as macros?
+--       does it make sense to store a constant AST as a macro?
+
+-{ extension 'match' }
+
+dollar = rawget(getfenv(), 'dollar') or { }
+
+local function dollar_builder(call)
+   match call with
+   | `Call{ `Id{name}, ... } -> return dollar[name](select(2, unpack(call)))
+   | `Id{name} -> 
+      local m = dollar[name]
+      match type(m) with
+      | 'function' -> return m()
+      | 'table'    -> return m
+      | 'nil'      -> error "No such macro registered"
+      | t          -> error ("Invalid macro type "..t)
+      end
+   | _ -> error "Invalid $macro, '$' should be followed by an identifier or function call"
+   end
+end   
+
+mlp.expr.prefix:add{ '$', prec = 100, builder = |_, x| dollar_builder(x) }
+mlp.stat:add{ '$', mlp.expr, builder = |x| dollar_builder(x[1]) }

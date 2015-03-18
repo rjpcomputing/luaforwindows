@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>LuaLogging: A simple API to use logging features in Lua</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+	
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+		<img alt="LuaLogging logo" src="images/lualogging-128.png"/>
+	</a></div>
+	<div id="product_name"><big><strong>LuaLogging</strong></big></div>
+	<div id="product_description">A simple API to use logging features in Lua.  <a href="br/">Portuguese version.</a></div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+<h1>LuaLogging</h1>
+	<ul>
+		<li><a href="index.html">Home</a>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+				<li><a href="index.html#dependencies">Dependencies</a></li>
+				<li><a href="index.html#history">History</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact</a></li>
+			</ul>
+		</li>
+		<li><a href="manual.html">Manual</a>
+			<ul>
+				<li><a href="manual.html#introduction">Introduction</a></li>
+				<li><a href="manual.html#installation">Installation</a></li>
+				<li><a href="manual.html#logger">Logger objects</a></li>
+				<li><a href="manual.html#examples">Examples</a></li>
+			</ul>
+		</li>
+		<li><a href="manual.html#appenders">Appenders</a>
+			<ul>
+				<li><a href="console.html">Console</a></li>
+				<li><a href="file.html">File</a></li>
+				<li><a href="rolling_file.html">Rolling File</a></li>
+				<li><a href="sql.html">SQL</a></li>
+				<li><strong>Socket</strong></li>
+				<li><a href="email.html">Email</a></li>
+			</ul>
+		</li>
+		<li><a href="https://github.com/Neopallium/lualogging">Project</a>
+			<ul>
+				<li><a href="https://github.com/Neopallium/lualogging/issues">Bug Tracker</a></li>
+			</ul>
+		</li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+<h2>Socket appender</h2>
+
+This appender can be used to send log requests through a socket.
+Socket appender relies on <a href=
+"http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> to do its
+job.<br />
+Upon each log request a connection is opened, the message is sent
+and the connection is closed. 
+
+<pre class="example">
+function logging.socket(address, port [,logPattern])
+</pre>
+
+<ul>
+    <li><code>address</code>:<br />
+    Address can be an IP address or a host name for which the log
+    message will be sent.</li>
+    
+    <li><code>port</code>:<br />
+    The port must be an integer number in the range [1..64K).</li>
+    
+    <li><code>logPattern</code>:<br />
+    A pattern can be specified to control how the message is
+    written.<br />
+    The default value is <code>"%date %level %message\n"</code>.</li>
+</ul>
+
+<h2>Example</h2>
+
+<pre class="example">
+require"logging.socket"
+
+local logger = logging.socket("localhost", 5000)
+
+logger:info("logging.socket test")
+logger:debug("debugging...")
+logger:error("error!")
+</pre>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer">
+    <img src="http://www.w3.org/Icons/valid-xhtml10" alt="XHTML 1.0 v&aacute;lido!" height="31" width="88" /></a></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+
+</body>
+</html>

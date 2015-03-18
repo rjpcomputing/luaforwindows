@@ -1,0 +1,450 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+
+<head>
+<title>LuaGL: OpenGL binding for Lua 5 </title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<style type="text/css">
+.style2 {
+	border-width: 0;
+}
+.style5 {
+	font-size: large;
+}
+</style>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<a name=top></a>
+<center>
+<table summary="LuaGL logo" border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center class="style2">
+<a href="http://www.lua.org">
+<img border=0 alt="LuaGL" src="luagl.gif">
+</a></td>
+<tr><td align=center valign=top class="style2">
+	<strong><span class="style5">OpenGL binding for Lua 5.1<br>
+	</span></strong>Based on 
+	<a href="http://luagl.sourceforge.net">http://luagl.sourceforge.net</a></td>
+</table>
+</center>
+
+<p align=center>
+<a href="#whatis">whatis</a> &middot;
+<a href="#port">portability</a> &middot;
+<a href="#down">download</a> &middot;
+<a href="#howitworks">how it works</a> &middot;
+<a href="#ref">reference</a> &middot;
+<hr>
+
+<h2><a name=whatis>What is it LuaGL? </a></h2><p>
+
+It’s a library that provides access to all of the OpenGL functionality from <a href="http://www.lua.org">Lua</a>. 
+
+<h2><a name=opengl>What is OpenGL? </a></h2><p>
+
+OpenGL is a portable software interface to graphics hardware. More information about OpenGL can be obtained from <a href="http://www.opengl.org">http://www.opengl.org</a>. You can find good tutorials about learning OpenGL at <a href="http://nehe.gamedev.net">http://nehe.gamedev.net</a>. 
+
+<h2><a name=port>Portability</a></h2><p>
+
+That library should run in all systems that support OpenGL. 
+
+<h2><a name=license>License</a></h2><p> 
+
+LuaGL is a free software and uses the MIT License. It  can be  used at no cost for both academic and commercial purposes. 
+
+<h2><a name=down>Download & Installation</a></h2><p>
+
+You can download LuaGL from the <a href="http://sourceforge.net">sourceforge</a> project home page <a href="http://sourceforge.net/projects/luagl">here</a> 
+(OLD version only). <p>
+
+LuaGL also needs that you have the OpenGL library installed. All modern 
+operating systems already have it, see
+<a href="http://www.opengl.org/documentation/implementations/">OpenGL Platform &amp; 
+OS Implementations</a>.<h2>Authors</h2>
+<ul>
+	<li>Fabio Guerra</li>
+	<li>Cleyde Marlyse</li>
+</ul>
+
+<h2>Changes from LuaGL in SourceForge</h2>
+<ul>
+	<li>Build from LuaGL 1.02-beta in SVN</li>
+	<li>Removed the GLUT binding</li>
+	<li>OpenGL constants can also be used as numbers</li>
+	<li>Fixed DLL exports to enable require&quot;luagl&quot;.</li>
+</ul>
+
+<p>Changes by Antonio Scuri.</p>
+<p><strong>To do</strong>: change error handling to use luaL_check* functions.</p>
+
+<h2><a name=howitworks>How it works ?</a></h2>
+<p>
+
+This library works as a binding for all OpenGL commands, so you can have full access to the graphics hardware from Lua. <p>
+
+To have access to the library from a C host program, you must first call the 
+&#39;luaopen_gl&#39; function. To have access from Lua, simply call require&quot;luagl&quot;.<p>
+
+This will create a name space called &#39;gl&#39;, and all the functions and constants 
+will be inside of it. <h3><a name=constants>OpenGL constants</a></h3><p>
+
+All OpenGL constants were converted to strings, for example: instead of writing GL_QUADS, you should write 'QUADS'. In functions that expected a bitwise operation between mask parameters, in Lua will receive a string that contains all the constants strings separated by comma (,). For example:  
+<pre>gl.Begin("TRIANGLES")
+gl.Clear('COLOR_BUFFER_BIT,DEPTH_BUFFER_BIT') </pre>
+<p>OpenGL constants can also be used as numbers using gl.XXX 
+notation, where XXX is the constant name after &quot;GL&quot; (for example: gl.QUADS). 
+This is much faster than using the strings.<h3><a name=argspecs>Argument specification</a></h3><p>
+
+The argument specification (e.g., '2d', '3f', '4sv') at the end of most OpenGL functions names have been removed. For example the new gl.Light function binds the OpenGL functions: glLightf, glLightfv, glLighti, glLightiv. <p>
+
+It’s always used the floating point version of the functions, with the highest possible precision. 
+
+<h3><a name=color>Color and Vector data</a></h3><p>
+
+The color and the vector data can be represented by a lua array. A vector can have 2, 3 or 4 values (x, y, z, w), and colors can have 3 or 4 values (red, green, blue, alpha). If there are more 4 value the extra parameters will be ignored. <p>
+
+For example: 
+<pre>v1 = { 0, 0 } 
+v2 = { 1, 1 } 
+Yellow = { 1, 1, 0 } 
+gl.Color(Yellow) 
+gl.Vertex(v1) 
+gl.Vertex(v2) </pre>
+<p>
+you can also call those: 
+<pre>gl.Color(1, 1, 0) 
+gl.Vertex(0, 0) 
+gl.Vertex(1, 1) </pre>
+
+<h3><a name=argtypes>Argument types</a></h3><p>
+
+The OpenGL function parameters that specify the type of another argument, or the size of an array, won’t be used. Lua will always use the most precise type of data. The stride value of an array won’t be used too. For example: 
+<pre>gl.VertexPointer(vertex_array) </pre>
+<p>
+
+binds:<pre>void glVertexPointer (GLint size, GLenum type, GLsizei stride, const GLvoid *pointer); </pre>
+<p>
+
+Where ‘vertex_array’ is an array of vectors. The size of the array returned by lua_getn function will be used as the size parameter. The type is the most precise possible, and the stride value is always set to zero. You can see an example of this function bellow: 
+<pre>v1 = { -1, -1 } 
+v2 = {  1, -1 } 
+v3 = {  1,  1 } 
+v4 = { -1,  1 } 
+
+vertices  = { v1, v2, v3, v4 } 
+
+gl.VertexPointer(vertices) </pre>
+
+<h3><a name=reqinfo>Requesting OpenGL information</a></h3><p>
+
+The functions that request information from OpenGL, will now return the data by the function return value, instead of returning by a parameter. For example: 
+<pre>image = gl.GetTexImage (target, level, format) </pre>
+<p>
+
+For more information about functions names and parameters, see the Function Reference bellow. 
+
+<h3><a name=bitpattern>Bit Pattern</a></h3><p>
+
+Functions that expects a number with a bit pattern, will accept a string with the mask numbers. All characters that are different to ‘0’ and ‘1’ will be ignored. For example: 
+<pre>gl.LineStipple (1, "1111000011110000") 
+gl.LineStipple (1, "1010.0101.1000.1111" ) 
+gl.LineStipple (1, &quot;0000 0000 1111 1111&quot; ) </pre>
+
+<h2><a name=ref>Function Reference</a></h2>
+<pre>Accum (op, value) -> none 
+
+AlphaFunc (func, ref) -> none 
+
+AreTexturesResident (texturesArray) -> residences 
+
+ArrayElement (i) -> none 
+
+Begin (mode) -> none 
+
+BindTexture (target, texture) -> none 
+
+Bitmap (xorig, yorig, ymove, bitmap) -> none 
+
+BlendFunc (sfactor, dfactor) -> none 
+
+CallList (list) -> none 
+
+CallLists (listArray) -> none 
+
+Clear (mask) -> none 
+
+ClearAccum (red, green, blue, alpha) -> none 
+
+ClearColor (red, green, blue, alpha) -> none 
+
+ClearDepth (depth) -> none 
+
+ClearIndex (c) -> none 
+
+ClearStencil (s) -> none 
+
+ClipPlane (plane, equationArray) -> none 
+
+Color (red, green, blue [, alpha]) -> none 
+Color (color) -> none 
+
+ColorMask (red, green, blue, alpha) -> none 
+
+ColorMaterial (face, mode) -> none 
+
+ColorPointer (colorArray) -> none 
+
+CopyPixels (x, y, width, height, type) -> none 
+
+CopyTexImage (level, internalFormat, border, x, y, width[, height]) -> none 
+
+CopyTexSubImage (level, x, y, xoffset, width[, yoffset, height]) -> none 
+
+CullFace (mode) -> none 
+
+DeleteLists (list, range) -> none 
+
+DeleteTextures (texturesArray) -> none 
+
+DepthFunc (func) -> none 
+
+DepthMask (flag) -> none 
+
+DepthRange (zNear, zFar) -> none 
+
+Disable (cap) -> none 
+
+DisableClientState (array) -> none 
+
+DrawArrays (mode, first, count) -> none 
+
+DrawBuffer (mode) -> none 
+
+DrawElements (mode, indicesArray) -> none 
+
+DrawPixels (width, height, format, pixels) -> none 
+
+EdgeFlag (flag) -> none 
+
+EdgeFlagPointer (flagsArray) -> none 
+
+Enable (cap) -> none 
+
+EnableClientState (array) -> none 
+
+End () -> none 
+
+EndList () -> none 
+
+EvalCoord (u[, v]) -> none 
+EvalCoord (coordArray) -> none 
+
+EvalMesh (mode, i1, i2[,j1, j2]) -> none 
+
+EvalPoint (i[, j]) -> none 
+
+FeedbackBuffer (size, type) -> dataArray 
+
+Finish () -> none 
+
+Flush () -> none 
+
+Fog (pname, param) -> none 
+Fog (pname, paramsArray) -> none 
+
+FrontFace (mode) -> none 
+
+Frustum (left, right, bottom, top, zNear, zFar) -> none 
+
+GenLists (range) -> num 
+
+GenTextures (n) -> texturesArray 
+
+Get (pname) -> params 
+
+GetArray (pname) -> paramsArray 
+
+GetConst (pname) -> constant string 
+
+GetClipPlane (plane) -> equationArray 
+
+GetError () -> error flag 
+
+GetLight (light, pname) -> paramsArray 
+
+GetMap (target, query) -> vArray 
+
+GetMaterial (face, pname) -> paramsArray 
+
+GetPixelMap (map) -> valuesArray 
+
+GetPointer (pname, n) -> valuesArray 
+
+GetPolygonStipple () -> maskArray 
+
+GetString (name) -> string 
+
+GetTexEnv (pname) -> paramsArray 
+
+GetTexGen (coord, pname) -> paramsArray 
+
+GetTexImage (target, level, format) -> pixelsArray 
+
+GetTexLevelParameter (target, level, pname) -> param 
+
+GetTexParameter (target, pname) -> paramsArray 
+
+Hint (target, mode) -> none 
+
+Index (c) -> none 
+
+IndexMask (mask) -> none 
+
+IndexPointer (indexArray) -> none 
+
+InitNames () -> none 
+
+InterleavedArrays (format, dataArray) -> none 
+
+IsEnabled (cap) -> true/false 
+
+IsList (list) -> true/false 
+
+IsTexture (texture) -> true/false 
+
+Light (light, pname, param) -> none 
+Light (light, pname, paramsArray) -> none 
+
+LightModel (pname, param) -> none 
+LightModel (pname, paramsArray) -> none 
+
+LineStipple (factor, pattern) -> none 
+
+LineWidth (width) -> none 
+
+ListBase (base) -> none 
+
+LoadIdentity () -> none 
+
+LoadMatrix (mArray) -> none 
+
+LoadName (name) -> none 
+
+LogicOp (opcode) -> none 
+
+Map (target, u1, u2, ustride, pointsArray) -> none 
+Map (target, u1, u2, ustride, v1, v2, vstride, pointsArray) -> none 
+
+MapGrid (un, u1, u2[, vn, v1, v2]) -> none 
+
+Material (face, pname, param) -> none 
+
+MatrixMode (mode) -> none 
+
+MultMatrix (mArray) -> none 
+
+NewList (list, mode) -> none 
+
+Normal (nx, ny, nz) -> none 
+Normal (nArray) -> none 
+
+NormalPointer (normalArray) -> none 
+
+Ortho (left, right, bottom, top, zNear, zFar) -> none 
+
+PassThrough (token) -> none 
+
+PixelMap (map, valuesArray) -> none 
+
+PixelStore (pname, param) -> none 
+
+PixelTransfer (pname, param) -> none 
+
+PixelZoom (xfactor, yfactor) -> none 
+
+PointSize (size) -> none 
+
+PolygonMode (face, mode) -> none 
+
+PolygonOffset (factor, units) -> none 
+
+PolygonStipple (maskArray) -> none 
+
+PopAttrib () -> none 
+
+PopClientAttrib () -> none 
+
+PopMatrix () -> none 
+
+PopName () -> none 
+
+PrioritizeTextures (texturesArray, prioritiesArray) -> none 
+
+PushAttrib (mask) -> none 
+
+PushClientAttrib (mask) -> none 
+
+PushMatrix () -> none 
+
+PushName (GLuint name) -> none 
+
+RasterPos (x, y[, z, w]) -> none 
+RasterPos (vArray) -> none 
+
+ReadBuffer (mode) -> none 
+
+ReadPixels (x, y, width, height, format, pixelsArray) -> none 
+
+Rect (x1, y1, x2, y2) -> none 
+Rect (v1, v2) -> none 
+
+RenderMode (mode) -> none 
+
+Rotate (angle, x, y, z) -> none 
+
+Scale (x, y, z) -> none 
+
+Scissor (x, y, width, height) -> none 
+
+SelectBuffer (size) -> SelectArray 
+
+ShadeModel (mode) -> none 
+
+StencilFunc (func, ref, mask) -> none 
+
+StencilMask (mask) -> none 
+
+StencilOp (fail, zfail, zpass) -> none 
+
+TexCoord (s[, t, r, q]) -> none 
+TexCoord (vArray) -> none 
+
+TexCoordPointer(vArray) -> none 
+
+TexEnv (pname, param) -> none 
+TexEnv (pname, paramsArray) -> none 
+
+TexGen (coord, pname, param) -> none 
+TexGen (coord, pname, paramsArray) -> none 
+
+TexImage(level, internalformat, format, pixels) -> none 
+
+TexParameter (target, pname, param) -> none 
+TexParameter (target, pname, paramsArray) -> none 
+
+TexSubImage (level, format, pixels, xoffset) -> none 
+TexSubImage (level, format, pixels, xoffset, yoffset) -> none 
+
+Translate (x, y, z) -> none 
+
+Vertex (x, y, [z, w]) -> none 
+Vertex (vArray) -> none 
+
+VertexPointer (vertexArray) -> none 
+
+VViewport (x, y, width, height) -> none </pre>
+
+</body>
+</html>

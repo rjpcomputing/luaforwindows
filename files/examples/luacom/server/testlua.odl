@@ -1,0 +1,60 @@
+[
+  uuid(AB290DA3-2F9E-4200-8A69-AE4C3A6082EF),
+  version(1.0)
+]
+library TestLibrary
+{
+  importlib("stdole32.tlb");
+[
+    uuid(05E662B4-05A3-4ba2-A8AB-B5A365C0B624)
+]
+dispinterface ITestLuaCOM
+{
+  properties:
+
+  methods:
+
+  [
+  id(1)
+  ]
+  int Sum(
+    [in] int i1,
+    [in] int i2
+  );
+
+  [
+  id(2)
+  ]
+  BSTR I2A(
+    [in] int i1
+  );
+
+  [
+  id(3)
+  ]
+  void IntDivide(
+    [in] int i1,
+    [in] int i2,
+    [in, out] VARIANT* quot,
+    [in, out] VARIANT* rem
+  );
+
+  [
+  id(4)
+  ]
+  void Close(
+    void
+  );
+
+};
+
+[
+  uuid(687362C8-00D6-4eff-9207-DDB22EE2306D)
+]
+coclass Teste
+{
+[default] dispinterface ITestLuaCOM;
+};
+
+};
+

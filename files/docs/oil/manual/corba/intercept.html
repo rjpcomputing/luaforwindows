@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Intercepting Invocations</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="../basics/index.html", title="Basic Concepts">Basics</a></li>
+			<li><a href="index.html", title="CORBA Support">CORBA</a>
+				<div class="outside"><div class="inside"><ul>
+					<li><a href="config.html", title="Configuration Options">Config</a></li>
+					<li><a href="loadidl.html", title="Loading IDL">IDL</a></li>
+					<li><a href="mapping.html", title="Value Mapping">Mapping</a></li>
+					<li><a href="features.html", title="Additional Features">Features</a></li>
+					<li><strong>Intercept</strong></li>
+				</ul></div></div>
+			</li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="../arch/index.html", title="Internal Architecture">Arch</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Intercepting Invocations</h1>
+<p>CORBA brokers provide support for interception of GIOP requests and replies both in the server and client sides.
+Although the interception model is heavily influenced by the CORBA Portable Interceptors specification, OiL does not stick to it.
+Like other aspects of the OiL's API, it priories a simpler model more adequate to Lua than the defined by the CORBA standard.</p>
+
+<h2>Interceptors</h2>
+
+<p>Invocation interception is done by interceptor objects, which can be register in the broker as a client interceptor or a server interceptor.
+Client interceptors intercept invocations issued to remote servants, while server interceptors intercept invocations received from remote applications.</p>
+
+<p>A client interceptor is an object that provides either methods <code>sendrequest</code> or <code>receivereply</code>.
+The first method is called before an invocation request is sent to a remote servant, and the second is called after a reply is received from a remote servant.
+On the other hand, a server interceptor is an object that provides either methods <code>receiverequest</code> or <code>sendreply</code>, which are called before an invocation request is processed by the server, and after a reply is sent to the corresponding invoker, respectively.
+Each one of these methods receives a single parameter, which is a table representing the invocation.
+The structure and information contained in this table varies accordingly to the method being called.</p>
+
+<p>However, for a single invocation issued or received, the table received by method <code>sendrequest</code> and <code>receivereply</code> are always the same.
+The same is true for methods <code>receiverequest</code> and <code>sendreply</code>, which means that the parameter received by the former method is the same parameter passed to the corresponding invocation of the later.
+This also means that any field stored in this table during the execution of the first method will be available during the execution of the other for a single invocation.
+For an example, consider the code below that measures the time each invocation takes to conclude.</p>
+
+<pre>
+local socket = require "socket"
+
+TimeProfiler = {}
+
+function TimeProfiler:receiverequest(request)
+  request.start = socket.gettime()
+end
+
+function TimeProfiler:sendreply(reply)
+  local time = socket.gettime() - reply.start
+  print(string.format("opreation '%s' lasted %d seconds", reply.operation, time))
+end
+</pre>
+
+<p>For a list of the fields available in the tables passed as parameter to the methods of interceptors, see description of method <a href="../basics/brokers.html#setinterceptor"><code>setinterceptor</code></a>.</p>
+
+<h2>Adding Information to Invocations</h2>
+
+<p>GIOP messages for requests and replies has the special field <code>service_context</code>, which can be used to store additional information to be send with the invocation.
+Basically, the <code>service_context</code> is a sequence of structures, each containing a tag number and a octet sequence that is used to store arbitrary data.
+Interceptors can define the value of field <code>service_context</code> in the parameter of methods <code>sendrequest</code> or <code>sendreply</code>.
+Similarly, the value of field <code>service_context</code> can be accessed through the parameter of methods <code>receiverequest</code> or <code>receivereply</code>.</p>
+
+<p>To promote interoperability with other CORBA ORBs, the information contained in field <code>service_context</code> is usually encoded using CORBA's CDR.
+To help this, OiL brokers provide methods <a href="../basics/brokers.html#newencoder"><code>newencoder</code></a><code>()</code> and <a href="../basics/brokers.html#newdecoder"><code>newdecoder</code></a><code>(stream)</code>.
+The example below, illustrates how to use interceptors to add authentication information in an invocation.</p>
+
+<strong>Client</strong>
+
+<pre>
+require "oil"
+
+oil.main(function()
+  local broker = oil.init()
+  
+  print("Type the your username")
+  local Username = io.read()
+  print("Type the password")
+  local Password = io.read()
+  
+  local AuthID = broker:loadidl"struct AuthID { string user; string pswd; };"
+  
+  local encoder = broker:newencoder()
+  encoder:put({user=UserName,pswd=Password}, AuthID)
+  local AuthData = encoder:getdata()
+  
+  local Authenticator = {}
+  function Authenticator:sendrequest(request)
+    request.service_context[#request.service_context + 1] = {
+      context_id = 404,
+      context_data = AuthData,
+    }
+  end
+  
+  broker:setinterceptor(Authenticator, "client")
+  
+  ...
+  
+end)
+</pre>
+
+<strong>Server</strong>
+
+<pre>
+require "oil"
+
+oil.main(function()
+  local broker = oil.init()
+  
+  local AuthID = broker:loadidl[[
+    struct AuthID {
+      string user;
+      string pswd;
+    };
+  ]]
+  
+  local Validator = {}
+  function Validator:receiverequest(request)
+    local valid
+    for _, context in ipairs(request.service_context) do
+      if context.context_id == 404 then
+        local decoder = broker:newdecoder(context.context_data)
+        local authid = decoder:get(AuthID)
+        valid = (authid.user == "admin") and (authid.pswd == "admin")
+      end
+    end
+    if not valid then
+      -- cancel request with an exception
+      request.success = false
+      request[1] = broker:newexcept{ "CORBA::NO_PERMISSION",
+        minor_code_value = 0,
+      }
+    end
+  end
+  
+  broker:setinterceptor(Validator, "server")
+  
+  ...
+  
+end)
+</pre>
+
+<h2>Multithreading Issues</h2>
+
+<p>OiL guarantees that for each single invocation on both methods of the interceptor is invoked in the same thread.
+However, the same thread can be reused for another invocation after the first has finished.
+Furthermore, while an invocation is being executed, others can be issues and the interceptor again, but in other threads.
+Therefore, you can use the current thread (<code>oil.tasks.current</code>) to identify an invocation.</p>
+
+<h2>Multiple Interceptors</h2>
+
+<p>Although CORBA brokers only allow one interceptor to be defined on the client side and one on the server side, if you need to define a chain of interceptors, you can register an interceptor that delegates interception to a chain of interceptors.
+The following example illustrates the implementation of a interception chain that does not guarantee the other the interceptors are invoked.
+The implementation use class <code><a href="http://loop.luaforge.net/library/object/Publisher.html">loop.object.Publisher</a></code> of <a href="http://loop.luaforge.net/">LOOP</a> library.</p>
+
+<pre>
+require "oil"
+require "loop.object.Publisher"
+
+oil.main(function()
+  local broker = oil.init()
+  
+  InterceptionChain = loop.object.Publisher{
+    Interceptor_01,
+    Interceptor_02,
+    Interceptor_03,
+    ...
+  }
+  
+  broker:setinterceptor(InterceptionChain, "server")
+  
+  ...
+  
+end)
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

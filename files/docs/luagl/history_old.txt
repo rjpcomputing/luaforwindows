@@ -1,0 +1,22 @@
+Version 1.02-beta
+=================
+
+- Included a bind to glut.DestroyWindow. Changed type checks on LuaGLUT to use lua_check*.
+- Fixed a bug on TexImage function, and now it can read the bpp and format information directly from the image table, the old behaviour is still supported.
+- Included some LuaGL samples. Ported NeHe tutorials from 1 to 7. Included a lua file that loads uncompressed TGA files.
+- Start version of LuaGLU with some of the most used GLU functions.
+- Removed some memory leaks and improved performance, removed most of malloc/free calls. Created LuaGLAux lib that include helper functions and macro for the binding. Improved unit tests.
+- Created LUAGL_VERSION definition on LuaGL.h, exporting this version information to lua as 'gl.version'.
+- Tests now run on both Lua5.0 and Lua5.1
+- More structured unit tests, now using the luaunit tool. More info on luaunit at: <http://phil.freehackers.org/luaunit>.
+
+Version 1.01
+============
+
+ - Applied minor changes on LuaGL.h and LuaGLUT.h to make it compile correctly under Linux. Thanks to Marcus Geelnard.
+
+
+Version 1.0
+===========
+
+ - First Release of LuaGL.

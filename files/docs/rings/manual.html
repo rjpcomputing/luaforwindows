@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Rings: Multiple Lua States</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+		<img alt="Rings logo" src="rings.png"/>
+	</a></div>
+	<div id="product_name"><big><strong>Rings</strong></big></div>
+	<div id="product_description">Multiple Lua States</div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+<h1>Rings</h1>
+	<ul>
+		<li><a href="index.html">Home</a>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+				<li><a href="index.html#history">History</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact us</a></li>
+			</ul>
+		</li>
+		<li><strong>Manual</strong>
+			<ul>
+				<li><a href="manual.html#introduction">Introduction</a></li>
+				<li><a href="manual.html#building">Building</a></li>
+				<li><a href="manual.html#installation">Installation</a></li>
+				<li><a href="manual.html#reference">Reference</a>
+                    <ul>
+                        <li><a href="manual.html#master_functions">Master functions</a></li>
+                        <li><a href="manual.html#slave_functions">Slave functions</a></li>
+                        <li><a href="manual.html#stable">Stable</a></li>
+    			    </ul>
+                </li>
+				<li><a href="manual.html#examples">Examples</a></li>
+			</ul>
+		</li>
+        <li><a href="http://luaforge.net/projects/rings/">Project</a>
+            <ul>
+                <li><a href="http://luaforge.net/tracker/?group_id=147">Bug Tracker</a></li>
+                <li><a href="http://luaforge.net/scm/?group_id=147">CVS</a></li>
+            </ul>
+        </li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+<h2><a name="introduction"></a>Introduction</h2>
+
+<p>Rings is a library which provides a way to create new Lua states from within
+Lua. It also offers a simple way to communicate between the creator (master) and
+the created (slave) states.</p>
+
+<p>Rings is free software and uses the same <a href="license.html">license</a>
+as Lua 5.1.</p>
+
+<p>Rings also offers <a href="manual.html#stable">Stable</a>,
+a very simple API to manage a shared table at the master state.</p>
+
+
+<h2><a name="building"></a>Building</h2>
+
+<p>
+Rings works with Lua 5.1 only. In order to build it the language library and header files
+for the desired Lua version must be installed properly.
+</p>
+
+<p>
+Rings comprises a single C source file. The distribution provides a
+<code>Makefile</code> prepared to compile the library and install it.
+The file <code>config</code> should be edited to suit the particularities of the target platform
+before running <code>make</code>.
+This file has some definitions like paths to the external libraries,
+compiler options and the like.
+One important definition is the Lua version,
+which is not obtained from the installed software.
+</p>
+
+<h2><a name="installation"></a>Installation</h2>
+
+<p>
+If you are using LuaRocks, just type
+</p>
+
+<pre class="example">
+luarocks install rings
+</pre>
+
+<p>
+If you prefer to install manually, the compiled binary file should be copied to a directory in your
+<a href="http://www.lua.org/manual/5.1/manual.html#pdf-package.cpath">C path</a>.
+The file <code>stable.lua</code> should be copied to a directory in your
+<a href="http://www.lua.org/manual/5.1/manual.html#pdf-package.path">Lua path</a>.
+</p>
+
+<h2><a name="reference"></a>Reference</h2>
+
+<h3><a name="master_functions"></a>Master functions</h3>
+
+<p>Rings offers a single function which creates a new Lua state and returns
+an object representing it. The state which creates other states is called
+the master and the created ones are called slaves.
+The master can execute code in any of its slaves but each slave only has
+direct access to its master (or its own slaves).</p>
+
+<p>All standard Lua libraries are opened automatically in a new state;
+other libraries have to be loaded explicitly.</p>
+
+<p>The object representing a slave state has a method (<code>dostring</code>)
+which can execute Lua code in the corresponding state.
+This method can receive arguments (only numbers, strings, booleans and userdata,
+which are converted to lightuserdata) and always returns a boolean indicating
+whether the code executed correctly or not, followed by eventual return values
+or an error message.</p>
+
+<dl>
+    <dt><strong><a name="rings_new"></a>rings.new (env)</strong></dt>
+    <dd>Returns a newly created Lua state. Takes an optional environment to be used by
+    <a href="#rings_remotedostring"><code>remotedostring</code></a>.
+    If the environment is nil, it defaults to the master<code>_M or _G</code> tables.</dd>
+
+    <dt><strong><a name="rings_close"></a><em>state</em>:close ()</strong></dt>
+    <dd>Closes the state.</dd>
+
+    <dt><strong><a name="rings_dostring"></a><em>state</em>:dostring (string, ...)</strong></dt>
+    <dd>Executes a string in the slave state.
+        The arguments could be accessed exactly as in a
+        <a href="http://www.lua.org/manual/5.1/manual.html#2.5.9">vararg
+        function</a>. Valid types of arguments and return values are:
+        number, string, boolean, nil and userdata (which are converted
+        to lightuserdata).
+        <br />
+        Returns a boolean indicating the status of the operation,
+        followed by the returned values or an error message in case of error.
+    </dd>
+</dl>
+
+<h3><a name="slave_functions"></a>Slave function</h3>
+
+<p>The following function is registered in the newly created slave state.</p>
+
+<dl>
+    
+    <dt><strong><a name="rings_remotedostring"></a>remotedostring (string, ...)</strong></dt>
+    <dd>Executes a string in the master state.
+        Behaves exactly as the method <a href="#rings_dostring">dostring</a>
+        except that it acts in the master state.
+    </dd>
+</dl>
+
+<h3><a name="stable"></a>Stable</h3>
+
+<p>Stable is a simple API which provides a way for a slave state to store
+and retrieve data to and from its master state.
+This library is not opened automatically in a slave state.</p>
+
+<dl>
+    
+    <dt><strong><a name="stable_get"></a>stable.get (key)</strong></dt>
+    <dd>Returns the value of a given <em>key</em>.</dd>
+
+    <dt><strong><a name="stable_set"></a>stable.set (key, value)</strong></dt>
+    <dd>Stores a <em>value</em> associated to a <em>key</em>.
+        Returns nothing.</dd>
+
+</dl>
+
+
+<h2><a name="examples"></a>Examples</h2>
+
+<p>The following sample shows how to execute code in another state passing
+arguments and returning values:</p>
+
+<pre class="example">
+require"rings"
+S = rings.new ()
+
+data = { 12, 13, 14, }
+print (S:dostring ([[
+aux = {}
+for i, v in ipairs (arg) do
+   table.insert (aux, 1, v)
+end
+return unpack (aux)]], unpack (data))) -- true, 14, 13, 12
+
+S:close ()
+</pre>
+
+<p>The following example uses Stable to store a value in the master state:</p>
+
+<pre class="example">
+require"rings"
+
+local init_cmd = [[
+require"stable"]]
+
+local count_cmd = [[
+count = stable.get"shared_counter" or 0
+stable.set ("shared_counter", count + 1)
+return count
+]]
+
+S = rings.new () -- new state
+assert(S:dostring (init_cmd))
+print (S:dostring (count_cmd)) -- true, 0
+print (S:dostring (count_cmd)) -- true, 1
+S:close ()
+
+S = rings.new () -- another new state
+assert (S:dostring (init_cmd))
+print (S:dostring (count_cmd)) -- true, 2
+S:close ()
+</pre>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
+	<p><small>$Id: manual.html,v 1.16 2008/02/15 20:45:51 carregal Exp $</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+
+</body>
+</html> 

@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Configuration Options</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="../basics/index.html", title="Basic Concepts">Basics</a></li>
+			<li><a href="index.html", title="CORBA Support">CORBA</a>
+				<div class="outside"><div class="inside"><ul>
+					<li><strong>Config</strong></li>
+					<li><a href="loadidl.html", title="Loading IDL">IDL</a></li>
+					<li><a href="mapping.html", title="Value Mapping">Mapping</a></li>
+					<li><a href="features.html", title="Additional Features">Features</a></li>
+					<li><a href="intercept.html", title="Intercepting Invocations">Intercept</a></li>
+				</ul></div></div>
+			</li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="../arch/index.html", title="Internal Architecture">Arch</a></li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Configuration Options</h1>
+<p>The configuration options for CORBA brokers can be separated in three categories:
+	those common for all OiL ORB that define how to create and assemble its internal components;
+	CORBA related options that are valid for any instance of CORBA ORBs;
+	and finally, options related to the specific GIOP implementation used.
+For the last group, we will present only the options specific to the IIOP, which is the one currently supported by standard OiL.</p>
+
+<h2>General Options</h2>
+
+<p>As described in section <a href="../basics/brokers.html#creation">Initializing Brokers</a>, the <code>config</code> argument of operation <a href="../basics/module.html#creation"><code>oil.init</code></a> can define component instances that should be used to assemble the broker, as well as define the specific flavor that will define which component implementations will be used in the creation of the broker.
+Standard OiL defines only four standard flavors for creation of CORBA brokers, as listed below.</p>
+
+<dl>
+	<dt><code>corba;typed;base</code></dt>
+	<dd>CORBA support without multithreading.</dd>
+	
+	<dt><code>corba;typed;cooperative;base</code></dt>
+	<dd>CORBA support with multithreading.</dd>
+	
+	<dt><code>intercepted;corba;typed;base</code></dt>
+	<dd>CORBA support without multithreading, but with support for invocation interceptions.</dd>
+	
+	<dt><code>intercepted;corba;typed;cooperative;base</code></dt>
+	<dd>CORBA support with multithreading and support for invocation interceptions.</dd>
+</dl>
+
+<p>Basically, the rules to form a CORBA flavor is that the <code>corba</code> keyword must precede the <code>type</code> keyword because the implementation of the CORBA support depends on the features provided by the architectural <a href="../arch/core.html%typing">Core Architecture</a>.
+The use of the keyword <code>cooperative</code> is optional to define if the broker will provide support for multithreading.
+However, it is preferable that it come after the <code>corba</code> keyword.
+The <code>intercepted</code> keyword defines the support for interception of remote invocations (see section <a href="intercept.html">Intercepting Invocations</a>) and must precede the <code>corba</code> keyword, because it defines alternative implementation of CORBA specific components.
+Finally, the <code>base</code> keyword must be present in all flavors because it defines the basic implementation of the core components of OiL ORBs.
+For more information about flavors, see section <a href="../arch/index.html#flavors">Flavors</a>.</p>
+
+<h2>CORBA Options</h2>
+
+<p>The configuration table of CORBA brokers can define the specific GIOP implementation to be used.
+This is done by the field <code>tag</code> that shall contain the tag number of the GIOP implementation.
+Unfortunately, standard OiL currently supports only the IIOP implementation, which tag number, as defined by CORBA, is zero.
+This is also the default value for this field.
+Therefore, unless you have extended OiL with new components that implement other GIOP protocols, then your may not have to define a value for this field.</p>
+
+<table>
+	<tr>
+		<td valign="top"><code>tag</code></td>
+		<td valign="top"><b>number</b></td>
+		<td valign="top">[optional]</td>
+		<td>Tag of the IOP protocol the ORB shall use. The default is 0 that indicates the Internet IOP (IIOP).</td>
+	</tr>
+</table>
+
+<h2>IIOP Options</h2>
+
+<p>When the IIOP protocol is selected, some additional options are available.
+They are used to set the host name or IP address and port that ORB must bind to, as well as the host name or IP address and port that must be used in creation of object references.
+These options may be shared by other GIOP implementations as well.</p>
+
+<table>
+	<tr>
+		<td valign="top"><code>host</code></td>
+		<td valign="top"><b>string</b></td>
+		<td valign="top">[optional]</td>
+		<td>Host name or IP address. If none is provided the ORB binds to all current net interfaces.</td>
+	</tr>
+	<tr>
+		<td valign="top"><code>port</code></td>
+		<td valign="top"><b>number</b></td>
+		<td valign="top">[optional]</td>
+		<td>Host port the ORB must listen. If none is provided, the ORB tries to bind to a port in the range [2809; 9999].</td>
+	</tr>
+	<tr>
+		<td valign="top"><code>refhost</code></td>
+		<td valign="top"><b>string</td>
+		<td valign="top">[optional]</td>
+		<td>Host name or IP address informed in object references.</td>
+	</tr>
+	<tr>
+		<td valign="top"><code>refport</code></td>
+		<td valign="top"><b>number</b></td>
+		<td valign="top">[optional]</td>
+		<td>Host port informed in object references.</td>
+	</tr>
+</table>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

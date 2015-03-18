@@ -1,0 +1,120 @@
+require 'metalua.mlc'
+require 'metalua.walk'
+
+function weave_ast (src, ast, name)
+
+   -------------------------------------------------------------------
+   -- translation: associate an AST node to its recomposed source
+   -- ast_children: associate an AST node to the list of its children
+   -- ast_parent: associate an AST node to the list of its parent
+   -- weavable: whether an AST node supports weaving of its children
+   -- node: common walker config for exprs, stats & blocks
+   -------------------------------------------------------------------
+   local translation, ast_children, ast_parent, weaveable, node =
+      { }, { }, { }, { }, { }
+
+   -------------------------------------------------------------------
+   -- Build up the parent/children relationships. This is not the same
+   -- as inclusion between tables: the relation we're building only
+   -- relates blocks, expressions and statements; in the AST, some
+   -- tables don't represent any of these node kinds.
+   -- For instance in `Local{ { `Id "x" }, { } }, `Id"x" is a child of
+   -- the `Local{ } node, although it's not directly included in it.
+   -------------------------------------------------------------------
+   function node.down(ast, parent)
+      ----------------------------------------------------
+      -- `Do{ } blocks are processed twice:
+      --  * once as a statement
+      --  * once as a block, child of itself
+      -- This prevents them from becoming their own child.
+      ----------------------------------------------------
+      if ast==parent then return end
+
+      if not ast.lineinfo then 
+         weaveable [ast] = false, false
+         if parent then weaveable [parent] = false end
+      else
+         weaveable [ast] = true
+         
+         -- normalize lineinfo
+         -- TODO: FIXME
+         if ast.lineinfo.first[3] > ast.lineinfo.last[3] then
+           ast.lineinfo.first, ast.lineinfo.last = ast.lineinfo.last, ast.lineinfo.first
+         end
+      end
+      ast_children [ast] = { }
+      ast_parent [ast] = parent
+      if parent then table.insert (ast_children [parent], ast) end
+   end
+
+   -------------------------------------------------------------------
+   -- Visit up, from leaves to upper-level nodes, and weave leaves
+   -- back into the text of their parent node, recursively.  Since the
+   -- visitor is imperative, we can't easily make it return a value
+   -- (the resulting recomposed source, here). Therefore we
+   -- imperatively store results in the association table
+   -- `translation'.
+   -------------------------------------------------------------------
+   function node.up(ast)
+      local _acc = { }
+      local function acc(x) table.insert (_acc, x) end
+      
+      if not next(ast) then -- shadow node, remove from ast_children
+         local x = ast_children[ast_parent[ast]]
+         for i,a in ipairs (x) do if a==ast then table.remove (x, i); break end end
+         return "" -- no need to continue, we know that the node is empty!
+      end
+      
+      -- ast Can't be weaved normally, try something else --
+      local function synthetize (ast)
+         acc "-{expr: "
+         acc (table.tostring (ast, 'nohash', 80, 8))
+         acc " }"
+      end
+
+      -- regular weaving of chidren in the parent's sources --
+      local function weave (ast)
+         -- sort children in appearence order
+         local comp = |a,b| a.lineinfo.first[3] < b.lineinfo.first[3]
+         table.sort (ast_children [ast], comp)
+ 
+         local li = ast.lineinfo
+         if not li then return synthetize (ast) end
+         local a, d = li.first[3], li.last[3]
+         for child in ivalues (ast_children [ast]) do
+            local li = child.lineinfo
+            local b, c = li.first[3], li.last[3]
+            acc (src:sub (a, b - 1))
+            acc (translation [child])
+            a = c + 1
+         end
+         acc (src:sub (a, d))
+      end
+
+      -- compute the translation from the children's ones --
+      if not translation [ast] then
+         if weaveable [ast] then weave (ast) else synthetize (ast) end
+         translation [ast] = table.concat (_acc)
+      end
+   end
+
+   local cfg = { expr=node; stat=node; block=node }
+   walk.block (cfg, ast)
+
+   return translation [ast]
+end
+
+-- Get the source. If none is given, use itself as an example. --
+local filename = arg[2] or arg[1] or arg[0]
+local f = assert (io.open (filename, 'r'))
+local src = f:read '*a'
+f:close()
+
+local ast = mlc.luastring_to_ast (src, name)
+if not next(ast) then
+   io.write (src) -- Empty ast, probably empty file, or comments only
+else
+   local before = src:sub (1, ast.lineinfo.first[3]-1)
+   local after  = src:sub (ast.lineinfo.last[3]+1, -1)
+   io.write (before .. weave_ast (src, ast) .. after)
+end

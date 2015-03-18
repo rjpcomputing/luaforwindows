@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Ordered Set</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																					<li><a href="../../index.html", title="">Home</a></li>
+																																					<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																					<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																					<li><a href="../index.html", title="Class Library">Library</a>
+																																						<div class="outside"><div class="inside"><ul>
+																																							<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																								</li>
+																																								<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																									</li>
+																																									<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																										</li>
+																																										<li><a href="../overview.html#object", title="Objects">object</a>
+																																											</li>
+																																											<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																												</li>
+																																												<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																													</li>
+																																												</ul></div></div>
+																																											</li>
+																																											<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																											<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																										</ul></div></div>
+																																									
+</div>
+
+<div class="content">
+<h1>Ordered Set</h1>
+<h2><code>loop.collection.OrderedSet</code></h2><br>
+<p>Class of objects that store a set of values arranged in a particular order.
+As a usual set, it does not allow duplicates and checks for containment efficiently.
+The values are stored like a linked list, therefore the sequence can only be iterated in a single direction, <i>i.e.</i> cannot get the previous value.
+Insertions and removals at any point of the sequence are done efficiently.
+This class is useful for storing a large set of values without repetitions that are organized in a particular order and accepts frequent insertions and removals at any point of the sequence during iterations.</p>
+
+<p>Stores each value of the set by mapping it to its successor.
+Therefore, all values are stored as mapped keys.
+The only exception is the last value that provides no successor.
+Each instance maps two special values, one to the first value of the sequence and other to the last value.
+Instances behave like linked lists that does not allow repeated values.</p>
+
+<h2>Behavior</h2>
+
+<h3>Fields</h3>
+
+<dl>
+
+	<dt><code><b>firstkey</b></code>: userdata</dt>
+	<dd>
+		Special value used as the key that maps the first value of the set.
+	</dd>
+
+</dl>
+
+<h3>Methods</h3>
+
+<dl>
+
+	<dt><code><b>contains</b>(value)</code></dt>
+	<dd>
+		Return true if a <code>value</code> belongs to the set or false otherwise.
+	</dd>
+	
+	<dt><code><b>empty</b>()</code></dt>
+	<dd>
+		Return true if there is no value inserted in the set or false otherwise.
+	</dd>
+	
+	<dt><code><b>first</b>()</code></dt>
+	<dd>
+		Returns the first value of the set.
+	</dd>
+	
+	<dt><code><b>insert</b>(value [, previous])</code></dt>
+	<dd>
+		Inserts <code>value</code> in the set after the value <code>previous</code>.
+		If <code>previous</code> is not provided then <code>value</code> is inserted as the last value of the set.
+		<code>value</code> is returned if successfully inserted.
+		If <code>previous</code> does not belong to the set or <code>value</code> is already inserted then the call has no effect and no value is returned.
+	</dd>
+	
+	<dt><code><b>last</b>()</code></dt>
+	<dd>
+		Returns the last value of the set.
+	</dd>
+	
+	<dt><code><b>popfront</b>()</code></dt>
+	<dd>
+		Removes the first value of the set and then returns it.
+		If the set is empty this function has no effect.
+	</dd>
+	
+	<dt><code><b>previous</b>(value [, start])</code></dt>
+	<dd>
+		Searches for the previous value of <code>value</code> starting from <code>start</code>.
+		If <code>start</code> is not provided the search is done through the entire set.
+		If <code>value</code> is the first value of the set then the special key that holds the first value is returned.
+		If <code>value</code> is found in the set, its previous value is returned, otherwise no value is returned.
+	</dd>
+	
+	<dt><code><b>pushback</b>(value)</code></dt>
+	<dd>
+		Adds <code>value</code> to the end of the set.
+		<code>value</code> is returned if successfully added.
+		If <code>value</code> is already inserted then the call has no effect and no value is returned.
+	</dd>
+	
+	<dt><code><b>pushfront</b>(value)</code></dt>
+	<dd>
+		Adds <code>value</code> to the start of the set.
+		<code>value</code> is returned if successfully added.
+		If <code>value</code> is already inserted then the call has no effect and no value is returned.
+	</dd>
+	
+	<dt><code><b>remove</b>(value [, start])</code></dt>
+	<dd>
+		Searches for <code>value</code> and removes it from the set starting the search after the value of <code>start</code>.
+		If <code>start</code> is not provided the search is done through the entire set.
+		The removed value is returned or no value is returned if <code>value</code> is not found.
+	</dd>
+	
+	<dt><code><b>replace</b>(old, new [, start])</code></dt>
+	<dd>
+		Searches for value <code>old</code> and replaces it by value <code>new</code> starting the search after the value of <code>start</code>.
+		If <code>start</code> is not provided the search is done through the entire set.
+		The replaced value is returned or no value is returned if <code>old</code> is not found or if <code>new</code> already belongs to the set.
+	</dd>
+	
+	<dt><code><b>sequence</b>()</code></dt>
+	<dd>
+		Returns an iterator for use with the <code>for</code> statement of Lua.
+		The <code>for</code> variables receive the current value and the previous value, respectively.
+	</dd>
+	
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	
+	<li>
+		Instances cannot store the name of class members as strings.
+		To do so, use the class operations over an empty table like in the following example:
+		<pre>
+OrderedSet = require "loop.collection.OrderedSet"
+set = {}
+OrderedSet.insert(set, "first")
+OrderedSet.insert(set, "insert")
+OrderedSet.insert(set, "last")
+OrderedSet.insert(set, "previous")
+OrderedSet.insert(set, "sequence")
+for word in OrderedSet.sequence(set) do
+  io.write(word, " ")
+end
+		</pre>
+	</li>
+	
+	<li>
+		This class provides operations of some traditional data structures as aliases of its methods.
+		<dl>
+			<dt>Set operations</dt>
+			<dd>
+				<ul>
+					<li><code><b>add</b>(value)</code> alias for <code>pushback(value)</code></li>
+				</ul>
+			</dd>
+			<dt>Stack operations</dt>
+			<dd>
+				<ul>
+					<li><code><b>push</b>(value)</code> alias for <code>pushfront(value)</code></li>
+					<li><code><b>pop</b>()</code> alias for <code>popfront()</code></li>
+					<li><code><b>top</b>()</code> alias for <code>first()</code></li>
+				</ul>
+			</dd>
+			<dt>Queue operations</dt>
+			<dd>
+				<ul>
+					<li><code><b>enqueue</b>(value)</code> alias for <code>pushback(value)</code></li>
+					<li><code><b>dequeue</b>()</code> alias for <code>popfront()</code></li>
+					<li><code><b>head</b>()</code> alias for <code>first()</code></li>
+					<li><code><b>tail</b>()</code> alias for <code>last()</code></li>
+				</ul>
+			</dd>
+		</dl>
+	</li>
+	
+</ul>
+
+<h2>Examples</h2>
+
+<h3><a name="GraphSearch">Broad-first and depth-first searches for directed graphs.</a></h3>
+
+<pre>
+local oo         = require "loop.base"
+local OrderedSet = require "loop.collection.OrderedSet"
+
+local function inbroad(queue, head)
+  head = queue[head]
+  if head then
+    for _, node in ipairs(head) do
+      queue:enqueue(node)
+    end
+    return head
+  end
+end
+function broadsearch(node)
+  queue = OrderedSet()
+  queue:enqueue(node)
+  return inbroad, queue, OrderedSet.firstkey
+end
+
+local function indepth(stack, top)
+  top = stack[top]
+  if top then
+    for _, node in ipairs(top) do
+      stack:insert(node, top)
+    end
+    return top
+  end
+end
+function depthsearch(node)
+  stack = OrderedSet()
+  stack:push(node)
+  return indepth, stack, OrderedSet.firstkey
+end
+
+
+
+Node = oo.class()
+
+function Node:goesto(...)
+  for i=1, select("#", ...) do
+    self[#self + 1] = select(i, ...)
+  end
+end
+
+A = Node{ name = "A" }
+B = Node{ name = "B" }
+C = Node{ name = "C" }
+D = Node{ name = "D" }
+
+A:goesto(B,C)
+B:goesto(D)
+C:goesto(D)
+D:goesto(A)
+
+io.write("broad-first search:")
+for node in broadsearch(A) do
+  io.write(" ", node.name)
+end
+print()
+
+io.write("depth-first search:")
+for node in depthsearch(A) do
+  io.write(" ", node.name)
+end
+print()
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

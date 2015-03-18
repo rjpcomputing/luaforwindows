@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Core Architecture</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="../basics/index.html", title="Basic Concepts">Basics</a></li>
+			<li><a href="../corba/index.html", title="CORBA Support">CORBA</a></li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><a href="index.html", title="Internal Architecture">Arch</a>
+				<div class="outside"><div class="inside"><ul>
+					<li><a href="layers.html", title="Defining Layers">Layers</a></li>
+					<li><a href="flavors.html", title="Using Flavors">Flavors</a></li>
+					<li><strong>Core</strong></li>
+					<li><a href="rmi.html", title="RMI Architecture">RMI</a></li>
+				</ul></div></div>
+			</li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Core Architecture</h1>
+<p>The core architecture implements the most basic concepts of the programming model provided by ORBs, such as servant and proxy creation, invocation issue and dispatching, etc.
+Alternatives to the core architecture may be developed to provide other programming models, such as message-based communication.
+The following sections describe the core architectures defined by layers defined in OiL's standard distribution.</p>
+
+<h2><a name="base">Base Core</a></h2>
+
+<table>
+	<tr>
+		<td>Layer:</td>
+		<td><strong><code>base</code></strong></td>
+	</tr>
+	<tr>
+		<td>Classes:</td>
+		<td><strong><code>oil.kernel.base.*</code></strong></td>
+	</tr>
+</table>
+
+<p>The base core layer defines six components that provide the most basic implementation of the core architecture.
+Below, there is an image that illustrates the architecture defined by this layer, followed by a brief description of each component.
+Components in light gray are typically provided by a complementary layer, such as a <a href="rmi.html">RMI layer</a>.</p>
+
+<center><img src="corearch.jpg"></center>
+
+<dl>
+	<dt>Client Broker</dt>
+	<dd>Façade component that provides client-side features (facet <code>broker</code>), such as proxy creation from some object reference information like CORBA's stringfied IOR or <code>corbaloc</code>.
+	It requires a reference decoder to extract information from textual references (receptacle <code>references</code>), and a factory to create proxies from this information (receptacle <code>proxies</code>).</dd>
+	
+	<dt>Object Proxies</dt>
+	<dd>Component that provides a factory to create the proxies used by applications (facet <code>proxies</code>).
+	This component basically defines the programming model provided by OiL ORBs because it defines the features provided by proxies.
+	The proxies use the object provided by receptacle <code>invoker</code> to perform remote invocations.</dd>
+	
+	<dt>Operation Invoker</dt>
+	<dd>Component that manages invocations requests and replies issued through the provided facet <code>invoker</code>.
+	Basically, it uses the object provided by receptacle <code>requests</code> to create channels to remote brokers, as well as send requests and receive replies through such channels.</dd>
+	
+	<dt>Server Broker</dt>
+	<dd>Façade component that provides server-side features (facet <code>broker</code>), such as servant registration or control invocation processing.
+	It requires a service to register active servant implementations (receptacle <code>objects</code>) and to accept the reception of remote invocations (receptacle <code>acceptor</code>).</dd>
+	
+	<dt>Request Dispatcher</dt>
+	<dd>Component that provides a registry of active servants (facet <code>objects</code>) and effectively performs invocations requested remotely on the proper servant implementations (facet <code>dispatcher</code>).</dd>
+	
+	<dt>Request Receiver</dt>
+	<dd>Component that accepts channels from remote clients, receives remote invocation requests, and send replies with the results of each invocation (receptacle <code>listener</code>) dispatched to servants (receptacle <code>dispatcher</code>).
+	It provides an API to control acceptation of invocation requests (facet <code>acceptor</code>).</dd>
+	
+	<dt>Basic System</dt>
+	<dd>Component that provides access to basic features of the underlying platform, such as support for network sockets (facet <code>sockets</code>).</dd>
+</dl>
+
+<h2><a name="typed">Typing Extension</a></h2>
+
+<table>
+	<tr>
+		<td>Layer:</td>
+		<td><strong><code>typed</code></strong></td>
+	</tr>
+	<tr>
+		<td>Classes:</td>
+		<td><strong><code>oil.kernel.typed.*</code></strong></td>
+	</tr>
+</table>
+
+<p>This layer extends the core architecture to add support for typing information about values and objects.
+Such support is essential for RMI technologies that rely on typing and interface information, such as CORBA or SOAP.
+Below, there is an image that illustrates the architecture defined by this layer, followed by a brief description of each component.
+Components in light gray are typically provided by a complementary layer, such as a <a href="rmi.html">RMI layer</a>.</p>
+
+<center><img src="typedarch.jpg"></center>
+
+<dl>
+	<dt>Client Broker</dt>
+	<dd>This component is extended to resolve interface of new proxies using the information provided by receptacle <code>types</code>.</dd>
+	
+	<dt>Object Proxies</dt>
+	<dd>This component is extended to implement typed proxies that only provide members defined in its interface.
+	Such information must be provided by receptacle <code>indexer</code>.
+	This receptacle is also used to get implementation of operations that must be executed locally instead of remotely.</dd>
+	
+	<dt>Server Broker</dt>
+	<dd>This component is extended to resolve interface of new servants using the information provided by receptacle <code>types</code> and associate this information to each servant (receptacle <code>mapper</code>).</dd>
+	
+	<dt>Request Dispatcher</dt>
+	<dd>This component is extended to perform checks before dispatching invocations to allow only methods declared in the interface of each servant.
+	Such information must be provided by receptacle <code>indexer</code>.
+	This receptacle is also used to get implementation of implicit operations that are not implemented by the servant.</dd>
+</dl>
+
+<h2><a name="cooperative">Threading Extension</a></h2>
+
+<table>
+	<tr>
+		<td>Layer:</td>
+		<td><strong><code>cooperative</code></strong></td>
+	</tr>
+	<tr>
+		<td>Classes:</td>
+		<td><strong><code>oil.kernel.cooperative.*</code></strong></td>
+	</tr>
+</table>
+
+<p>This layer extends the base core to add support for multithreading so different clients can be served in independent threads and minimize the influence in each other response time.
+Moreover, it adds support to use a single proxy or remote connection by different threads transparently and without problems related to race conditions.</p>
+
+<center><img src="cooperativearch.jpg"></center>
+
+<dl>
+	<dt>Operation Invoker</dt>
+	<dd>This component is extended to implement mutual exclusion mechanisms to avoid that different thread interfere with each other while performing invocations to the same server, since they will probably use a common channel to the remote context.
+	For such the component requires access to thread synchronization mechanisms provided by the underlying system (receptacle <code>tasks</code>).
+	Additionally, the component also provides a access control service (facet <code>mutex</code>) for the resources managed by the component, such as the channels to remote contexts.
+	Such service is useful for implementation of RMI protocols that might receive data while sending invocations or send data while receiving replies.</dd>
+	
+	<dt>Request Receiver</dt>
+	<dd>This component is extended to in the same was as the previous component, so it also provides access control to channels shared by different threads and an access control service (facet <code>mutex</code>) for components that require access to channels.
+	Additionally, this component is also extended to created threads (receptacle <code>tasks</code>) so invocation requests are received and dispatched independently from each other.</dd>
+	
+	<dt>Basic System</dt>
+	<dd>This component is extended to provide support for multithreading in the current platform.
+	Basically, it supports thread creation, synchronization (facet <code>tasks</code>), and scheduling control (facet <code>control</code>).</dd>
+</dl>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

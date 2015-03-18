@@ -1,0 +1,3 @@
+module walk
+  expr; block; stat; expr_list; guess
+end

@@ -1,0 +1,23 @@
+Description:
+Sample COM server implemented in Lua.
+
+Files:
+  - inproc.lua: the code for the server
+  - inproc_use.lua: a Lua client, using Luacom
+  - inproc_use.vbs: a VBScript client, using Windows Scripting Host
+  
+How to run:
+Run inproc.lua with the /Register command line switch to register the
+server, then either run inproc_use.lua, which should print:
+
+Starting server...
+Calling Sum...  2       3
+5
+Calling I2A...  3
+string
+Calling IntDivide...    5       2
+2       1
+Finishing...
+
+to your console, or run inproc_use.vbs which should show a series of
+dialogs with the numbers 5, 3, 2 and 1.

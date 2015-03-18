@@ -1,0 +1,646 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>wxLua Installation Guide</title>
+
+<meta content="Francesco Montorsi, John Labenski" name="author">
+<meta content="Info about building wxLua" name="description"></head><body>
+<u><b><big><big>wxLua 2.8.10 - Installation Guide</big></big></b></u><br>
+<br>
+This document describes how to build wxLua for use as an
+interpreter of Lua scripts and for embedding wxLua in a C++ project.
+You can build wxLua on many platforms with a variety of compilers. All
+the build settings and platforms that are supported by wxWidgets are
+supported by wxLua. <br>
+<ol>
+<li>
+<p><a href="#requiredlibs">Required libraries</a></p>
+<ol style="list-style-type: lower-alpha;">
+<li>
+<p><a href="#apps">List of wxLua applications</a></p>
+</li>
+<li>
+<p><a href="#modules">List of wxLua modules</a></p>
+</li>
+</ol>
+</li>
+<li>
+<p><a href="#win_makefiles">Building on Windows
+using makefiles</a></p>
+</li>
+<li>
+<p><a href="#win_ide">Building on Windows using
+MSVC IDE</a></p>
+</li>
+<li>
+<p><a href="#unix">Building on Linux/Unix</a></p>
+</li>
+<li><a href="#adv">Advanced building options</a></li>
+<ol style="list-style-type: lower-alpha;">
+<li>
+<p><a href="#minimalwxlua">Building a minimal
+set of wxWidgets wrappers</a></p>
+</li>
+<li><a href="#wxlualiborder">wxLua libraries and
+linking order</a></li>
+</ol>
+</ol>
+<small><u><b><big><big><big><br>
+<br>
+<a name="requiredlibs"></a>1. Required libraries</big></big></big></b></u></small>
+<p style="text-align: justify;">wxLua is organized in
+three main blocks: <span style="font-weight: bold;">applications</span>
+(<span style="font-family: monospace;">wxLua/apps</span>),
+<span style="font-weight: bold;">modules</span> (<span style="font-family: monospace;">wxLua/modules</span>)
+and <span style="font-weight: bold;">utilities</span>
+(<span style="font-family: monospace;">wxLua/utils</span>).
+If you want to use wxLuaApp to write your applications in Lua using
+wxWidgets library then you are mainly interested in the <span style="font-weight: bold;">applications</span>
+(basically code editors with integrated Lua interpreter). If you want
+to integrate wxLua in your C++ project, then you are mainly
+interested in the <span style="font-weight: bold;">modules</span>,
+which are compiled as libraries which must be linked by your project:</p>
+<p style="margin-left: 40px;"><big><span style="font-weight: bold; text-decoration: underline;"><a name="apps"></a>1.a
+List of wxLua applications</span></big></p>
+<ul>
+<ul>
+<li>
+<p><span style="font-style: italic;">wxLua/apps/wxlua</span>
+- The wxLua code editor and interpreter, runs samples/editor.wx.lua.</p>
+</li>
+<li>
+<p><span style="font-style: italic;">wxLua/apps/wxluaedit</span>
+- The wxLua code editor and
+interpreter, based on wxStEdit.</p>
+</li>
+<li>
+<p><span style="font-style: italic;">wxLua/apps/wxluacan</span>
+- An example of how to create C++
+applications with embedded wxLua interpreter.</p>
+</li>
+</ul>
+</ul>
+<p style="margin-left: 40px;"><big><span style="font-weight: bold; text-decoration: underline;"><a name="modules"></a>1.b
+List of wxLua modules</span></big></p>
+<ul>
+<ul>
+<li>
+<p><span style="font-style: italic;">wxLua/modules/lua</span>
+- Lua itself with patches applied, see <a href="http://www.lua.org">www.lua.org</a></p>
+</li>
+<li>
+<p><span style="font-style: italic;">wxLua/modules/wxlua</span>
+- The base wxLua package, contains the public wxLuaState class.</p>
+</li>
+<li>
+<p><span style="font-style: italic;">wxLua/modules/wxbind</span>
+- The wxLua bindings for wxWidgets broken up by the wxWidgets
+libraries: adv, aui, base, core, gl, html, media, net, richtext, stc,
+xml, xrc. To determine what classes are part of what libs you can use
+the wxluaref.html document and search for the class, for example wxGrid
+is in the file wxadv_grid.i so it is part of the adv library.</p>
+</li>
+<li>
+<p><span style="font-style: italic;">wxLua/modules/wxluadebug</span>
+- Helpful classes for debugging Lua, wxLuaCheckStack and
+wxLuaStackDialog.</p>
+</li>
+<li>
+<p><span style="font-style: italic;">wxLua/modules/wxluasocket
+</span>- Debugger socket classes to run a wxlua
+program in a
+separate
+process and communicate with the parent</p>
+</li>
+</ul>
+</ul>
+<div style="text-align: justify;">
+In any case, the instructions below show how to compile all
+the three blocks (applications, modules, utilities) at once.
+</div>
+<p style="text-align: justify;">wxLua requirements are
+simple: <a href="http://www.wxwidgets.org"><span style="font-weight: bold;">wxWidgets</span></a>
+(version 2.8.4 or higher),
+<span style="font-weight: bold;">wxSTC</span> if you
+want to
+use the <span style="font-family: monospace;">wxbindstc</span>
+module or you want to compile the <span style="font-family: monospace;">wxlua</span>
+application, <span style="font-weight: bold;"><a href="http://wxcode.sourceforge.net/components/wxstedit">wxStEdit</a>
+</span>(version 1.2.4 or higher) if you want to compile the <span style="font-family: monospace;">wxluaedit</span>
+application.</p>
+<p style="text-align: justify;"><span style="font-weight: bold;">VERY IMPORTANT: </span></p>
+<ul>
+<li><span style="font-weight: bold;">All
+instructions below suppose that you already compiled
+or installed a working development version of
+wxWidgets. Please refer to wxWidgets documentation for this.</span></li>
+<li><span style="font-weight: bold;">If you want
+to
+use a precompiled package of wxWidgets you must install the
+development as well as the runtime package. </span></li>
+<li><span style="font-weight: bold;">You should be
+able to compile and successfully run the wxWidgets samples, please try
+at least one before attempting to compile wxLua to verify that
+wxWidgets is correctly installed before continuing.</span></li>
+</ul>
+<p style="text-align: justify;"><span style="font-weight: bold;">wxSTC</span>
+is the wxWidgets wrapper around the Scintilla text control and can be
+built from the wxWidgets source tree...</p>
+<ul style="text-align: justify;">
+<li>Windows: going in the <span style="font-family: monospace;">contrib/build/stc</span>
+directory and if using makefiles running the same MAKE command
+used to
+build wxWidgets. If using MS Visual Studio opening the build file in <span style="font-family: monospace;">contrib/build/stc</span>
+and building the same configuration that you used for the wxWidgets
+library. </li>
+<li>Linux: going in the <span style="font-family: monospace;">contrib/src/stc</span>
+directory and typing <span style="font-family: monospace;">make
+&amp;&amp; sudo make install</span></li>
+</ul>
+<div style="text-align: justify;">
+If you want to disable wxSTC dependency you have to use the<span style="font-weight: bold;"> </span><span style="font-family: monospace;">USE_WXBINDSTC=0</span>
+option (on Windows makefiles) or <span style="font-family: monospace;">--disable-wxbindstc</span>
+option (<span style="font-family: monospace;">with</span>
+Unix configure script).<br>
+<br>
+<span style="font-weight: bold;">wxStEdit</span> is
+part of the <a href="http://wxcode.sourceforge.net">wxCode</a>
+project and can be downloaded from <a href="http://wxcode.sourceforge.net/components/wxstedit">wxcode.sourceforget.net</a>.
+Refer to its README for instructions on how to build it. If you want to
+disable wxStEdit dependency you have to use the <span style="font-family: monospace;">USE_WXLUAEDITAPP=0</span>
+option (on Windows makefiles) or <span style="font-family: monospace;">--disable-wxluaedit-app</span>
+(with Unix configure script).</div>
+<br>
+<br>
+<u><b><big><big>
+<a name="win_makefiles"></a>2. Building on Windows
+using makefiles</big></big></b></u><br>
+<p>Enter the <span style="font-family: monospace;">wxLua/build/msw</span>
+directory with an MSDOS prompt and type:</p>
+<ul>
+<li><span style="font-family: monospace;">MSVC :
+nmake -f makefile.vc</span></li>
+<li><span style="font-family: monospace;">Borland
+: make -f makefile.bcc</span></li>
+<li><span style="font-family: monospace;">Mingw :
+mingw32-make -f makefile.mingw</span></li>
+<li><span style="font-family: monospace;">Watcom :
+wmake -f makefile.wat</span></li>
+</ul>
+<p>to build all modules,
+applications and utilities of wxLua.</p>
+<p style="text-align: justify;">For more options, you can
+just see the top of the
+makefile you're using for your compiler. For example, if you're using <span style="font-family: monospace;">nmake</span> (MS
+Visual C nmake program) look at <span style="font-family: monospace;">makefile.vc</span>. </p>
+<p>At the top you'll see something like this:
+</p>
+<div style="margin-left: 40px;"><span style="font-family: monospace;"></span><span style="font-family: monospace;">#
+-------------------------------------------------------------------------<br>
+# These are configurable options:<br>
+#
+-------------------------------------------------------------------------<br>
+<br>
+# C compiler <br>
+CC = cl<br>
+<br>
+# C++ compiler <br>
+CXX = cl<br>
+<br>
+# Standard flags for CC <br>
+CFLAGS = <br>
+<br>
+# Standard flags for C++ <br>
+CXXFLAGS = <br>
+<br>
+# Standard preprocessor flags (common for CC and CXX) <br>
+CPPFLAGS = <br>
+<br>
+# Standard linker flags <br>
+LDFLAGS = <br>
+<br>
+# Builds in debug mode [debug,release]<br>
+BUILD = debug<br>
+<br>
+# Builds in Unicode mode [0,1]<br>
+# 1 - Unicode<br>
+UNICODE = 0<br>
+<br>
+# Builds in shared mode [0,1]<br>
+# 1 - DLL<br>
+SHARED = 0<br>
+<br>
+# Use DLL build of wx library? [0,1]<br>
+# 0 - Static<br>
+# 1 - DLL<br>
+WX_SHARED = 0<br>
+<br>
+# Version of the wx library to build against. <br>
+WX_VERSION = 28<br>
+<br>
+# Use monolithic build of wxWidgets? [0,1]<br>
+# 0 - Multilib<br>
+# 1 - Monolithic<br>
+WX_MONOLITHIC = 0<br>
+<br>
+# The directory where wxWidgets library is installed <br>
+WX_DIR = $(WXWIN)<br>
+<br>
+# Should the wxLua applications be compiled ? [0,1]<br>
+USE_APPS = 1<br>
+<br>
+# Should wxLua use the system-wide Lua library ? [0,1]<br>
+USE_SYSTEM_LUA = 0<br>
+<br>
+# The path to the Lua library <br>
+LUA_DIR = ..\..\..\modules\lua<br>
+<br>
+# This is an advanced option. Handle with care.<br>
+# Version of C runtime library to use. You can change this to<br>
+# static if SHARED=0, but it is highly recommended to not do<br>
+# it if SHARED=1 unless you know what you are doing. [dynamic,static]<br>
+RUNTIME_LIBS = dynamic<br>
+<br>
+# Do the wxLua bindings for the wxAdv lib need to be compiled ? [0,1]<br>
+USE_WXBINDADV = 1<br>
+<br>
+# Do the wxLua bindings for the wxAUI lib need to be compiled ? [0,1]<br>
+USE_WXBINDAUI = 1<br>
+<br>
+# Do the wxLua bindings for the wxBase lib need to be compiled ? [0,1]<br>
+USE_WXBINDBASE = 1<br>
+<br>
+# Do the wxLua bindings for the wxCore lib need to be compiled ? [0,1]<br>
+USE_WXBINDCORE = 1<br>
+<br>
+# Do the wxLua bindings for the wxGL lib need to be compiled ? [0,1]<br>
+USE_WXBINDGL = 1<br>
+<br>
+# Do the wxLua bindings for the wxHTML lib need to be compiled ? [0,1]<br>
+USE_WXBINDHTML = 1<br>
+<br>
+# Do the wxLua bindings for the wxMedia lib need to be compiled ? [0,1]<br>
+USE_WXBINDMEDIA = 1<br>
+<br>
+# Do the wxLua bindings for the wxNet lib need to be compiled ? [0,1]<br>
+USE_WXBINDNET = 1<br>
+<br>
+# Do the wxLua bindings for the wxRichText lib need to be compiled ?
+[0,1]<br>
+USE_WXBINDRICHTEXT = 0<br>
+<br>
+# Do the wxLua bindings for wxSTC need to be compiled ? [0,1]<br>
+USE_WXBINDSTC = 1<br>
+<br>
+# Do the wxLua bindings for wxXML need to be compiled ? [0,1]<br>
+USE_WXBINDXML = 1<br>
+<br>
+# Do the wxLua bindings for wxXRC need to be compiled ? [0,1]<br>
+USE_WXBINDXRC = 1<br>
+<br>
+# Does the wxLua debug support need to be compiled ? [0,1]<br>
+USE_WXLUADEBUG = 1<br>
+<br>
+# Does the wxLua debug socket support need to be compiled ? [0,1]<br>
+USE_WXLUASOCKET = 1<br>
+<br>
+# Compile the lua module ? [0,1]<br>
+USE_LUAMODULE = 1<br>
+<br>
+# Compile the wxLua app ? [0,1]<br>
+USE_WXLUAAPP = 1<br>
+<br>
+# Compile the wxLuaCan app ? [0,1]<br>
+USE_WXLUACANAPP = 1<br>
+<br>
+# The path to the wxStEdit component (meaningful only when
+USE_WXLUAEDITAPP==1) <br>
+WXSTEDIT_DIR = $(WXSTEDIT)<br>
+<br>
+# Compile the wxLuaEditor app ? [0,1]<br>
+USE_WXLUAEDITAPP = 0<br>
+<br>
+# Compile the wxLuaFreeze app ? [0,1]<br>
+USE_WXLUAFREEZEAPP = 1<br>
+</span><span style="font-family: monospace;"></span></div>
+<p><br>
+To specify one or more options, just append them to the end of your
+make command:<br>
+<br>
+<span style="font-family: monospace;">nmake -f makefile.vc
+BUILD=debug UNICODE=1 WX_MONOLITHIC=1</span><br>
+</p>
+<div style="text-align: justify;">
+in case you get an error complaining about <span style="font-family: monospace;">wx/setup.h</span> or <span style="font-family: monospace;">wx/wx.h</span> which
+cannot be found, this is because the options default or the option
+values you gave did not match any of your available wxWidgets builds.
+In this case use one of <span style="font-family: monospace;">BUILD,
+UNICODE, SHARED, WX_DIR, WX_SHARED, WX_VERSION, WX_MONOLITHIC</span>
+options to select the build you want. <br>
+<ul>
+<li>The directory that wxWidgets is
+installed to is specified by the environment variable $(WXWIN)</li>
+<li>The
+directory to the wxStEdit library is specified by $(WXSTEDIT).</li>
+</ul>
+You can set these environment variables in MS Windows either at the DOS
+prompt using "set WXWIN=\path\to\wxWidgets" or by right clicking on "My
+Computer" -&gt; "System" -&gt; "Environment
+Variables" and add it for yourself or for everyone.
+</div>
+<p style="text-align: justify;">Note that the <span style="font-family: monospace;">USE_WXLUAEDITAPP </span>option
+is disabled by default so that if you want to enable <span style="font-weight: bold;">wxStEdit</span> dependency
+you have to explicitely use the <span style="font-family: monospace;">USE_WXLUAEDITAPP=1</span>
+option.</p>
+<p style="text-align: justify;">Some useful targets you
+can specify are:</p>
+<ul>
+<li><span style="font-family: monospace;">docs</span>:
+generates the HTML documentation for wxLua using <a href="http://www.doxygen.org/">doxygen</a></li>
+<li><span style="font-family: monospace;">compress</span>:
+calls <a href="http://upx.sourceforge.net">UPX</a>
+on the generated binaries to make them smaller (and faster)</li>
+</ul>
+<u><b><big><big><br>
+<a name="win_ide"></a>3. Building on Windows using
+MSVC
+IDE</big></big></b></u><br>
+<div style="text-align: justify;"><br>
+Open the <span style="font-family: monospace;">wxLua/build/msw/wxLua.dsw</span>
+project file and select the same configuration you used to
+build wxWidgets from the <span style="font-family: monospace;">"Build-&gt;Set
+Active
+Project"</span> menu.</div>
+<p>
+Now build the wxLua application right-clicking on the <span style="font-family: monospace;">app_wxlua</span>
+target and choosing <span style="font-family: monospace;">Build</span>
+(or <span style="font-family: monospace;">Generate</span>).
+Then just repeat this build command for the <span style="font-family: monospace;">app_wxluacan</span>
+and <span style="font-family: monospace;">app_wxluaedit</span>
+targets. the <span style="font-family: monospace;">mod_XXX</span>
+targets will be automatically built since they are dependency of the <span style="font-family: monospace;">app_XXX</span>
+targets. You may also use "Batch Build" to build multiple
+libraries and programs at once.</p>
+<p>In order to compile the wxLuaEdit application you must compile
+the wxStEdit library by using its project file with the same settings
+that you will use for wxLua. Then set the environment variable
+WXSTEDIT=/path/to/wxstedit by right clicking on "My Computer" -&gt;
+"System" -&gt; "Environment Variables" and add it for yourself or
+for everyone. You will have to close and reopen MS Visual Studio in
+order for the new variable to be used.</p>
+<u><b><big><big><br>
+<a name="unix"></a>4. Building on Linux/Unix</big></big></b></u><br>
+<p>Quickstart: Move to the root directory of the wxLua
+project and type:</p>
+<p style="margin-left: 40px; font-family: monospace;">./configure
+&amp;&amp; make</p>
+to build using the wxWidgets default build settings and then execute,
+with <span style="font-family: monospace;">root</span>
+permissions (you can use <span style="font-family: monospace;">su</span>
+or <span style="font-family: monospace;">sudo</span>
+commands...):<br>
+<br>
+<span style="font-family: monospace;">make install</span><br>
+<br>
+If you want more control over configure you can type <span style="font-family: monospace;">./configure --help</span>
+to get a list of available options.
+<br>
+Note that <span style="font-family: monospace;">--enable-XXX</span>
+or <span style="font-family: monospace;">--enable-XXX=yes</span>
+enables the option <span style="font-family: monospace;"></span>and
+<span style="font-family: monospace;">--disable-XXX</span>
+or <span style="font-family: monospace;">--enable-XXX=no</span>
+disables it.<br>
+<br>
+wxLua's <span style="font-family: monospace;">configure</span>
+tries to determine the wxWidgets build settings automatically
+using the <span style="font-family: monospace;">wx-config</span>
+script,
+but if you have multiple wxWidgets builds (you can list them using <span style="font-family: monospace;">wx-config --list</span>)
+you
+can select the build you want using the <span style="font-family: monospace;">--enable-unicode</span>,
+<span style="font-family: monospace;">--enable-debug</span>
+and <span style="font-family: monospace;">--with-wxshared</span>,
+<span style="font-family: monospace;">--with-gtk|msw|mgl|x11|motif</span>
+options. Note that you would use the <span style="font-family: monospace;">--enable-unicode</span>,
+<span style="font-family: monospace;">--enable-debug</span>
+options only if you had built wxWidgets with them. The build
+settings for wxLua must be identical to the ones used by
+wxWidgets, i.e. you
+cannot build wxLua in ANSI mode and try to link to a Unicode
+build of wxWidgets!
+For example, if you have a unicode, release, shared library
+(as opposed to
+static) build of wxWidgets and want
+to build wxLua in unicode, release, static mode, then you can do:<br>
+<br>
+<span style="font-family: monospace;">./configure
+--enable-unicode
+--disable-debug --disable-shared --with-wxshared</span><br>
+<br>
+The options <span style="font-family: monospace;">--enable-wxlua-app</span>,
+<span style="font-family: monospace;">--enable-wxluacan-app</span>,
+<span style="font-family: monospace;">--enable-wxluaedit-app</span>
+let you to enable or disable compiling the <span style="font-weight: bold;">applications</span>
+which are part of wxLua. <br>
+<br>
+The options <span style="font-family: monospace;">--enable-wxbindstc</span>,
+<span style="font-family: monospace;">--enable-wxluadebug</span>,
+<span style="font-family: monospace;">--enable-wxluasocket</span>
+let
+you to enable or disable compiling the wxLua <span style="font-weight: bold;">modules</span>.<br>
+<br>
+You can
+compile multiple
+coexisting wxLua builds by running wxLua's configure script in
+different folders; e.g.<br>
+<br>
+<span style="font-family: monospace;">mkdir mybuild
+&amp;&amp; cd mybuild &amp;&amp; ../configure
+&amp;&amp; make</span><br>
+<br>
+which puts all objects and intermediate stuff in the <span style="font-family: monospace;">mybuild</span> folder
+(exactly as you can do with wxWidgets). This is typically a good idea
+even if you only have a single build so you don't pollute the main
+wxLua directory with the build files.<br>
+<br>
+If you do not want to install wxLua to the system directory <span style="font-family: monospace;">/usr/ </span>you can
+specify <span style="font-family: monospace;">--prefix=/path/to/install/to</span>
+and when you run <span style="font-family: monospace;">make
+install</span> the headers, apps, and libs will be placed there.
+For development purposes it is often not necessary to install wxLua,
+but you may need to specify the shell environment variable <span style="font-family: monospace;">LD_LIBRARY_PATH</span>
+to allow the executables to find the shared libraries, e.g. <span style="font-family: monospace;">export
+LD_LIBRARY_PATH=/path/to/wxLua/lib</span>, be careful not to
+override the variables existing value so you may want to instead do <span style="font-family: monospace;">export LD_LIBRARY_PATH=$</span><span style="font-family: monospace;">LD_LIBRARY_PATH:</span><span style="font-family: monospace;">/path/to/wxLua/lib</span>.<br>
+<br>
+The wxLuaEdit application depends on the wxStEdit library that you
+should have compiled before trying to compile wxLua. There are two ways
+to let wxLua's configure find the wxStEdit library: 1) Set the shell
+environment variable before running configure <span style="font-family: monospace;">export
+WXSTEDIT=/path/to/wxstedit</span> or 2) Use the <span style="font-family: monospace;">--with-wxstedit-prefix=/path/to/wxstedit</span>
+configure directive. As a last resort you can help wxLua's
+configure find wxStEdit or its libraries by exporting
+these environment variables:<br>
+<br>
+<span style="font-family: monospace;">export
+CPPFLAGS="-I/path/to/wxstedit/include" </span><br>
+<span style="font-family: monospace;">export
+LDFLAGS="-L/path/to/wxstedit/lib"</span><br>
+<br>
+Other useful targets which you can use are:<br>
+<ul>
+<li><span style="font-family: monospace;">docs</span>:
+generates the HTML documentation for wxLua using <a href="http://www.doxygen.org">doxygen</a></li>
+<li><span style="font-family: monospace;">install-strip</span>:
+like install but this target also strips
+debugging informations out of the installed libraries and binaries so
+that they take less space on disk and run faster</li>
+</ul>
+<u><b><big><big><br>
+<a name="adv"></a>5. Advanced building options</big></big></b></u><br>
+<br>
+These instructions are for C++ developers who want to use wxLua as a
+<span style="font-weight: bold;">script interpreter</span>
+in their own project. This means that you can write
+scripts to make your code simpler, load and run files on the fly, and
+allow users to more easily customize your program with their own Lua
+scripts.<br>
+<br>
+<p style="margin-left: 40px;"><big><span style="font-weight: bold; text-decoration: underline;"><a name="minimalwxlua"></a>5.a Building a minimal set of
+wxWidgets wrappers</span></big></p>
+<div style="margin-left: 40px;">In order to embed wxLua in
+your project, you will probably need the library from <span style="font-family: monospace;">wxLua/modules/lua</span>
+and <span style="font-family: monospace;">wxLua/modules/wxlua</span>
+at a <span style="font-style: italic;">minimum</span>.
+With these two libraries you have the ability to start an interpreter
+and run straight Lua code in it using the wxLuaState class.<br>
+<br>
+To get the ability to create wxWidgets objects and use the
+functionality of wxWidgets in Lua you will also need to build and link
+to the libraries in <span style="font-family: monospace;">modules/wxbind</span>.
+The bindings in <span style="font-family: monospace;">modules/wxbind</span>
+contain nearly all of the classes and functions in wxWidgets. They also
+contain the appropriate <span style="font-family: monospace;">#if
+wxUSE_XXX</span>
+statements and platform dependent <span style="font-family: monospace;">__WXMSW/GTK/MAC__</span>
+checks that wxWidgets uses in its headers to ensure that no matter what
+platform or what type of build you use, the bindings will compile
+without errors (if they don't compile for your settings, please be sure
+to tell us on the <a href="mailto:wxlua-users@lists.sourceforge.net">wxlua-users
+mailing list</a>). <br>
+<br>
+<span style="font-weight: bold;">NOTE</span>: if you
+want all wxWidgets API wrapped and you don't care about <span style="font-weight: bold;">size</span>
+of the wxLua libraries, then you can just skip this section ! You will
+just need to link your program against the wxLua libraries which you
+built in <a href="install.html#win_makefiles">step 2</a>,
+<a href="install.html#win_ide">step 3</a>
+or <a href="install.html#unix">step 4</a>.
+Just look at <a href="install.html#wxlualiborder">section
+5.b</a> for some tips about linking order.<br>
+<br>
+In order to make wxLua libraries smaller, you just need to add
+to your project a file named <span style="font-family: monospace;">wxluasetup.h
+</span>(the name must be exactly that, all lowercase!) which
+should start as a copy of <span style="font-family: monospace;">modules/wxbind/setup/wxluasetup.h</span>.
+Once you have your custom <span style="font-family: monospace;">wxluasetup.h</span>
+you can edit it to your liking. The header file contains a
+number of
+<span style="font-family: monospace;">wxLUA_USE_XXX</span>
+#defines that are fairly self explanitory. By setting some of them to <span style="font-family: monospace;">0</span>
+you can block out large chunks of the bindings making them smaller. <br>
+<br>
+</div>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">NOTE</span>: The
+functionalities of wxLua bindings will obviously be limited by your
+current wxWidgets
+build settings; i.e. if you did not built OpenGL support in wxWidgets
+you won't have it in wxLua! <br>
+</div>
+<br>
+<div style="margin-left: 40px;">Once you have created and
+edited <span style="font-family: monospace;">wxluasetup.h</span>
+you can build your <span style="font-weight: bold;">wxBind
+custom library</span>: on Windows, just open an MSDOS prompt and
+move in the <span style="font-family: monospace;">wxLua/modules/wxbind/build
+</span>directory and then launch a MAKE command using the <span style="font-weight: bold; font-family: monospace;">WXLUASETUP_DIR</span>
+option to tell the makefile the path to your custom <span style="font-family: monospace;">wxluasetup.h</span>
+and the <span style="font-family: monospace; font-weight: bold;">WXLUABINDLIB_DIR</span>
+option to tell the makefile where the custom wxBind library should be
+created:<br>
+<ul>
+<li><span style="font-family: monospace;">nmake -f
+makefile.vc WXLUASETUP_DIR=c:\myproj\include
+WXLUABINDLIB_DIR=c:\myproj\lib</span> (if
+using MSVC)</li>
+<li><span style="font-family: monospace;">make -f
+makefile.bcc WXLUASETUP_DIR=c:\myproj\include
+WXLUABINDLIB_DIR=c:\myproj\lib</span> (if using Borland)</li>
+<li><span style="font-family: monospace;">mingw32-make
+-f makefile.mingw WXLUASETUP_DIR=c:\myproj\include
+WXLUABINDLIB_DIR=c:\myproj\lib</span> (if
+using Mingw)</li>
+<li><span style="font-family: monospace;">wmake -f
+makefile.wat
+WXLUASETUP_DIR=c:\myproj\include
+WXLUABINDLIB_DIR=c:\myproj\lib</span> (if using Watcom)</li>
+</ul>
+On Unix/Linux, unless you used the <span style="font-family: monospace;">--enable-customwxbind-install=no</span>
+option, then the wxBind sources will be installed to <span style="font-family: monospace;">PREFIX/src/wxbind</span>
+as soon as you give the <span style="font-family: monospace;">make
+install</span> command.<br>
+Once you have them installed, just go in the <span style="font-family: monospace;">PREFIX/src/wxbind</span><span style="font-family: monospace;"></span>/build folder
+and type:<br>
+<br>
+<div style="text-align: center;"><span style="font-family: monospace;">make -f makefile.gnu
+WXLUASETUP_DIR=~/myproj/include WXLUABINDLIB_DIR=</span><span style="font-family: monospace;">~/myproj/</span><span style="font-family: monospace;">lib</span><br>
+</div>
+<br>
+and you will get your wxBind custom library compiled.<br>
+<br>
+Last step: you just need to add to your project dependencies the custom
+wxBind library you've just created.<br>
+Next section helps you with linking order which can be a bit troubling
+with some compilers.<br>
+<br>
+</div>
+<p style="margin-left: 40px;"><big><span style="font-weight: bold; text-decoration: underline;"><a name="wxlualiborder"></a>5.b wxLua libraries and
+linking order</span></big></p>
+<div style="margin-left: 40px;">The order in which you
+link to the wxLua libraries is
+important since some variable are initialized using variables from
+other libraries. You must always link to any binding library <span style="font-weight: bold;">after</span> (in terms of
+initialization) linking with
+the wxLua libraries.<br>
+<br>
+<span style="font-weight: bold;">NOTE</span>: Many
+linkers actually link libraries in the opposite order in which they
+appear
+on the command line.<br>
+<br>
+Thus the library order to give to the gcc linker is (last means
+initialized first):<br>
+<br>
+<div style="text-align: center;"><span style="font-family: monospace;">wxbind... </span><span style="font-family: monospace;">, wxbindcore </span><span style="font-family: monospace;">,wxbindbase, wxluasocket,
+</span><span style="font-family: monospace;">wxluadebug,
+</span><span style="font-family: monospace;">wxlua, </span><span style="font-family: monospace;">lua</span>, <span style="font-family: monospace;">wxWidgets libs</span><br>
+</div>
+<br>
+Obviously you should remove the libraries you don't use (e.g.
+wxluasocket, wxluadebug) and use the decorated names for the others.
+The wxLua makefiles/IDE outputs the libraries following the same
+wxWidgets naming rule:<br>
+<br>
+<div style="text-align: center;"><span style="font-family: monospace;">wxlua_$(WX_PORT_WITHVERSION)$(WXLIBPOSTFIX)_wxlua-$(WX_VERSION_MAJOR).$(WX_VERSION_MINOR)</span><br>
+</div>
+<br>
+where <span style="font-family: monospace;">WX_PORT_WITHVERSION</span>
+can be <span style="font-family: monospace;">gtk2</span>,
+<span style="font-family: monospace;">msw</span>, <span style="font-family: monospace;">x11</span>, etc; <span style="font-family: monospace;">WXLIBPOSTFIX </span>can
+be <span style="font-family: monospace;">u</span>, <span style="font-family: monospace;">d</span>, <span style="font-family: monospace;">ud</span>.<br>
+</div>
+<br>
+<hr style="width: 100%; height: 2px;"><br>
+$Id: install.html,v 1.15 2009/05/24 05:34:14 jrl1 Exp $
+</body></html>

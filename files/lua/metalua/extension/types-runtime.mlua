@@ -1,0 +1,159 @@
+--------------------------------------------------------------------------------
+-- Initialize the types table. It has an __index metatable entry,
+-- so that if a symbol is not found in it, it is looked for in the current
+-- environment. It allows to write things like [ n=3; x :: vector(n) ].
+--------------------------------------------------------------------------------
+types = { }
+setmetatable (types, { __index = getfenv(0)})
+
+function types.error (fmt, ...)
+   error(string.format("Runtime type-checking failure: "..fmt, ...))
+end
+
+--------------------------------------------------------------------------------
+-- Add a prefix to an error message, if an error occurs.
+-- Useful for type checkers that call sub-type-checkers.
+--------------------------------------------------------------------------------
+local function nest_error (prefix, ...)
+   local status, msg = pcall(...)
+   if not status then types.error("%s:\n%s", prefix, msg) end
+end
+
+--------------------------------------------------------------------------------
+-- Built-in types
+--------------------------------------------------------------------------------
+for typename in values{ "number", "string", "boolean", "function", "thread" } do
+   types[typename] = 
+      function (val)           
+         if type(val) ~= typename then types.error ("%s expected", typename) end
+      end
+end
+
+function types.integer(val)
+   if type(val)~='number' or val%1~=0 then types.error 'integer expected' end
+end
+
+--------------------------------------------------------------------------------
+-- table(foo) checks
+-- table(foo, bar) checks
+-- table(i) where i is an integer checks
+-- table(i, j) where i and j are integers checks
+-- Integers and key/value types can be combined
+--------------------------------------------------------------------------------
+function types.table (...)
+
+   local key_type, val_type, range_from, range_to
+   -- arguments parsing
+   for x in values{...} do
+      if type(x) == "number" then
+         if range2    then types.error "Invalid type: too many numbers in table type"
+         elseif range1 then range2 = x
+         else   range1 = x end
+      else
+         if     type_key  then types.error "Invalid type: too many types"
+         elseif type_val  then type_key, type_val = type_val, x
+         else   type_val = x end
+      end
+   end
+   if not range2 then range2=range1 end
+   if not type_key then type_key = types.integer end
+   return function (val)
+      if type(val) ~= "table" then types.error "table expected" end
+      local s = #val
+      if range2 and range2 > s then types.error "Not enough table elements" end
+      if range1 and range1 < s then types.error "Too many elements table elements" end
+      for k,v in pairs(val) do 
+         nest_error ("in table key",   type_key, k)
+         nest_error ("in table value", type_val, v)
+      end
+   end
+end
+
+--------------------------------------------------------------------------------
+-- [list (subtype)] checks that the term is a table, and all of its 
+-- integer-indexed elements are of type [subtype].
+--------------------------------------------------------------------------------
+types.list = |...| types.table (types.integer, ...)
+
+--------------------------------------------------------------------------------
+-- Check that [x] is an integral number
+--------------------------------------------------------------------------------
+function types.int (x)
+   if type(x)~="number" or x%1~=0 then types.error "Integer number expected" end
+end
+
+--------------------------------------------------------------------------------
+-- [range(a,b)] checks that number [val] is between [a] and [b]. [a] and [b]
+-- can be omitted.
+--------------------------------------------------------------------------------
+function types.range (a,b)
+   return function (val)
+      if type(val)~="number" or a and val<a or b and val>b then 
+         types.error ("Number between %s and %s expected",
+                      a and tostring(a) or "-infty",
+                      b and tostring(b) or "+infty")
+      end
+   end
+end
+
+--------------------------------------------------------------------------------
+-- [inter (x, y)] checks that the term has both types [x] and [y].
+--------------------------------------------------------------------------------
+function types.inter (...)
+   local args={...}
+   return function(val)
+      for t in values(args) do nest_error ("in inter type", t, args) end
+   end
+end      
+
+--------------------------------------------------------------------------------
+-- [inter (x, y)] checks that the term has type either [x] or [y].
+--------------------------------------------------------------------------------
+function types.union (...)
+   local args={...}
+   return function(val)
+      for t in values(args) do if pcall(t, val) then return end end
+      types.error "None of the types in the union fits"
+   end
+end      
+
+--------------------------------------------------------------------------------
+-- [optional(t)] accepts values of types [t] or [nil].
+--------------------------------------------------------------------------------
+function types.optional(t)
+   return function(val) 
+             if val~=nil then nest_error("In optional type", t, val) end 
+   end
+end  
+
+--------------------------------------------------------------------------------
+-- A call to this is done on litteral tables passed as types, i.e.
+-- type {1,2,3} is transformed into types.__table{1,2,3}.
+--------------------------------------------------------------------------------
+function types.__table(s_type)
+   return function (s_val)
+      if type(s_val) ~= "table" then types.error "Struct table expected" end
+      for k, field_type in pairs (s_type) do
+         nest_error ("in struct field "..k, field_type, s_val[k])
+      end
+   end
+end
+
+--------------------------------------------------------------------------------
+-- Same as __table, except that it's called on literal strings.
+--------------------------------------------------------------------------------
+function types.__string(s_type)
+   return function (s_val)
+      if s_val ~= s_type then
+         types.error("String %q expected", s_type)
+      end
+   end
+end
+
+--------------------------------------------------------------------------------
+-- Top and Bottom:
+--------------------------------------------------------------------------------
+function types.any() end
+function types.none() types.error "Empty type" end
+types.__or  = types.union
+types.__and = types.inter

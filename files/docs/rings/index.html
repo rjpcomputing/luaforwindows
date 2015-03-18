@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Rings: Multiple Lua States</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div id="container">
+	
+<div id="product">
+	<div id="product_logo">
+    <a href="http://www.keplerproject.org">
+		<img alt="Rings logo" src="rings.png"/>
+	</a></div>
+	<div id="product_name"><big><strong>Rings</strong></big></div>
+	<div id="product_description">Multiple Lua States</div>
+</div> <!-- id="product" -->
+
+<div id="main">
+	
+<div id="navigation">
+<h1>Rings</h1>
+	<ul>
+		<li><strong>Home</strong>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+				<li><a href="index.html#history">History</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact us</a></li>
+			</ul>
+		</li>
+		<li><a href="manual.html">Manual</a>
+			<ul>
+				<li><a href="manual.html#introduction">Introduction</a></li>
+				<li><a href="manual.html#building">Building</a></li>
+				<li><a href="manual.html#installation">Installation</a></li>
+				<li><a href="manual.html#reference">Reference</a>
+                    <ul>
+                        <li><a href="manual.html#master_functions">Master functions</a></li>
+                        <li><a href="manual.html#slave_functions">Slave functions</a></li>
+                        <li><a href="manual.html#stable">Stable</a></li>
+    			    </ul>
+                </li>
+				<li><a href="manual.html#examples">Examples</a></li>
+			</ul>
+		</li>
+        <li><a href="http://luaforge.net/projects/rings/">Project</a>
+            <ul>
+                <li><a href="http://luaforge.net/tracker/?group_id=147">Bug Tracker</a></li>
+                <li><a href="http://luaforge.net/scm/?group_id=147">CVS</a></li>
+            </ul>
+        </li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+<h2><a name="overview"></a>Overview</h2>
+
+<p>Rings is a library which provides a way to create new Lua states from within
+Lua. It also offers a simple way to communicate between the creator (master) and
+the created (slave) states.</p>
+
+<p>Rings is free software and uses the same <a href="license.html">license</a>
+as Lua 5.1.</p>
+
+<h2><a name="status"></a>Status</h2>
+
+<p>
+Rings version 1.2.2 is now available for <a href="#download">download</a>.</p>
+
+<h2><a name="download"></a>Download</h2>
+
+<p>Rings can be downloaded in source code from its
+<a href="http://luaforge.net/projects/rings/files">LuaForge</a>
+page. If you are using
+<a href="http://luaforge.net/projects/luabinaries/">LuaBinaries</a> 5.1.3,
+a Windows precompiled version of Rings (compiled with Visual Studio 2005 Express)
+can also be found at the same LuaForge page.</p>
+
+<h2><a name="history"></a>History</h2>
+
+<dl class="history">
+    <dt><strong>Version 1.2.2</strong> [30/Jun/2008]</dt>
+	<dd><ul>
+		<li>Fixed a stack handling issue (bug report and patch by Shmuel Zeigerman)</li>
+	</ul></dd>
+	
+    <dt><strong>Version 1.2.1</strong> [8/May/2008]</dt>
+	<dd><ul>
+		<li>Fixed bug [<a href="http://luaforge.net/tracker/?func=detail&amp;group_id=147&amp;aid=2074&amp;atid=680">#2074</a>] - 
+	Rings uses the deprecated function luaL_openlib (patch by Ignacio Burgue&ntilde;o)</li>
+	</ul></dd>
+
+    <dt><strong>Version 1.2</strong> [18/Feb/2008]</dt>
+    <dd>
+    <ul>
+	<li><a href="manual.html#rings_new"><code>rings.new</code></a> now takes
+	an optional environment to be used by
+	<a href="manual.html#rings_remotedostring"><code>remotedostring</code></a>.
+	If the environment is nil, it defaults to <code>_M or _G</code>.</li>
+	<li>Fixed a bug with interaction of rings and coroutines, rings was assuming a 1:1 mapping
+	between lua_States and rings master and slave states, which is not true when coroutines/threads are involved.
+	(bug found by Ignacio Burgue&ntilde;o)</li>
+    </ul>
+    </dd>
+    
+    <dt><strong><a href="http://www.keplerproject.org/rings/1.1">Version 1.1</a></strong> [11/Jun/2007]</dt>
+    <dd>Adapted to work with Lua 5.1.</dd>
+    
+    <dt><strong><a href="http://www.keplerproject.org/rings/1.0">Version 1.0</a></strong> [10/Mar/2006]</dt>
+    <dd>First public version, works with Lua 5.0.</dd>
+</dl>
+
+<h2><a name="credits"></a>Credits</h2>
+
+<p>Rings was designed by Roberto Ierusalimschy and Tom&aacute;s Guisasola
+as part of the <a href="http://www.keplerproject.org">Kepler Project</a>.
+The implementation was coded by Tom&aacute;s Guisasola.</p>
+
+<p>Rings development was sponsored by 
+<a href="http://www.fabricadigital.com.br">F&aacute;brica Digital</a>.</p>
+
+<h2><a name="contact"></a>Contact us</h2>
+
+<p>For more information please
+<a href="mailto:info-NO-SPAM-THANKS@keplerproject.org">contact us</a>.
+Comments are welcome!</p>
+
+<p>You can also reach other Kepler developers and users on the Kepler Project
+<a href="http://luaforge.net/mail/?group_id=104">mailing list</a>.</p>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.0!</a></p>
+	<p><small>$Id: index.html,v 1.17 2008/06/30 17:52:31 carregal Exp $</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+
+</body>
+</html> 

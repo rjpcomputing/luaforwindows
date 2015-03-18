@@ -1,0 +1,108 @@
+#! /usr/bin/env lua
+prog = {
+  name = "ldoc",
+  banner = "ldoc $Revision: 1.7 $ by Reuben Thomas (rrt@sc3d.org)",
+  purpose = "Extract and process the comments from Lua source files",
+}
+
+
+require "std"
+
+-- TODO: Wrap paragraphs, stopping at in/outdents
+
+
+-- Default comment processing rules
+rule = {
+  -- A list of pattern=replacement for string.gsubs
+  replace = {
+    ["  "] = "&nbsp;&nbsp;",
+    ["@module (.*)"] = "<h1>%1</h1>",
+    ["@head (.*)"] = "<h2>%1</h2>",
+    ["@class (.*)"] = "<h2>%1</h2>",
+    ["@method (%S+)%s(.*)"] = "<strong>%1</strong> <em>%2</em>",
+    ["@func (%S+)%s(.*)"] = "<strong>%1</strong> <em>%2</em>",
+    ["@param ([^:]+):"] = "<strong>%1</strong>:",
+    ["@returns"] = "<strong>returns</strong>",
+    ["$"] = "<br>",
+  },
+  header = "<html><head></head><body>",
+  footer = "</body></html>",
+  prePara = "<p>",
+  postPara = "</p><hr>",
+}
+
+
+-- Read non-indented comment blocks from a source file
+function readBlocks ()
+  local patt = "^%-%-+%s?"
+  local block, lines = {n = 0}, 0
+  local line, to
+  repeat
+    repeat
+      line = io.read ("*l")
+      if line == nil then
+        return block
+      end
+      _, to = string.find (line, patt)
+    until to
+    local para = {}
+    repeat
+      lines = lines + 1
+      line = string.sub (line, to + 1)
+      table.insert (para, line)
+      line = io.read ("*l")
+      if line == nil then
+        table.insert (block, para)
+        return block
+      end
+      _, to = string.find (line, patt)
+    until not to
+    table.insert (block, para)
+  until nil
+end
+
+-- Process a file
+function ldoc (name, _)
+  local function writeLineOrNothing (h, s)
+    if s ~= "" then
+      io.writeLine (h, s)
+    end
+  end
+  local block = readBlocks ()
+  local out = io.changeSuffix (".-", suffix, name)
+  for i = 1, table.getn (block) do
+    for j = 1, table.getn (block[i]) do
+      block[i][j] = string.gsubs (block[i][j], rule.replace)
+    end
+  end
+  local h = io.open (out, "w")
+  writeLineOrNothing (h, rule.header)
+  for i = 1, table.getn (block) do
+    writeLineOrNothing (h, rule.prePara)
+    list.map (bind (io.writeLine, h), block[i])
+    writeLineOrNothing (h, rule.postPara)
+  end
+  writeLineOrNothing (h, rule.footer)
+  h:close ()
+end
+
+-- Command-line options
+options = {
+  Option{{"rules", "r"},
+    "comment processing rules [built-in rules]",
+    "Req", "FILE"},
+  Option{{"output", "o"},
+    "output file suffix [.html]",
+    "Req", "FILE"},
+}
+
+-- Main routine
+getopt.processArgs ()
+if table.getn (arg) == 0 and table.empty (getopt.opt) then
+  getopt.dieWithUsage ()
+end
+suffix = getopt.opt.output or "html"
+if getopt.opt.rules then
+  rule = loadfile (getopt.opt.rules)()
+end
+io.processFiles (ldoc)

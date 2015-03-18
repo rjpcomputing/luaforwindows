@@ -1,0 +1,338 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>LOOP: Code Inspector</title>
+	<style type="text/css" media="all"><!--
+		@import "../../loop.css";
+		@import "../../layout1.css";
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">Class Models for Lua</div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="70"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+																																																																															<li><a href="../../index.html", title="">Home</a></li>
+																																																																															<li><a href="../../release/index.html", title="Installation">Install</a></li>
+																																																																															<li><a href="../../manual/index.html", title="User Manual">Manual</a></li>
+																																																																															<li><a href="../index.html", title="Class Library">Library</a>
+																																																																																<div class="outside"><div class="inside"><ul>
+																																																																																	<li><a href="../overview.html#collection", title="Collections">collection</a>
+																																																																																		</li>
+																																																																																		<li><a href="../overview.html#compiler", title="Compiling">compiler</a>
+																																																																																			</li>
+																																																																																			<li><a href="../overview.html#debug", title="Debugging">debug</a>
+																																																																																				</li>
+																																																																																				<li><a href="../overview.html#object", title="Objects">object</a>
+																																																																																					</li>
+																																																																																					<li><a href="../overview.html#serial", title="Serialization">serial</a>
+																																																																																						</li>
+																																																																																						<li><a href="../overview.html#thread", title="Threading">thread</a>
+																																																																																							</li>
+																																																																																						</ul></div></div>
+																																																																																					</li>
+																																																																																					<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+																																																																																					<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+																																																																																				</ul></div></div>
+																																																																																			
+</div>
+
+<div class="content">
+<h1>Code Inspector</h1>
+<h2><code>loop.debug.Inspector</code></h2><br>
+<p>Class of objects that implement a command-line prompt to access the lexical scope of a point in an application.
+The command-line prompt also allows to navigate through active co-rotines and access the lexical scope of the point they are currently executing.
+It is also possible to navigate to inactive functions in order to access the current value of their upvalues.
+This class is useful for implementation of command-line debugging mechanisms.</p>
+
+<p>Each object instance implements an environment that retrieves the value of variables and upvalues of a given point in the code.
+The method <code>stop</code> sets up the environment to access the lexical scope of the point it was called.
+The access is provided by an interactive prompt similar to the one provided by the Lua stand-alone interpreter.
+Although it provides additional commands to navigate to different points of the running application like active co-routines.</p>
+
+<h2>Behavior</h2>
+
+<h3>Fields</h3>
+
+<dl>
+	
+	<dt><code><b>active</b></code></dt>
+	<dd>
+		Defines if the inspector instance is active or not.
+		If this field evaluates to <code>false</code> then all calls to method <code>stop</code> have no effect.
+		The default value for this field is <code>true</code>.
+	</dd>
+	
+	<dt><code><b>input</b></code></dt>
+	<dd>
+		Defines the object used to read commands inserted through the command prompt.
+		The object must provide the method <code>write</code> like Lua file handlers.
+		The default value for this field is the standard input (<i>i.e.</i> <code>io.stdin</code>).
+	</dd>
+	
+	<dt><code><b>viewer</b></code></dt>
+	<dd>
+		Defines the object used to print out messages of the command prompt.
+		The object must provide the same API of instances of <code><a href="Viewer.html">Viewer</a></code>.
+		The default value for this field is the <code>Viewer</code> class itself.
+	</dd>
+	
+</dl>
+
+<h3>Methods</h3>
+
+<dl>
+	
+	<dt><code><b>allbreaks</b>()</code></dt>
+	<dd>
+		Return an iterator that iterates over all registered break point marks.
+		The iteration variables are the source name pattern and the source code line.
+	</dd>
+	
+	<dt><code><b>removebreak</b>(file, line)</code></dt>
+	<dd>
+		Unregisters the break point marks from line <code>line</code> of all Lua chucks which source name ends with the string <code>file</code>.
+	</dd>
+	
+	<dt><code><b>setbreak</b>(file, line)</code></dt>
+	<dd>
+		Registers a break point mark in line <code>line</code> of all Lua chucks which source name ends with the string <code>file</code>.
+		When the execution of the program reaches a break point mark the inspection console is open in that point.
+	</dd>
+	
+	<dt><code><b>stop</b>([level])</code></dt>
+	<dd>
+		Executes the command-line prompt used to inspect the current executing code.
+		Parameter <code>level</code> defines the stack level of the function to be inspected.
+		Level 1 is the function that called <code>stop</code>, level 2 is the function above, and so on.
+		The command-line prompt executes Lua code as if the code was executed inside the function being inspected.
+		Additionally it also provides the commands described below.
+		As a shortcut, the commands can be invoked without arguments by typing its name only.
+		<dl>
+			<dt><code><b>see</b>(...)</code></dt>
+			<dd>
+				Command that writes the textual representation of all its arguments.
+				This command uses the object in field <code>viewer</code> to generate the textual representations.
+			</dd>
+			<dt><code><b>loc</b>([name, value])</code></dt>
+			<dd>
+				Command used to access the local variables avaliable in the inspected scope.
+				When used with no arguments it writes the textual representation of all local variables avaliable.
+				If first argument is provided it just returns the value of the local variable with name <code>name</code>.
+				If both arguments are provided then it changes the value of the local variable with name <code>name</code> to the value of  <code>value</code>.
+				If there is no local variable with that name <code>name</code> the call has no effect.
+			</dd>
+			<dt><code><b>upv</b>([name, value])</code></dt>
+			<dd>
+				Command used to access the upvalues avaliable in the inspected scope.
+				When used with no arguments it writes the textual representation of all upvalues avaliable.
+				If first argument is provided it just returns the value of the upvalue with name <code>name</code>.
+				If both arguments are provided then it changes the value of the upvalue with name <code>name</code> to the value of  <code>value</code>.
+				If there is no upvalue with that name <code>name</code> the call has no effect.
+			</dd>
+			<dt><code><b>env</b>([name, value])</code></dt>
+			<dd>
+				Command used to access the environment of the inspected scope.
+				When used with no arguments it writes the textual representation of all global variables avaliable.
+				If first argument is provided it just returns the value of the global variable with name <code>name</code>.
+				If both arguments are provided then it changes the value of the global variable with name <code>name</code> to the value of  <code>value</code>.
+				If there is no global variable with that name <code>name</code> a new variable is created with the given value.
+			</dd>
+			<dt><code><b>lua</b>([name, value])</code></dt>
+			<dd>
+				Command used to access the default Lua global environment, <i>i.e.</i> the default value of <code>_G</code>.
+				When used with no arguments it writes the textual representation of the default Lua global state.
+				If first argument is provided it just returns the value of the global variable with name <code>name</code> from the default Lua global environment.
+				If both arguments are provided then it changes the value of the global variable with name <code>name</code> to the value of  <code>value</code> in the default Lua global environment.
+				If there is no global variable in the default Lua global environment with that name <code>name</code> a new variable is created with the given value.
+			</dd>
+			<dt><code><b>goto</b>(where)</code></dt>
+			<dd>
+				Command used to change the inspected scope to the co-routine or function defined by argument <code>where</code>.
+				When nagivating to a function, no local variables are accessible.
+				To access local variables you have to nagivate to a co-routine executing the function and go up in the stack level until reach the desired function.
+				It is not possible to navigate to the main thread.
+			</dd>
+			<dt><code><b>goup</b>()</code></dt>
+			<dd>
+				Command used to change the inspected scope to the function one level up in the stack of the current thread.
+			</dd>
+			<dt><code><b>back</b>()</code></dt>
+			<dd>
+				Command used to go back to the previous inspected scope.
+			</dd>
+			<dt><code><b>hist</b>()</code></dt>
+			<dd>
+				Command that list all the scope changes already performed through the commands <code>goto</code> and <code>goup</code>.
+			</dd>
+			<dt><code><b>curr</b>()</code></dt>
+			<dd>
+				Command that shows the upper levels of the stack of the current inspected environment.
+			</dd>
+			<dt><code><b>done</b>()</code></dt>
+			<dd>
+				Command used to indicate the conclusion of the inspection and continue the execution.
+			</dd>
+			<dt><code><b>step</b>([kind])</code></dt>
+			<dd>
+				Command used to indicate the conclusion of the inspection and re-open the inspection console after execution of one more instruction of the source code.
+				If the parameter <code>kind</code> is <code>"in"</code> and the next instruction of the source code results in a function call then the inspection console is re-open at the first instruction of the called function's source code.
+				Additionally, if the parameter <code>kind</code> is <code>"out"</code> then the rest of the current function is executed and the inspection console is re-open at the first instruction after the current function returned.
+			</dd>
+			<dt><code><b>mkbp</b>(file, line)</code></dt>
+			<dd>
+				Command used to emulate method <code>setbreak</code> in the inspection console.
+			</dd>
+			<dt><code><b>rmbp</b>(file, line)</code></dt>
+			<dd>
+				Command used to emulate method <code>removebreak</code> in the inspection console.
+			</dd>
+			<dt><code><b>lsbp</b>()</code></dt>
+			<dd>
+				Command used to list all the break point marks currently registered.
+			</dd>
+		</dl>
+	</dd>
+	
+</dl>
+
+<h3>Meta-Fields</h3>
+
+<dl>
+	
+	<dt><code><b>__index</b> = function</code></dt>
+	<dd>
+		Retrieves the values of the variables and upvalues accessible through the current inspected scope.
+	</dd>
+	
+	<dt><code><b>__newindex</b> = function</code></dt>
+	<dd>
+		Changes the values of the variables and upvalues accessible through the current inspected scope.
+	</dd>
+	
+</dl>
+
+<h2>Remarks</h2>
+
+<ul>
+	<li>All names of fields and methods provided by the <code>Inspector</code> instance are always binded to their respective values and therefore hide any variables or upvalues with those names.
+	The same is true for the names of the commands provide by the command prompt that are listed in the description of method <code>stop</code>.
+	To access variables or upvalues with those names use commands <code>loc(</code><i>name [, value]</i><code>)</code>, <code>upv(</code><i>name [, value]</i><code>)</code>, <code>env(</code><i>name [, value]</i><code>)</code> and <code>lua(</code><i>name [, value]</i><code>)</code> to access respectively the value of local variables, upvalues global variables of the function's environment, and global variables of the Lua default global environment (<i>i.e.</i> <code>_G</code>).</li>
+</ul>
+
+<h2>Examples</h2>
+
+<h3><a name="DiningPhilo">Dining philosophers problem analyzer</a></h3>
+
+<pre>
+inspector = require("loop.debug.Inspector")()
+
+-- TIPS:
+-- To check the state of all philosophers, type:
+--   io.write("Forks = ") see(forks)
+--   goto(P1) print("--> P1:") loc()
+--   goto(P2) print("--> P2:") loc()
+--   goto(P3) print("--> P3:") loc()
+--
+-- To remove deadlock condition, type:
+--   forks = {true,true,true}
+--   goto(P1) left,right = false,false
+--   goto(P2) left,right = false,false
+--   goto(P3) left,right = false,false
+--
+-- To avoid that philosophers die from starvation, type:
+--   goto(P1) hunger = 0 goto(P2) hunger = 0 goto(P3) hunger = 0
+
+local forks = { true, true, true }
+
+function philo(lfork, rfork)
+  local hunger = 0
+  local left = false
+  local right = false
+  repeat
+    if hunger == 0 then
+      for i=1, math.random(5) do
+        coroutine.yield("thinking")
+        hunger = hunger + 1
+      end
+    else
+      hunger = hunger + 1
+    end
+    if not left then
+      if forks[lfork]
+        then left, forks[lfork] = true, false
+        else coroutine.yield("waiting")
+      end
+    end
+    if not right then
+      if forks[rfork]
+        then right, forks[rfork] = true, false
+        else coroutine.yield("waiting")
+      end
+    end
+    if left and right then
+      while hunger > 0 do
+        coroutine.yield("eating")
+        hunger = hunger - 1
+      end
+      left,  forks[lfork] = false, true
+      right, forks[rfork] = false, true
+    else
+      if hunger > 10 then
+        coroutine.yield("starving")
+      end
+    end
+  until hunger > 10
+  return "dead"
+end
+
+P1 = coroutine.create(philo)
+P2 = coroutine.create(philo)
+P3 = coroutine.create(philo)
+
+local locked = 0
+local failed
+math.randomseed(os.time())
+repeat
+  locked = 0
+  for i, philo in pairs{ P1, P2, P3 } do
+    local ok, msg = coroutine.resume(philo, i, (i+1)%3)
+    print("P"..i, msg)
+    if ok then
+      if msg == "starving" then
+        print("STARVATION", "P"..i)
+        inspector:stop()
+      elseif msg == "waiting" then
+        locked = locked + 1
+      else
+        locked = 0
+      end
+    else
+      failed = true
+    end
+    if locked >= 3 then
+      print("DEADLOCK")
+      inspector:stop()
+    end
+  end
+until failed
+</pre>
+
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

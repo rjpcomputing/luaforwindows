@@ -1,0 +1,73 @@
+#pragma prefix "omg.org"  
+module CosEventComm 
+{ 
+    exception Disconnected{};  
+
+    interface PushConsumer 
+    {
+        void push (in any data) raises(Disconnected);
+        void disconnect_push_consumer(); 
+    }; 
+
+    interface PushSupplier 
+    {
+        void disconnect_push_supplier();
+    }; 
+
+    interface PullSupplier 
+    {
+        any pull () raises(Disconnected);
+        any try_pull (out boolean has_event) raises(Disconnected);
+        void disconnect_pull_supplier(); 
+    }; 
+
+    interface PullConsumer 
+    {
+        void disconnect_pull_consumer();
+    }; 
+}; 
+
+#pragma prefix "omg.org"  
+module CosEventChannelAdmin
+{ 
+    exception AlreadyConnected {}; 
+    exception TypeError {}; 
+
+    interface ProxyPushConsumer: CosEventComm::PushConsumer { 
+        void connect_push_supplier(in CosEventComm::PushSupplier push_supplier)
+            raises(CosEventChannelAdmin::AlreadyConnected); 
+    }; 
+
+    interface ProxyPushSupplier: CosEventComm::PushSupplier { 
+        void connect_push_consumer(in CosEventComm::PushConsumer push_consumer) 
+            raises(CosEventChannelAdmin::AlreadyConnected, CosEventChannelAdmin::TypeError); 
+    }; 
+
+    interface ProxyPullSupplier: CosEventComm::PullSupplier { 
+        void connect_pull_consumer(in CosEventComm::PullConsumer pull_consumer)
+            raises(CosEventChannelAdmin::AlreadyConnected); 
+    }; 
+
+    interface ProxyPullConsumer: CosEventComm::PullConsumer { 
+        void connect_pull_supplier(in CosEventComm::PullSupplier pull_supplier) 
+            raises(CosEventChannelAdmin::AlreadyConnected, CosEventChannelAdmin::TypeError); 
+    }; 
+
+    interface ConsumerAdmin { 
+        ProxyPushSupplier obtain_push_supplier(); 
+        ProxyPullSupplier obtain_pull_supplier(); 
+    }; 
+
+    interface SupplierAdmin { 
+        ProxyPushConsumer obtain_push_consumer(); 
+        ProxyPullConsumer obtain_pull_consumer(); 
+    }; 
+
+    interface EventChannel { 
+        ConsumerAdmin for_consumers(); 
+        SupplierAdmin for_suppliers(); 
+        void destroy(); 
+    }; 
+
+}; 
+

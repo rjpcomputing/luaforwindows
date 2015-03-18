@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>OiL: Internal Architecture</title>
+	<style type="text/css" media="all"><!--
+		@import "../../oil.css";
+		@import "../../layout1.css";
+		;
+	--></style>
+</head>
+
+<body>
+
+<div id="Header">An Object Request Broker in Lua </div>
+<div id="Logo"><img alt="small (1K)" src="../../small.gif" height="49" width="80"></div>
+
+<div id="Menu">
+<div class="outside"><div class="inside"><ul>
+	<li><a href="../../index.html", title="">Home</a></li>
+	<li><a href="../../release/index.html", title="Installation">Install</a></li>
+	<li><a href="../index.html", title="User Manual">Manual</a>
+		<div class="outside"><div class="inside"><ul>
+			<li><a href="../basics/index.html", title="Basic Concepts">Basics</a></li>
+			<li><a href="../corba/index.html", title="CORBA Support">CORBA</a></li>
+			<li><a href="../ludo.html", title="LuDO Support">LuDO</a></li>
+			<li><strong>Arch</strong>
+				<div class="outside"><div class="inside"><ul>
+					<li><a href="layers.html", title="Defining Layers">Layers</a></li>
+					<li><a href="flavors.html", title="Using Flavors">Flavors</a></li>
+					<li><a href="core.html", title="Core Architecture">Core</a></li>
+					<li><a href="rmi.html", title="RMI Architecture">RMI</a></li>
+				</ul></div></div>
+			</li>
+		</ul></div></div>
+	</li>
+	<li><a href="../../about/papers.html", title="Conference Papers">Papers</a></li>
+	<li><a href="../../contact.html", title="Contact People">Contact</a></li>
+	<li><a href="http://luaforge.net/projects/oil/", title="Project at LuaForge">LuaForge</a></li>
+</ul></div></div>
+
+</div>
+
+<div class="content">
+<h1>Internal Architecture</h1>
+<p>OiL is a component-based framework for implementation of ORBs in Lua.
+It is entirely implemented using <a href="http://loop.luaforge.net/manual/components.html">LOOP's component models</a>.
+The OiL framework defines both an abstract component architecture and a set of standard classes that implement the components of this architecture.
+Such classes are implemented using <a href="http://loop.luaforge.net/manual/models.html">LOOP's class models</a>.
+Typically, OiL is extended or customized by changes to this architecture or by the use of new classes in component implementations.</p>
+
+<h2><a name="layers">Architectural Layers</a></h2>
+
+<p>OiL's internal architecture is defined in layers.
+A layer defines a set of components and their connections.
+A <em>complementary layer</em> is a layer that defines connections to components from another layer.
+An <em>extension layer</em> is a layer that redefines components of other layer with new ports, new connections, or new implementations.</p>
+
+<p>In the most basic level, OiL's standard architecture defines two complementary layers: the <a href="core.html#base">core layer</a> and a <a href="rmi.html">RMI layer</a>.
+The core layer defines components that implement the programming model provided by OiL, such as the support for brokers, proxies, servants, etc.
+Yet, the RMI layer defines components that implement the support for some RMI technology, such as CORBA or LuDO.
+Over these base layers some extensions layers are defined to add new features or provide alternative implementations.</p>
+
+<p>OiL's standard distribution provides one core layer (<a href="core.html#base">base</a>) and two extension layers over it that add support for <a href="../basics/threads.html">Cooperative Multithreading</a> (<a href="core.html#cooperative">cooperative</a>) and typed invocations (<a href="core.html#typed">typed</a>).
+Additionally, this distribution also provides two alternative RMI layers (<a href="rmi.html#corba">corba</a> and <a href="rmi.html#ludo">ludo</a>).
+Finally, two extensions layers over the CORBA's RMI layer are provided to add support for invocation interception (<a href="rmi.html#intercepted">intercepted</a>) and marshaling code generation (<a href="rmi.html#gencode">gencode</a>).</p>
+
+<h2>Broker Façade</h2>
+
+<p>Usually, OiL's components are not directly accessed by the application.
+Instead, the services provided by these components are accessed through <em>brokers</em>.
+<a href="../basics/brokers.html">Brokers</a> are objects that encapsulate an entire assembly of components that compose an ORB instance and provide a simple and integrated interface for the services provided.
+Nevertheless, the components encapsulated by brokers are accessible as fields of the broker object, where the name of the field is the name of the component in OiL's architecture.
+See sections <a href="core.html">Core Architecture</a> and <a href="rmi.html">RMI Architecture</a> for an overview of OiL's architecture.
+The component instances used by a broker are provided at its initialization or are created accordingly to the defined flavor.
+For more information about broker initialization and flavors see sections <a href="../basics/brokers.html">Initializing Brokers</a> and <a href="flavors.html">Using Flavors</a>, respectively.</p>
+
+<p>OiL also provides module <code>oil.compat</code>, which is an alternative façade that provides features similar to those provided by brokers.
+In fact, this module implements the interface of previous versions of OiL.</p>
+</div>
+
+<div class="content">
+<p><small><strong>Copyright (C) 2004-2008 Tecgraf, PUC-Rio</strong></small></p>
+<small>This project is currently being maintained by <a href="http://www.tecgraf.puc-rio.br">Tecgraf</a> at <a href="http://www.puc-rio.br">PUC-Rio</a> with grants from <a href="http://www.capes.gov.br">CAPES</a> and <a href="http://www.cnpq.br">CNPq</a>.</small>
+</div>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+free decl_lexer; -- I want to access its alpha symbols table
+decl_builder;
+free decl_parser;
+free decl_elem_parser;
+parse_decl_lib;
+parse_decl_expr;
+parse_decl_file;
+check_src_file;
+decl_dump;
+free clopts_cfg;

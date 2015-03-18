@@ -1,0 +1,1213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Penlight Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Penlight</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/pl.html">pl</a></li>
+  <li><a href="../modules/pl.Date.html">pl.Date</a></li>
+  <li><a href="../modules/pl.List.html">pl.List</a></li>
+  <li><a href="../modules/pl.Map.html">pl.Map</a></li>
+  <li><a href="../modules/pl.MultiMap.html">pl.MultiMap</a></li>
+  <li><a href="../modules/pl.OrderedMap.html">pl.OrderedMap</a></li>
+  <li><a href="../modules/pl.Set.html">pl.Set</a></li>
+  <li><a href="../modules/pl.app.html">pl.app</a></li>
+  <li><a href="../modules/pl.array2d.html">pl.array2d</a></li>
+  <li><a href="../modules/pl.class.html">pl.class</a></li>
+  <li><a href="../modules/pl.comprehension.html">pl.comprehension</a></li>
+  <li><a href="../modules/pl.config.html">pl.config</a></li>
+  <li><a href="../modules/pl.data.html">pl.data</a></li>
+  <li><a href="../modules/pl.dir.html">pl.dir</a></li>
+  <li><a href="../modules/pl.file.html">pl.file</a></li>
+  <li><a href="../modules/pl.func.html">pl.func</a></li>
+  <li><a href="../modules/pl.input.html">pl.input</a></li>
+  <li><a href="../modules/pl.lapp.html">pl.lapp</a></li>
+  <li><a href="../modules/pl.lexer.html">pl.lexer</a></li>
+  <li><a href="../modules/pl.luabalanced.html">pl.luabalanced</a></li>
+  <li><a href="../modules/pl.operator.html">pl.operator</a></li>
+  <li><a href="../modules/pl.path.html">pl.path</a></li>
+  <li><a href="../modules/pl.permute.html">pl.permute</a></li>
+  <li><a href="../modules/pl.pretty.html">pl.pretty</a></li>
+  <li><a href="../modules/pl.seq.html">pl.seq</a></li>
+  <li><a href="../modules/pl.sip.html">pl.sip</a></li>
+  <li><a href="../modules/pl.strict.html">pl.strict</a></li>
+  <li><a href="../modules/pl.stringio.html">pl.stringio</a></li>
+  <li><a href="../modules/pl.stringx.html">pl.stringx</a></li>
+  <li><strong>pl.tablex</strong></li>
+  <li><a href="../modules/pl.template.html">pl.template</a></li>
+  <li><a href="../modules/pl.test.html">pl.test</a></li>
+  <li><a href="../modules/pl.text.html">pl.text</a></li>
+  <li><a href="../modules/pl.utils.html">pl.utils</a></li>
+  <li><a href="../modules/pl.xml.html">pl.xml</a></li>
+</ul>
+<h2>Topics</h2>
+<ul>
+  <li><a href="../topics/01-introduction.md.html">01-introduction.md</a></li>
+  <li><a href="../topics/02-arrays.md.html">02-arrays.md</a></li>
+  <li><a href="../topics/03-strings.md.html">03-strings.md</a></li>
+  <li><a href="../topics/04-paths.md.html">04-paths.md</a></li>
+  <li><a href="../topics/05-dates.md.html">05-dates.md</a></li>
+  <li><a href="../topics/06-data.md.html">06-data.md</a></li>
+  <li><a href="../topics/07-functional.md.html">07-functional.md</a></li>
+  <li><a href="../topics/08-additional.md.html">08-additional.md</a></li>
+  <li><a href="../topics/09-discussion.md.html">09-discussion.md</a></li>
+</ul>
+<h2>Examples</h2>
+<ul>
+  <li><a href="../examples/seesubst.lua.html">seesubst.lua</a></li>
+  <li><a href="../examples/sipscan.lua.html">sipscan.lua</a></li>
+  <li><a href="../examples/symbols.lua.html">symbols.lua</a></li>
+  <li><a href="../examples/test-cmp.lua.html">test-cmp.lua</a></li>
+  <li><a href="../examples/test-data.lua.html">test-data.lua</a></li>
+  <li><a href="../examples/test-listcallbacks.lua.html">test-listcallbacks.lua</a></li>
+  <li><a href="../examples/test-pretty.lua.html">test-pretty.lua</a></li>
+  <li><a href="../examples/test-symbols.lua.html">test-symbols.lua</a></li>
+  <li><a href="../examples/testapp.lua.html">testapp.lua</a></li>
+  <li><a href="../examples/testclone.lua.html">testclone.lua</a></li>
+  <li><a href="../examples/testconfig.lua.html">testconfig.lua</a></li>
+  <li><a href="../examples/testglobal.lua.html">testglobal.lua</a></li>
+  <li><a href="../examples/testinputfields.lua.html">testinputfields.lua</a></li>
+  <li><a href="../examples/testinputfields2.lua.html">testinputfields2.lua</a></li>
+  <li><a href="../examples/testxml.lua.html">testxml.lua</a></li>
+  <li><a href="../examples/which.lua.html">which.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>pl.tablex</code></h1>
+
+<p>Extended operations on Lua tables.</p>
+<p> See <a href="../topics/02-arrays.md.html#Useful_Operations_on_Tables">the Guide</a></p>
+
+<p> Dependencies: <a href="../modules/pl.utils.html#">pl.utils</a> </p>
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#update">update&nbsp;(t1, t2)</a></td>
+	<td class="summary">copy a table into another, in-place.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#size">size&nbsp;(t)</a></td>
+	<td class="summary">total number of elements in this table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#copy">copy&nbsp;(t)</a></td>
+	<td class="summary">make a shallow copy of a table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#deepcopy">deepcopy&nbsp;(t)</a></td>
+	<td class="summary">make a deep copy of a table, recursively copying all the keys and fields.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#deepcompare">deepcompare&nbsp;(t1, t2, ignore_mt, eps)</a></td>
+	<td class="summary">compare two values.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#compare">compare&nbsp;(t1, t2, cmp)</a></td>
+	<td class="summary">compare two arrays using a predicate.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#compare_no_order">compare_no_order&nbsp;(t1, t2, cmp)</a></td>
+	<td class="summary">compare two list-like tables using an optional predicate, without regard for element order.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#find">find&nbsp;(t, val, idx)</a></td>
+	<td class="summary">return the index of a value in a list.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#rfind">rfind&nbsp;(t, val, idx)</a></td>
+	<td class="summary">return the index of a value in a list, searching from the end.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#find_if">find_if&nbsp;(t, cmp, arg)</a></td>
+	<td class="summary">return the index (or key) of a value in a table using a comparison function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#index_by">index_by&nbsp;(tbl, idx)</a></td>
+	<td class="summary">return a list of all values in a table indexed by another list.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map">map&nbsp;(fun, t, ...)</a></td>
+	<td class="summary">apply a function to all values of a table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#imap">imap&nbsp;(fun, t, ...)</a></td>
+	<td class="summary">apply a function to all values of a list.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_named_method">map_named_method&nbsp;(name, t, ...)</a></td>
+	<td class="summary">apply a named method to values from a table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#transform">transform&nbsp;(fun, t, ...)</a></td>
+	<td class="summary">apply a function to all values of a table, in-place.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#range">range&nbsp;(start, finish, step)</a></td>
+	<td class="summary">generate a table of all numbers in a range</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map2">map2&nbsp;(fun, t1, t2, ...)</a></td>
+	<td class="summary">apply a function to values from two tables.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#imap2">imap2&nbsp;(fun, t1, t2, ...)</a></td>
+	<td class="summary">apply a function to values from two arrays.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#reduce">reduce&nbsp;(fun, t)</a></td>
+	<td class="summary">&lsquo;reduce&rsquo; a list using a binary function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#foreach">foreach&nbsp;(t, fun, ...)</a></td>
+	<td class="summary">apply a function to all elements of a table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#foreachi">foreachi&nbsp;(t, fun, ...)</a></td>
+	<td class="summary">apply a function to all elements of a list-like table in order.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mapn">mapn&nbsp;(fun, ..., fun)</a></td>
+	<td class="summary">Apply a function to a number of tables.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pairmap">pairmap&nbsp;(fun, t, ...)</a></td>
+	<td class="summary">call the function with the key and value pairs from a table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#keys">keys&nbsp;(t)</a></td>
+	<td class="summary">return all the keys of a table in arbitrary order.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#values">values&nbsp;(t)</a></td>
+	<td class="summary">return all the values of the table in arbitrary order</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#index_map">index_map&nbsp;(t)</a></td>
+	<td class="summary">create an index map from a list-like table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#makeset">makeset&nbsp;(t)</a></td>
+	<td class="summary">create a set from a list-like table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#merge">merge&nbsp;(t1, t2, dup)</a></td>
+	<td class="summary">combine two tables, either as union or intersection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#difference">difference&nbsp;(s1, s2, symm)</a></td>
+	<td class="summary">a new table which is the difference of two tables.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#count_map">count_map&nbsp;(t, cmp)</a></td>
+	<td class="summary">A table where the key/values are the values and value counts of the table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#filter">filter&nbsp;(t, pred, arg)</a></td>
+	<td class="summary">filter a table&rsquo;s values using a predicate function</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#zip">zip&nbsp;()</a></td>
+	<td class="summary">return a table where each element is a table of the ith values of an arbitrary
+ number of tables.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#icopy">icopy&nbsp;(dest, src, idest, isrc, nsrc)</a></td>
+	<td class="summary">copy an array into another one, resizing the destination if necessary.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#move">move&nbsp;(dest, src, idest, isrc, nsrc)</a></td>
+	<td class="summary">copy an array into another one.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sub">sub&nbsp;(t, first, last)</a></td>
+	<td class="summary">Extract a range from a table, like  &lsquo;string.sub&rsquo;.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#set">set&nbsp;(t, val, i1, i2)</a></td>
+	<td class="summary">set an array range to a value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#new">new&nbsp;(n, val)</a></td>
+	<td class="summary">create a new array of specified size with initial value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#clear">clear&nbsp;(t, istart)</a></td>
+	<td class="summary">clear out the contents of a table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#insertvalues">insertvalues&nbsp;(t, ...)</a></td>
+	<td class="summary">insert values into a table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#removevalues">removevalues&nbsp;(t, i1, i2)</a></td>
+	<td class="summary">remove a range of values from a table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#search">search&nbsp;(t, value, exclude)</a></td>
+	<td class="summary">find a value in a table by recursive search.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "update"></a>
+    <strong>update&nbsp;(t1, t2)</strong>
+    </dt>
+    <dd>
+    copy a table into another, in-place. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t1</em></code>:  destination table</li>
+       <li><code><em>t2</em></code>:  source table</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        first table
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "size"></a>
+    <strong>size&nbsp;(t)</strong>
+    </dt>
+    <dd>
+    total number of elements in this table. 
+ Note that this is distinct from <code>#t</code>, which is the number
+ of values in the array part; this value will always
+ be greater or equal. The difference gives the size of
+ the hash part, for practical purposes.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a table</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        the size
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "copy"></a>
+    <strong>copy&nbsp;(t)</strong>
+    </dt>
+    <dd>
+    make a shallow copy of a table 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  source table</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        new table
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "deepcopy"></a>
+    <strong>deepcopy&nbsp;(t)</strong>
+    </dt>
+    <dd>
+    make a deep copy of a table, recursively copying all the keys and fields. 
+ This will also set the copied table&rsquo;s metatable to that of the original.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  A table</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        new table
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "deepcompare"></a>
+    <strong>deepcompare&nbsp;(t1, t2, ignore_mt, eps)</strong>
+    </dt>
+    <dd>
+    compare two values. 
+ if they are tables, then compare their keys and fields recursively.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t1</em></code>:  A value</li>
+       <li><code><em>t2</em></code>:  A value</li>
+       <li><code><em>ignore_mt</em></code>:  if true, ignore __eq metamethod (default false)</li>
+       <li><code><em>eps</em></code>:  if defined, then used for any number comparisons</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        true or false
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "compare"></a>
+    <strong>compare&nbsp;(t1, t2, cmp)</strong>
+    </dt>
+    <dd>
+    compare two arrays using a predicate. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t1</em></code>:  an array</li>
+       <li><code><em>t2</em></code>:  an array</li>
+       <li><code><em>cmp</em></code>:  A comparison function</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "compare_no_order"></a>
+    <strong>compare_no_order&nbsp;(t1, t2, cmp)</strong>
+    </dt>
+    <dd>
+    compare two list-like tables using an optional predicate, without regard for element order. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t1</em></code>:  a list-like table</li>
+       <li><code><em>t2</em></code>:  a list-like table</li>
+       <li><code><em>cmp</em></code>:  A comparison function (may be nil)</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "find"></a>
+    <strong>find&nbsp;(t, val, idx)</strong>
+    </dt>
+    <dd>
+    return the index of a value in a list. 
+ Like string.find, there is an optional index to start searching,
+ which can be negative.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  A list-like table (i.e. with numerical indices)</li>
+       <li><code><em>val</em></code>:  A value</li>
+       <li><code><em>idx</em></code>:  index to start; -1 means last element,etc (default 1)</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">find({10,20,30},20) == 2</pre></li>
+        <li><pre class="example">find({'a','b','a','c'},'a',2) == 3</pre></li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        index of value or nil if not found
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "rfind"></a>
+    <strong>rfind&nbsp;(t, val, idx)</strong>
+    </dt>
+    <dd>
+    return the index of a value in a list, searching from the end. 
+ Like string.find, there is an optional index to start searching,
+ which can be negative.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  A list-like table (i.e. with numerical indices)</li>
+       <li><code><em>val</em></code>:  A value</li>
+       <li><code><em>idx</em></code>:  index to start; -1 means last element,etc (default 1)</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">rfind({10,10,10},10) == 3</pre>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        index of value or nil if not found
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "find_if"></a>
+    <strong>find_if&nbsp;(t, cmp, arg)</strong>
+    </dt>
+    <dd>
+    return the index (or key) of a value in a table using a comparison function. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  A table</li>
+       <li><code><em>cmp</em></code>:  A comparison function</li>
+       <li><code><em>arg</em></code>:  an optional second argument to the function</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>index of value, or nil if not found</li>
+        <li>value returned by comparison function</li>
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "index_by"></a>
+    <strong>index_by&nbsp;(tbl, idx)</strong>
+    </dt>
+    <dd>
+    return a list of all values in a table indexed by another list. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>tbl</em></code>:  a table</li>
+       <li><code><em>idx</em></code>:  an index table (a list of keys)</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">index_by({10,20,30,40},{2,4}) == {20,40}</pre></li>
+        <li><pre class="example">index_by({one=1,two=2,three=3},{'one','three'}) == {1,3}</pre></li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        a list-like table
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "map"></a>
+    <strong>map&nbsp;(fun, t, ...)</strong>
+    </dt>
+    <dd>
+    apply a function to all values of a table. 
+ This returns a table of the results.
+ Any extra arguments are passed to the function.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>fun</em></code>:  A function that takes at least one argument</li>
+       <li><code><em>t</em></code>:  A table</li>
+       <li><code><em>...</em></code>:  optional arguments</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">map(function(v) return v*v end, {10,20,30,fred=2}) is {100,400,900,fred=4}</pre>
+    </ul>
+
+
+
+</dd>
+    <dt>
+    <a name = "imap"></a>
+    <strong>imap&nbsp;(fun, t, ...)</strong>
+    </dt>
+    <dd>
+    apply a function to all values of a list. 
+ This returns a table of the results.
+ Any extra arguments are passed to the function.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>fun</em></code>:  A function that takes at least one argument</li>
+       <li><code><em>t</em></code>:  a table (applies to array part)</li>
+       <li><code><em>...</em></code>:  optional arguments</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">imap(function(v) return v*v end, {10,20,30,fred=2}) is {100,400,900}</pre>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        a list-like table
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "map_named_method"></a>
+    <strong>map_named_method&nbsp;(name, t, ...)</strong>
+    </dt>
+    <dd>
+    apply a named method to values from a table. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>name</em></code>:  the method name</li>
+       <li><code><em>t</em></code>:  a list-like table</li>
+       <li><code><em>...</em></code>:  any extra arguments to the method</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "transform"></a>
+    <strong>transform&nbsp;(fun, t, ...)</strong>
+    </dt>
+    <dd>
+    apply a function to all values of a table, in-place. 
+ Any extra arguments are passed to the function.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>fun</em></code>:  A function that takes at least one argument</li>
+       <li><code><em>t</em></code>:  a table</li>
+       <li><code><em>...</em></code>:  extra arguments</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "range"></a>
+    <strong>range&nbsp;(start, finish, step)</strong>
+    </dt>
+    <dd>
+    generate a table of all numbers in a range 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>start</em></code>:   number</li>
+       <li><code><em>finish</em></code>:  number</li>
+       <li><code><em>step</em></code>:  optional increment (default 1 for increasing, -1 for decreasing)</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map2"></a>
+    <strong>map2&nbsp;(fun, t1, t2, ...)</strong>
+    </dt>
+    <dd>
+    apply a function to values from two tables. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>fun</em></code>:  a function of at least two arguments</li>
+       <li><code><em>t1</em></code>:  a table</li>
+       <li><code><em>t2</em></code>:  a table</li>
+       <li><code><em>...</em></code>:  extra arguments</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">map2('+',{1,2,3,m=4},{10,20,30,m=40}) is {11,22,23,m=44}</pre>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        a table
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "imap2"></a>
+    <strong>imap2&nbsp;(fun, t1, t2, ...)</strong>
+    </dt>
+    <dd>
+    apply a function to values from two arrays. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>fun</em></code>:  a function of at least two arguments</li>
+       <li><code><em>t1</em></code>:  a list-like table</li>
+       <li><code><em>t2</em></code>:  a list-like table</li>
+       <li><code><em>...</em></code>:  extra arguments</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">imap2('+',{1,2,3,m=4},{10,20,30,m=40}) is {11,22,23}</pre>
+    </ul>
+
+
+
+</dd>
+    <dt>
+    <a name = "reduce"></a>
+    <strong>reduce&nbsp;(fun, t)</strong>
+    </dt>
+    <dd>
+    &lsquo;reduce&rsquo; a list using a binary function. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>fun</em></code>:  a function of two arguments</li>
+       <li><code><em>t</em></code>:  a list-like table</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">reduce('+',{1,2,3,4}) == 10</pre>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        the result of the function
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "foreach"></a>
+    <strong>foreach&nbsp;(t, fun, ...)</strong>
+    </dt>
+    <dd>
+    apply a function to all elements of a table. 
+ The arguments to the function will be the value,
+ the key and <i>finally</i> any extra arguments passed to this function.
+ Note that the Lua 5.0 function table.foreach passed the <i>key</i> first.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a table</li>
+       <li><code><em>fun</em></code>:  a function with at least one argument</li>
+       <li><code><em>...</em></code>:  extra arguments</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "foreachi"></a>
+    <strong>foreachi&nbsp;(t, fun, ...)</strong>
+    </dt>
+    <dd>
+    apply a function to all elements of a list-like table in order. 
+ The arguments to the function will be the value,
+ the index and <i>finally</i> any extra arguments passed to this function
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a table</li>
+       <li><code><em>fun</em></code>:  a function with at least one argument</li>
+       <li><code><em>...</em></code>:  optional arguments</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "mapn"></a>
+    <strong>mapn&nbsp;(fun, ..., fun)</strong>
+    </dt>
+    <dd>
+    Apply a function to a number of tables. 
+ A more general version of map
+ The result is a table containing the result of applying that function to the
+ ith value of each table. Length of output list is the minimum length of all the lists
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>fun</em></code>:  A function that takes as many arguments as there are tables</li>
+       <li><code><em>...</em></code>:  n tables</li>
+       <li><code><em>fun</em></code>:  A function that takes as many arguments as there are tables</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">mapn(function(x,y,z) return x+y+z end, {1,2,3},{10,20,30},{100,200,300}) is {111,222,333}</pre></li>
+        <li><pre class="example">mapn(math.max, {1,20,300},{10,2,3},{100,200,100}) is	{100,200,300}</pre></li>
+    </ul>
+
+
+
+</dd>
+    <dt>
+    <a name = "pairmap"></a>
+    <strong>pairmap&nbsp;(fun, t, ...)</strong>
+    </dt>
+    <dd>
+    call the function with the key and value pairs from a table. 
+ The function can return a value and a key (note the order!). If both
+ are not nil, then this pair is inserted into the result. If only value is not nil, then
+ it is appended to the result.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>fun</em></code>:  A function which will be passed each key and value as arguments, plus any extra arguments to pairmap.</li>
+       <li><code><em>t</em></code>:  A table</li>
+       <li><code><em>...</em></code>:  optional arguments</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">pairmap({fred=10,bonzo=20},function(k,v) return v end) is {10,20}</pre></li>
+        <li><pre class="example">pairmap({one=1,two=2},function(k,v) return {k,v},k end) is {one={'one',1},two={'two',2}}</pre></li>
+    </ul>
+
+
+
+</dd>
+    <dt>
+    <a name = "keys"></a>
+    <strong>keys&nbsp;(t)</strong>
+    </dt>
+    <dd>
+    return all the keys of a table in arbitrary order. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  A table</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "values"></a>
+    <strong>values&nbsp;(t)</strong>
+    </dt>
+    <dd>
+    return all the values of the table in arbitrary order 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  A table</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "index_map"></a>
+    <strong>index_map&nbsp;(t)</strong>
+    </dt>
+    <dd>
+    create an index map from a list-like table.  The original values become keys,
+ and the associated values are the indices into the original list.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a list-like table</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        a map-like table
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "makeset"></a>
+    <strong>makeset&nbsp;(t)</strong>
+    </dt>
+    <dd>
+    create a set from a list-like table.  A set is a table where the original values
+ become keys, and the associated values are all true.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a list-like table</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        a set (a map-like table)
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "merge"></a>
+    <strong>merge&nbsp;(t1, t2, dup)</strong>
+    </dt>
+    <dd>
+    combine two tables, either as union or intersection.  Corresponds to
+ set operations for sets () but more general. Not particularly
+ useful for list-like tables.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t1</em></code>:  a table</li>
+       <li><code><em>t2</em></code>:  a table</li>
+       <li><code><em>dup</em></code>:  true for a union, false for an intersection.</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">merge({alice=23,fred=34},{bob=25,fred=34}) is {fred=34}</pre></li>
+        <li><pre class="example">merge({alice=23,fred=34},{bob=25,fred=34},true) is {bob=25,fred=34,alice=23}</pre></li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/pl.tablex.html#index_map">tablex.index_map</a>
+    </ul>
+</dd>
+    <dt>
+    <a name = "difference"></a>
+    <strong>difference&nbsp;(s1, s2, symm)</strong>
+    </dt>
+    <dd>
+    a new table which is the difference of two tables. 
+ With sets (where the values are all true) this is set difference and
+ symmetric difference depending on the third parameter.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>s1</em></code>:  a map-like table or set</li>
+       <li><code><em>s2</em></code>:  a map-like table or set</li>
+       <li><code><em>symm</em></code>:  symmetric difference (default false)</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        a map-like table or set
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "count_map"></a>
+    <strong>count_map&nbsp;(t, cmp)</strong>
+    </dt>
+    <dd>
+    A table where the key/values are the values and value counts of the table. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a list-like table</li>
+       <li><code><em>cmp</em></code>:  a function that defines equality (otherwise uses ==)</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        a map-like table
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/pl.seq.html#count_map">seq.count_map</a>
+    </ul>
+</dd>
+    <dt>
+    <a name = "filter"></a>
+    <strong>filter&nbsp;(t, pred, arg)</strong>
+    </dt>
+    <dd>
+    filter a table&rsquo;s values using a predicate function 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a list-like table</li>
+       <li><code><em>pred</em></code>:  a boolean function</li>
+       <li><code><em>arg</em></code>:  optional argument to be passed as second argument of the predicate</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "zip"></a>
+    <strong>zip&nbsp;()</strong>
+    </dt>
+    <dd>
+    return a table where each element is a table of the ith values of an arbitrary
+ number of tables.  It is equivalent to a matrix transpose.
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">zip({10,20,30},{100,200,300}) is {{10,100},{20,200},{30,300}}</pre>
+    </ul>
+
+
+
+</dd>
+    <dt>
+    <a name = "icopy"></a>
+    <strong>icopy&nbsp;(dest, src, idest, isrc, nsrc)</strong>
+    </dt>
+    <dd>
+    copy an array into another one, resizing the destination if necessary.  <br>
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>dest</em></code>:  a list-like table</li>
+       <li><code><em>src</em></code>:  a list-like table</li>
+       <li><code><em>idest</em></code>:  where to start copying values from source (default 1)</li>
+       <li><code><em>isrc</em></code>:  where to start copying values into destination (default 1)</li>
+       <li><code><em>nsrc</em></code>:  number of elements to copy from source (default source size)</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "move"></a>
+    <strong>move&nbsp;(dest, src, idest, isrc, nsrc)</strong>
+    </dt>
+    <dd>
+    copy an array into another one.  <br>
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>dest</em></code>:  a list-like table</li>
+       <li><code><em>src</em></code>:  a list-like table</li>
+       <li><code><em>idest</em></code>:  where to start copying values from source (default 1)</li>
+       <li><code><em>isrc</em></code>:  where to start copying values into destination (default 1)</li>
+       <li><code><em>nsrc</em></code>:  number of elements to copy from source (default source size)</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sub"></a>
+    <strong>sub&nbsp;(t, first, last)</strong>
+    </dt>
+    <dd>
+    Extract a range from a table, like  &lsquo;string.sub&rsquo;. 
+ If first or last are negative then they are relative to the end of the list
+ eg. sub(t,-2) gives last 2 entries in a list, and
+ sub(t,-4,-2) gives from -4th to -2nd
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a list-like table</li>
+       <li><code><em>first</em></code>:  An index</li>
+       <li><code><em>last</em></code>:  An index</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        a new List
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "set"></a>
+    <strong>set&nbsp;(t, val, i1, i2)</strong>
+    </dt>
+    <dd>
+    set an array range to a value.  If it&rsquo;s a function we use the result
+ of applying it to the indices.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a list-like table</li>
+       <li><code><em>val</em></code>:  a value</li>
+       <li><code><em>i1</em></code>:  start range (default 1)</li>
+       <li><code><em>i2</em></code>:  end range (default table size)</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "new"></a>
+    <strong>new&nbsp;(n, val)</strong>
+    </dt>
+    <dd>
+    create a new array of specified size with initial value. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>n</em></code>:  size</li>
+       <li><code><em>val</em></code>:  initial value (can be nil, but don&rsquo;t expect # to work!)</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        the table
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "clear"></a>
+    <strong>clear&nbsp;(t, istart)</strong>
+    </dt>
+    <dd>
+    clear out the contents of a table. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a table</li>
+       <li><code><em>istart</em></code>:  optional start position</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "insertvalues"></a>
+    <strong>insertvalues&nbsp;(t, ...)</strong>
+    </dt>
+    <dd>
+    insert values into a table.  <br>
+ insertvalues(t, [pos,] values) <br>
+ similar to table.insert but inserts values from given table &ldquo;values&rdquo;,
+ not the object itself, into table &ldquo;t&rdquo; at position &ldquo;pos&rdquo;.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>: 
+</li>
+       <li><code><em>...</em></code>: 
+</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "removevalues"></a>
+    <strong>removevalues&nbsp;(t, i1, i2)</strong>
+    </dt>
+    <dd>
+    remove a range of values from a table. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  a list-like table</li>
+       <li><code><em>i1</em></code>:  start index</li>
+       <li><code><em>i2</em></code>:  end index</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        the table
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "search"></a>
+    <strong>search&nbsp;(t, value, exclude)</strong>
+    </dt>
+    <dd>
+    find a value in a table by recursive search. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>t</em></code>:  the table</li>
+       <li><code><em>value</em></code>:  the value</li>
+       <li><code><em>exclude</em></code>:  any tables to avoid searching</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">search(_G,math.sin,{package.path}) == 'math.sin'</pre>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        a fieldspec, e.g. &lsquo;a.b&rsquo; or &lsquo;math.sin&rsquo;
+    </ol>
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

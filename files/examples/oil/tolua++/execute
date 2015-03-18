@@ -1,0 +1,21 @@
+#!/bin/sh
+
+LUA=lua
+
+echo "Building demo ..."
+make
+
+echo "Starting server"
+./servant &
+pid=$!
+trap "kill $pid > /dev/null 2> /dev/null" 0
+
+echo "Starting client ..."
+cd ../hello
+for((i=0;i<10;++i));do if test -r hello.ref;then break;else sleep 1;fi;done
+$LUA client.lua
+
+echo "Demo finished."
+rm -f hello.ref
+cd ../tolua++
+make clean
