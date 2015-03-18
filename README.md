@@ -7,11 +7,11 @@ Lua for Windows (LfW) combines Lua binaries, Lua libraries with a Lua-capable ed
 
 ## Download ##
 
-Download Lua\_V5.1.4-46.exe from [Google Code](http://code.google.com/p/luaforwindows/downloads/list)
+Download Lua\_V5.1.4-47.exe from [GitHub](http://github.com/rjpcomputing/luaforwindows/releases)
 
 ## Install Notes ##
 
-Lua for Windows installs Lua language, SciTE based Lua IDE and Lua modules to the directory of you choice at install time. Lua for Windows and it's modules all depend on the MSVC++ 2005 runtime library. Lua for Windows install will automatically download this runtime and install it for you if you don't have runtime installed on your computer. The runtime is contained in the file [vcredist\_x86.exe](http://luaforwindows.googlecode.com/files/vcredist_x86.exe), if you don't want this download to occur at installation then place the [vcredist\_86.exe](http://luaforwindows.googlecode.com/files/vcredist_x86.exe) in same directory as Lua for Windows install exe.
+Lua for Windows installs Lua language, SciTE based Lua IDE and Lua modules to the directory of you choice at install time. Lua for Windows and it's modules all depend on the MSVC++ 2005 runtime library. Lua for Windows install will automatically download this runtime and install it for you if you don't have runtime installed on your computer. The runtime is contained in the file [vcredist\_x86.exe](http://github.com/rjpcomputing/luaforwindows/releases/download/vc-runtime/vcredist_x86.4053.exe), if you don't want this download to occur at installation then place the [vcredist\_86.exe](http://github.com/rjpcomputing/luaforwindows/releases/download/vc-runtime/vcredist_x86.4053.exe) in same directory as Lua for Windows install exe.
 
 
 ## LfW Components ##
@@ -66,7 +66,7 @@ C header files/libraries/etc. for building C module
 |[Lanes](http://luaforge.net/projects/lanes/)|2.0.4|Provides the possibility to run multiple Lua states in parallel.|
 |[MetaLua](http://metalua.luaforge.net/)|0.5-rc1|A complete macro system with full compatibility with Lua 5.1 sources and bytecode: clean, elegant semantics and syntax, amazing expressive power, good performances, near-universal portability.|
 |[LuaGL](http://luagl.wikidot.com/)|1.3|Provides access to all of the OpenGL functionality from Lua 5.x .|
-|[Penlight](http://stevedonovan.github.com/Penlight/)|1.0.3|Common lua code patterns for tables, arrays, strings, paths and directories, data, and functional programming.|
+|[Penlight](http://stevedonovan.github.com/Penlight/)|1.3.2|Common lua code patterns for tables, arrays, strings, paths and directories, data, and functional programming.|
 |[lbase64](http://www.tecgraf.puc-rio.br/~lhf/ftp/lua/)|for Lua 5.1|A base64 library for Lua.|
 |[gzio](http://github.com/jmaygarden/gzio)|0.9.0|The Lua gzip file I/O module emulates the standard I/O module, but operates on compressed gzip format files.|
 |[LuaRS232](http://github.com/ynezz/librs232)|1.0.0| RS232 serial communications library|
@@ -74,7 +74,7 @@ C header files/libraries/etc. for building C module
 |[LuaRocks](http://luarocks.org)|2.0.2|  A deployment and management system for Lua modules.|
 |[Oil](http://oil.luaforge.net)|0.4-beta|  It is a simple, efficient and flexible object request broker written in the Lua language.|
 |[LuaJSON](http://github.com/harningt/luajson)|1.2.2| JSON parser/encoder for Lua Parses JSON using LPEG for speed and flexibility. Depending on parser/encoder options, various values are preserved as best as possible.|
-|[SubLua](https://sourceforge.net/projects/subcpp/)|1.7.4-beta|  Subversion binding.|
+|[SubLua](https://sourceforge.net/projects/subcpp/)|1.8.10|  Subversion binding.|
 
 ## History ##
 
@@ -273,3 +273,9 @@ C header files/libraries/etc. for building C module
   * Updated Penlight to version 1.0.3.
   * Updated LuaUnit to version 2.0.
   * Added SubLua version 1.7.4 - Subversion binding
+
+**5.1.4-47** 18/March/2015 - 33rd release
+  * Updated stdlib to release 28.
+  * Updated Penlight to 1.3.2.
+  * Updated SubLua to 1.8.10.
+  * **WARNING**: Moved all downloads and code hosting to GitHub. Older releases will not function when Google Code is shut down. Make sure to upgrade.
