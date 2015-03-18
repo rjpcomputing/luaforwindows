@@ -7,11 +7,11 @@ Lua for Windows (LfW) combines Lua binaries, Lua libraries with a Lua-capable ed
 
 ## Download ##
 
-Download Lua\_V5.1.4-47.exe from [GitHub]()
+Download Lua\_V5.1.4-47.exe from [GitHub](https://github.com/rjpcomputing/luaforwindows/releases)
 
 ## Install Notes ##
 
-Lua for Windows installs Lua language, SciTE based Lua IDE and Lua modules to the directory of you choice at install time. Lua for Windows and it's modules all depend on the MSVC++ 2005 runtime library. Lua for Windows install will automatically download this runtime and install it for you if you don't have runtime installed on your computer. The runtime is contained in the file [vcredist\_x86.exe](http://luaforwindows.googlecode.com/files/vcredist_x86.exe), if you don't want this download to occur at installation then place the [vcredist\_86.exe](http://luaforwindows.googlecode.com/files/vcredist_x86.exe) in same directory as Lua for Windows install exe.
+Lua for Windows installs Lua language, SciTE based Lua IDE and Lua modules to the directory of you choice at install time. Lua for Windows and it's modules all depend on the MSVC++ 2005 runtime library. Lua for Windows install will automatically download this runtime and install it for you if you don't have runtime installed on your computer. The runtime is contained in the file [vcredist\_x86.exe](https://github.com/rjpcomputing/luaforwindows/releases/download/vc-runtime/vcredist_x86.4053.exe), if you don't want this download to occur at installation then place the [vcredist\_86.exe](https://github.com/rjpcomputing/luaforwindows/releases/download/vc-runtime/vcredist_x86.4053.exe) in same directory as Lua for Windows install exe.
 
 
 ## LfW Components ##
