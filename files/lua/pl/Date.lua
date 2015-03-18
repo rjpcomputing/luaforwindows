@@ -2,7 +2,7 @@
 -- See  @{05-dates.md|the Guide}.
 --
 -- Dependencies: `pl.class`, `pl.stringx`
--- @module pl.Date
+-- @classmod pl.Date
 -- @pragma nostrip
 
 local class = require 'pl.class'
@@ -18,16 +18,18 @@ Date.Format = class()
 -- @param t this can be either
 --
 --   * `nil` or empty - use current date and time
---   * number - seconds since epoch (as returned by @{os.time})
---   * `Date` - copy constructor
+--   * number - seconds since epoch (as returned by `os.time`). Resulting time is UTC
+--   * `Date` - make a copy of this date
 --   * table - table containing year, month, etc as for `os.time`. You may leave out year, month or day,
 -- in which case current values will be used.
---   *three to six numbers: year, month, day, hour, min, sec
+--   * year (will be followed by month, day etc)
 --
+-- @param ...  true if  Universal Coordinated Time, or two to five numbers: month,day,hour,min,sec
 -- @function Date
 function Date:_init(t,...)
     local time
-    if select('#',...) > 2 then
+    local nargs = select('#',...)
+    if nargs > 2 then
         local extra = {...}
         local year = t
         t = {
@@ -39,18 +41,22 @@ function Date:_init(t,...)
             sec = extra[5]
         }
     end
-    if t == nil then
+    if nargs == 1 then
+        self.utc = select(1,...) == true
+    end
+    if t == nil or t == 'utc' then
         time = os_time()
+        self.utc = t == 'utc'
     elseif type(t) == 'number' then
         time = t
-        local next = ...
-        self.interval = next == true or next == 'interval'
+        if self.utc == nil then self.utc = true end
     elseif type(t) == 'table' then
         if getmetatable(t) == Date then -- copy ctor
             time = t.time
+            self.utc = t.utc
         else
-            if not (t.year and t.month and t.year) then
-                local lt = os.date('*t')
+            if not (t.year and t.month) then
+                local lt = os_date('*t')
                 if not t.year and not t.month and not t.day then
                     t.year = lt.year
                     t.month = lt.month
@@ -61,92 +67,102 @@ function Date:_init(t,...)
                     t.day = t.day or 1
                 end
             end
+            t.day = t.day or 1
             time = os_time(t)
         end
+    else
+        error("bad type for Date constructor: "..type(t),2)
     end
     self:set(time)
 end
 
-local tzone_
+--- set the current time of this Date object.
+-- @int t seconds since epoch
+function Date:set(t)
+    self.time = t
+    if self.utc then
+        self.tab = os_date('!*t',t)
+    else
+        self.tab = os_date('*t',t)
+    end
+end
 
 --- get the time zone offset from UTC.
--- @return seconds ahead of UTC
-function Date.tzone ()
-    if not tzone_ then
-        local now = os.time()
-        local utc = os.date('!*t',now)
-        local lcl = os.date('*t',now)
-        local unow = os.time(utc)
-        tzone_ = os.difftime(now,unow)
-        if lcl.isdst then
-            if tzone_ > 0 then
-                tzone_ = tzone_ - 3600
-            else
-                tzone_ = tzone_ + 3600
-            end
+-- @int ts seconds ahead of UTC
+function Date.tzone (ts)
+    if ts == nil then
+        ts = os_time()
+    elseif type(ts) == "table" then
+        if getmetatable(ts) == Date then
+        	ts = ts.time
+        else
+        	ts = Date(ts).time
         end
     end
-    return tzone_
+    local utc = os_date('!*t',ts)
+    local lcl = os_date('*t',ts)
+    lcl.isdst = false
+    return os.difftime(os_time(lcl), os_time(utc))
 end
 
 --- convert this date to UTC.
 function Date:toUTC ()
-    self:add { sec = -Date.tzone() }
+    local ndate = Date(self)
+    if not self.utc then
+        ndate.utc = true
+        ndate:set(ndate.time)
+    end
+    return ndate
 end
 
 --- convert this UTC date to local.
 function Date:toLocal ()
-    self:add { sec = Date.tzone() }
-end
-
---- set the current time of this Date object.
--- @param t seconds since epoch
-function Date:set(t)
-    self.time = t
-    if self.interval then
-        self.tab = os_date('!*t',self.time)
-    else
-        self.tab = os_date('*t',self.time)
+    local ndate = Date(self)
+    if self.utc then
+        ndate.utc = false
+        ndate:set(ndate.time)
+--~         ndate:add { sec = Date.tzone(self) }
     end
+    return ndate
 end
 
 --- set the year.
--- @param y Four-digit year
+-- @int y Four-digit year
 -- @class function
 -- @name Date:year
 
 --- set the month.
--- @param m month
+-- @int m month
 -- @class function
 -- @name Date:month
 
 --- set the day.
--- @param d day
+-- @int d day
 -- @class function
 -- @name Date:day
 
 --- set the hour.
--- @param h hour
+-- @int h hour
 -- @class function
 -- @name Date:hour
 
 --- set the minutes.
--- @param min minutes
+-- @int min minutes
 -- @class function
 -- @name Date:min
 
 --- set the seconds.
--- @param sec seconds
+-- @int sec seconds
 -- @class function
 -- @name Date:sec
 
 --- set the day of year.
 -- @class function
--- @param yday day of year
+-- @int yday day of year
 -- @name Date:yday
 
 --- get the year.
--- @param y Four-digit year
+-- @int y Four-digit year
 -- @class function
 -- @name Date:year
 
@@ -189,32 +205,37 @@ for _,c in ipairs{'year','month','day','hour','min','sec','yday'} do
 end
 
 --- name of day of week.
--- @param full abbreviated if true, full otherwise.
--- @return string name
+-- @bool full abbreviated if true, full otherwise.
+-- @ret string name
 function Date:weekday_name(full)
     return os_date(full and '%A' or '%a',self.time)
 end
 
 --- name of month.
--- @param full abbreviated if true, full otherwise.
--- @return string name
+-- @int full abbreviated if true, full otherwise.
+-- @ret string name
 function Date:month_name(full)
     return os_date(full and '%B' or '%b',self.time)
 end
 
 --- is this day on a weekend?.
 function Date:is_weekend()
-    return self.tab.wday == 0 or self.tab.wday == 6
+    return self.tab.wday == 1 or self.tab.wday == 7
 end
 
 --- add to a date object.
--- @param t a table containing one of the following keys and a value:<br>
--- year,month,day,hour,min,sec
+-- @param t a table containing one of the following keys and a value:
+-- one of `year`,`month`,`day`,`hour`,`min`,`sec`
 -- @return this date
 function Date:add(t)
+    local old_dst = self.tab.isdst
     local key,val = next(t)
     self.tab[key] = self.tab[key] + val
     self:set(os_time(self.tab))
+    if old_dst ~= self.tab.isdst then
+        self.tab.hour = self.tab.hour - (old_dst and 1 or -1)
+        self:set(os_time(self.tab))
+    end
     return self
 end
 
@@ -232,35 +253,32 @@ function Date:last_day()
 end
 
 --- difference between two Date objects.
--- Note: currently the result is a regular @{Date} object,
--- but also has `interval` field set, which means a more
--- appropriate string rep is used.
--- @param other Date object
--- @return a Date object
+-- @tparam Date other Date object
+-- @treturn Date.Interval object
 function Date:diff(other)
     local dt = self.time - other.time
     if dt < 0 then error("date difference is negative!",2) end
-    return Date(dt,true)
+    return Date.Interval(dt)
 end
 
 --- long numerical ISO data format version of this date.
--- If it's an interval then the format is '2 hours 29 sec' etc.
 function Date:__tostring()
-    if not self.interval then
-        return os_date('%Y-%m-%d %H:%M:%S',self.time)
+    local t = os_date('%Y-%m-%dT%H:%M:%S',self.time)
+    if self.utc then
+        return  t .. 'Z'
     else
-        local t, res = self.tab, ''
-        local y,m,d = t.year - 1970, t.month - 1, t.day - 1
-        if y > 0 then res = res .. y .. ' years ' end
-        if m > 0 then res = res .. m .. ' months ' end
-        if d > 0 then res = res .. d .. ' days ' end
-        if y == 0 and m == 0 then
-            local h = t.hour
-            if h > 0 then res = res .. h .. ' hours ' end
-            if t.min > 0 then res = res .. t.min .. ' min ' end
-            if t.sec > 0 then res = res .. t.sec .. ' sec ' end
+        local offs = self:tzone()
+        if offs == 0 then
+            return t .. 'Z'
         end
-        return res
+        local sign = offs > 0 and '+' or '-'
+        local h = math.ceil(offs/3600)
+        local m = (offs % 3600)/60
+        if m == 0 then
+            return t .. ('%s%02d'):format(sign,h)
+        else
+            return t .. ('%s%02d:%02d'):format(sign,h,m)
+        end
     end
 end
 
@@ -269,11 +287,63 @@ function Date:__eq(other)
     return self.time == other.time
 end
 
---- equality between Date objects.
+--- ordering between Date objects.
 function Date:__lt(other)
     return self.time < other.time
 end
 
+--- difference between Date objects.
+-- @function Date:__sub
+Date.__sub = Date.diff
+
+--- add a date and an interval.
+-- @param other either a `Date.Interval` object or a table such as
+-- passed to `Date:add`
+function Date:__add(other)
+    local nd = Date(self)
+    if Date.Interval:class_of(other) then
+        other = {sec=other.time}
+    end
+    nd:add(other)
+    return nd
+end
+
+Date.Interval = class(Date)
+
+---- Date.Interval constructor
+-- @int t an interval in seconds
+-- @function Date.Interval
+function Date.Interval:_init(t)
+    self:set(t)
+end
+
+function Date.Interval:set(t)
+    self.time = t
+    self.tab = os_date('!*t',self.time)
+end
+
+local function ess(n)
+    if n > 1 then return 's '
+    else return ' '
+    end
+end
+
+--- If it's an interval then the format is '2 hours 29 sec' etc.
+function Date.Interval:__tostring()
+    local t, res = self.tab, ''
+    local y,m,d = t.year - 1970, t.month - 1, t.day - 1
+    if y > 0 then res = res .. y .. ' year'..ess(y) end
+    if m > 0 then res = res .. m .. ' month'..ess(m) end
+    if d > 0 then res = res .. d .. ' day'..ess(d) end
+    if y == 0 and m == 0 then
+        local h = t.hour
+        if h > 0 then res = res .. h .. ' hour'..ess(h) end
+        if t.min > 0 then res = res .. t.min .. ' min ' end
+        if t.sec > 0 then res = res .. t.sec .. ' sec ' end
+    end
+    if res == '' then res = 'zero' end
+    return res
+end
 
 ------------ Date.Format class: parsing and renderinig dates ------------
 
@@ -287,34 +357,37 @@ local formats = {
     S = {'sec',{true,true}},
 }
 
---
-
 --- Date.Format constructor.
--- @param fmt. A string where the following fields are significant: <ul>
--- <li>d day (either d or dd)</li>
--- <li>y year (either yy or yyy)</li>
--- <li>m month (either m or mm)</li>
--- <li>H hour (either H or HH)</li>
--- <li>M minute (either M or MM)</li>
--- <li>S second (either S or SS)</li>
--- </ul>
+-- @string fmt. A string where the following fields are significant:
+--
+--   * d day (either d or dd)
+--   * y year (either yy or yyy)
+--   * m month (either m or mm)
+--   * H hour (either H or HH)
+--   * M minute (either M or MM)
+--   * S second (either S or SS)
+--
 -- Alternatively, if fmt is nil then this returns a flexible date parser
 -- that tries various date/time schemes in turn:
--- <ol>
--- <li> <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>,
---    like 2010-05-10 12:35:23Z or 2008-10-03T14:30+02<li>
--- <li> times like 15:30 or 8.05pm  (assumed to be today's date)</li>
--- <li> dates like 28/10/02 (European order!) or 5 Feb 2012 </li>
--- <li> month name like march or Mar (case-insensitive, first 3 letters);
--- here the day will be 1 and the year this current year </li>
--- </ol>
+--
+--  * [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601), like `2010-05-10 12:35:23Z` or `2008-10-03T14:30+02`
+--  * times like 15:30 or 8.05pm  (assumed to be today's date)
+--  * dates like 28/10/02 (European order!) or 5 Feb 2012
+--  * month name like march or Mar (case-insensitive, first 3 letters); here the
+-- day will be 1 and the year this current year
+--
 -- A date in format 3 can be optionally followed by a time in format 2.
 -- Please see test-date.lua in the tests folder for more examples.
 -- @usage df = Date.Format("yyyy-mm-dd HH:MM:SS")
 -- @class function
 -- @name Date.Format
 function Date.Format:_init(fmt)
-    if not fmt then return end
+    if not fmt then
+        self.fmt = '%Y-%m-%d %H:%M:%S'
+        self.outf = self.fmt
+        self.plain = true
+        return
+    end
     local append = table.insert
     local D,PLUS,OPENP,CLOSEP = '\001','\002','\003','\004'
     local vars,used = {},{}
@@ -324,12 +397,12 @@ function Date.Format:_init(fmt)
         local ch = fmt:sub(i,i)
         local df = formats[ch]
         if df then
-            if used[ch] then error("field appeared twice: "..ch,2) end
+            if used[ch] then error("field appeared twice: "..ch,4) end
             used[ch] = true
             -- this field may be repeated
             local _,inext = fmt:find(ch..'+',i+1)
             local cnt = not _ and 1 or inext-i+1
-            if not df[2][cnt] then error("wrong number of fields: "..ch,2) end
+            if not df[2][cnt] then error("wrong number of fields: "..ch,4) end
             -- single chars mean 'accept more than one digit'
             local p = cnt==1 and (D..PLUS) or (D):rep(cnt)
             append(patt,OPENP..p..CLOSEP)
@@ -347,23 +420,23 @@ function Date.Format:_init(fmt)
         end
     end
     -- escape any magic characters
-    fmt = table.concat(patt):gsub('[%-%.%+%[%]%(%)%$%^%%%?%*]','%%%1')
+    fmt = utils.escape(table.concat(patt))
+   -- fmt = table.concat(patt):gsub('[%-%.%+%[%]%(%)%$%^%%%?%*]','%%%1')
     -- replace markers with their magic equivalents
     fmt = fmt:gsub(D,'%%d'):gsub(PLUS,'+'):gsub(OPENP,'('):gsub(CLOSEP,')')
     self.fmt = fmt
     self.outf = table.concat(outf)
     self.vars = vars
-
 end
 
 local parse_date
 
 --- parse a string into a Date object.
--- @param str a date string
+-- @string str a date string
 -- @return date object
 function Date.Format:parse(str)
     assert_string(1,str)
-    if not self.fmt then
+    if self.plain then
         return parse_date(str,self.us)
     end
     local res = {str:match(self.fmt)}
@@ -375,11 +448,11 @@ function Date.Format:parse(str)
     end
     -- os.date() requires these fields; if not present, we assume
     -- that the time set is for the current day.
-    if not (tab.year and tab.month and tab.year) then
+    if not (tab.year and tab.month and tab.day) then
         local today = Date()
         tab.year = tab.year or today:year()
         tab.month = tab.month or today:month()
-        tab.day = tab.day or today:month()
+        tab.day = tab.day or today:day()
     end
     local Y = tab.year
     if Y < 100 then -- classic Y2K pivot
@@ -387,7 +460,6 @@ function Date.Format:parse(str)
     elseif not Y then
         tab.year = 1970
     end
-    --dump(tab)
     return Date(tab)
 end
 
@@ -396,18 +468,16 @@ end
 -- @return string
 function Date.Format:tostring(d)
     local tm = type(d) == 'number' and d or d.time
-    if self.outf then
-        return os.date(self.outf,tm)
-    else
-        return tostring(Date(d))
-    end
+    return os_date(self.outf,tm)
 end
 
+--- force US order in dates like 9/11/2001
 function Date.Format:US_order(yesno)
     self.us = yesno
 end
 
-local months = {jan=1,feb=2,mar=3,apr=4,may=5,jun=6,jul=7,aug=8,sep=9,oct=10,nov=11,dec=12}
+--local months = {jan=1,feb=2,mar=3,apr=4,may=5,jun=6,jul=7,aug=8,sep=9,oct=10,nov=11,dec=12}
+local months
 
 --[[
 Allowed patterns:
@@ -473,11 +543,25 @@ local function parse_date_unsafe (s,US)
         end
     end
     if p and not year and is_number(p) then -- has to be date
-        day = p
-        nextp()
+        if #p < 4 then
+            day = p
+            nextp()
+        else -- unless it looks like a 24-hour time
+            year = true
+        end
     end
     if p and is_word(p) then
         p = p:sub(1,3)
+        if not months then
+            local ld, day1 = parse_date_unsafe '2000-12-31', {day=1}
+            months = {}
+            for i = 1,12 do
+                ld = ld:last_day()
+                ld:add(day1)
+                local mon = ld:month_name():lower()
+                months [mon] = i
+            end
+        end
         local mon = months[p]
         if mon then
             month = mon
@@ -515,6 +599,7 @@ local function parse_date_unsafe (s,US)
         end
     end
     local today
+    if year == true then year = nil end
     if not (year and month and day) then
         today = Date()
     end
@@ -534,8 +619,9 @@ local function parse_date_unsafe (s,US)
     if tz then -- ISO 8601 UTC time
         res:add {hour = -tz.h}
         if tz.m ~= 0 then res:add {min = -tz.m} end
+        res.utc = true
         -- we're in UTC, so let's go local...
-        res:toLocal()
+        res = res:toLocal()
     end
     return res
 end
@@ -549,7 +635,6 @@ function parse_date (s)
         return d
     end
 end
-
 
 return Date
 

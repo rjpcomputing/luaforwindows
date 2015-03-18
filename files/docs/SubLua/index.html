@@ -1,13 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <head>
-    <title>Reference</title>
-    <link rel="stylesheet" href="luadoc.css" type="text/css" />
-	<!--meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/-->
+    <title>SubLua Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
 </head>
-
 <body>
+
 <div id="container">
 
 <div id="product">
@@ -16,69 +16,1239 @@
 	<div id="product_description"></div>
 </div> <!-- id="product" -->
 
+
 <div id="main">
 
+
+<!-- Menu -->
+
 <div id="navigation">
+<br/>
+<h1>SubLua</h1>
 
 
-<h1>LuaDoc</h1>
+<h2>Contents</h2>
 <ul>
-	
-	<li><strong>Index</strong></li>
-	
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
 </ul>
-
-
-<!-- Module list -->
-
-<h1>Modules</h1>
-<ul>
-
-	<li>
-		<a href="modules/SubLua.html">SubLua</a>
-	</li>
-
-</ul>
-
-
-
-<!-- File list -->
-
-
-
-
-
-
-</div> <!-- id="navigation" -->
-
-<div id="content">
-
 
 
 <h2>Modules</h2>
-<table class="module_list">
-<!--<tr><td colspan="2">Modules</td></tr>-->
+<ul>
+  <li><strong>SubLua</strong></li>
+</ul>
 
+</div>
+
+<div id="content">
+
+<h1>Module <code>SubLua</code></h1>
+
+<p>Lua binding to SubCpp - a C++ Subversion library.</p>
+<p>
+
+</p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local SubLua = require( &quot;SubLua&quot; )
+local svn = SubLua.new( { username = &quot;user&quot;, password = &quot;my_password&quot; } )</pre>
+    </ul>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Release</strong>: 1.00 <04/21/2012></li>
+        <li><strong>License</strong>: MIT/X11</li>
+        <li><strong>Author</strong>: <a href="mailto:rjpcomputing@gmail.com">Ryan P.</a></li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
 	<tr>
-		<td class="name"><a href="modules/SubLua.html">SubLua</a></td>
-		<td class="summary">Lua binding to SubCpp - a C++ Subversion library.</td>
+	<td class="name" nowrap><a href="#new">new&nbsp;(options)</a></td>
+	<td class="summary">Create a new SVN client to work with.</td>
 	</tr>
-
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Cat">SubLua:Cat&nbsp;(path, options)</a></td>
+	<td class="summary">Output the content of specified files or URLs.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Upgrade">SubLua:Upgrade&nbsp;(path)</a></td>
+	<td class="summary">Upgrade the working copy format of the specified path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:GetWorkingCopyFormatVersion">SubLua:GetWorkingCopyFormatVersion&nbsp;(path)</a></td>
+	<td class="summary">Get the format version of the working copy at the specified path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Checkout">SubLua:Checkout&nbsp;(url, path, options)</a></td>
+	<td class="summary">Checks out a working copy from a url to a path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Update">SubLua:Update&nbsp;(path, options)</a></td>
+	<td class="summary">Updates the file or directory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Export">SubLua:Export&nbsp;(srcPath, destPath, options)</a></td>
+	<td class="summary">Create an unversioned copy of a tree.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Get">SubLua:Get&nbsp;(path, destPath, options)</a></td>
+	<td class="summary">Retrieves the contents for a specific <code>revision</code> of a <code>path</code> and saves it to the destination file <code>dstPath</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Add">SubLua:Add&nbsp;(path, options)</a></td>
+	<td class="summary">Schedule a working copy path for addition to the repository.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Import">SubLua:Import&nbsp;(path, url, message, options)</a></td>
+	<td class="summary">Commit an unversioned file or tree into the repository.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:MkDir">SubLua:MkDir&nbsp;(path, message)</a></td>
+	<td class="summary">Create a new directory under version control.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Delete">SubLua:Delete&nbsp;(path, message, options)</a></td>
+	<td class="summary">Remove files and directories from version control.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Revert">SubLua:Revert&nbsp;(path, options)</a></td>
+	<td class="summary">Revert files and directories from version control.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Lock">SubLua:Lock&nbsp;(path, message, options)</a></td>
+	<td class="summary">Locks files and directories.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Unlock">SubLua:Unlock&nbsp;(path, options)</a></td>
+	<td class="summary">Unlocks files and directories.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Commit">SubLua:Commit&nbsp;(path, message, options)</a></td>
+	<td class="summary">Commit files or directories into repository</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:DiffRevisions">SubLua:DiffRevisions&nbsp;(path, startRevision, endRevision, summarizeCallback, options)</a></td>
+	<td class="summary">Display the differences between two revisions of a path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:DiffPaths">SubLua:DiffPaths&nbsp;(path1, path2, summarizeCallback, options)</a></td>
+	<td class="summary">Produce a diff summary which lists the changed items between path1@revision and path2@revision2 without creating text deltas.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Copy">SubLua:Copy&nbsp;(srcPath, srcRevision, destPath)</a></td>
+	<td class="summary">Copies one path to another</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Info">SubLua:Info&nbsp;(path, infoReceiverCallback, options)</a></td>
+	<td class="summary">Return information about pathOrUrl</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:PropGet">SubLua:PropGet&nbsp;(propertyName, path, options)</a></td>
+	<td class="summary">Gets the value of a property on files, dirs, or revisions.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:PropSet">SubLua:PropSet&nbsp;(propName, propValue, path, options)</a></td>
+	<td class="summary">set property in @a path no matter whether local or repository</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SubLua:Cleanup">SubLua:Cleanup&nbsp;(path)</a></td>
+	<td class="summary">Recursively cleans up a local directory, finishing any
+ incomplete operations, removing lockfiles, etc.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ReleaseWorkingCopyLock">ReleaseWorkingCopyLock&nbsp;()</a></td>
+	<td class="summary">Release the lock on the working copy
+ Does nothing and is unnecessary in svn versions 1.6 and below</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Options">Options</a></td>
+	<td class="summary">The Options class.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SvnInfo">SvnInfo</a></td>
+	<td class="summary">The SvnInfo class.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Enums">Enums</a></td>
+	<td class="summary">The Subverison enums.</td>
+	</tr>
 </table>
 
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "new"></a>
+    <strong>new&nbsp;(options)</strong>
+    </dt>
+    <dd>
+    Create a new SVN client to work with.
+ <ul>Available listener callbacks are:<li><code>Notify( path, svn.action, kind, mimeType, contentState, propState, revision )</code></li>
+ <li><code>GetLogin( realm, username, password, maySave )</code></li>
+ <li><code>GetLogMessage()</code> and it should return the log message.</li>
+ <li><strong>Incomplete</strong> may not function <code>Cancel()</code></li></ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">options</span>
+       {table} [OPT] The table can contain key of 'username' for the username, 'password' for the password, 'no_auth_cache' to control if the is saved, and 'listener' which is a table of the listeners you want to overwride.</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        {table} The SubLua object.
+    </ol>
 
 
 
+
+</dd>
+    <dt>
+    <a name = "SubLua:Cat"></a>
+    <strong>SubLua:Cat&nbsp;(path, options)</strong>
+    </dt>
+    <dd>
+    Output the content of specified files or URLs.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string} The path or URL to output.</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: peg, revision</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        {string} String of the contents of <code>@path</code>.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:Upgrade"></a>
+    <strong>SubLua:Upgrade&nbsp;(path)</strong>
+    </dt>
+    <dd>
+    Upgrade the working copy format of the specified path.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string} The path to a working copy to upgrade.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:GetWorkingCopyFormatVersion"></a>
+    <strong>SubLua:GetWorkingCopyFormatVersion&nbsp;(path)</strong>
+    </dt>
+    <dd>
+    Get the format version of the working copy at the specified path.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string} The absolute path to a working copy to get the format for.</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The format version of the working copy specified (eg 29 for Subversion 1.7.13 and 31 for Subversion 1.8.0)
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:Checkout"></a>
+    <strong>SubLua:Checkout&nbsp;(url, path, options)</strong>
+    </dt>
+    <dd>
+    Checks out a working copy from a url to a path.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">url</span>
+       {string} The URL to check out.</li>
+      <li><span class="parameter">path</span>
+       {string} The local path to check out to.</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: peg, revision, depth, ignore_externals, force</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Revision of the checkout.
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="index.html#Options">Options</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:Update"></a>
+    <strong>SubLua:Update&nbsp;(path, options)</strong>
+    </dt>
+    <dd>
+    Updates the file or directory.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string} The path or URL to output.</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: revision, depth, set_depth, ignore_externals, force</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Revision of the checkout.
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="index.html#Options">Options</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:Export"></a>
+    <strong>SubLua:Export&nbsp;(srcPath, destPath, options)</strong>
+    </dt>
+    <dd>
+    Create an unversioned copy of a tree.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">srcPath</span>
+       {string} The source path or URL to export from.</li>
+      <li><span class="parameter">destPath</span>
+       {string} The destination path to export to.</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: peg, revision, force, ignore_externals, depth, native_eol</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Revision of the Export.
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="index.html#Options">Options</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:Get"></a>
+    <strong>SubLua:Get&nbsp;(path, destPath, options)</strong>
+    </dt>
+    <dd>
+    Retrieves the contents for a specific <code>revision</code> of a <code>path</code> and saves it to the destination file <code>dstPath</code>. </p>
+
+<p> If <code>destPath</code> is empty (""), then this path will be constructed from the temporary directory on this system
+ and the filename in <code>path</code>. <code>destPath</code> will still have the file extension from <code>path</code> and uniqueness of the
+ temporary filename will be ensured.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string} path or url</li>
+      <li><span class="parameter">destPath</span>
+       {string} destination path</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: peg, revision</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        {string} the destPath or the temp file path if <code>destPath</code> was an empty string
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="index.html#Options">Options</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:Add"></a>
+    <strong>SubLua:Add&nbsp;(path, options)</strong>
+    </dt>
+    <dd>
+    Schedule a working copy path for addition to the repository.  Adds a file to the repository.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string} The path to add to the working copy. Path's parent must be under revision control already.</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: depth, force, no_ignore, add_parents</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="index.html#Options">Options</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:Import"></a>
+    <strong>SubLua:Import&nbsp;(path, url, message, options)</strong>
+    </dt>
+    <dd>
+    Commit an unversioned file or tree into the repository.  Parent directories are created as necessary in the repository.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string} The path to add to the working copy. Path's parent must be under revision control already.</li>
+      <li><span class="parameter">url</span>
+       {string} The URL to check out.</li>
+      <li><span class="parameter">message</span>
+       {string} [OPT] The commit message.</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: depth, no_ignore, auto_props</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="index.html#Options">Options</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:MkDir"></a>
+    <strong>SubLua:MkDir&nbsp;(path, message)</strong>
+    </dt>
+    <dd>
+    Create a new directory under version control.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string}/{table} The path(s) or URL(s) to output. If it is a local path then the directory is created and
+ scheduled for addition upon the next commit. If it is a URL then the commit is immediate.</li>
+      <li><span class="parameter">message</span>
+       {string} [OPT] Log message as a string.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:Delete"></a>
+    <strong>SubLua:Delete&nbsp;(path, message, options)</strong>
+    </dt>
+    <dd>
+    Remove files and directories from version control.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string}/{table} The path(s) or URL(s) to remove. If it is a local path(s) then the paths are scheduled for
+ deletion upon the next commit. If it is a URL(s) then they are deleted immediatly.</li>
+      <li><span class="parameter">message</span>
+       {string} [OPT] Log message.</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: force, keep_local</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="index.html#Options">Options</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:Revert"></a>
+    <strong>SubLua:Revert&nbsp;(path, options)</strong>
+    </dt>
+    <dd>
+    Revert files and directories from version control.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string}/{table} The path(s) or URL(s) to revert.</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: depth</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="index.html#Options">Options</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:Lock"></a>
+    <strong>SubLua:Lock&nbsp;(path, message, options)</strong>
+    </dt>
+    <dd>
+    Locks files and directories.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string}/{table} The path(s) or URL(s) to lock.</li>
+      <li><span class="parameter">message</span>
+       {string} [OPT] The message for the lock.</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: force</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="index.html#Options">Options</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:Unlock"></a>
+    <strong>SubLua:Unlock&nbsp;(path, options)</strong>
+    </dt>
+    <dd>
+    Unlocks files and directories.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string}/{table} The path(s) or URL(s) to unlock.</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: force</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="index.html#Options">Options</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:Commit"></a>
+    <strong>SubLua:Commit&nbsp;(path, message, options)</strong>
+    </dt>
+    <dd>
+    Commit files or directories into repository
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string}/{table} The path(s) to commit.</li>
+      <li><span class="parameter">message</span>
+       {string} The commit message.</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: depth, keep_locks, keep_changelists</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="index.html#Options">Options</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:DiffRevisions"></a>
+    <strong>SubLua:DiffRevisions&nbsp;(path, startRevision, endRevision, summarizeCallback, options)</strong>
+    </dt>
+    <dd>
+    Display the differences between two revisions of a path.
+ The function may report false positives if <code>notice_ancestry</code> is true, since a file might have been modified between two revisions,
+ but still have the same contents.
+ If <code>summarizeCallback</code> and <code>options.summarize = true</code> then the results passed to the <code>summarizeCallback</code>.
+ If <code>summarizeCallback</code> is not provided, but <code>options.summarize = true</code> then an array of summaryInfo is returned.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string} The path to diff. Can be either a working-copy path or a URL.</li>
+      <li><span class="parameter">startRevision</span>
+       {string}/{number} The start revisions to check.</li>
+      <li><span class="parameter">endRevision</span>
+       {string}/{number} The end revision to check.</li>
+      <li><span class="parameter">summarizeCallback</span>
+
+<p> {function} [OPT] Called for every difference found when .
+ For each invocation it passes <code>summaryInfo</code> table that has keys <code>path</code>, <code>summarize_kind</code>, <code>prop_changed</code>, and <code>node_kind</code>. ??Return true from the summarizeCallback() to have the function continue, if you return false it will stop the operation and throw an error.??
+ <code>summarize_kind</code> available values are found in the Enum section under the <strong>summarize.kind</strong>. <code>node_kind</code> available values are found in the Enums section under <strong>node.kind</strong>
+ The prototype for the callback is</p>
+<pre><code>function SubLua:MyDiffSummarizeReceiver( summaryInfo )
+    print( summaryInfo.path, summaryInfo.summarize_kind, summaryInfo.prop_changed, summaryInfo.node_kind )
+    return true
+end
+</code></pre>
+</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: depth, summarize, peg, notice_ancestry, no_diff_deleted, ignore_content_type</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Normally the differences are returned as a {string} of file differences.
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <li><a href="index.html#Options">Options</a></li>
+         <li><a href="index.html#Enums">Enums</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:DiffPaths"></a>
+    <strong>SubLua:DiffPaths&nbsp;(path1, path2, summarizeCallback, options)</strong>
+    </dt>
+    <dd>
+    Produce a diff summary which lists the changed items between path1@revision and path2@revision2 without creating text deltas.
+ The function may report false positives if <code>notice_ancestry</code> is true, since a file might have been modified between two revisions,
+ but still have the same contents.
+ If <code>summarizeCallback</code> and <code>options.summarize = true</code> then the results passed to the <code>summarizeCallback</code>.
+ If <code>summarizeCallback</code> is not provided, but <code>options.summarize = true</code> then an array of summaryInfo is returned.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path1</span>
+       {string} The first path to diff. Can be either a working-copy path or a URL.</li>
+      <li><span class="parameter">path2</span>
+       {string} The second path to diff. Can be either a working-copy path or a URL.</li>
+      <li><span class="parameter">summarizeCallback</span>
+
+<p> {function} Called for every difference found.
+ For each invocation it passes <code>summaryInfo</code> table that has keys <code>path</code>, <code>summarize_kind</code>, <code>prop_changed</code>, and <code>node_kind</code>. ??Return true from the summarizeCallback() to have the function continue, if you return false it will stop the operation and throw an error.??
+ <code>summarize_kind</code> available values are found in the Enum section under the <strong>summarize.kind</strong>. <code>node_kind</code> available values are found in the Enums section under <strong>node.kind</strong>
+ The prototype for the callback is</p>
+<pre><code>function SubLua:MyDiffSummarizeReceiver( summaryInfo )
+    print( summaryInfo.path, summaryInfo.summarize_kind, summaryInfo.prop_changed, summaryInfo.node_kind )
+    return true
+end
+</code></pre>
+</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: depth, revision, revision2, summarize, peg, notice_ancestry.</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Normally the differences are returned as a {string} of file differences.
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <li><a href="index.html#Options">Options</a></li>
+         <li><a href="index.html#Enums">Enums</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:Copy"></a>
+    <strong>SubLua:Copy&nbsp;(srcPath, srcRevision, destPath)</strong>
+    </dt>
+    <dd>
+    Copies one path to another
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">srcPath</span>
+       {string} The source path to copy from.</li>
+      <li><span class="parameter">srcRevision</span>
+       {string} The source revision to copy from.</li>
+      <li><span class="parameter">destPath</span>
+       {string} The destination path to copy to.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:Info"></a>
+    <strong>SubLua:Info&nbsp;(path, infoReceiverCallback, options)</strong>
+    </dt>
+    <dd>
+    Return information about pathOrUrl
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string}/{table} The path or URL to get the specified information from.</li>
+      <li><span class="parameter">infoReceiverCallback</span>
+
+<p> {function} [OPT] Called everytime a file is found during receiving information. For each invocation it passes <code>path</code> with the information present in <code>info</code>. Return true from the InfoReceiver() to have the function contiue, if you return false it will stop the operation and throw an error.
+ The prototype for the callback is</p>
+<pre><code>function SubLua:MyInfoReceiver( path, info )
+    print( path, info )
+    return true
+end
+</code></pre>
+</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: peg, revision, depth</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <li><a href="index.html#Options">Options</a></li>
+         <li><a href="index.html#SvnInfo">SvnInfo</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:PropGet"></a>
+    <strong>SubLua:PropGet&nbsp;(propertyName, path, options)</strong>
+    </dt>
+    <dd>
+    Gets the value of a property on files, dirs, or revisions.
+ property table. In the property table there are keys of property names to their value, both as strings.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">propertyName</span>
+       {string} The property to get from <i>path<i>.</li>
+      <li><span class="parameter">path</span>
+       {string}/{table} The path or URL to get the specified property from.</li>
+      <li><span class="parameter">options</span>
+       {table} [OPT] Options table. Possible Options: revision, depth</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        {table} Table of properties. The list will contain tables where the keys are the path, and the values are a
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="index.html#Options">Options</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:PropSet"></a>
+    <strong>SubLua:PropSet&nbsp;(propName, propValue, path, options)</strong>
+    </dt>
+    <dd>
+    set property in @a path no matter whether local or repository
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">propName</span>
+       {string} The property name to set.</li>
+      <li><span class="parameter">propValue</span>
+       {string} The value of the property to set</li>
+      <li><span class="parameter">path</span>
+       {string} Path where property to be set</li>
+      <li><span class="parameter">options</span>
+       {table} Options table. Possible Options: depth</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="index.html#Options">Options</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "SubLua:Cleanup"></a>
+    <strong>SubLua:Cleanup&nbsp;(path)</strong>
+    </dt>
+    <dd>
+    Recursively cleans up a local directory, finishing any
+ incomplete operations, removing lockfiles, etc.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+       {string} Path to a local directory.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ReleaseWorkingCopyLock"></a>
+    <strong>ReleaseWorkingCopyLock&nbsp;()</strong>
+    </dt>
+    <dd>
+    Release the lock on the working copy
+ Does nothing and is unnecessary in svn versions 1.6 and below
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Options"></a>
+    <strong>Options</strong>
+    </dt>
+    <dd>
+    The Options class.
+
+    <h3>Fields:</h3>
+    <ul>
+      <li><span class="parameter">revision</span>
+       the revision you want to update to; defaults to "HEAD".</li>
+      <li><span class="parameter">revision2</span>
+       the revision for path2 when finding the differences in paths; defaults to "HEAD".</li>
+      <li><span class="parameter">peg</span>
+       the peg revision you want to update using; defaults to "HEAD".</li>
+      <li><span class="parameter">depth</span>
+       limit operation by depth ARG ('empty', 'files', 'immediates', or 'infinity'); defaults to unknown.</li>
+      <li><span class="parameter">force</span>
+       force operation to run; defaults to false.</li>
+      <li><span class="parameter">ignore_externals</span>
+       set to ignore the externals; defaults to false.</li>
+      <li><span class="parameter">ignore_keywords</span>
+       set to ignore the keyword substitution; defaults to false.</li>
+      <li><span class="parameter">no_ignore</span>
+       set to disregard default and svn:ignore property ignores; defaults to false.</li>
+      <li><span class="parameter">native_eol</span>
+       use a different EOL marker than the standard system marker for files with the svn:eol-style property set to 'native'. ARG may be one of 'LF', 'CR', 'CRLF'; defaults to NULL (no change).</li>
+      <li><span class="parameter">set_depth</span>
+       set new working copy depth to <code>depth</code>. If <code>depth</code> is not specified then this does nothing; defaults to false.</li>
+      <li><span class="parameter">parents</span>
+       If true, create any non-existent parent directories also; defaults to false.</li>
+      <li><span class="parameter">add_parents</span>
+       If true, recurse up path's directory and look for a versioned directory. If found, add all intermediate paths between it and path; defaults to false.</li>
+      <li><span class="parameter">keep_changelists</span>
+       After the commit completes successfully, remove changelist associations from the targets, unless keep_changelists is true; defaults to false.</li>
+      <li><span class="parameter">keep_locks</span>
+       Unlock paths in the repository, unless keep_locks is true; defaults to false.</li>
+      <li><span class="parameter">auto_props</span>
+       Enable automatic properties; defaults to true.</li>
+      <li><span class="parameter">ignore_unknown_node_types</span>
+       Ignore files of which the node type is unknown, such as device files and pipes.; defaults to false.</li>
+      <li><span class="parameter">keep_local</span>
+       if true then the paths will not be removed from the working copy, only scheduled for removal from the repository. Once the scheduled deletion is committed, they will appear as unversioned paths in the working copy; defaults to false.</li>
+      <li><span class="parameter">no_diff_deleting</span>
+       Do not print differences for deleted files; defaults to false.</li>
+      <li><span class="parameter">notice_ancestry</span>
+       Notice ancestry when calculating differences; defaults to false.</li>
+      <li><span class="parameter">ignore_content_type</span>
+       if true, Diff output will be generated for binary files, in which case diffs will be shown regardless of the content types; defaults to false.</li>
+      <li><span class="parameter">summarize</span>
+       if true, during a diff operation only produce a summary which lists the changed items without creating text deltas; defaults to false.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SvnInfo"></a>
+    <strong>SvnInfo</strong>
+    </dt>
+    <dd>
+    The SvnInfo class.
+
+    <h3>Fields:</h3>
+    <ul>
+      <li><span class="parameter">isValid</span>
+       Is it valid?</li>
+      <li><span class="parameter">url</span>
+       The url</li>
+      <li><span class="parameter">revision</span>
+       The revision</li>
+      <li><span class="parameter">kind</span>
+       The kind</li>
+      <li><span class="parameter">rootUrl</span>
+       The root URL</li>
+      <li><span class="parameter">uuid</span>
+       The uuid</li>
+      <li><span class="parameter">lastChangedRevision</span>
+       Last changed revision</li>
+      <li><span class="parameter">lastChangedDate</span>
+       Last changed date</li>
+      <li><span class="parameter">lastChangedAuthor</span>
+       Last changed author</li>
+      <li><span class="parameter">lock</span>
+       Lock</li>
+      <li><span class="parameter">hasWCInfo</span>
+       Has working copy info?</li>
+      <li><span class="parameter">schedule</span>
+       The schedule</li>
+      <li><span class="parameter">copyFromUrl</span>
+       Copy from URL</li>
+      <li><span class="parameter">copyFromRev</span>
+       Copy from revision</li>
+      <li><span class="parameter">textTime</span>
+       Time in text</li>
+      <li><span class="parameter">propTime</span>
+       Properties time</li>
+      <li><span class="parameter">checksum</span>
+       The checksum</li>
+      <li><span class="parameter">conflictOld</span>
+       Conflict old</li>
+      <li><span class="parameter">conflictNew</span>
+       Conflict new</li>
+      <li><span class="parameter">conflictWrk</span>
+       Conflict working</li>
+      <li><span class="parameter">propRejectFile</span>
+       Prop reject file</li>
+      <li><span class="parameter">changelist</span>
+       The changelist</li>
+      <li><span class="parameter">depth</span>
+       Depth</li>
+      <li><span class="parameter">workingSize</span>
+       Working size</li>
+      <li><span class="parameter">size</span>
+       Size</li>
+      <li><span class="parameter">size64</span>
+       Size64</li>
+      <li><span class="parameter">workingSize64</span>
+       Working Size64</li>
+      <li><span class="parameter">treeConflict</span>
+       the TreeConflict</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Enums"></a>
+    <strong>Enums</strong>
+    </dt>
+    <dd>
+    The Subverison enums.  These are part of the SubLua object returned after calling new().
+
+    <h3>Fields:</h3>
+    <ul>
+      <li><span class="parameter">wc.notify.action.add</span>
+       Adding a path to revision control.</li>
+      <li><span class="parameter">wc.notify.action.copy</span>
+       Copying a versioned path.</li>
+      <li><span class="parameter">wc.notify.action.delete</span>
+       Deleting a versioned path.</li>
+      <li><span class="parameter">wc.notify.action.restore</span>
+       Restoring a missing path from the pristine text-base.</li>
+      <li><span class="parameter">wc.notify.action.revert</span>
+       Reverting a modified path.</li>
+      <li><span class="parameter">wc.notify.action.failed_revert</span>
+       A revert operation has failed.</li>
+      <li><span class="parameter">wc.notify.action.resolved</span>
+       Resolving a conflict.</li>
+      <li><span class="parameter">wc.notify.action.skip</span>
+       Skipping a path.</li>
+      <li><span class="parameter">wc.notify.action.update_delete</span>
+       Got a delete in an update.</li>
+      <li><span class="parameter">wc.notify.action.update_add</span>
+       Got an add in an update.</li>
+      <li><span class="parameter">wc.notify.action.update_update</span>
+       Got any other action in an update.</li>
+      <li><span class="parameter">wc.notify.action.update_completed</span>
+       The last notification in an update (including updates of externals).</li>
+      <li><span class="parameter">wc.notify.action.update_external</span>
+       Updating an external module.</li>
+      <li><span class="parameter">wc.notify.action.status_completed</span>
+       The last notification in a status (including status on externals).</li>
+      <li><span class="parameter">wc.notify.action.status_external</span>
+       Running status on an external module.</li>
+      <li><span class="parameter">wc.notify.action.commit_modified</span>
+       Committing a modification.</li>
+      <li><span class="parameter">wc.notify.action.commit_added</span>
+       Committing an addition.</li>
+      <li><span class="parameter">wc.notify.action.commit_deleted</span>
+       Committing a deletion.</li>
+      <li><span class="parameter">wc.notify.action.commit_replaced</span>
+       Committing a replacement.</li>
+      <li><span class="parameter">wc.notify.action.commit_postfix_txdelta</span>
+       Transmitting post-fix text-delta data for a file.</li>
+      <li><span class="parameter">wc.notify.action.blame_revision</span>
+       Processed a single revision's blame.</li>
+      <li><span class="parameter">wc.notify.action.locked</span>
+       Locking a path. New in 1.2.</li>
+      <li><span class="parameter">wc.notify.action.unlocked</span>
+       Unlocking a path. New in 1.2.</li>
+      <li><span class="parameter">wc.notify.action.failed_lock</span>
+       Failed to lock a path. New in 1.2.</li>
+      <li><span class="parameter">wc.notify.action.failed_unlock</span>
+       Failed to unlock a path. New in 1.2.</li>
+      <li><span class="parameter">wc.notify.action.exists</span>
+       Tried adding a path that already exists. New in 1.5.</li>
+      <li><span class="parameter">wc.notify.action.changelist_set</span>
+       Changelist name set. New in 1.5.</li>
+      <li><span class="parameter">wc.notify.action.changelist_clear</span>
+       Changelist name cleared. New in 1.5.</li>
+      <li><span class="parameter">wc.notify.action.changelist_moved</span>
+       Warn user that a path has moved from one changelist to another. New in 1.5. Deprecated: As of 1.7, separate clear and set notifications are sent.</li>
+      <li><span class="parameter">wc.notify.action.merge_begin</span>
+       A merge operation (to path) has begun.</li>
+      <li><span class="parameter">wc.notify.action.foreign_merge_begin</span>
+       A merge operation (to path) from a foreign repository has begun.</li>
+      <li><span class="parameter">wc.notify.action.update_replace</span>
+       Replace notification. New in 1.5.</li>
+      <li><span class="parameter">wc.notify.action.property_added</span>
+       Property added. New in 1.6.</li>
+      <li><span class="parameter">wc.notify.action.property_modified</span>
+       Property updated. New in 1.6.</li>
+      <li><span class="parameter">wc.notify.action.property_deleted</span>
+       Property deleted. New in 1.6.</li>
+      <li><span class="parameter">wc.notify.action.property_deleted_nonexistentNonexistent</span>
+       property deleted. New in 1.6.</li>
+      <li><span class="parameter">wc.notify.action.revprop_set</span>
+       Revprop set. New in 1.6.</li>
+      <li><span class="parameter">wc.notify.action.revprop_deleted</span>
+       Revprop deleted. New in 1.6.</li>
+      <li><span class="parameter">wc.notify.action.merge_completed</span>
+       The last notification in a merge. New in 1.6.</li>
+      <li><span class="parameter">wc.notify.action.tree_conflict</span>
+       The path is a tree-conflict victim of the intended action (<em>not</em> a persistent tree-conflict from an earlier operation, but <em>this</em> operation caused the tree-conflict). New in 1.6.</li>
+      <li><span class="parameter">wc.notify.action.failed_external</span>
+       The path is a subdirectory referenced in an externals definition which is unable to be operated on. New in 1.6.</li>
+      <li><span class="parameter">wc.notify.action.update_started</span>
+       Starting an update operation. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.update_skip_obstruction</span>
+       An update tried to add a file or directory at a path where a separate working copy was found. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.update_skip_working_only</span>
+       An explicit update tried to update a file or directory that doesn't live in the repository and can't be brought in. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.update_skip_access_denied</span>
+       An update tried to update a file or directory to which access could not be obtained. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.update_external_removed</span>
+       An update operation removed an external working copy. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.update_shadowed_add</span>
+       A node below an existing node was added during update. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.update_shadowed_update</span>
+       A node below an exising node was updated during update. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.update_shadowed_delete</span>
+       A node below an existing node was deleted during update. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.merge_record_info</span>
+       The mergeinfo on path was updated. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.upgraded_path</span>
+       An working copy directory was upgraded to the latest format. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.merge_record_info_begin</span>
+       Mergeinfo describing a merge was recorded. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.merge_elide_info</span>
+       Mergeinfo was removed due to elision. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.patch</span>
+       A file in the working copy was patched. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.patch_applied_hunk</span>
+       A hunk from a patch was applied. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.patch_rejected_hunk</span>
+       A hunk from a patch was rejected. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.patch_hunk_already_applied</span>
+       A hunk from a patch was found to already be applied. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.commit_copied</span>
+       Committing a non-overwriting copy (path is the target of the copy, not the source). New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.commit_copied_replaced</span>
+       Committing an overwriting (replace) copy (path is the target of the copy, not the source). New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.url_redirect</span>
+       The server has instructed the client to follow a URL redirection. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.path_nonexistent</span>
+       The operation was attempted on a path which doesn't exist. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.exclude</span>
+       Removing a path by excluding it. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.failed_conflict</span>
+       Operation failed because the node remains in conflict. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.failed_missing</span>
+       Operation failed because an added node is missing. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.failed_out_of_date</span>
+       Operation failed because a node is out of date. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.failed_no_parent</span>
+       Operation failed because an added parent is not selected.  New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.failed_locked</span>
+       Operation failed because a node is locked by another user and/or working copy. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.failed_forbidden_by_server</span>
+       Operation failed because the operation was forbidden by the server. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.action.skip_conflicted</span>
+       The operation skipped the path because it was conflicted. New in 1.7.</li>
+      <li><span class="parameter">wc.notify.state.unknown</span>
+       Notifier doesn't know or isn't saying.</li>
+      <li><span class="parameter">wc.notify.state.unchanged</span>
+       The state did not change.</li>
+      <li><span class="parameter">wc.notify.state.missing</span>
+       The item wasn't present.</li>
+      <li><span class="parameter">wc.notify.state.obstructed</span>
+       An unversioned item obstructed work.</li>
+      <li><span class="parameter">wc.notify.state.changed</span>
+       Pristine state was modified.</li>
+      <li><span class="parameter">wc.notify.state.merged</span>
+       Modified state had mods merged in.</li>
+      <li><span class="parameter">wc.notify.state.conflicted</span>
+       Modified state got conflicting mods.</li>
+      <li><span class="parameter">wc.notify.state.source_missing</span>
+       The source to copy the file from is missing. New in 1.7</li>
+      <li><span class="parameter">wc.schedule.normal</span>
+       Nothing special here.</li>
+      <li><span class="parameter">wc.schedule.add</span>
+       Slated for addition.</li>
+      <li><span class="parameter">wc.schedule.delete</span>
+       Slated for deletion.</li>
+      <li><span class="parameter">wc.schedule.replace</span>
+       Slated for replacement (delete + add)</li>
+      <li><span class="parameter">wc.conflict.action.edit</span>
+       attempting to change text or props.</li>
+      <li><span class="parameter">wc.conflict.action.add</span>
+       attempting to add object.</li>
+      <li><span class="parameter">wc.conflict.action.delete</span>
+       attempting to delete object.</li>
+      <li><span class="parameter">wc.conflict.action.replace</span>
+       attempting to replace object. New in 1.7</li>
+      <li><span class="parameter">wc.conflict.reason.edited</span>
+       Local edits are already present.</li>
+      <li><span class="parameter">wc.conflict.reason.obstructed</span>
+       Another object is in the way.</li>
+      <li><span class="parameter">wc.conflict.reason.deleted</span>
+       Object is already schedule-delete.</li>
+      <li><span class="parameter">wc.conflict.reason.missing</span>
+       Object is unknown or missing.</li>
+      <li><span class="parameter">wc.conflict.reason.unversioned</span>
+       Object is unversioned.</li>
+      <li><span class="parameter">wc.conflict.reason.added</span>
+       Object is already added or schedule-add.</li>
+      <li><span class="parameter">wc.conflict.reason.replaced</span>
+       Object is already replaced. New in 1.7</li>
+      <li><span class="parameter">wc.conflict.kind.text</span>
+       textual conflict (on a file)</li>
+      <li><span class="parameter">wc.conflict.kind.property</span>
+       property conflict (on a file or dir)</li>
+      <li><span class="parameter">wc.conflict.kind.tree</span>
+       tree conflict (on a dir)</li>
+      <li><span class="parameter">wc.operation.none</span>
+       No user operation exposed a conflict.</li>
+      <li><span class="parameter">wc.operation.update</span>
+       User operation 'update' exposed a conflict.</li>
+      <li><span class="parameter">wc.operation.switch</span>
+       User operation 'switch' exposed a conflict.</li>
+      <li><span class="parameter">wc.operation.merge</span>
+       User operation 'merge' exposed a conflict.</li>
+      <li><span class="parameter">node.kind.none</span>
+       Absent node in the Subversion filesystem.</li>
+      <li><span class="parameter">node.kind.file</span>
+       Regular file node in the Subversion filesystem.</li>
+      <li><span class="parameter">node.kind.dir</span>
+       Directory node in the Subversion filesystem.</li>
+      <li><span class="parameter">node.kind.unknown</span>
+       "something's here, but we don't know what" node in the Subversion filesystem.</li>
+      <li><span class="parameter">node.action.change</span>
+       Changed "action" attached to nodes in the dumpfile.</li>
+      <li><span class="parameter">node.action.add</span>
+       Added "action" attached to nodes in the dumpfile.</li>
+      <li><span class="parameter">node.action.delete</span>
+       Deleted "action" attached to nodes in the dumpfile.</li>
+      <li><span class="parameter">node.action.replace</span>
+       Replaced "action" attached to nodes in the dumpfile.</li>
+      <li><span class="parameter">depth.unknown</span>
+       Depth undetermined or ignored. In some contexts, this means the client should choose an appropriate default depth. The server will generally treat it as depth.infinity.</li>
+      <li><span class="parameter">depth.exclude</span>
+       Exclude (i.e., don't descend into) directory D.</li>
+      <li><span class="parameter">depth.empty</span>
+       Just the named directory D, no entries. Updates will not pull in any files or subdirectories not already present.</li>
+      <li><span class="parameter">depth.files</span>
+       D + its file children, but not subdirs. Updates will pull in any files not already present, but not subdirectories.</li>
+      <li><span class="parameter">depth.immediates</span>
+       D + immediate children (D and its entries). Updates will pull in any files or subdirectories not already present; those subdirectories' this_dir entries will have depth-empty.</li>
+      <li><span class="parameter">depth.infinity</span>
+       D + all descendants (full recursion from D). Updates will pull in any files or subdirectories not already present; those subdirectories' this_dir entries will have depth-infinity. Equivalent to the pre-1.5 default update behavior.</li>
+      <li><span class="parameter">recurse.kind.nonrecursive</span>
+       Indicates recursion is NOT needed.</li>
+      <li><span class="parameter">recurse.kind.recursive</span>
+       Indicates recursion is needed.</li>
+      <li><span class="parameter">summarize.kind.normal</span>
+       An item with no text modifications. @see SubLua:DiffRevisions  @see SubLua:DiffPaths</li>
+      <li><span class="parameter">summarize.kind.added</span>
+       An added item. @see SubLua:DiffRevisions  @see SubLua:DiffPaths</li>
+      <li><span class="parameter">summarize.kind.modified</span>
+       An item with text modifications. @see SubLua:DiffRevisions  @see SubLua:DiffPaths</li>
+      <li><span class="parameter">summarize.kind.deleted</span>
+       A deleted item. @see SubLua:DiffRevisions  @see SubLua:DiffPaths</li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
-
 </div> <!-- id="main" -->
-
 <div id="about">
-	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.3</a></i>
 </div> <!-- id="about" -->
-
-</div> <!-- id="container" -->	
+</div> <!-- id="container" -->
 </body>
 </html>

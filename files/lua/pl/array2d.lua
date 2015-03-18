@@ -1,16 +1,16 @@
 --- Operations on two-dimensional arrays.
 -- See @{02-arrays.md.Operations_on_two_dimensional_tables|The Guide}
 --
--- Dependencies: `pl.utils`, `pl.tablex`
+-- Dependencies: `pl.utils`, `pl.tablex`, `pl.types`
 -- @module pl.array2d
 
-local require, type,tonumber,assert,tostring,io,ipairs,string,table =
- _G.require, _G.type,_G.tonumber,_G.assert,_G.tostring,_G.io,_G.ipairs,_G.string,_G.table
+local type,tonumber,assert,tostring,io,ipairs,string,table =
+    _G.type,_G.tonumber,_G.assert,_G.tostring,_G.io,_G.ipairs,_G.string,_G.table
 local setmetatable,getmetatable = setmetatable,getmetatable
 
 local tablex = require 'pl.tablex'
 local utils = require 'pl.utils'
-
+local types = require 'pl.types'
 local imap,tmap,reduce,keys,tmap2,tset,index_by = tablex.imap,tablex.map,tablex.reduce,tablex.keys,tablex.map2,tablex.set,tablex.index_by
 local remove = table.remove
 local splitv,fprintf,assert_arg = utils.splitv,utils.fprintf,utils.assert_arg
@@ -37,16 +37,16 @@ local function index (t,k)
 end
 
 --- return the row and column size.
--- @param t a 2d array
--- @return number of rows
--- @return number of cols
+-- @array2d t a 2d array
+-- @treturn int number of rows
+-- @treturn int number of cols
 function array2d.size (t)
     assert_arg(1,t,'table')
     return #t,#t[1]
 end
 
 --- extract a column from the 2D array.
--- @param a 2d array
+-- @array2d a 2d array
 -- @param key an index or key
 -- @return 1d array
 function array2d.column (a,key)
@@ -56,8 +56,8 @@ end
 local column = array2d.column
 
 --- map a function over a 2D array
--- @param f a function of at least one argument
--- @param a 2d array
+-- @func f a function of at least one argument
+-- @array2d a 2d array
 -- @param arg an optional extra argument to be passed to the function.
 -- @return 2d array
 function array2d.map (f,a,arg)
@@ -67,8 +67,8 @@ function array2d.map (f,a,arg)
 end
 
 --- reduce the rows using a function.
--- @param f a binary function
--- @param a 2d array
+-- @func f a binary function
+-- @array2d a 2d array
 -- @return 1d array
 -- @see pl.tablex.reduce
 function array2d.reduce_rows (f,a)
@@ -77,8 +77,8 @@ function array2d.reduce_rows (f,a)
 end
 
 --- reduce the columns using a function.
--- @param f a binary function
--- @param a 2d array
+-- @func f a binary function
+-- @array2d a 2d array
 -- @return 1d array
 -- @see pl.tablex.reduce
 function array2d.reduce_cols (f,a)
@@ -87,8 +87,8 @@ function array2d.reduce_cols (f,a)
 end
 
 --- reduce a 2D array into a scalar, using two operations.
--- @param opc operation to reduce the final result
--- @param opr operation to reduce the rows
+-- @func opc operation to reduce the final result
+-- @func opr operation to reduce the rows
 -- @param a 2D array
 function array2d.reduce2 (opc,opr,a)
     assert_arg(3,a,'table')
@@ -102,18 +102,17 @@ end
 
 --- map a function over two arrays.
 -- They can be both or either 2D arrays
--- @param f function of at least two arguments
--- @param ad order of first array
--- @param bd order of second array
--- @param a 1d or 2d array
--- @param b 1d or 2d array
+-- @func f function of at least two arguments
+-- @int ad order of first array (1 or 2)
+-- @int bd order of second array (1 or 2)
+-- @tab a 1d or 2d array
+-- @tab b 1d or 2d array
 -- @param arg optional extra argument to pass to function
 -- @return 2D array, unless both arrays are 1D
 function array2d.map2 (f,ad,bd,a,b,arg)
     assert_arg(1,a,'table')
     assert_arg(2,b,'table')
     f = utils.function_arg(1,f)
-    --local ad,bd = dimension(a),dimension(b)
     if ad == 1 and bd == 2 then
         return imap(function(row)
             return tmap2(f,a,row,arg)
@@ -132,9 +131,9 @@ function array2d.map2 (f,ad,bd,a,b,arg)
 end
 
 --- cartesian product of two 1d arrays.
--- @param f a function of 2 arguments
--- @param t1 a 1d table
--- @param t2 a 1d table
+-- @func f a function of 2 arguments
+-- @array t1 a 1d table
+-- @array t2 a 1d table
 -- @return 2d table
 -- @usage product('..',{1,2},{'a','b'}) == {{'1a','2a'},{'1b','2b'}}
 function array2d.product (f,t1,t2)
@@ -150,7 +149,7 @@ end
 
 --- flatten a 2D array.
 -- (this goes over columns first.)
--- @param t 2d table
+-- @array2d t 2d table
 -- @return a 1d table
 -- @usage flatten {{1,2},{3,4},{5,6}} == {1,2,3,4,5,6}
 function array2d.flatten (t)
@@ -166,9 +165,9 @@ function array2d.flatten (t)
 end
 
 --- reshape a 2D array.
--- @param t 2d array
--- @param nrows new number of rows
--- @param co column-order (Fortran-style) (default false)
+-- @array2d t 2d array
+-- @int nrows new number of rows
+-- @bool co column-order (Fortran-style) (default false)
 -- @return a new 2d array
 function array2d.reshape (t,nrows,co)
     local nr,nc = array2d.size(t)
@@ -199,18 +198,18 @@ function array2d.reshape (t,nrows,co)
 end
 
 --- swap two rows of an array.
--- @param t a 2d array
--- @param i1 a row index
--- @param i2 a row index
+-- @array2d t a 2d array
+-- @int i1 a row index
+-- @int i2 a row index
 function array2d.swap_rows (t,i1,i2)
     assert_arg(1,t,'table')
     t[i1],t[i2] = t[i2],t[i1]
 end
 
 --- swap two columns of an array.
--- @param t a 2d array
--- @param j1 a column index
--- @param j2 a column index
+-- @array2d t a 2d array
+-- @int j1 a column index
+-- @int j2 a column index
 function array2d.swap_cols (t,j1,j2)
     assert_arg(1,t,'table')
     for i = 1,#t do
@@ -220,15 +219,15 @@ function array2d.swap_cols (t,j1,j2)
 end
 
 --- extract the specified rows.
--- @param t 2d array
--- @param ridx a table of row indices
+-- @array2d t 2d array
+-- @tparam {int} ridx a table of row indices
 function array2d.extract_rows (t,ridx)
     return obj(t,index_by(t,ridx))
 end
 
 --- extract the specified columns.
--- @param t 2d array
--- @param cidx a table of column indices
+-- @array2d t 2d array
+-- @tparam {int} cidx a table of column indices
 function array2d.extract_cols (t,cidx)
     assert_arg(1,t,'table')
     local res = {}
@@ -239,15 +238,14 @@ function array2d.extract_cols (t,cidx)
 end
 
 --- remove a row from an array.
--- @class function
--- @name array2d.remove_row
--- @param t a 2d array
--- @param i a row index
+-- @function array2d.remove_row
+-- @array2d t a 2d array
+-- @int i a row index
 array2d.remove_row = remove
 
 --- remove a column from an array.
--- @param t a 2d array
--- @param j a column index
+-- @array2d t a 2d array
+-- @int j a column index
 function array2d.remove_col (t,j)
     assert_arg(1,t,'table')
     for i = 1,#t do
@@ -274,11 +272,11 @@ end
 --- parse a spreadsheet range.
 -- The range can be specified either as 'A1:B2' or 'R1C1:R2C2';
 -- a special case is a single element (e.g 'A1' or 'R1C1')
--- @param s a range.
--- @return start col
--- @return start row
--- @return end col
--- @return end row
+-- @string s a range.
+-- @treturn int start col
+-- @treturn int start row
+-- @treturn int end col
+-- @treturn int end row
 function array2d.parse_range (s)
     if s:find ':' then
         local start,finish = splitv(s,':')
@@ -292,8 +290,8 @@ function array2d.parse_range (s)
 end
 
 --- get a slice of a 2D array using spreadsheet range notation. @see parse_range
--- @param t a 2D array
--- @param rstr range expression
+-- @array2d t a 2D array
+-- @string rstr range expression
 -- @return a slice
 -- @see array2d.parse_range
 -- @see array2d.slice
@@ -318,11 +316,11 @@ end
 
 --- get a slice of a 2D array. Note that if the specified range has
 -- a 1D result, the rank of the result will be 1.
--- @param t a 2D array
--- @param i1 start row (default 1)
--- @param j1 start col (default 1)
--- @param i2 end row   (default N)
--- @param j2 end col   (default M)
+-- @array2d t a 2D array
+-- @int i1 start row (default 1)
+-- @int j1 start col (default 1)
+-- @int i2 end row   (default N)
+-- @int j2 end col   (default M)
 -- @return an array, 2D in general but 1D in special cases.
 function array2d.slice (t,i1,j1,i2,j2)
     assert_arg(1,t,'table')
@@ -346,12 +344,12 @@ function array2d.slice (t,i1,j1,i2,j2)
 end
 
 --- set a specified range of an array to a value.
--- @param t a 2D array
+-- @array2d t a 2D array
 -- @param value the value (may be a function)
--- @param i1 start row (default 1)
--- @param j1 start col (default 1)
--- @param i2 end row   (default N)
--- @param j2 end col   (default M)
+-- @int i1 start row (default 1)
+-- @int j1 start col (default 1)
+-- @int i2 end row   (default N)
+-- @int j2 end col   (default M)
 -- @see tablex.set
 function array2d.set (t,value,i1,j1,i2,j2)
     i1,j1,i2,j2 = default_range(t,i1,j1,i2,j2)
@@ -361,13 +359,13 @@ function array2d.set (t,value,i1,j1,i2,j2)
 end
 
 --- write a 2D array to a file.
--- @param t a 2D array
+-- @array2d t a 2D array
 -- @param f a file object (default stdout)
--- @param fmt a format string (default is just to use tostring)
--- @param i1 start row (default 1)
--- @param j1 start col (default 1)
--- @param i2 end row   (default N)
--- @param j2 end col   (default M)
+-- @string fmt a format string (default is just to use tostring)
+-- @int i1 start row (default 1)
+-- @int j1 start col (default 1)
+-- @int i2 end row   (default N)
+-- @int j2 end col   (default M)
 function array2d.write (t,f,fmt,i1,j1,i2,j2)
     assert_arg(1,t,'table')
     f = f or stdout
@@ -384,13 +382,13 @@ function array2d.write (t,f,fmt,i1,j1,i2,j2)
 end
 
 --- perform an operation for all values in a 2D array.
--- @param t 2D array
--- @param row_op function to call on each value
--- @param end_row_op function to call at end of each row
--- @param i1 start row (default 1)
--- @param j1 start col (default 1)
--- @param i2 end row   (default N)
--- @param j2 end col   (default M)
+-- @array2d t 2D array
+-- @func row_op function to call on each value
+-- @func end_row_op function to call at end of each row
+-- @int i1 start row (default 1)
+-- @int j1 start col (default 1)
+-- @int i2 end row   (default N)
+-- @int j2 end col   (default M)
 function array2d.forall (t,row_op,end_row_op,i1,j1,i2,j2)
     assert_arg(1,t,'table')
     i1,j1,i2,j2 = default_range(t,i1,j1,i2,j2)
@@ -406,14 +404,14 @@ end
 local min, max = math.min, math.max
 
 ---- move a block from the destination to the source.
--- @param dest a 2D array
--- @param di start row in dest
--- @param dj start col in dest
--- @param src a 2D array
--- @param i1 start row (default 1)
--- @param j1 start col (default 1)
--- @param i2 end row   (default N)
--- @param j2 end col   (default M)
+-- @array2d dest a 2D array
+-- @int di start row in dest
+-- @int dj start col in dest
+-- @array2d src a 2D array
+-- @int i1 start row (default 1)
+-- @int j1 start col (default 1)
+-- @int i2 end row   (default N)
+-- @int j2 end col   (default M)
 function array2d.move (dest,di,dj,src,i1,j1,i2,j2)
     assert_arg(1,dest,'table')
     assert_arg(4,src,'table')
@@ -431,12 +429,12 @@ function array2d.move (dest,di,dj,src,i1,j1,i2,j2)
 end
 
 --- iterate over all elements in a 2D array, with optional indices.
--- @param a 2D array
--- @param indices with indices (default false)
--- @param i1 start row (default 1)
--- @param j1 start col (default 1)
--- @param i2 end row   (default N)
--- @param j2 end col   (default M)
+-- @array2d a 2D array
+-- @tparam {int} indices with indices (default false)
+-- @int i1 start row (default 1)
+-- @int j1 start col (default 1)
+-- @int i2 end row   (default N)
+-- @int j2 end col   (default M)
 -- @return either value or i,j,value depending on indices
 function array2d.iter (a,indices,i1,j1,i2,j2)
     assert_arg(1,a,'table')
@@ -463,7 +461,7 @@ function array2d.iter (a,indices,i1,j1,i2,j2)
 end
 
 --- iterate over all columns.
--- @param a a 2D array
+-- @array2d a a 2D array
 -- @return each column in turn
 function array2d.columns (a)
     assert_arg(1,a,'table')
@@ -477,13 +475,13 @@ function array2d.columns (a)
 end
 
 --- new array of specified dimensions
--- @param rows number of rows
--- @param cols number of cols
+-- @int rows number of rows
+-- @int cols number of cols
 -- @param val initial value; if it's a function then use `val(i,j)`
 -- @return new 2d array
 function array2d.new(rows,cols,val)
     local res = {}
-    local fun = utils.is_callable(val)
+    local fun = types.is_callable(val)
     for i = 1,rows do
         local row = {}
         if fun then

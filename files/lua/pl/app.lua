@@ -1,14 +1,12 @@
 --- Application support functions.
 -- See @{01-introduction.md.Application_Support|the Guide}
 --
--- Dependencies: `pl.utils`, `pl.path`, `lfs`
+-- Dependencies: `pl.utils`, `pl.path`
 -- @module pl.app
 
 local io,package,require = _G.io, _G.package, _G.require
 local utils = require 'pl.utils'
 local path = require 'pl.path'
-local lfs = require 'lfs'
-
 
 local app = {}
 
@@ -23,12 +21,12 @@ end
 -- `base` allows these modules to be put in a specified subdirectory, to allow for
 -- cleaner deployment and resolve potential conflicts between a script name and its
 -- library directory.
--- @param base optional base directory.
--- @return the current script's path with a trailing slash
+-- @string base optional base directory.
+-- @treturn string the current script's path with a trailing slash
 function app.require_here (base)
     local p = path.dirname(check_script_name())
     if not path.isabs(p) then
-        p = path.join(lfs.currentdir(),p)
+        p = path.join(path.currentdir(),p)
     end
     if p:sub(-1,-1) ~= path.sep then
         p = p..path.sep
@@ -47,7 +45,7 @@ end
 --- return a suitable path for files private to this application.
 -- These will look like '~/.SNAME/file', with '~' as with expanduser and
 -- SNAME is the name of the script without .lua extension.
--- @param file a filename (w/out path)
+-- @string file a filename (w/out path)
 -- @return a full pathname, or nil
 -- @return 'cannot create' error
 function app.appfile (file)
@@ -55,7 +53,7 @@ function app.appfile (file)
     local name,ext = path.splitext(sname)
     local dir = path.join(path.expanduser('~'),'.'..name)
     if not path.isdir(dir) then
-        local ret = lfs.mkdir(dir)
+        local ret = path.mkdir(dir)
         if not ret then return utils.raise ('cannot create '..dir) end
     end
     return path.join(dir,file)
@@ -75,8 +73,8 @@ function app.platform()
     end
 end
 
---- return the full command-line used to invoke this script
--- any extra flags occupy slots, so that 'lua -lpl' gives us {[-2]='lua',[-1]='-lpl')
+--- return the full command-line used to invoke this script.
+-- Any extra flags occupy slots, so that `lua -lpl` gives us `{[-2]='lua',[-1]='-lpl'}`
 -- @return command-line
 -- @return name of Lua program used
 function app.lua ()
@@ -97,12 +95,12 @@ function app.lua ()
 end
 
 --- parse command-line arguments into flags and parameters.
--- Understands GNU-style command-line flags; short (-f) and long (--flag).
--- These may be given a value with either '=' or ':' (-k:2,--alpha=3.2,-n2);
+-- Understands GNU-style command-line flags; short (`-f`) and long (`--flag`).
+-- These may be given a value with either '=' or ':' (`-k:2`,`--alpha=3.2`,`-n2`);
 -- note that a number value can be given without a space.
--- Multiple short args can be combined like so: (-abcd).
--- @param args an array of strings (default is the global 'arg')
--- @param flags_with_values any flags that take values, e.g. <code>{out=true}</code>
+-- Multiple short args can be combined like so: ( `-abcd`).
+-- @tparam {string} args an array of strings (default is the global `arg`)
+-- @tab flags_with_values any flags that take values, e.g. `{out=true}`
 -- @return a table of flags (flag=value pairs)
 -- @return an array of parameters
 -- @raise if args is nil, then the global `args` must be available!
@@ -131,8 +129,8 @@ function app.parse_args (args,flags_with_values)
                 flags[v] = args[i+1]
                 i = i + 1
             else
-                -- a value can be indicated with = or :
-                local var,val =  utils.splitv (v,'[=:]')
+                -- a value can also be indicated with =
+                local var,val =  utils.splitv (v,'=')
                 var = var or v
                 val = val or true
                 if not is_long then

@@ -3,7 +3,7 @@
 -- Derived from `pl.Map`.
 --
 -- Dependencies: `pl.utils`, `pl.tablex`, `pl.List`
--- @module pl.OrderedMap
+-- @classmod pl.OrderedMap
 
 local tablex = require 'pl.tablex'
 local utils = require 'pl.utils'
@@ -16,11 +16,13 @@ local Map = require 'pl.Map'
 local OrderedMap = class(Map)
 OrderedMap._name = 'OrderedMap'
 
+local rawset = rawset
+
 --- construct an OrderedMap.
 -- Will throw an error if the argument is bad.
 -- @param t optional initialization table, same as for @{OrderedMap:update}
 function OrderedMap:_init (t)
-    self._keys = List()
+    rawset(self,'_keys',List())
     if t then
         local map,err = self:update(t)
         if not map then error(err,2) end
@@ -30,10 +32,11 @@ end
 local assert_arg,raise = utils.assert_arg,utils.raise
 
 --- update an OrderedMap using a table.
--- If the table is itself an OrderedMap, then its entries will be appended. <br>
--- if it s a table of the form <code>{{key1=val1},{key2=val2},...}</code> these will be appended. <br>
+-- If the table is itself an OrderedMap, then its entries will be appended. 
+-- if it s a table of the form `{{key1=val1},{key2=val2},...}` these will be appended.
+--
 -- Otherwise, it is assumed to be a map-like table, and order of extra entries is arbitrary.
--- @param t a table.
+-- @tab t a table.
 -- @return the map, or nil in case of error
 -- @return the error message
 function OrderedMap:update (t)
@@ -60,26 +63,34 @@ function OrderedMap:update (t)
    return self
 end
 
---- set the key's value.   This key will be appended at the end of the map. <br>
+--- set the key's value.   This key will be appended at the end of the map.
+--
 -- If the value is nil, then the key is removed.
 -- @param key the key
 -- @param val the value
 -- @return the map
 function OrderedMap:set (key,val)
-    if not self[key] and val ~= nil then -- ensure that keys are unique
-       self._keys:append(key)
-    elseif val == nil then -- removing a key-value pair
-       self._keys:remove_value(key)
+    if self[key] == nil and val ~= nil then -- new key
+       self._keys:append(key) -- we keep in order
+       rawset(self,key,val)  -- don't want to provoke __newindex!
+    else -- existing key-value pair
+        if val == nil then
+            self._keys:remove_value(key)
+            rawset(self,key,nil)
+        else
+            self[key] = val
+        end
     end
-    self[key] = val
     return self
 end
+
+OrderedMap.__newindex = OrderedMap.set
 
 --- insert a key/value pair before a given position.
 -- Note: if the map already contains the key, then this effectively
 -- moves the item to the new position by first removing at the old position.
 -- Has no effect if the key does not exist and val is nil
--- @param pos a position starting at 1
+-- @int pos a position starting at 1
 -- @param key the key
 -- @param val the value; if nil use the old value
 function OrderedMap:insert (pos,key,val)
@@ -90,7 +101,7 @@ function OrderedMap:insert (pos,key,val)
     end
     if val then
         self._keys:insert(pos,key)
-        self[key] = val
+        rawset(self,key,val)
     end
     return self
 end
@@ -110,7 +121,7 @@ function OrderedMap:values ()
 end
 
 --- sort the keys.
--- @param cmp a comparison function as for @{table.sort}
+-- @func cmp a comparison function as for @{table.sort}
 -- @return the map
 function OrderedMap:sort (cmp)
     tsort(self._keys,cmp)
@@ -130,8 +141,13 @@ function OrderedMap:iter ()
     end
 end
 
+--- iterate over an ordered map (5.2).
+-- @within metamethods
+-- @function OrderedMap:__pairs
 OrderedMap.__pairs = OrderedMap.iter
 
+--- string representation of an ordered map.
+-- @within metamethods
 function OrderedMap:__tostring ()
     local res = {}
     for i,v in ipairs(self._keys) do

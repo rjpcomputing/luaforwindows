@@ -12,16 +12,13 @@
 -- See  @{03-strings.md.File_style_I_O_on_Strings|the Guide}.
 -- @module pl.stringio
 
-if not rawget(_G,'loadstring') then -- Lua 5.2 full compatibility
-    unpack = table.unpack
-end
-
-local getmetatable,tostring,unpack,tonumber = getmetatable,tostring,unpack,tonumber
+local unpack = rawget(_G,'unpack') or rawget(table,'unpack')
+local getmetatable,tostring,tonumber = getmetatable,tostring,tonumber
 local concat,append = table.concat,table.insert
 
 local stringio = {}
 
---- Writer class
+-- Writer class
 local SW = {}
 SW.__index = SW
 
@@ -58,7 +55,7 @@ end
 function SW:seek()
 end
 
---- Reader class
+-- Reader class
 local SR = {}
 SR.__index = SR
 
@@ -138,15 +135,18 @@ function SR:close() -- for compatibility only
 end
 
 --- create a file-like object which can be used to construct a string.
--- The resulting object has an extra <code>value()</code> method for
--- retrieving the string value.
+-- The resulting object has an extra `value()` method for
+-- retrieving the string value.  Implements `file:write`, `file:seek`, `file:lines`,
+-- plus an extra `writef` method which works like `utils.printf`.
 -- @usage f = create(); f:write('hello, dolly\n'); print(f:value())
 function stringio.create()
     return setmetatable({tbl={}},SW)
 end
 
 --- create a file-like object for reading from a given string.
--- @param s The input string.
+-- Implements `file:read`.
+-- @string s The input string.
+-- @usage fs = open '20 10'; x,y = f:read ('*n','*n'); assert(x == 20 and y == 10)
 function stringio.open(s)
     return setmetatable({str=s,i=1},SR)
 end

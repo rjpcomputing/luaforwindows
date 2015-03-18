@@ -4,6 +4,8 @@
 --    local total,n = seq.sum(input.numbers())
 --    print('average',total/n)
 --
+-- _source_ is defined as a string or a file-like object (i.e. has a read() method which returns the next line)
+--
 -- See @{06-data.md.Reading_Unstructured_Text_Data|here}
 --
 -- Dependencies: `pl.utils`
@@ -12,22 +14,19 @@ local strfind = string.find
 local strsub = string.sub
 local strmatch = string.match
 local utils = require 'pl.utils'
-local pairs,type,unpack,tonumber = pairs,type,unpack or table.unpack,tonumber
+local unpack = utils.unpack
+local pairs,type,tonumber = pairs,type,tonumber
 local patterns = utils.patterns
 local io = io
 local assert_arg = utils.assert_arg
-
---[[
-module ('pl.input',utils._module)
-]]
 
 local input = {}
 
 --- create an iterator over all tokens.
 -- based on allwords from PiL, 7.1
--- @param getter any function that returns a line of text
--- @param pattern
--- @param fn  Optionally can pass a function to process each token as it/s found.
+-- @func getter any function that returns a line of text
+-- @string pattern
+-- @string[opt] fn  Optionally can pass a function to process each token as it's found.
 -- @return an iterator
 function input.alltokens (getter,pattern,fn)
     local line = getter()  -- current line
@@ -57,23 +56,23 @@ local alltokens = input.alltokens
 -- @param f a string or a file-like object (i.e. has a read() method which returns the next line)
 -- @return a getter function
 function input.create_getter(f)
-  if f then
-    if type(f) == 'string' then
-      local ls = utils.split(f,'\n')
-      local i,n = 0,#ls
-      return function()
-         i = i + 1
-         if i > n then return nil end
-         return ls[i]
-       end
+    if f then
+        if type(f) == 'string' then
+            local ls = utils.split(f,'\n')
+            local i,n = 0,#ls
+            return function()
+                i = i + 1
+                if i > n then return nil end
+                return ls[i]
+            end
+        else
+            -- anything that supports the read() method!
+            if not f.read then error('not a file-like object') end
+            return function() return f:read() end
+        end
     else
-      -- anything that supports the read() method!
-      if not f.read then error('not a file-like object') end
-      return function() return f:read() end
+        return io.read  -- i.e. just read from stdin
     end
-  else
-    return io.read  -- i.e. just read from stdin
-  end
 end
 
 --- generate a sequence of numbers from a source.
@@ -107,9 +106,9 @@ end
 --- parse an input source into fields.
 -- By default, will fail if it cannot convert a field to a number.
 -- @param ids a list of field indices, or a maximum field index
--- @param delim delimiter to parse fields (default space)
+-- @string delim delimiter to parse fields (default space)
 -- @param f a source @see create_getter
--- @param opts option table, {no_fail=true}
+-- @tab opts option table, `{no_fail=true}`
 -- @return an iterator with the field values
 -- @usage for x,y in fields {2,3} do print(x,y) end -- 2nd and 3rd fields from stdin
 function input.fields (ids,delim,f,opts)
