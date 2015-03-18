@@ -273,3 +273,10 @@ C header files/libraries/etc. for building C module
   * Updated Penlight to version 1.0.3.
   * Updated LuaUnit to version 2.0.
   * Added SubLua version 1.7.4 - Subversion binding
+
+**5.1.4-47** 18/March/2015 - 33rd release
+^ Updated stdlib to release 28.
+^ Updated Penlight to 1.3.2.
+* Moved all downloads and code hosting to GitHub. Older
+  releases will not function when Google Code is shut down.
+  Make sure to upgrade.
