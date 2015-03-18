@@ -3,7 +3,7 @@
 ; Author:		Ryan Pusztai <rpusztai@gmail.com>
 ; Date:			05/13/2008
 ; License:
-;	Copyright (C) 2008-2012 Ryan Pusztai.
+;	Copyright (C) 2008-2015 Ryan Pusztai.
 ;
 ;	Permission is hereby granted, free of charge, to any person obtaining a copy
 ;	of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,8 @@
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ; -- General Installer configuration
-#define MyAppVer "5.1.4.46"
-#define MyAppDisplayVer "5.1.4-46"
+#define MyAppVer "5.1.4.47"
+#define MyAppDisplayVer "5.1.4-47"
 #define MyAppName "Lua"
 #define MyAppDisplayName "Lua for Windows"
 #define MyAppPublisher "The Lua for Windows Project and Lua and Tecgraf, PUC-Rio"
@@ -38,7 +38,7 @@
 ;		Comment out the #define DOWNLOAD_FILES if you want to build the
 ;		dependencies into the installer.
 #define DOWNLOAD_FILES
-#define vcRedistURL "http://luaforwindows.googlecode.com/files/vcredist_x86.4053.exe"
+#define vcRedistURL "http://github.com/rjpcomputing/luaforwindows/releases/download/vc-runtime/vcredist_x86.4053.exe"
 
 ; -- Pre-Build Step.
 ;#expr Exec( "create_install_files_pkg.bat", NULL, ".", 1, SW_SHOWMINIMIZED )
@@ -104,35 +104,35 @@ Source: files\luarocks_config.lua; DestDir: {app}; Flags: ignoreversion; Compone
 Source: files\luarocks-admin.lua; DestDir: {app}; Flags: ignoreversion; Components: luarocks
 Source: files\rclauncher.o; DestDir: {app}; Flags: ignoreversion; Components: luarocks
 Source: files\rclauncher.obj; DestDir: {app}; Flags: ignoreversion; Components: luarocks
-Source: files\rocks\*; DestDir: {app}\rocks; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .svn\; Components: luarocks
-Source: files\lua\luarocks\*; DestDir: {app}\lua\luarocks; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .svn\; Components: luarocks
+Source: files\rocks\*; DestDir: {app}\rocks; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .git\; Components: luarocks
+Source: files\lua\luarocks\*; DestDir: {app}\lua\luarocks; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .git\; Components: luarocks
 ; -- Other files and modules.
-Source: files\clibs\*; DestDir: {app}\clibs; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .svn\; Components: modules
-Source: files\docs\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .svn\; Components: docs
-Source: files\examples\*; DestDir: {app}\examples; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .svn\; Components: examples
-Source: files\include\*; DestDir: {app}\include; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .svn\; Components: moduledevel
-Source: files\lib\*; DestDir: {app}\lib; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .svn\; Components: moduledevel
-Source: files\lua\*; DestDir: {app}\lua; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .svn\, luarocks\*; Components: modules
-Source: files\utils\*; DestDir: {app}\utils; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .svn\; Components: modules
-Source: support\Microsoft.VC80.CRT.SP1\*; DestDir: {app}\Microsoft.VC80.CRT; Flags: ignoreversion; Excludes: .svn\; Check: IsNonAdminLoggedOn
-Source: support\Microsoft.VC80.CRT.SP1\*; DestDir: {app}\clibs\Microsoft.VC80.CRT; Flags: ignoreversion; Excludes: .svn\; Components: modules; Check: IsNonAdminLoggedOn
-Source: support\Microsoft.VC80.CRT\*; DestDir: {app}\clibs\alien\Microsoft.VC80.CRT; Flags: ignoreversion; Excludes: .svn\; Components: modules; Check: IsNonAdminLoggedOn
-Source: support\Microsoft.VC80.CRT.SP1\*; DestDir: {app}\clibs\md5\Microsoft.VC80.CRT; Flags: ignoreversion; Excludes: .svn\; Components: modules; Check: IsNonAdminLoggedOn
-Source: support\Microsoft.VC80.CRT.SP1\*; DestDir: {app}\clibs\mime\Microsoft.VC80.CRT; Flags: ignoreversion; Excludes: .svn\; Components: modules; Check: IsNonAdminLoggedOn
-Source: support\Microsoft.VC80.CRT.SP1\*; DestDir: {app}\clibs\socket\Microsoft.VC80.CRT; Flags: ignoreversion; Excludes: .svn\; Components: modules; Check: IsNonAdminLoggedOn
-Source: support\*; DestDir: {app}\install\support; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .svn\
+Source: files\clibs\*; DestDir: {app}\clibs; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .git\; Components: modules
+Source: files\docs\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .git\; Components: docs
+Source: files\examples\*; DestDir: {app}\examples; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .git\; Components: examples
+Source: files\include\*; DestDir: {app}\include; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .git\; Components: moduledevel
+Source: files\lib\*; DestDir: {app}\lib; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .git\; Components: moduledevel
+Source: files\lua\*; DestDir: {app}\lua; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .git\, luarocks\*; Components: modules
+Source: files\utils\*; DestDir: {app}\utils; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .git\; Components: modules
+Source: support\Microsoft.VC80.CRT.SP1\*; DestDir: {app}\Microsoft.VC80.CRT; Flags: ignoreversion; Excludes: .git\; Check: IsNonAdminLoggedOn
+Source: support\Microsoft.VC80.CRT.SP1\*; DestDir: {app}\clibs\Microsoft.VC80.CRT; Flags: ignoreversion; Excludes: .git\; Components: modules; Check: IsNonAdminLoggedOn
+Source: support\Microsoft.VC80.CRT\*; DestDir: {app}\clibs\alien\Microsoft.VC80.CRT; Flags: ignoreversion; Excludes: .git\; Components: modules; Check: IsNonAdminLoggedOn
+Source: support\Microsoft.VC80.CRT.SP1\*; DestDir: {app}\clibs\md5\Microsoft.VC80.CRT; Flags: ignoreversion; Excludes: .git\; Components: modules; Check: IsNonAdminLoggedOn
+Source: support\Microsoft.VC80.CRT.SP1\*; DestDir: {app}\clibs\mime\Microsoft.VC80.CRT; Flags: ignoreversion; Excludes: .git\; Components: modules; Check: IsNonAdminLoggedOn
+Source: support\Microsoft.VC80.CRT.SP1\*; DestDir: {app}\clibs\socket\Microsoft.VC80.CRT; Flags: ignoreversion; Excludes: .git\; Components: modules; Check: IsNonAdminLoggedOn
+Source: support\*; DestDir: {app}\install\support; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .git\
 #ifdef DOWNLOAD_FILES
 Source: support\isxdl.dll; DestDir: {tmp}; Flags: dontcopy
 Source: {src}\vcredist_x86.exe; DestDir: {app}\install\support; Flags: ignoreversion external; Check: ShouldCopyVc8Runtime
 #else
-Source: vcredist_x86.exe; DestDir: {app}\install\support; Flags: ignoreversion; Excludes: .svn\
+Source: vcredist_x86.exe; DestDir: {app}\install\support; Flags: ignoreversion; Excludes: .git\
 #endif
-Source: LuaForWindows.iss; DestDir: {app}\install; Flags: ignoreversion; Excludes: .svn\
-Source: changes.txt; DestDir: {app}; Flags: ignoreversion; Excludes: .svn\
-Source: todo.txt; DestDir: {app}; Flags: ignoreversion; Excludes: .svn\
+Source: LuaForWindows.iss; DestDir: {app}\install; Flags: ignoreversion; Excludes: .git\
+Source: changes.txt; DestDir: {app}; Flags: ignoreversion; Excludes: .git\
+Source: todo.txt; DestDir: {app}; Flags: ignoreversion; Excludes: .git\
 
 ; -- SciTE files
-Source: SciTE\*; DestDir: {app}\SciTE; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .svn\; Components: editors/scite
+Source: SciTE\*; DestDir: {app}\SciTE; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: .git\; Components: editors/scite
 Source: support\SciTEGlobal.black.properties; DestDir: {app}\SciTE; DestName: SciTEGlobal.properties; Tasks: blackscheme; Components: editors/scite; Flags: ignoreversion
 
 [InstallDelete]
