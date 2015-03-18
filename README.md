@@ -7,7 +7,7 @@ Lua for Windows (LfW) combines Lua binaries, Lua libraries with a Lua-capable ed
 
 ## Download ##
 
-Download Lua\_V5.1.4-46.exe from [Google Code](http://code.google.com/p/luaforwindows/downloads/list)
+Download Lua\_V5.1.4-47.exe from [GitHub]()
 
 ## Install Notes ##
 
@@ -66,7 +66,7 @@ C header files/libraries/etc. for building C module
 |[Lanes](http://luaforge.net/projects/lanes/)|2.0.4|Provides the possibility to run multiple Lua states in parallel.|
 |[MetaLua](http://metalua.luaforge.net/)|0.5-rc1|A complete macro system with full compatibility with Lua 5.1 sources and bytecode: clean, elegant semantics and syntax, amazing expressive power, good performances, near-universal portability.|
 |[LuaGL](http://luagl.wikidot.com/)|1.3|Provides access to all of the OpenGL functionality from Lua 5.x .|
-|[Penlight](http://stevedonovan.github.com/Penlight/)|1.0.3|Common lua code patterns for tables, arrays, strings, paths and directories, data, and functional programming.|
+|[Penlight](http://stevedonovan.github.com/Penlight/)|1.3.2|Common lua code patterns for tables, arrays, strings, paths and directories, data, and functional programming.|
 |[lbase64](http://www.tecgraf.puc-rio.br/~lhf/ftp/lua/)|for Lua 5.1|A base64 library for Lua.|
 |[gzio](http://github.com/jmaygarden/gzio)|0.9.0|The Lua gzip file I/O module emulates the standard I/O module, but operates on compressed gzip format files.|
 |[LuaRS232](http://github.com/ynezz/librs232)|1.0.0| RS232 serial communications library|
@@ -275,8 +275,6 @@ C header files/libraries/etc. for building C module
   * Added SubLua version 1.7.4 - Subversion binding
 
 **5.1.4-47** 18/March/2015 - 33rd release
-^ Updated stdlib to release 28.
-^ Updated Penlight to 1.3.2.
-* Moved all downloads and code hosting to GitHub. Older
-  releases will not function when Google Code is shut down.
-  Make sure to upgrade.
+  * Updated stdlib to release 28.
+  * Updated Penlight to 1.3.2.
+  * **WARNING**: Moved all downloads and code hosting to GitHub. Older releases will not function when Google Code is shut down. Make sure to upgrade.
