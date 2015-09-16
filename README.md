@@ -74,7 +74,7 @@ C header files/libraries/etc. for building C module
 |[LuaRocks](http://luarocks.org)|2.0.2|  A deployment and management system for Lua modules.|
 |[Oil](http://oil.luaforge.net)|0.4-beta|  It is a simple, efficient and flexible object request broker written in the Lua language.|
 |[LuaJSON](http://github.com/harningt/luajson)|1.2.2| JSON parser/encoder for Lua Parses JSON using LPEG for speed and flexibility. Depending on parser/encoder options, various values are preserved as best as possible.|
-|[SubLua](https://sourceforge.net/projects/subcpp/)|1.8.10|  Subversion binding.|
+|[SubLua](https://sourceforge.net/projects/subcpp/)|1.8.11|  Subversion binding.|
 |[30Log](https://github.com/Yonaba/30log)|1.0.0|  30 lines library for object orientation in Lua.|
 
 ## History ##
