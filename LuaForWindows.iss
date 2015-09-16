@@ -25,8 +25,8 @@
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ; -- General Installer configuration
-#define MyAppVer "5.1.4.47"
-#define MyAppDisplayVer "5.1.4-47"
+#define MyAppVer "5.1.4.48"
+#define MyAppDisplayVer "5.1.4-48"
 #define MyAppName "Lua"
 #define MyAppDisplayName "Lua for Windows"
 #define MyAppPublisher "The Lua for Windows Project and Lua and Tecgraf, PUC-Rio"

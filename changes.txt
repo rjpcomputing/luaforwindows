@@ -1,4 +1,8 @@
 =================== Lua For Windows ===================
+09/16/2015  Version 5.1.4-48
++ Added 30Log v1.0.0 - 30 lines library for object orientation in Lua
+^ Updated SubLua to 1.8.11.
+
 03/18/2015  Version 5.1.4-47
 ^ Updated stdlib to release 28.
 ^ Updated Penlight to 1.3.2.

@@ -75,6 +75,7 @@ C header files/libraries/etc. for building C module
 |[Oil](http://oil.luaforge.net)|0.4-beta|  It is a simple, efficient and flexible object request broker written in the Lua language.|
 |[LuaJSON](http://github.com/harningt/luajson)|1.2.2| JSON parser/encoder for Lua Parses JSON using LPEG for speed and flexibility. Depending on parser/encoder options, various values are preserved as best as possible.|
 |[SubLua](https://sourceforge.net/projects/subcpp/)|1.8.10|  Subversion binding.|
+|[30Log](https://github.com/Yonaba/30log)|1.0.0|  30 lines library for object orientation in Lua.|
 
 ## History ##
 
@@ -279,3 +280,7 @@ C header files/libraries/etc. for building C module
   * Updated Penlight to 1.3.2.
   * Updated SubLua to 1.8.10.
   * **WARNING**: Moved all downloads and code hosting to GitHub. Older releases will not function when Google Code is shut down. Make sure to upgrade.
+
+**5.1.4-48** 16/September/2015 - 34rd release
+  * Added 30Log v1.0.0 - 30 lines library for object orientation in Lua
+  * Updated SubLua to 1.8.11.
