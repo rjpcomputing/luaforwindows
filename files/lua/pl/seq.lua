@@ -1,7 +1,7 @@
 --- Manipulating iterators as sequences.
 -- See @{07-functional.md.Sequences|The Guide}
 --
--- Dependencies: `pl.utils`, `debug`
+-- Dependencies: `pl.utils`, `pl.types`, `debug`
 -- @module pl.seq
 
 local next,assert,type,pairs,tonumber,type,setmetatable,getmetatable,_G = next,assert,type,pairs,tonumber,type,setmetatable,getmetatable,_G
@@ -10,6 +10,7 @@ local mrandom = math.random
 local remove,tsort,tappend = table.remove,table.sort,table.insert
 local io = io
 local utils = require 'pl.utils'
+local callable = require 'pl.types'.is_callable
 local function_arg = utils.function_arg
 local _List = utils.stdmt.List
 local _Map = utils.stdmt.Map
@@ -363,7 +364,7 @@ function seq.filter (iter,pred,arg)
 end
 
 --- 'reduce' a sequence using a binary function.
--- @param fun a function of two arguments
+-- @func fun a function of two arguments
 -- @param iter a sequence
 -- @param oldval optional initial value
 -- @usage seq.reduce(operator.add,seq.list{1,2,3,4}) == 10
@@ -465,7 +466,6 @@ end
 ---------------------- Sequence Adapters ---------------------
 
 local SMT
-local callable = utils.is_callable
 
 local function SW (iter,...)
     if callable(iter) then

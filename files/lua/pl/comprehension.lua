@@ -253,7 +253,7 @@ local function new(env)
   -- performance penalty.
 
   if not env then
-    env = getfenv(2)
+    env = utils.getfenv(2)
   end
 
   local mt = {}

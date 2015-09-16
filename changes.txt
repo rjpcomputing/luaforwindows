@@ -1,6 +1,11 @@
 =================== Lua For Windows ===================
--=-=-=-  Version 5.1.4-47
+03/18/2015  Version 5.1.4-47
 ^ Updated stdlib to release 28.
+^ Updated Penlight to 1.3.2.
+^ Updated SubLua to 1.8.10.
+* Moved all downloads and code hosting to GitHub. Older
+  releases will not function when Google Code is shut down.
+  Make sure to upgrade.
 
 08/07/2012  Version 5.1.4-46
 * Fixes #43 - require('lpeg') -- system error 14001

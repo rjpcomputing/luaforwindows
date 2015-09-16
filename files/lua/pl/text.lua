@@ -15,13 +15,15 @@
 --    > = '$name = $value' % {name='dog',value='Pluto'}
 --    dog = Pluto
 --
--- Dependencies: `pl.utils`
+-- Dependencies: `pl.utils`, `pl.types`
 -- @module pl.text
 
 local gsub = string.gsub
 local concat,append = table.concat,table.insert
 local utils = require 'pl.utils'
-local bind1,usplit,assert_arg,is_callable = utils.bind1,utils.split,utils.assert_arg,utils.is_callable
+local bind1,usplit,assert_arg = utils.bind1,utils.split,utils.assert_arg
+local is_callable = require 'pl.types'.is_callable
+local unpack = utils.unpack
 
 local function lstrip(str)  return (str:gsub('^%s+',''))  end
 local function strip(str)  return (lstrip(str):gsub('%s+$','')) end
@@ -52,7 +54,7 @@ end
 -- @return indented string
 function text.indent (s,n,ch)
     assert_arg(1,s,'string')
-    assert_arg(2,s,'number')
+    assert_arg(2,n,'number')
     return _indent(s,string.rep(ch or ' ',n))
 end
 

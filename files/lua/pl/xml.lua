@@ -29,7 +29,8 @@
 -- Soft Dependencies: `lxp.lom` (fallback is to use basic Lua parser)
 -- @module pl.xml
 
-local split = require 'pl.utils'.split
+local utils = require 'pl.utils'
+local split         =   utils.split;
 local t_insert      =  table.insert;
 local t_concat      =  table.concat;
 local t_remove      =  table.remove;
@@ -43,7 +44,7 @@ local ipairs        =        ipairs;
 local type          =          type;
 local next          =          next;
 local print         =         print;
-local unpack        =        unpack;
+local unpack        =  utils.unpack;
 local s_gsub        =   string.gsub;
 local s_char        =   string.char;
 local s_find        =   string.find;
@@ -159,17 +160,19 @@ function Doc:get_attribs()
     return self.attr
 end
 
+local function is_text(s) return type(s) == 'string' end
+
 --- function to create an element with a given tag name and a set of children.
 -- @param tag a tag name
 -- @param items either text or a table where the hash part is the attributes and the list part is the children.
 function _M.elem(tag,items)
     local s = _M.new(tag)
-    if type(items) == 'string' then items = {items} end
+    if is_text(items) then items = {items} end
     if _M.is_tag(items) then
        t_insert(s,items)
     elseif type(items) == 'table' then
        for k,v in pairs(items) do
-           if type(k) == 'string' then
+           if is_text(k) then
                s.attr[k] = v
                t_insert(s.attr,k)
            else
@@ -187,7 +190,7 @@ end
 function _M.tags(list)
     local ctors = {}
     local elem = _M.elem
-    if type(list) == 'string' then list = split(list,'%s*,%s*') end
+    if is_text(list) then list = split(list,'%s*,%s*') end
     for _,tag in ipairs(list) do
         local ctor = function(items) return _M.elem(tag,items) end
         t_insert(ctors,ctor)
@@ -196,6 +199,22 @@ function _M.tags(list)
 end
 
 local templ_cache = {}
+
+local function template_cache (templ)
+    if is_text(templ) then
+        if templ_cache[templ] then
+            templ = templ_cache[templ]
+        else
+            local str,err = templ
+            templ,err = _M.parse(str,false,true)
+            if not templ then return nil,err end
+            templ_cache[str] = templ
+        end
+    elseif not _M.is_tag(templ) then
+        return nil, "template is not a document"
+    end
+    return templ
+end
 
 local function is_data(data)
     return #data == 0 or type(data[1]) ~= 'table'
@@ -214,20 +233,13 @@ end
 -- @param data  a table of name-value pairs or a list of such tables
 -- @return an XML document
 function Doc.subst(templ, data)
+    local err
     if type(data) ~= 'table' or not next(data) then return nil, "data must be a non-empty table" end
     if is_data(data) then
         prepare_data(data)
     end
-    if type(templ) == 'string' then
-        if templ_cache[templ] then
-            templ = templ_cache[templ]
-        else
-            local str,err = templ
-            templ,err = _M.parse(str)
-            if not templ then return nil,err end
-            templ_cache[str] = templ
-        end
-    end
+    templ,err = template_cache(templ)
+    if err then return nil, err end
     local function _subst(item)
         return _M.clone(templ,function(s)
             return s:gsub('%$(%w+)',item)
@@ -292,7 +304,7 @@ end
 function Doc:matching_tags(tag, xmlns)
     xmlns = xmlns or self.attr.xmlns;
     local tags = self;
-    local start_i, max_i = 1, #tags;
+    local start_i, max_i, v = 1, #tags;
     return function ()
             for i=start_i,max_i do
                 v = tags[i];
@@ -302,7 +314,7 @@ function Doc:matching_tags(tag, xmlns)
                     return v;
                 end
             end
-        end, tags, i;
+        end, tags, start_i;
 end
 
 --- iterate over all child elements of a document node.
@@ -355,15 +367,23 @@ local function _dostring(t, buf, self, xml_escape, parentns, idn, indent, attr_i
     if indent then lf = '\n'..idn end
     if attr_indent then alf = '\n'..idn..attr_indent end
     t_insert(buf, lf.."<"..tag);
-    for k, v in pairs(t.attr) do
-        if type(k) ~= 'number' then -- LOM attr table has list-like part
-            if s_find(k, "\1", 1, true) then
-                local ns, attrk = s_match(k, "^([^\1]*)\1?(.*)$");
-                nsid = nsid + 1;
-                t_insert(buf, " xmlns:ns"..nsid.."='"..xml_escape(ns).."' ".."ns"..nsid..":"..attrk.."='"..xml_escape(v).."'");
-            elseif not(k == "xmlns" and v == parentns) then
-                t_insert(buf, alf..k.."='"..xml_escape(v).."'");
-            end
+    local function write_attr(k,v)
+        if s_find(k, "\1", 1, true) then
+            local ns, attrk = s_match(k, "^([^\1]*)\1?(.*)$");
+            nsid = nsid + 1;
+            t_insert(buf, " xmlns:ns"..nsid.."='"..xml_escape(ns).."' ".."ns"..nsid..":"..attrk.."='"..xml_escape(v).."'");
+        elseif not(k == "xmlns" and v == parentns) then
+            t_insert(buf, alf..k.."='"..xml_escape(v).."'");
+        end
+    end
+    -- it's useful for testing to have predictable attribute ordering, if available
+    if #t.attr > 0 then
+        for _,k in ipairs(t.attr) do
+            write_attr(k,t.attr[k])
+        end
+    else
+        for k, v in pairs(t.attr) do
+            write_attr(k,v)
         end
     end
     local len,has_children = #t;
@@ -391,9 +411,17 @@ end
 --- @param idn an initial indent (indents are all strings)
 --- @param indent an indent for each level
 --- @param attr_indent if given, indent each attribute pair and put on a separate line
+--- @param xml force prefacing with default or custom <?xml...>
 --- @return a string representation
-function _M.tostring(t,idn,indent, attr_indent)
+function _M.tostring(t,idn,indent, attr_indent, xml)
     local buf = {};
+    if xml then
+        if type(xml) == "string" then
+            buf[1] = xml
+        else
+            buf[1] = "<?xml version='1.0'?>"
+        end
+    end
     _dostring(t, buf, _dostring, xml_escape, nil,idn,indent, attr_indent);
     return t_concat(buf);
 end
@@ -404,7 +432,7 @@ Doc.__tostring = _M.tostring
 function Doc:get_text()
     local res = {}
     for i,el in ipairs(self) do
-        if type(el) == 'string' then t_insert(res,el) end
+        if is_text(el) then t_insert(res,el) end
     end
     return t_concat(res);
 end
@@ -414,24 +442,36 @@ end
 -- @param strsubst an optional function for handling string copying which could do substitution, etc.
 function _M.clone(doc, strsubst)
     local lookup_table = {};
-    local function _copy(object)
+    local function _copy(object,kind,parent)
         if type(object) ~= "table" then
-            if strsubst and type(object) == 'string' then return strsubst(object)
-            else return object;
+            if strsubst and is_text(object) then return strsubst(object,kind,parent)
+            else return object
             end
         elseif lookup_table[object] then
-            return lookup_table[object];
+            return lookup_table[object]
         end
         local new_table = {};
-        lookup_table[object] = new_table;
-        for index, value in pairs(object) do
-            new_table[_copy(index)] = _copy(value);  -- is cloning keys much use, hm?
+        lookup_table[object] = new_table
+        local tag = object.tag
+        new_table.tag = _copy(tag,'*TAG',parent)
+        if object.attr then
+            local res = {}
+            for attr,value in pairs(object.attr) do
+                res[attr] = _copy(value,attr,object)
+            end
+            new_table.attr = res
         end
-        return setmetatable(new_table, getmetatable(object));
+        for index = 1,#object do
+            local v = _copy(object[index],'*TEXT',object)
+            t_insert(new_table,v)
+        end
+        return setmetatable(new_table, getmetatable(object))
     end
 
     return _copy(doc)
 end
+
+Doc.filter = _M.clone -- also available as method
 
 --- compare two documents.
 -- @param t1 any value
@@ -464,7 +504,7 @@ end
 --- is this value a document element?
 -- @param d any value
 function _M.is_tag(d)
-    return type(d) == 'table' and type(d.tag) == 'string'
+    return type(d) == 'table' and is_text(d.tag)
 end
 
 --- call the desired function recursively over the document.
@@ -481,69 +521,121 @@ function _M.walk (doc, depth_first, operation)
     if depth_first then operation(doc.tag,doc) end
 end
 
+local html_empty_elements = { --lists all HTML empty (void) elements
+	br      = true,
+	img     = true,
+	meta    = true,
+	frame   = true,
+	area    = true,
+	hr      = true,
+	base    = true,
+	col     = true,
+	link    = true,
+	input   = true,
+	option  = true,
+	param   = true,
+    isindex = true,
+    embed = true,
+}
+
 local escapes = { quot = "\"", apos = "'", lt = "<", gt = ">", amp = "&" }
 local function unescape(str) return (str:gsub( "&(%a+);", escapes)); end
 
-local function parseargs(s)
-  local arg = {}
-  s:gsub("([%w:]+)%s*=%s*([\"'])(.-)%2", function (w, _, a)
-    arg[w] = unescape(a)
-  end)
-  return arg
+--- Parse a well-formed HTML file as a string.
+-- Tags are case-insenstive, DOCTYPE is ignored, and empty elements can be .. empty.
+-- @param s the HTML
+function _M.parsehtml (s)
+    return _M.basic_parse(s,false,true)
 end
 
 --- Parse a simple XML document using a pure Lua parser based on Robero Ierusalimschy's original version.
 -- @param s the XML document to be parsed.
 -- @param all_text  if true, preserves all whitespace. Otherwise only text containing non-whitespace is included.
-function _M.basic_parse(s,all_text)
-  local t_insert,t_remove = table.insert,table.remove
-  local s_find,s_sub = string.find,string.sub
-  local stack = {}
-  local top = {}
-  t_insert(stack, top)
-  local ni,c,label,xarg, empty
-  local i, j = 1, 1
-  -- we're not interested in <?xml version="1.0"?>
-  local _,istart = s_find(s,'^%s*<%?[^%?]+%?>%s*')
-  if istart then i = istart+1 end
-  while true do
-    ni,j,c,label,xarg, empty = s_find(s, "<(%/?)([%w:%-_]+)(.-)(%/?)>", i)
-    if not ni then break end
-    local text = s_sub(s, i, ni-1)
-    if all_text or not s_find(text, "^%s*$") then
-       t_insert(top, unescape(text))
-    end
-    if empty == "/" then  -- empty element tag
-      t_insert(top, setmetatable({tag=label, attr=parseargs(xarg), empty=1},Doc))
-    elseif c == "" then   -- start tag
-      top = setmetatable({tag=label, attr=parseargs(xarg)},Doc)
-      t_insert(stack, top)   -- new level
-    else  -- end tag
-      local toclose = t_remove(stack)  -- remove top
-      top = stack[#stack]
-      if #stack < 1 then
-        error("nothing to close with "..label)
+-- @param html if true, uses relaxed HTML rules for parsing
+function _M.basic_parse(s,all_text,html)
+    local t_insert,t_remove = table.insert,table.remove
+    local s_find,s_sub = string.find,string.sub
+    local stack = {}
+    local top = {}
+
+    local function parseargs(s)
+      local arg = {}
+      s:gsub("([%w:%-_]+)%s*=%s*([\"'])(.-)%2", function (w, _, a)
+        if html then w = w:lower() end
+        arg[w] = unescape(a)
+      end)
+      if html then
+        s:gsub("([%w:%-_]+)%s*=%s*([^\"']+)%s*", function (w, a)
+          w = w:lower()
+          arg[w] = unescape(a)
+        end)
       end
-      if toclose.tag ~= label then
-        error("trying to close "..toclose.tag.." with "..label)
-      end
-      t_insert(top, toclose)
+      return arg
     end
+
+    t_insert(stack, top)
+    local ni,c,label,xarg, empty, _, istart
+    local i, j = 1, 1
+    -- we're not interested in <?xml version="1.0"?>
+    _,istart = s_find(s,'^%s*<%?[^%?]+%?>%s*')    
+    if not istart then -- or <!DOCTYPE ...>
+        _,istart = s_find(s,'^%s*<!DOCTYPE.->%s*')
+    end
+    if istart then i = istart+1 end
+    while true do
+        ni,j,c,label,xarg, empty = s_find(s, "<([%/!]?)([%w:%-_]+)(.-)(%/?)>", i)
+        if not ni then break end
+        if c == "!" then -- comment
+            -- case where there's no space inside comment
+            if not (label:match '%-%-$' and xarg == '') then
+                if xarg:match '%-%-$' then -- we've grabbed it all
+                    j = j - 2
+                end
+                -- match end of comment
+                _,j = s_find(s, "-->", j, true)
+            end
+        else
+            local text = s_sub(s, i, ni-1)
+            if html then
+                label = label:lower()
+                if html_empty_elements[label] then empty = "/" end
+                if label == 'script' then
+                end
+            end
+            if all_text or not s_find(text, "^%s*$") then
+                t_insert(top, unescape(text))
+            end
+            if empty == "/" then  -- empty element tag
+                t_insert(top, setmetatable({tag=label, attr=parseargs(xarg), empty=1},Doc))
+            elseif c == "" then   -- start tag
+                top = setmetatable({tag=label, attr=parseargs(xarg)},Doc)
+                t_insert(stack, top)   -- new level
+            else  -- end tag
+                local toclose = t_remove(stack)  -- remove top
+                top = stack[#stack]
+                if #stack < 1 then
+                    error("nothing to close with "..label..':'..text)
+                end
+                if toclose.tag ~= label then
+                    error("trying to close "..toclose.tag.." with "..label.." "..text)
+                end
+                t_insert(top, toclose)
+            end
+        end
     i = j+1
-  end
-  local text = s_sub(s, i)
-  if all_text or  not s_find(text, "^%s*$") then
-    t_insert(stack[#stack], unescape(text))
-  end
-  if #stack > 1 then
-    error("unclosed "..stack[#stack].tag)
-  end
-  local res = stack[1]
-  return type(res[1])=='string' and res[2] or res[1]
+    end
+    local text = s_sub(s, i)
+    if all_text or  not s_find(text, "^%s*$") then
+        t_insert(stack[#stack], unescape(text))
+    end
+    if #stack > 1 then
+        error("unclosed "..stack[#stack].tag)
+    end
+    local res = stack[1]
+    return is_text(res[1]) and res[2] or res[1]
 end
 
 local function empty(attr) return not attr or not next(attr) end
-local function is_text(s) return type(s) == 'string' end
 local function is_element(d) return type(d) == 'table' and d.tag ~= nil end
 
 -- returns the key,value pair from a table if it has exactly one entry
@@ -588,11 +680,11 @@ end
 local match
 function match(d,pat,res,keep_going)
     local ret = true
-    if d == nil then return false end
+    if d == nil then d = '' end --return false end
     -- attribute string matching is straight equality, except if the pattern is a $ capture,
     -- which always succeeds.
-    if type(d) == 'string' then
-        if type(pat) ~= 'string' then return false end
+    if is_text(d) then
+        if not is_text(pat) then return false end
         if _M.debug then print(d,pat) end
         if pat:find '^%$' then
             return capture_attrib(res,pat,d)
@@ -667,9 +759,9 @@ function match(d,pat,res,keep_going)
 end
 
 function Doc:match(pat)
-    if is_text(pat) then
-        pat = _M.parse(pat,false,true)
-    end
+    local err
+    pat,err = template_cache(pat)
+    if not pat then return nil, err end
     _M.walk(pat,false,function(_,d)
         if is_text(d[1]) and is_element(d[2]) and is_text(d[3]) and
            d[1]:find '%s*{{' and d[3]:find '}}%s*' then
