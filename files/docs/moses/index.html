@@ -1,0 +1,4146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Moses documentation</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Moses</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Table_functions">Table functions </a></li>
+<li><a href="#Array_functions">Array functions </a></li>
+<li><a href="#Utility_functions">Utility functions </a></li>
+<li><a href="#Object_functions">Object functions </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>moses</strong></li>
+</ul>
+<h2>Topics</h2>
+<ul class="nowrap">
+  <li><a href="topics/tutorial.md.html">tutorial.md</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>moses</code></h1>
+
+<p><em>Utility-belt library for functional programming in Lua.</em><br/>
+ Source on <a href="http://github.com/Yonaba/Moses">Github</a></p>
+<p>
+
+</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>License</strong>: <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a></li>
+        <li><strong>Copyright</strong>: 2012-2014</li>
+        <li><strong>Author</strong>: <a href="http://github.com/Yonaba">Roland Yonaba</a></li>
+        <li><strong>Release</strong>: 1.4.0</li>
+    </ul>
+
+
+<h2><a href="#Table_functions">Table functions </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#each">each (t, f[, ...])</a></td>
+	<td class="summary">Iterates on each key-value pairs in a table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#eachi">eachi (t, f[, ...])</a></td>
+	<td class="summary">Iterates on each integer key-value pairs in a table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#at">at (t, ...)</a></td>
+	<td class="summary">Returns an array of values at specific indexes and keys.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#count">count (t[, value])</a></td>
+	<td class="summary">Counts occurrences of a given value in a table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#countf">countf (t, f[, ...])</a></td>
+	<td class="summary">Counts occurrences validating a predicate.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#cycle">cycle (t, n)</a></td>
+	<td class="summary">Iterates through a table and loops <code>n</code> times.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map">map (t, f[, ...])</a></td>
+	<td class="summary">Maps function <code>f(key, value)</code> on all key-value pairs.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#reduce">reduce (t, f[, state])</a></td>
+	<td class="summary">Reduces a table, left-to-right.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#reduceRight">reduceRight (t, f[, state])</a></td>
+	<td class="summary">Reduces a table, right-to-left.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mapReduce">mapReduce (t, f[, state])</a></td>
+	<td class="summary">Reduces a table while saving intermediate states.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mapReduceRight">mapReduceRight (t, f[, state])</a></td>
+	<td class="summary">Reduces a table while saving intermediate states.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#include">include (t, value)</a></td>
+	<td class="summary">Search for a value in a table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#detect">detect (t, value)</a></td>
+	<td class="summary">Search for a value in a table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#contains">contains (t, value)</a></td>
+	<td class="summary">Checks if a value is present in a table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#findWhere">findWhere (t, props)</a></td>
+	<td class="summary">Returns the first value having specified keys <code>props</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#select">select (t, f[, ...])</a></td>
+	<td class="summary">Selects and extracts values passing an iterator test.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#reject">reject (t, f[, ...])</a></td>
+	<td class="summary">Clones a table while dropping values passing an iterator test.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#all">all (t, f[, ...])</a></td>
+	<td class="summary">Checks if all values in a table are passing an iterator test.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#invoke">invoke (t, method[, ...])</a></td>
+	<td class="summary">Invokes a method on each value in a table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pluck">pluck (t, a)</a></td>
+	<td class="summary">Extracts property-values from a table of values.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#max">max (t[, transform[, ...]])</a></td>
+	<td class="summary">Returns the max value in a collection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#min">min (t[, transform[, ...]])</a></td>
+	<td class="summary">Returns the min value in a collection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#shuffle">shuffle (t[, seed])</a></td>
+	<td class="summary">Returns a shuffled copy of a given collection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#same">same (a, b)</a></td>
+	<td class="summary">Checks if two tables are the same.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sort">sort (t[, comp])</a></td>
+	<td class="summary">Sorts a table, in-place.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#groupBy">groupBy (t, iter[, ...])</a></td>
+	<td class="summary">Splits a table into subsets.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#countBy">countBy (t, iter[, ...])</a></td>
+	<td class="summary">Groups values in a collection and counts them.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#size">size ([...])</a></td>
+	<td class="summary">Counts the number of values in a collection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#containsKeys">containsKeys (t, other)</a></td>
+	<td class="summary">Checks if all the keys of <code>other</code> table exists in table <code>t</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sameKeys">sameKeys (tA, tB)</a></td>
+	<td class="summary">Checks if both given tables have the same keys.</td>
+	</tr>
+</table>
+<h2><a href="#Array_functions">Array functions </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#toArray">toArray ([...])</a></td>
+	<td class="summary">Converts a vararg list to an array-list.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#find">find (array, value[, from])</a></td>
+	<td class="summary">Looks for the first occurrence of a given value in an array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#reverse">reverse (array)</a></td>
+	<td class="summary">Reverses values in a given array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#selectWhile">selectWhile (array, f[, ...])</a></td>
+	<td class="summary">Collects values from a given array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#dropWhile">dropWhile (array, f[, ...])</a></td>
+	<td class="summary">Collects values from a given array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sortedIndex">sortedIndex (array, the[, comp[, sort]])</a></td>
+	<td class="summary">Returns the index at which a value should be inserted.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#indexOf">indexOf (array, the)</a></td>
+	<td class="summary">Returns the index of a given value in an array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#lastIndexOf">lastIndexOf (array, the)</a></td>
+	<td class="summary">Returns the index of the last occurrence of a given value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#addTop">addTop (array, ...)</a></td>
+	<td class="summary">Adds all passed-in values at the top of an array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#push">push (array, ...)</a></td>
+	<td class="summary">Pushes all passed-in values at the end of an array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pop">pop (array[, n])</a></td>
+	<td class="summary">Removes and returns the values at the top of a given array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unshift">unshift (array[, n])</a></td>
+	<td class="summary">Removes and returns the values at the end of a given array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pull">pull (array, ...)</a></td>
+	<td class="summary">Removes all provided values in a given array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#removeRange">removeRange (array[, start[, finish]])</a></td>
+	<td class="summary">Trims all values indexed within the range <code>[start, finish]</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#chunk">chunk (array, f[, ...])</a></td>
+	<td class="summary">Chunks together consecutive values.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#slice">slice (array[, start[, finish]])</a></td>
+	<td class="summary">Slices values indexed within <code>[start, finish]</code> range.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#first">first (array[, n])</a></td>
+	<td class="summary">Returns the first N values in an array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#initial">initial (array[, n])</a></td>
+	<td class="summary">Returns all values in an array excluding the last N values.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#last">last (array[, n])</a></td>
+	<td class="summary">Returns the last N values in an array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#rest">rest (array[, index])</a></td>
+	<td class="summary">Trims all values before index.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#compact">compact (array)</a></td>
+	<td class="summary">Trims all falsy (false and nil) values.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#flatten">flatten (array[, shallow])</a></td>
+	<td class="summary">Flattens a nested array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#difference">difference (array, another)</a></td>
+	<td class="summary">Returns values from an array not present in all passed-in args.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#union">union (...)</a></td>
+	<td class="summary">Returns the duplicate-free union of all passed in arrays.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#intersection">intersection (array, ...)</a></td>
+	<td class="summary">Returns the  intersection of all passed-in arrays.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#symmetricDifference">symmetricDifference (array, array2)</a></td>
+	<td class="summary">Performs a symmetric difference.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unique">unique (array)</a></td>
+	<td class="summary">Produces a duplicate-free version of a given array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isunique">isunique (array)</a></td>
+	<td class="summary">Checks if a given array contains distinct values.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#zip">zip (...)</a></td>
+	<td class="summary">Merges values of each of the passed-in arrays in subsets.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#append">append (array, other)</a></td>
+	<td class="summary">Clones <code>array</code> and appends <code>other</code> values.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#interleave">interleave (...)</a></td>
+	<td class="summary">Interleaves arrays.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#interpose">interpose (value, array)</a></td>
+	<td class="summary">Interposes <code>value</code> in-between consecutive pair of values in <code>array</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#range">range ([from[, to[, step]]])</a></td>
+	<td class="summary">Produce a flexible list of numbers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#rep">rep (value, n)</a></td>
+	<td class="summary">Creates an array list of <code>n</code> values, repeated.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#partition.">partition. (array[, n])</a></td>
+	<td class="summary">Iterator returning partitions of an array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#permutation">permutation (array)</a></td>
+	<td class="summary">Iterator returning the permutations of an array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#invert">invert (array)</a></td>
+	<td class="summary">Swaps keys with values.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#concat">concat (array[, sep[, i[, j]]])</a></td>
+	<td class="summary">Concatenates values in a given array.</td>
+	</tr>
+</table>
+<h2><a href="#Utility_functions">Utility functions </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#identity">identity (value)</a></td>
+	<td class="summary">Returns the passed-in value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#once">once (f)</a></td>
+	<td class="summary">Returns a version of <code>f</code> that runs only once.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#memoize">memoize (f[, hash])</a></td>
+	<td class="summary">Memoizes a given function by caching the computed result.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#after">after (f, count)</a></td>
+	<td class="summary">Returns a version of <code>f</code> that runs on the <code>count-th</code> call.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#compose">compose (...)</a></td>
+	<td class="summary">Composes functions.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pipe">pipe (value, ...)</a></td>
+	<td class="summary">Pipes a value through a series of functions.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#complement">complement (f)</a></td>
+	<td class="summary">Returns the logical complement of a given function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juxtapose">juxtapose (value, ...)</a></td>
+	<td class="summary">Calls a sequence of passed-in functions with the same argument.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#wrap">wrap (f, wrapper)</a></td>
+	<td class="summary">Wraps <code>f</code> inside of the <code>wrapper</code> function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#times">times (n, iter, ...)</a></td>
+	<td class="summary">Runs <code>iter</code> function <code>n</code> times.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bind">bind (f, v)</a></td>
+	<td class="summary">Binds <code>v</code> to be the first argument to function <code>f</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bindn">bindn (f, ...)</a></td>
+	<td class="summary">Binds <code>...</code> to be the N-first arguments to function <code>f</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#uniqueId">uniqueId ([template[, ...]])</a></td>
+	<td class="summary">Generates a unique ID for the current session.</td>
+	</tr>
+</table>
+<h2><a href="#Object_functions">Object functions </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#keys">keys (obj)</a></td>
+	<td class="summary">Returns the keys of the object properties.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#values">values (obj)</a></td>
+	<td class="summary">Returns the values of the object properties.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#toBoolean">toBoolean (value)</a></td>
+	<td class="summary">Converts any given value to a boolean</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#extend">extend (destObj, ...)</a></td>
+	<td class="summary">Extends an object properties.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#functions">functions ([obj])</a></td>
+	<td class="summary">Returns a sorted list of all methods names found in an object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#clone">clone (obj[, shallow])</a></td>
+	<td class="summary">Clones a given object properties.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#tap">tap (obj, f[, ...])</a></td>
+	<td class="summary">Invokes interceptor with the object, and then returns object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#has">has (obj, key)</a></td>
+	<td class="summary">Checks if a given object implements a property.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pick">pick (obj, ...)</a></td>
+	<td class="summary">Return a filtered copy of the object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#omit">omit (obj, ...)</a></td>
+	<td class="summary">Return a filtered copy of the object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#template">template (obj[, template])</a></td>
+	<td class="summary">Fills nil properties in an object with the given <a href="index.html#template">template</a>  object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isEqual">isEqual (objA, objB[, useMt])</a></td>
+	<td class="summary">Performs a deep comparison test between two objects.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#result">result (obj, method[, ...])</a></td>
+	<td class="summary">Invokes an object method.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isTable">isTable (t)</a></td>
+	<td class="summary">Checks if the given arg is a table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isCallable">isCallable (obj)</a></td>
+	<td class="summary">Checks if the given argument is an callable.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isArray">isArray (obj)</a></td>
+	<td class="summary">Checks if the given argument is an array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isIterable">isIterable (obj)</a></td>
+	<td class="summary">Checks if the given object is iterable with <a href="http://www.lua.org/manual/5.2/manual.html#pdf-pairs">pairs</a>  (or <a href="http://www.lua.org/manual/5.2/manual.html#pdf-ipairs">ipairs</a> ).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isEmpty">isEmpty ([obj])</a></td>
+	<td class="summary">Checks if the given is empty.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isString">isString (obj)</a></td>
+	<td class="summary">Checks if the given argument is a <em>string</em>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isFunction">isFunction (obj)</a></td>
+	<td class="summary">Checks if the given argument is a function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isNil">isNil (obj)</a></td>
+	<td class="summary">Checks if the given argument is nil.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isNumber">isNumber (obj)</a></td>
+	<td class="summary">Checks if the given argument is a number.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isNaN">isNaN (obj)</a></td>
+	<td class="summary">Checks if the given argument is NaN (see <a href="http://en.wikipedia.org/wiki/NaN">Not-A-Number</a>).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isFinite">isFinite (obj)</a></td>
+	<td class="summary">Checks if the given argument is a finite number.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isBoolean">isBoolean (obj)</a></td>
+	<td class="summary">Checks if the given argument is a boolean.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isInteger">isInteger (obj)</a></td>
+	<td class="summary">Checks if the given argument is an integer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#chain">chain (value)</a></td>
+	<td class="summary">Returns a wrapped object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#obj:value">obj:value ()</a></td>
+	<td class="summary">Extracts the value of a wrapped object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#import">import ([context[, noConflict]])</a></td>
+	<td class="summary">Imports all library functions into a context.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Table_functions"></a>Table functions </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "each"></a>
+    <strong>each (t, f[, ...])</strong>
+    </dt>
+    <dd>
+    Iterates on each key-value pairs in a table.  Calls function <code>f(key, value)</code> at each step of iteration.
+ <br/><em>Aliased as <code>forEach</code></em>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function, prototyped as <code>f(key, value, ...)</code>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to function <code>f</code>
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#eachi">eachi</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "eachi"></a>
+    <strong>eachi (t, f[, ...])</strong>
+    </dt>
+    <dd>
+    Iterates on each integer key-value pairs in a table.  Calls function <code>f(key, value)</code>
+ only on values at integer key in a given collection. The table can be a sparse array,
+ or map-like. Iteration will start from the lowest integer key found to the highest one.
+ <br/><em>Aliased as <code>forEachi</code></em>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function, prototyped as <code>f(key, value, ...)</code>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to function <code>f</code>
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#each">each</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "at"></a>
+    <strong>at (t, ...)</strong>
+    </dt>
+    <dd>
+    Returns an array of values at specific indexes and keys.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         A variable number of indexes or keys to extract values
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        an array-list of values from the passed-in table
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "count"></a>
+    <strong>count (t[, value])</strong>
+    </dt>
+    <dd>
+    Counts occurrences of a given value in a table.  Uses <a href="index.html#isEqual">isEqual</a> to compare values.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">value</span></span>
+         a value to be searched in the table. If not given, the <a href="index.html#size">size</a> of the table will be returned
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        the count of occurrences of <code>value</code>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#countf">countf</a></li>
+         <li><a href="index.html#size">size</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "countf"></a>
+    <strong>countf (t, f[, ...])</strong>
+    </dt>
+    <dd>
+    Counts occurrences validating a predicate.  Same as <a href="index.html#count">count</a>, but uses an iterator.
+ Returns the count for values passing the test <code>f(key, value, ...)</code>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function, prototyped as <code>f(key, value, ...)</code>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to function <code>f</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        the count of values validating the predicate
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#count">count</a></li>
+         <li><a href="index.html#size">size</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "cycle"></a>
+    <strong>cycle (t, n)</strong>
+    </dt>
+    <dd>
+    Iterates through a table and loops <code>n</code> times.  The full iteration loop will be
+ repeated <code>n</code> times (or forever, if <code>n</code> is omitted). In case <code>n</code> is lower or equal to 0, it returns
+ an empty function.
+ <br/><em>Aliased as <code>loop</code></em>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">number</span></span>
+         the number of loops
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        an iterator function yielding key-value pairs from the passed-in table.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map"></a>
+    <strong>map (t, f[, ...])</strong>
+    </dt>
+    <dd>
+    Maps function <code>f(key, value)</code> on all key-value pairs.  Collects
+ and returns the results as a table.
+ <br/><em>Aliased as <code>collect</code></em>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+          an iterator function, prototyped as <code>f(key, value, ...)</code>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to function <code>f</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a table of results
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "reduce"></a>
+    <strong>reduce (t, f[, state])</strong>
+    </dt>
+    <dd>
+    Reduces a table, left-to-right.  Folds the table from the first element to the last element
+ to into a single value, with respect to a given iterator and an initial state.
+ The given function takes a state and a value and returns a new state.
+ <br/><em>Aliased as <code>inject</code>, <code>foldl</code></em>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function, prototyped as <code>f(state, value)</code>
+        </li>
+        <li><span class="parameter">state</span>
+            <span class="types"><span class="type">state</span></span>
+         an initial state of reduction. Defaults to the first value in the table.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">state</span></span>
+        state the final state of reduction
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#reduceRight">reduceRight</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "reduceRight"></a>
+    <strong>reduceRight (t, f[, state])</strong>
+    </dt>
+    <dd>
+    Reduces a table, right-to-left.  Folds the table from the last element to the first element
+ to single value, with respect to a given iterator and an initial state.
+ The given function takes a state and a value, and returns a new state.
+ <br/><em>Aliased as <code>injectr</code>, <code>foldr</code></em>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function, prototyped as <code>f(state,value)</code>
+        </li>
+        <li><span class="parameter">state</span>
+            <span class="types"><span class="type">state</span></span>
+         an initial state of reduction. Defaults to the last value in the table.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">state</span></span>
+        state the final state of reduction
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#reduce">reduce</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "mapReduce"></a>
+    <strong>mapReduce (t, f[, state])</strong>
+    </dt>
+    <dd>
+    Reduces a table while saving intermediate states.  Folds the table left-to-right
+ to a single value, with respect to a given iterator and an initial state. The given function
+ takes a state and a value, and returns a new state. It returns an array of intermediate states.
+ <br/><em>Aliased as <code>mapr</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function, prototyped as <code>f(state, value)</code>
+        </li>
+        <li><span class="parameter">state</span>
+            <span class="types"><span class="type">state</span></span>
+         an initial state of reduction. Defaults to the first value in the table.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        an array of states
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#mapReduceRight">mapReduceRight</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "mapReduceRight"></a>
+    <strong>mapReduceRight (t, f[, state])</strong>
+    </dt>
+    <dd>
+    Reduces a table while saving intermediate states.  Folds the table right-to-left
+ to a single value, with respect to a given iterator and an initial state. The given function
+ takes a state and a value, and returns a new state. It returns an array of intermediate states.
+ <br/><em>Aliased as <code>maprr</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function, prototyped as <code>f(state,value)</code>
+        </li>
+        <li><span class="parameter">state</span>
+            <span class="types"><span class="type">state</span></span>
+         an initial state of reduction. Defaults to the last value in the table.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        an array of states
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#mapReduce">mapReduce</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "include"></a>
+    <strong>include (t, value)</strong>
+    </dt>
+    <dd>
+    Search for a value in a table.  It does not search in nested tables.
+ <br/><em>Aliased as <code>any</code>, <code>some</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">value</span> or <span class="type">function</span></span>
+         a value to search for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        a boolean : <code>true</code> when found, <code>false</code> otherwise
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#detect">detect</a></li>
+         <li><a href="index.html#contains">contains</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "detect"></a>
+    <strong>detect (t, value)</strong>
+    </dt>
+    <dd>
+    Search for a value in a table.  Returns the key of the value if found.
+ It does not search in nested tables.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">value</span></span>
+         a value to search for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">key</span></span>
+        the value key or <strong>nil</strong>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#include">include</a></li>
+         <li><a href="index.html#contains">contains</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "contains"></a>
+    <strong>contains (t, value)</strong>
+    </dt>
+    <dd>
+    Checks if a value is present in a table.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">value</span></span>
+         a value to search for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        true if present, otherwise false
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#include">include</a></li>
+         <li><a href="index.html#detect">detect</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "findWhere"></a>
+    <strong>findWhere (t, props)</strong>
+    </dt>
+    <dd>
+    Returns the first value having specified keys <code>props</code>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">props</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a set of keys
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">value</span></span>
+        a value from the passed-in table
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "select"></a>
+    <strong>select (t, f[, ...])</strong>
+    </dt>
+    <dd>
+    Selects and extracts values passing an iterator test.
+ <br/><em>Aliased as <code>filter</code></em>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function, prototyped as <code>f(key, value, ...)</code>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to function <code>f</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        the selected values
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#reject">reject</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "reject"></a>
+    <strong>reject (t, f[, ...])</strong>
+    </dt>
+    <dd>
+    Clones a table while dropping values passing an iterator test.
+ <br/><em>Aliased as <code>discard</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function, prototyped as <code>f(key, value, ...)</code>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to function <code>f</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        the remaining values
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#select">select</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "all"></a>
+    <strong>all (t, f[, ...])</strong>
+    </dt>
+    <dd>
+    Checks if all values in a table are passing an iterator test.
+ <br/><em>Aliased as <code>every</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function, prototyped as <code>f(key, value, ...)</code>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to function <code>f</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> if all values passes the predicate, <code>false</code> otherwise
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "invoke"></a>
+    <strong>invoke (t, method[, ...])</strong>
+    </dt>
+    <dd>
+    Invokes a method on each value in a table.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">method</span>
+            <span class="types"><span class="type">function</span></span>
+         a function, prototyped as <code>f(value, ...)</code>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to function <code>method</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#result">result</a></span>
+        the result(s) of method call <code>f(value, ...)</code>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#pluck">pluck</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pluck"></a>
+    <strong>pluck (t, a)</strong>
+    </dt>
+    <dd>
+    Extracts property-values from a table of values.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">a</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         property, will be used to index in each value: <code>value[property]</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        an array of values for the specified property
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "max"></a>
+    <strong>max (t[, transform[, ...]])</strong>
+    </dt>
+    <dd>
+    Returns the max value in a collection.  If an transformation function is passed, it will
+ be used to extract the value by which all objects will be sorted.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">transform</span>
+            <span class="types"><span class="type">function</span></span>
+         an transformation function, prototyped as <code>transform(value,...)</code>, defaults to <a href="index.html#identity">identity</a>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to function <code>transform</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">value</span></span>
+        the maximum value found
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#min">min</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "min"></a>
+    <strong>min (t[, transform[, ...]])</strong>
+    </dt>
+    <dd>
+    Returns the min value in a collection.  If an transformation function is passed, it will
+ be used to extract the value by which all objects will be sorted.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">transform</span>
+            <span class="types"><span class="type">function</span></span>
+         an transformation function, prototyped as <code>transform(value,...)</code>, defaults to <a href="index.html#identity">identity</a>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to function <code>transform</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">value</span></span>
+        the minimum value found
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#max">max</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "shuffle"></a>
+    <strong>shuffle (t[, seed])</strong>
+    </dt>
+    <dd>
+    Returns a shuffled copy of a given collection.  If a seed is provided, it will
+ be used to init the random number generator (via <a href="http://www.lua.org/manual/5.2/manual.html#pdf-math.randomseed">math.randomseed</a> ).
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">seed</span>
+            <span class="types"><span class="type">number</span></span>
+         a seed
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a shuffled copy of the given table
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "same"></a>
+    <strong>same (a, b)</strong>
+    </dt>
+    <dd>
+    Checks if two tables are the same.  It compares if both tables features the same values,
+ but not necessarily at the same keys.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">a</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">b</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         another table
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sort"></a>
+    <strong>sort (t[, comp])</strong>
+    </dt>
+    <dd>
+    Sorts a table, in-place.  If a comparison function is given, it will be used to sort values.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">comp</span>
+            <span class="types"><span class="type">function</span></span>
+         a comparison function prototyped as <code>comp(a,b)</code>, defaults to <tt>&lt;</tt> operator.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        the given table, sorted.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "groupBy"></a>
+    <strong>groupBy (t, iter[, ...])</strong>
+    </dt>
+    <dd>
+    Splits a table into subsets.  Each subset feature values from the original table grouped
+ by the result of passing it through an iterator.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">iter</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function, prototyped as <code>iter(key, value, ...)</code>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to function <code>iter</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new table with values grouped by subsets
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "countBy"></a>
+    <strong>countBy (t, iter[, ...])</strong>
+    </dt>
+    <dd>
+    Groups values in a collection and counts them.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">iter</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function, prototyped as <code>iter(key, value, ...)</code>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to function <code>iter</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new table with subsets names paired with their count
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "size"></a>
+    <strong>size ([...])</strong>
+    </dt>
+    <dd>
+    Counts the number of values in a collection.  If being passed more than one args
+ it will return the count of all passed-in args.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional variable number of arguments
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        a count
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#count">count</a></li>
+         <li><a href="index.html#countf">countf</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "containsKeys"></a>
+    <strong>containsKeys (t, other)</strong>
+    </dt>
+    <dd>
+    Checks if all the keys of <code>other</code> table exists in table <code>t</code>.  It does not
+ compares values. The test is not commutative, i.e table <code>t</code> may contains keys
+ not existing in <code>other</code>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">other</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         another table
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#sameKeys">sameKeys</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "sameKeys"></a>
+    <strong>sameKeys (tA, tB)</strong>
+    </dt>
+    <dd>
+    Checks if both given tables have the same keys.  It does not compares values.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tA</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a table
+        </li>
+        <li><span class="parameter">tB</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         another table
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#containsKeys">containsKeys</a>
+    </ul>
+
+
+</dd>
+</dl>
+    <h2><a name="Array_functions"></a>Array functions </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "toArray"></a>
+    <strong>toArray ([...])</strong>
+    </dt>
+    <dd>
+    Converts a vararg list to an array-list.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional variable number of arguments
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        an array-list of all passed-in args
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "find"></a>
+    <strong>find (array, value[, from])</strong>
+    </dt>
+    <dd>
+    Looks for the first occurrence of a given value in an array.  Returns the value index if found.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array of values
+        </li>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">value</span></span>
+         a value to search for
+        </li>
+        <li><span class="parameter">from</span>
+            <span class="types"><span class="type">number</span></span>
+         the index from where to start the search. Defaults to 1.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span> or <span class="type">nil</span></span>
+        the index of the value if found in the array, <code>nil</code> otherwise.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "reverse"></a>
+    <strong>reverse (array)</strong>
+    </dt>
+    <dd>
+    Reverses values in a given array.  The passed-in array should not be sparse.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a copy of the given array, reversed
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "selectWhile"></a>
+    <strong>selectWhile (array, f[, ...])</strong>
+    </dt>
+    <dd>
+    Collects values from a given array.  The passed-in array should not be sparse.
+ This function collects values as long as they satisfy a given predicate.
+ Therefore, it returns on the first falsy test.
+ <br/><em>Aliased as <code>takeWhile</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function prototyped as <code>f(key, value, ...)</code>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to function <code>f</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new table containing all values collected
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#dropWhile">dropWhile</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "dropWhile"></a>
+    <strong>dropWhile (array, f[, ...])</strong>
+    </dt>
+    <dd>
+    Collects values from a given array.  The passed-in array should not be sparse.
+ This function collects values as long as they do not satisfy a given predicate.
+ Therefore it returns on the first true test.
+ <br/><em>Aliased as <code>rejectWhile</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function prototyped as <code>f(key,value,...)</code>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to function <code>f</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new table containing all values collected
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sortedIndex"></a>
+    <strong>sortedIndex (array, the[, comp[, sort]])</strong>
+    </dt>
+    <dd>
+    Returns the index at which a value should be inserted.  This returned index is determined so
+ that it maintains the sort. If a comparison function is passed, it will be used to sort all
+ values.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">the</span>
+            <span class="types"><span class="type">value</span></span>
+         value to be inserted
+        </li>
+        <li><span class="parameter">comp</span>
+            <span class="types"><span class="type">function</span></span>
+         an comparison function prototyped as <code>f(a, b)</code>, defaults to <tt>&lt;</tt> operator.
+        </li>
+        <li><span class="parameter">sort</span>
+            <span class="types"><span class="type">boolean</span></span>
+         whether or not the passed-in array should be sorted
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        the index at which the passed-in value should be inserted
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "indexOf"></a>
+    <strong>indexOf (array, the)</strong>
+    </dt>
+    <dd>
+    Returns the index of a given value in an array.  If the passed-in value exists
+ more than once in the array, it will return the index of the first occurrence.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">the</span>
+            <span class="types"><span class="type">value</span></span>
+         value to search for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span> or <span class="type">nil</span></span>
+        the index of the passed-in value
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#lastIndexOf">lastIndexOf</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "lastIndexOf"></a>
+    <strong>lastIndexOf (array, the)</strong>
+    </dt>
+    <dd>
+    Returns the index of the last occurrence of a given value.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">the</span>
+            <span class="types"><span class="type">value</span></span>
+         value to search for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span> or <span class="type">nil</span></span>
+        the index of the last occurrence of the passed-in value or <strong>nil</strong>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#indexOf">indexOf</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "addTop"></a>
+    <strong>addTop (array, ...)</strong>
+    </dt>
+    <dd>
+    Adds all passed-in values at the top of an array.  The last arguments will bubble to the
+ top of the given array.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         a variable number of arguments
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        the passed-in array
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#push">push</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "push"></a>
+    <strong>push (array, ...)</strong>
+    </dt>
+    <dd>
+    Pushes all passed-in values at the end of an array.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         a variable number of arguments
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        the passed-in array
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#addTop">addTop</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pop"></a>
+    <strong>pop (array[, n])</strong>
+    </dt>
+    <dd>
+    Removes and returns the values at the top of a given array.
+ <br/><em>Aliased as <code>shift</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">number</span></span>
+         the number of values to be popped. Defaults to 1.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">vararg</span></span>
+        a vararg list of values popped from the array
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#unshift">unshift</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "unshift"></a>
+    <strong>unshift (array[, n])</strong>
+    </dt>
+    <dd>
+    Removes and returns the values at the end of a given array.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">number</span></span>
+         the number of values to be unshifted. Defaults to 1.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">vararg</span></span>
+        a vararg list of values
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#pop">pop</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pull"></a>
+    <strong>pull (array, ...)</strong>
+    </dt>
+    <dd>
+    Removes all provided values in a given array.
+ <br/><em>Aliased as <code>remove</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         a variable number of values to be removed from the array
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        the passed-in array
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "removeRange"></a>
+    <strong>removeRange (array[, start[, finish]])</strong>
+    </dt>
+    <dd>
+    Trims all values indexed within the range <code>[start, finish]</code>.
+ <br/><em>Aliased as <code>rmRange</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">start</span>
+            <span class="types"><span class="type">number</span></span>
+         the lower bound index, defaults to the first index in the array.
+        </li>
+        <li><span class="parameter">finish</span>
+            <span class="types"><span class="type">number</span></span>
+         the upper bound index, defaults to the array length.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        the passed-in array
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "chunk"></a>
+    <strong>chunk (array, f[, ...])</strong>
+    </dt>
+    <dd>
+    Chunks together consecutive values.  Values are chunked on the basis of the return
+ value of a provided predicate <code>f(key, value, ...)</code>. Consecutive elements which return
+ the same value are chunked together. Leaves the first argument untouched if it is not an array.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function prototyped as <code>f(key, value, ...)</code>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to function <code>f</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a table of chunks (arrays)
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#zip">zip</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "slice"></a>
+    <strong>slice (array[, start[, finish]])</strong>
+    </dt>
+    <dd>
+    Slices values indexed within <code>[start, finish]</code> range.
+ <br/><em>Aliased as <code>_.sub</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">start</span>
+            <span class="types"><span class="type">number</span></span>
+         the lower bound index, defaults to the first index in the array.
+        </li>
+        <li><span class="parameter">finish</span>
+            <span class="types"><span class="type">number</span></span>
+         the upper bound index, defaults to the array length.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "first"></a>
+    <strong>first (array[, n])</strong>
+    </dt>
+    <dd>
+    Returns the first N values in an array.
+ <br/><em>Aliased as <code>head</code>, <code>take</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">number</span></span>
+         the number of values to be collected, defaults to 1.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#initial">initial</a></li>
+         <li><a href="index.html#last">last</a></li>
+         <li><a href="index.html#rest">rest</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "initial"></a>
+    <strong>initial (array[, n])</strong>
+    </dt>
+    <dd>
+    Returns all values in an array excluding the last N values.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">number</span></span>
+         the number of values to be left, defaults to the array length.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#first">first</a></li>
+         <li><a href="index.html#last">last</a></li>
+         <li><a href="index.html#rest">rest</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "last"></a>
+    <strong>last (array[, n])</strong>
+    </dt>
+    <dd>
+    Returns the last N values in an array.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">number</span></span>
+         the number of values to be collected, defaults to the array length.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#first">first</a></li>
+         <li><a href="index.html#initial">initial</a></li>
+         <li><a href="index.html#rest">rest</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "rest"></a>
+    <strong>rest (array[, index])</strong>
+    </dt>
+    <dd>
+    Trims all values before index.
+ <br/><em>Aliased as <code>tail</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">number</span></span>
+         an index, defaults to 1
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#first">first</a></li>
+         <li><a href="index.html#initial">initial</a></li>
+         <li><a href="index.html#last">last</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "compact"></a>
+    <strong>compact (array)</strong>
+    </dt>
+    <dd>
+    Trims all falsy (false and nil) values.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "flatten"></a>
+    <strong>flatten (array[, shallow])</strong>
+    </dt>
+    <dd>
+    Flattens a nested array.  Passing <code>shallow</code> will only flatten at the first level.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">shallow</span>
+            <span class="types"><span class="type">boolean</span></span>
+         specifies the flattening depth
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array, flattened
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "difference"></a>
+    <strong>difference (array, another)</strong>
+    </dt>
+    <dd>
+    Returns values from an array not present in all passed-in args.
+ <br/><em>Aliased as <code>without</code> and <code>diff</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">another</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         array
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#union">union</a></li>
+         <li><a href="index.html#intersection">intersection</a></li>
+         <li><a href="index.html#symmetricDifference">symmetricDifference</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "union"></a>
+    <strong>union (...)</strong>
+    </dt>
+    <dd>
+    Returns the duplicate-free union of all passed in arrays.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         a variable number of arrays arguments
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#difference">difference</a></li>
+         <li><a href="index.html#intersection">intersection</a></li>
+         <li><a href="index.html#symmetricDifference">symmetricDifference</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "intersection"></a>
+    <strong>intersection (array, ...)</strong>
+    </dt>
+    <dd>
+    Returns the  intersection of all passed-in arrays.
+ Each value in the result is present in each of the passed-in arrays.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         a variable number of array arguments
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#difference">difference</a></li>
+         <li><a href="index.html#union">union</a></li>
+         <li><a href="index.html#symmetricDifference">symmetricDifference</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "symmetricDifference"></a>
+    <strong>symmetricDifference (array, array2)</strong>
+    </dt>
+    <dd>
+    Performs a symmetric difference.  Returns values from <code>array</code> not present in <code>array2</code> and also values
+ from <code>array2</code> not present in <code>array</code>.
+ <br/><em>Aliased as <code>symdiff</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">array2</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         another array
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#difference">difference</a></li>
+         <li><a href="index.html#union">union</a></li>
+         <li><a href="index.html#intersection">intersection</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "unique"></a>
+    <strong>unique (array)</strong>
+    </dt>
+    <dd>
+    Produces a duplicate-free version of a given array.
+ <br/><em>Aliased as <code>uniq</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array, duplicate-free
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#isunique">isunique</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "isunique"></a>
+    <strong>isunique (array)</strong>
+    </dt>
+    <dd>
+    Checks if a given array contains distinct values.  Such an array is made of distinct elements,
+ which only occur once in this array.
+ <br/><em>Aliased as <code>isuniq</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> if the given array is unique, <code>false</code> otherwise.
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#unique">unique</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "zip"></a>
+    <strong>zip (...)</strong>
+    </dt>
+    <dd>
+    Merges values of each of the passed-in arrays in subsets.
+ Only values indexed with the same key in the given arrays are merged in the same subset.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         a variable number of array arguments
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "append"></a>
+    <strong>append (array, other)</strong>
+    </dt>
+    <dd>
+    Clones <code>array</code> and appends <code>other</code> values.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">other</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "interleave"></a>
+    <strong>interleave (...)</strong>
+    </dt>
+    <dd>
+    Interleaves arrays.  It returns a single array made of values from all
+ passed in arrays in their given order, interleaved.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         a variable list of arrays
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#interpose">interpose</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "interpose"></a>
+    <strong>interpose (value, array)</strong>
+    </dt>
+    <dd>
+    Interposes <code>value</code> in-between consecutive pair of values in <code>array</code>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">value</span></span>
+         a value
+        </li>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#interleave">interleave</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "range"></a>
+    <strong>range ([from[, to[, step]]])</strong>
+    </dt>
+    <dd>
+    Produce a flexible list of numbers.  If one positive value is passed, will count from 0 to that value,
+ with a default step of 1. If two values are passed, will count from the first one to the second one, with the
+ same default step of 1. A third passed value will be considered a step value.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">from</span>
+            <span class="types"><span class="type">number</span></span>
+         the initial value of the range
+        </li>
+        <li><span class="parameter">to</span>
+            <span class="types"><span class="type">number</span></span>
+         the final value of the range
+        </li>
+        <li><span class="parameter">step</span>
+            <span class="types"><span class="type">number</span></span>
+         the count step value
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array of numbers
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "rep"></a>
+    <strong>rep (value, n)</strong>
+    </dt>
+    <dd>
+    Creates an array list of <code>n</code> values, repeated.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">value</span></span>
+         a value to be repeated
+        </li>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">number</span></span>
+         the number of repetitions of the given <code>value</code>.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array of <code>n</code> values
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "partition."></a>
+    <strong>partition. (array[, n])</strong>
+    </dt>
+    <dd>
+    Iterator returning partitions of an array.  It returns arrays of length <code>n</code>
+ made of values from the given array. In case the array size is not a multiple
+ of <code>n</code>, the last array returned will be made of the rest of the values.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">number</span></span>
+         the size of each partition. Defaults to 1.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        an iterator function
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "permutation"></a>
+    <strong>permutation (array)</strong>
+    </dt>
+    <dd>
+    Iterator returning the permutations of an array.  It returns arrays made of all values
+ from the passed-in array, with values permuted.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an array
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        an iterator function
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "invert"></a>
+    <strong>invert (array)</strong>
+    </dt>
+    <dd>
+    Swaps keys with values.  Produces a new array where previous keys are now values,
+ while previous values are now keys.
+ <br/><em>Aliased as <code>mirror</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a given array
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a new array
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "concat"></a>
+    <strong>concat (array[, sep[, i[, j]]])</strong>
+    </dt>
+    <dd>
+    Concatenates values in a given array.  Handles booleans as well. If <code>sep</code> string is
+ passed, it will be used as a separator. Passing <code>i</code> and <code>j</code> will result in concatenating
+ values within <code>[i,j]</code> range.
+ <br/><em>Aliased as <code>join</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">array</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a given array
+        </li>
+        <li><span class="parameter">sep</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         a separator string, defaults to <code>''</code>.
+        </li>
+        <li><span class="parameter">i</span>
+            <span class="types"><span class="type">number</span></span>
+         the starting index, defaults to 1.
+        </li>
+        <li><span class="parameter">j</span>
+            <span class="types"><span class="type">number</span></span>
+         the final index, defaults to the array length.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+        a string
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Utility_functions"></a>Utility functions </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "identity"></a>
+    <strong>identity (value)</strong>
+    </dt>
+    <dd>
+    Returns the passed-in value.  This function seems useless, but it is used internally
+ as a default iterator.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">value</span></span>
+         a value
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">value</span></span>
+        the passed-in value
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "once"></a>
+    <strong>once (f)</strong>
+    </dt>
+    <dd>
+    Returns a version of <code>f</code> that runs only once.  Successive calls to <code>f</code>
+ will keep yielding the same output, no matter what the passed-in arguments are.
+ It can be used to initialize variables.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         a function
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        a new function
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#after">after</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "memoize"></a>
+    <strong>memoize (f[, hash])</strong>
+    </dt>
+    <dd>
+    Memoizes a given function by caching the computed result.
+ Useful for speeding-up slow-running functions. If function <code>hash</code> is passed,
+ it will be used to compute hash keys for a set of input values to the function for caching.
+ <br/><em>Aliased as <code>cache</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         a function
+        </li>
+        <li><span class="parameter">hash</span>
+            <span class="types"><span class="type">function</span></span>
+         a hash function, defaults to <a href="index.html#identity">identity</a>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        a new function
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "after"></a>
+    <strong>after (f, count)</strong>
+    </dt>
+    <dd>
+    Returns a version of <code>f</code> that runs on the <code>count-th</code> call.
+ Useful when dealing with asynchronous tasks.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         a function
+        </li>
+        <li><span class="parameter">count</span>
+            <span class="types"><span class="type">number</span></span>
+         the number of calls before <code>f</code> answers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        a new function
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#once">once</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "compose"></a>
+    <strong>compose (...)</strong>
+    </dt>
+    <dd>
+    Composes functions.  Each passed-in function consumes the return value of the function that follows.
+ In math terms, composing the functions <code>f</code>, <code>g</code>, and <code>h</code> produces the function <code>f(g(h(...)))</code>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         a variable number of functions
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        a new function
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#pipe">pipe</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pipe"></a>
+    <strong>pipe (value, ...)</strong>
+    </dt>
+    <dd>
+    Pipes a value through a series of functions.  In math terms,
+ given some functions <code>f</code>, <code>g</code>, and <code>h</code> in that order, it returns <code>f(g(h(value)))</code>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">value</span></span>
+         a value
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         a variable number of functions
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">value</span></span>
+        the result of the composition of function calls.
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#compose">compose</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "complement"></a>
+    <strong>complement (f)</strong>
+    </dt>
+    <dd>
+    Returns the logical complement of a given function.  For a given input, the returned
+ function will output <code>false</code> if the original function would have returned <code>true</code>,
+ and vice-versa.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         a function
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        the logical complement of the given function <code>f</code>.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juxtapose"></a>
+    <strong>juxtapose (value, ...)</strong>
+    </dt>
+    <dd>
+    Calls a sequence of passed-in functions with the same argument.
+ Returns a sequence of results.
+ <br/><em>Aliased as <code>juxt</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">value</span></span>
+         a value
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         a variable number of functions
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">vararg</span></span>
+        a vargarg list of results.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "wrap"></a>
+    <strong>wrap (f, wrapper)</strong>
+    </dt>
+    <dd>
+    Wraps <code>f</code> inside of the <code>wrapper</code> function.  It passes <code>f</code> as the first argument to <code>wrapper</code>.
+ This allows the wrapper to execute code before and after <code>f</code> runs,
+ adjust the arguments, and execute it conditionally.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         a function to be wrapped, prototyped as <code>f(...)</code>
+        </li>
+        <li><span class="parameter">wrapper</span>
+            <span class="types"><span class="type">function</span></span>
+         a wrapper function, prototyped as <code>wrapper(f,...)</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        a new function
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "times"></a>
+    <strong>times (n, iter, ...)</strong>
+    </dt>
+    <dd>
+    Runs <code>iter</code> function <code>n</code> times.
+ Collects the results of each run and returns them in an array.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">number</span></span>
+         the number of times <code>iter</code> should be called
+        </li>
+        <li><span class="parameter">iter</span>
+            <span class="types"><span class="type">function</span></span>
+         an iterator function, prototyped as <code>iter(i, ...)</code>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         extra-args to be passed to <code>iter</code> function
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        an array of results
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bind"></a>
+    <strong>bind (f, v)</strong>
+    </dt>
+    <dd>
+    Binds <code>v</code> to be the first argument to function <code>f</code>.  As a result,
+ calling <code>f(...)</code> will result to <code>f(v, ...)</code>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         a function
+        </li>
+        <li><span class="parameter">v</span>
+            <span class="types"><span class="type">value</span></span>
+         a value
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        a function
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#bindn">bindn</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "bindn"></a>
+    <strong>bindn (f, ...)</strong>
+    </dt>
+    <dd>
+    Binds <code>...</code> to be the N-first arguments to function <code>f</code>.  As a result,
+ calling <code>f(a1, a2, ..., aN)</code> will result to <code>f(..., a1, a2, ...,aN)</code>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         a function
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         a variable number of arguments
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        a function
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#bind">bind</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "uniqueId"></a>
+    <strong>uniqueId ([template[, ...]])</strong>
+    </dt>
+    <dd>
+    Generates a unique ID for the current session.  If given a string <em>template</em>
+ will use this template for output formatting. Otherwise, if <em>template</em> is a function,
+ will evaluate <code>template(id, ...)</code>.
+ <br/><em>Aliased as <code>uid</code></em>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">template</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a> or <span class="type">function</span></span>
+         either a string or a function template to format the ID
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         a variable number of arguments to be passed to <em>template</em>, in case it is a function.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">value</span></span>
+        an ID
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Object_functions"></a>Object functions </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "keys"></a>
+    <strong>keys (obj)</strong>
+    </dt>
+    <dd>
+    Returns the keys of the object properties.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        an array
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "values"></a>
+    <strong>values (obj)</strong>
+    </dt>
+    <dd>
+    Returns the values of the object properties.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        an array
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "toBoolean"></a>
+    <strong>toBoolean (value)</strong>
+    </dt>
+    <dd>
+    Converts any given value to a boolean
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">value</span></span>
+         a value. Can be of any type
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> if value is true, <code>false</code> otherwise (false or nil).
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "extend"></a>
+    <strong>extend (destObj, ...)</strong>
+    </dt>
+    <dd>
+    Extends an object properties.  It copies all of the properties of extra passed-in objects
+ into the destination object, and returns the destination object.
+ The last object in the <code>...</code> set will override properties of the same name in the previous one
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">destObj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a destination object
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         a variable number of array arguments
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        the destination object extended
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "functions"></a>
+    <strong>functions ([obj])</strong>
+    </dt>
+    <dd>
+    Returns a sorted list of all methods names found in an object.  If the given object
+ has a metatable implementing an <code>__index</code> field pointing to another table, will also recurse on this
+ table if argument <code>recurseMt</code> is provided. If <code>obj</code> is omitted, it defaults to the library functions.
+ <br/><em>Aliased as <code>methods</code></em>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object. Defaults to library functions.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        an array-list of methods names
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "clone"></a>
+    <strong>clone (obj[, shallow])</strong>
+    </dt>
+    <dd>
+    Clones a given object properties.  If <code>shallow</code> is passed
+ will also clone nested array properties.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+        <li><span class="parameter">shallow</span>
+            <span class="types"><span class="type">boolean</span></span>
+         whether or not nested array-properties should be cloned, defaults to false.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        a copy of the passed-in object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "tap"></a>
+    <strong>tap (obj, f[, ...])</strong>
+    </dt>
+    <dd>
+    Invokes interceptor with the object, and then returns object.
+ The primary purpose of this method is to "tap into" a method chain, in order to perform operations
+ on intermediate results within the chain.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+        <li><span class="parameter">f</span>
+            <span class="types"><span class="type">function</span></span>
+         an interceptor function, should be prototyped as <code>f(obj, ...)</code>
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Extra-args to be passed to interceptor function
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        the passed-in object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "has"></a>
+    <strong>has (obj, key)</strong>
+    </dt>
+    <dd>
+    Checks if a given object implements a property.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+        <li><span class="parameter">key</span>
+            <span class="types"><span class="type">value</span></span>
+         a key property to be checked
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pick"></a>
+    <strong>pick (obj, ...)</strong>
+    </dt>
+    <dd>
+    Return a filtered copy of the object.  The returned object will only have
+ the white-listed properties paired with their original values.
+ <br/><em>Aliased as <code>choose</code></em>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         a variable number of string keys
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        the filtered object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "omit"></a>
+    <strong>omit (obj, ...)</strong>
+    </dt>
+    <dd>
+    Return a filtered copy of the object.  The returned object will not have
+ the black-listed properties.
+ <br/><em>Aliased as <code>drop</code></em>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         a variable number of string keys
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        the filtered object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "template"></a>
+    <strong>template (obj[, template])</strong>
+    </dt>
+    <dd>
+    Fills nil properties in an object with the given <a href="index.html#template">template</a>  object.  Pre-existing
+ properties will be preserved.
+ <br/><em>Aliased as <code>defaults</code></em>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+        <li><span class="parameter">template</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a template object. Defaults to an empty table <code>{}</code>.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        the passed-in object filled
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isEqual"></a>
+    <strong>isEqual (objA, objB[, useMt])</strong>
+    </dt>
+    <dd>
+    Performs a deep comparison test between two objects.  Can compare strings, functions
+ (by reference), nil, booleans. Compares tables by reference or by values. If <code>useMt</code>
+ is passed, the equality operator <code>==</code> will be used if one of the given objects has a
+ metatable implementing <code>__eq</code>.
+ <br/><em>Aliased as <code>_.compare</code></em>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">objA</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+        <li><span class="parameter">objB</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         another object
+        </li>
+        <li><span class="parameter">useMt</span>
+            <span class="types"><span class="type">boolean</span></span>
+         whether or not <code>__eq</code> should be used, defaults to false.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "result"></a>
+    <strong>result (obj, method[, ...])</strong>
+    </dt>
+    <dd>
+    Invokes an object method.  It passes the object itself as the first argument. if <code>method</code> is not
+ callable, will return <code>obj[method]</code>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+        <li><span class="parameter">method</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         a string key to index in object <code>obj</code>.
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">vararg</span></span>
+         Optional extra-args to be passed to <code>method</code>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">value</span></span>
+        the returned value of <code>method(obj,...)</code> call
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isTable"></a>
+    <strong>isTable (t)</strong>
+    </dt>
+    <dd>
+    Checks if the given arg is a table.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a value to be tested
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isCallable"></a>
+    <strong>isCallable (obj)</strong>
+    </dt>
+    <dd>
+    Checks if the given argument is an callable.  Assumes <code>obj</code> is callable if
+ it is either a function or a table having a metatable implementing <code>__call</code> metamethod.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isArray"></a>
+    <strong>isArray (obj)</strong>
+    </dt>
+    <dd>
+    Checks if the given argument is an array.  Assumes <code>obj</code> is an array
+ if is a table with integer numbers starting at 1.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isIterable"></a>
+    <strong>isIterable (obj)</strong>
+    </dt>
+    <dd>
+    Checks if the given object is iterable with <a href="http://www.lua.org/manual/5.2/manual.html#pdf-pairs">pairs</a>  (or <a href="http://www.lua.org/manual/5.2/manual.html#pdf-ipairs">ipairs</a> ).
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> if the object can be iterated with <a href="http://www.lua.org/manual/5.2/manual.html#pdf-pairs">pairs</a> , <code>false</code> otherwise
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isEmpty"></a>
+    <strong>isEmpty ([obj])</strong>
+    </dt>
+    <dd>
+    Checks if the given is empty.  If <code>obj</code> is a <em>string</em>, will return <code>true</code>
+ if <code>#obj == 0</code>. Otherwise, if <code>obj</code> is a table, will return whether or not this table
+ is empty. If <code>obj</code> is <code>nil</code>, it will return true.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a> or <a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         an object
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isString"></a>
+    <strong>isString (obj)</strong>
+    </dt>
+    <dd>
+    Checks if the given argument is a <em>string</em>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isFunction"></a>
+    <strong>isFunction (obj)</strong>
+    </dt>
+    <dd>
+    Checks if the given argument is a function.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isNil"></a>
+    <strong>isNil (obj)</strong>
+    </dt>
+    <dd>
+    Checks if the given argument is nil.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         an object
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isNumber"></a>
+    <strong>isNumber (obj)</strong>
+    </dt>
+    <dd>
+    Checks if the given argument is a number.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a number
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#isNaN">isNaN</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "isNaN"></a>
+    <strong>isNaN (obj)</strong>
+    </dt>
+    <dd>
+    Checks if the given argument is NaN (see <a href="http://en.wikipedia.org/wiki/NaN">Not-A-Number</a>).
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a number
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#isNumber">isNumber</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "isFinite"></a>
+    <strong>isFinite (obj)</strong>
+    </dt>
+    <dd>
+    Checks if the given argument is a finite number.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a number
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isBoolean"></a>
+    <strong>isBoolean (obj)</strong>
+    </dt>
+    <dd>
+    Checks if the given argument is a boolean.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a boolean
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isInteger"></a>
+    <strong>isInteger (obj)</strong>
+    </dt>
+    <dd>
+    Checks if the given argument is an integer.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a number
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "chain"></a>
+    <strong>chain (value)</strong>
+    </dt>
+    <dd>
+    Returns a wrapped object.  Calling library functions as methods on this object
+ will continue to return wrapped objects until <a href="index.html#obj:value">obj:value</a> is used. Can be aliased as <code>_(value)</code>.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">value</span></span>
+         a value to be wrapped
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">object</span></span>
+        a wrapped object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "obj:value"></a>
+    <strong>obj:value ()</strong>
+    </dt>
+    <dd>
+    Extracts the value of a wrapped object.  Must be called on an chained object (see <a href="index.html#chain">chain</a>).
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">value</span></span>
+        the value previously wrapped
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "import"></a>
+    <strong>import ([context[, noConflict]])</strong>
+    </dt>
+    <dd>
+    Imports all library functions into a context.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">context</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         a context. Defaults to <code>_G</code> (global environment) when not given.
+        </li>
+        <li><span class="parameter">noConflict</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Skips function import in case its key exists in the given context
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        the passed-in context
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.0</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

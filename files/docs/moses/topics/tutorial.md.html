@@ -1,0 +1,1945 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Moses documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Moses</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#_a_name__table__Table_functions__a_"><a name='table'>Table functions</a> </a></li>
+<li><a href="#_a_name__array__Array_functions__a_"><a name='array'>Array functions</a> </a></li>
+<li><a href="#_a_name__utility__Utility_functions__a_"><a name='utility'>Utility functions</a> </a></li>
+<li><a href="#_a_name__object__Object_functions__a_"><a name='object'>Object functions</a> </a></li>
+<li><a href="#_a_name__chaining__Chaining__a_"><a name='chaining'>Chaining</a> </a></li>
+<li><a href="#_a_name__import__Import__a_"><a name='import'>Import</a> </a></li>
+</ul>
+
+
+<h2>Topics</h2>
+<ul class="nowrap">
+  <li><strong>tutorial.md</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../index.html">moses</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Topic <code>tutorial.md</code></h1>
+
+    <em>Moses: a utility-belt library for Lua</em></p>
+
+<p><strong>Moses</strong> is a Lua utility library which provides support for functional programming.
+It complements built-in Lua functions, making easier common operations on tables, arrays, lists, collections, objects, and a lot more.<br/>
+<strong>Moses</strong> was deeply inspired by <a href="http://documentcloud.github.com/underscore/">Underscore.js</a>. </p>
+
+<h1><a name='TOC'>Table of Contents</a></h1>
+
+<ul>
+    <li><a href="#adding">Adding <em>Moses</em> to your project</a></li>
+    <li><a href="#API"><em>Moses</em>' API</a>
+
+<pre>
+ * [Table functions](#<span class="global">table</span>)
+ * [Array functions](#array)
+ * [Utility functions](#utility)
+ * [Object functions](#object)
+ * [Chaining](#chaining)
+ * [Import](#import)
+</pre>
+
+<h1><a name='adding'>Adding <em>Moses</em> to your project</a></h1></li>
+</ul>
+
+<p>Drop the file <a href="http://github.com/Yonaba/Moses/blob/master/moses.lua">moses.lua</a> into your project and add it to your code with the <em>require</em> function:</p>
+
+
+<pre>
+<span class="keyword">local</span> _ = <span class="global">require</span> (<span class="string">"moses"</span>)
+</pre>
+
+
+<p><em>Note: Lua purists tend to use "_" to design a "dummy variable". Here, the usage of this underscore is quite idiomatic and refers to the name <a href="http://documentcloud.github.com/underscore/">Underscore</a>, the JS library from which *Moses</em> takes inspiration*.</p>
+
+<p><strong><a href="#TOC">[⬆]</a></strong></p>
+
+<h1><a name='API'><em>Moses</em>' API</a></h1>
+
+<p><em>Moses</em>' consists of a large set of functions that can be classified into four categories:</p>
+
+<ul>
+    <li><strong>Table functions</strong>, which are mostly meant for tables, i.e Lua tables which contains both an array-part and/or a map-part,</li>
+    <li><strong>Array functions</strong>, meant for array lists (or sequences),</li>
+    <li><strong>Utility functions</strong>,</li>
+    <li><strong>Object functions</strong>, meant for instances/classes.</li>
+</ul>
+
+<p><strong><a href="#TOC">[⬆]</a></strong></p>
+
+<p><a name="_a_name__table__Table_functions__a_"></a></p>
+<h2><a name='table'>Table functions</a></h2>
+
+
+<h3>each (t, f, ...)</h3>
+<p>*Aliases: <code>_.forEach</code>*.</p>
+
+<p>Iterates over each key-value pair in table.</p>
+
+
+<pre>
+_.each({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>},<span class="global">print</span>)
+
+<span class="comment">-- =&gt; 1 1
+</span><span class="comment">-- =&gt; 2 2
+</span><span class="comment">-- =&gt; 3 3
+</span>
+</pre>
+
+
+<p>The table can be map-like (array part and hash-part).</p>
+
+
+<pre>
+_.each({one = <span class="number">1</span>, two = <span class="number">2</span>, three = <span class="number">3</span>},<span class="global">print</span>)
+
+<span class="comment">-- =&gt; one 1
+</span><span class="comment">-- =&gt; two 2
+</span><span class="comment">-- =&gt; three 3
+</span>
+</pre>
+
+
+<p>Can index and assign in an outer table or in the passed-in table:</p>
+
+
+<pre>
+t = {<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>}
+_.each(t,<span class="keyword">function</span>(i,v)
+  t[i] = v:rep(<span class="number">2</span>)
+  <span class="global">print</span>(t[i])
+<span class="keyword">end</span>)
+
+<span class="comment">-- =&gt; 1 aa
+</span><span class="comment">-- =&gt; 2 bb
+</span><span class="comment">-- =&gt; 3 cc
+</span>
+</pre>
+
+
+<h3>eachi (t, f, ...)</h3>
+<p>*Aliases: <code>_.forEachi</code>*.</p>
+
+<p>Iterates only on integer keys in a sparse array table.</p>
+
+
+<pre>
+_.eachi({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>},<span class="global">print</span>)
+
+<span class="comment">-- =&gt; 1 1
+</span><span class="comment">-- =&gt; 2 2
+</span><span class="comment">-- =&gt; 3 3
+</span>
+</pre>
+
+
+<p>The given array can be sparse, or even have a hash-like part.</p>
+
+
+<pre>
+<span class="keyword">local</span> t = {a = <span class="number">1</span>, b = <span class="number">2</span>, [<span class="number">0</span>] = <span class="number">1</span>, [-<span class="number">1</span>] = <span class="number">6</span>, <span class="number">3</span>, x = <span class="number">4</span>, <span class="number">5</span>}
+_.eachi(t,<span class="keyword">function</span>(i,v)
+  <span class="global">print</span>(i,v)
+<span class="keyword">end</span>)
+
+<span class="comment">-- =&gt; -1 6
+</span><span class="comment">-- =&gt; 0 1
+</span><span class="comment">-- =&gt; 1 3
+</span><span class="comment">-- =&gt; 2 5
+</span>
+</pre>
+
+
+<h3>at (t, ...)</h3>
+
+<p>Collects all values at some specific keys and returns them in an array.</p>
+
+
+<pre>
+<span class="keyword">local</span> t = {<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>}
+_.at(t,<span class="number">1</span>,<span class="number">3</span>) <span class="comment">-- =&gt; "{4,6}"
+</span>
+<span class="keyword">local</span> t = {a = <span class="number">4</span>, bb = <span class="keyword">true</span>, ccc = <span class="keyword">false</span>}
+_.at(t,<span class="string">'a'</span>, <span class="string">'ccc'</span>) <span class="comment">-- =&gt; "{4, false}"
+</span>
+</pre>
+
+
+<h3>count (t, value)</h3>
+
+<p>Counts the number of occurences of a given value in a table.</p>
+
+
+<pre>
+_.count({<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">2</span>},<span class="number">1</span>) <span class="comment">-- =&gt; 2
+</span>_.count({<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">2</span>},<span class="number">2</span>) <span class="comment">-- =&gt; 2
+</span>_.count({<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">2</span>},<span class="number">3</span>) <span class="comment">-- =&gt; 4
+</span>_.count({<span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">true</span>},<span class="keyword">false</span>) <span class="comment">-- =&gt; 2
+</span>_.count({<span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">true</span>},<span class="keyword">true</span>) <span class="comment">-- =&gt; 1
+</span>
+</pre>
+
+
+<p>Returns the size of the list in case no value was provided.</p>
+
+
+<pre>
+_.count({<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>}) <span class="comment">-- =&gt; 5
+</span>
+</pre>
+
+
+<h3>countf (t, f, ...)</h3>
+
+<p>Count the number of occurences of all values passing an iterator test.</p>
+
+
+<pre>
+_.countf({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>}, <span class="keyword">function</span>(i,v)
+  <span class="keyword">return</span> v%<span class="number">2</span>==<span class="number">0</span>
+<span class="keyword">end</span>) <span class="comment">-- =&gt; 3
+</span>
+_.countf({<span class="global">print</span>, <span class="global">pairs</span>, <span class="global">os</span>, <span class="global">assert</span>, <span class="global">ipairs</span>}, <span class="keyword">function</span>(i,v)
+  <span class="keyword">return</span> <span class="global">type</span>(v)==<span class="string">'function'</span>
+<span class="keyword">end</span>) <span class="comment">-- =&gt; 4
+</span>
+</pre>
+
+
+<h3>cycle (t, n)</h3>
+<p>*Aliases: <code>_.loop</code>*.</p>
+
+<p>Returns a function which iterates on each key-value pair in a given table (similarly to <code>_.each</code>), except that it restarts iterating again <code>n</code> times.
+If <code>n</code> is not provided, it defaults to 1.</p>
+
+
+<pre>
+<span class="keyword">local</span> t = {<span class="string">'a,'</span>b<span class="string">','</span>c<span class="string">'}
+for k,v in _.cycle(t, 2) do
+  print(k,v)
+end
+
+-- =&gt; 1 '</span>a<span class="string">'
+-- =&gt; 2 '</span>b<span class="string">'
+-- =&gt; 3 '</span>c<span class="string">'
+-- =&gt; 1 '</span>a<span class="string">'
+-- =&gt; 2 '</span>b<span class="string">'
+-- =&gt; 3 '</span>c'
+</pre>
+
+
+<p>Supports array-like tables and map-like tables.</p>
+
+
+<pre>
+<span class="keyword">local</span> t = {x = <span class="number">1</span>, y = <span class="number">2</span>, z = <span class="number">3</span>}
+<span class="keyword">for</span> k,v <span class="keyword">in</span> _.cycle(t) <span class="keyword">do</span>
+  <span class="global">print</span>(k,v)
+<span class="keyword">end</span>
+
+<span class="comment">-- =&gt; y    2
+</span><span class="comment">-- =&gt; x 1
+</span><span class="comment">-- =&gt; z 3
+</span>
+</pre>
+
+
+<h3>map (t, f, ...)</h3>
+<p>*Aliases: <code>_.collect</code>*.</p>
+
+<p>Executes a function on each key-value pairs.</p>
+
+
+<pre>
+_.map({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>},<span class="keyword">function</span>(i,v)
+  <span class="keyword">return</span> v+<span class="number">10</span>
+<span class="keyword">end</span>)) <span class="comment">-- =&gt; "{11,12,13}"
+</span>
+</pre>
+
+
+
+<pre>
+_.map({a = <span class="number">1</span>, b = <span class="number">2</span>},<span class="keyword">function</span>(k,v)
+  <span class="keyword">return</span> k..v
+<span class="keyword">end</span>) <span class="comment">-- =&gt; "{a = 'a1', b = 'b2'}"
+</span>
+</pre>
+
+
+<h3>reduce (t, f, state)</h3>
+<p>*Aliases: <code>_.inject</code>, <code>_.foldl</code>*.</p>
+
+<p>Can sums all values in a table.</p>
+
+
+<pre>
+_.reduce({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>},<span class="keyword">function</span>(memo,v)
+  <span class="keyword">return</span> memo+v
+<span class="keyword">end</span>) <span class="comment">-- =&gt; 10
+</span>
+</pre>
+
+
+<p>Or concatenates all values.</p>
+
+
+<pre>
+_.reduce({<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>},<span class="keyword">function</span>(memo,v)
+  <span class="keyword">return</span> memo..v
+<span class="keyword">end</span>) <span class="comment">-- =&gt; abcd
+</span>
+</pre>
+
+
+<h3>reduceRight (t, f, state)</h3>
+<p>*Aliases: <code>_.injectr</code>, <code>_.foldr</code>*.</p>
+
+<p>Similar to <code>_.reduce</code>, but performs from right to left.</p>
+
+
+<pre>
+<span class="keyword">local</span> initial_state = <span class="number">256</span>
+_.reduceRight({<span class="number">1</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">16</span>},<span class="keyword">function</span>(memo,v)
+  <span class="keyword">return</span> memo/v
+<span class="keyword">end</span>,initial_state) <span class="comment">-- =&gt; 2
+</span>
+</pre>
+
+
+<h3>mapReduce (t, f, state)</h3>
+<p>*Aliases: <code>_.mapr</code>*.</p>
+
+<p>Reduces while saving intermediate states.</p>
+
+
+<pre>
+_.mapReduce({<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>},<span class="keyword">function</span>(memo,v)
+  <span class="keyword">return</span> memo..v
+<span class="keyword">end</span>) <span class="comment">-- =&gt; "{'a', 'ab', 'abc'}"
+</span>
+</pre>
+
+
+<h3>mapReduceRight (t, f, state)</h3>
+<p>*Aliases: <code>_.maprr</code>*.</p>
+
+<p>Reduces from right to left, while saving intermediate states.</p>
+
+
+<pre>
+_.mapReduceRight({<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>},<span class="keyword">function</span>(memo,v)
+  <span class="keyword">return</span> memo..v
+<span class="keyword">end</span>) <span class="comment">-- =&gt; "{'c', 'cb', 'cba'}"
+</span>
+</pre>
+
+
+<h3>include (t, value)</h3>
+<p>*Aliases: <code>_.any</code>, <code>_.some</code>*.</p>
+
+<p>Looks for a value in a table.</p>
+
+
+<pre>
+_.include({<span class="number">6</span>,<span class="number">8</span>,<span class="number">10</span>,<span class="number">16</span>,<span class="number">29</span>},<span class="number">16</span>) <span class="comment">-- =&gt; true
+</span>_.include({<span class="number">6</span>,<span class="number">8</span>,<span class="number">10</span>,<span class="number">16</span>,<span class="number">29</span>},<span class="number">1</span>) <span class="comment">-- =&gt; false
+</span>
+<span class="keyword">local</span> complex_table = {<span class="number">18</span>,{<span class="number">2</span>,{<span class="number">3</span>}}}
+<span class="keyword">local</span> collection = {<span class="number">6</span>,{<span class="number">18</span>,{<span class="number">2</span>,<span class="number">6</span>}},<span class="number">10</span>,{<span class="number">18</span>,{<span class="number">2</span>,{<span class="number">3</span>}}},<span class="number">29</span>}
+_.include(collection, complex_table) <span class="comment">-- =&gt; true
+</span>
+</pre>
+
+
+<p>Handles iterator functions.</p>
+
+
+<pre>
+<span class="keyword">local</span> <span class="keyword">function</span> isUpper(v) <span class="keyword">return</span> v:upper()== v <span class="keyword">end</span>
+_.include({<span class="string">'a'</span>,<span class="string">'B'</span>,<span class="string">'c'</span>},isUpper) <span class="comment">-- =&gt; true
+</span>
+</pre>
+
+
+<h3>detect (t, value)</h3>
+
+<p>Returns the index of a value in a table.</p>
+
+
+<pre>
+_.detect({<span class="number">6</span>,<span class="number">8</span>,<span class="number">10</span>,<span class="number">16</span>},<span class="number">8</span>) <span class="comment">-- =&gt; 2
+</span>_.detect({<span class="keyword">nil</span>,<span class="keyword">true</span>,<span class="number">0</span>,<span class="keyword">true</span>,<span class="keyword">true</span>},<span class="keyword">false</span>) <span class="comment">-- =&gt; nil
+</span>
+<span class="keyword">local</span> complex_table = {<span class="number">18</span>,{<span class="number">2</span>,<span class="number">6</span>}}
+<span class="keyword">local</span> collection = {<span class="number">6</span>,{<span class="number">18</span>,{<span class="number">2</span>,<span class="number">6</span>}},<span class="number">10</span>,{<span class="number">18</span>,{<span class="number">2</span>,{<span class="number">3</span>}}},<span class="number">29</span>}
+_.detect(collection, complex_table) <span class="comment">-- =&gt; 2
+</span>
+</pre>
+
+
+<p>Handles iterator functions.</p>
+
+
+<pre>
+<span class="keyword">local</span> <span class="keyword">function</span> isUpper(v)
+  <span class="keyword">return</span> v:upper()==v
+<span class="keyword">end</span>
+_.detect({<span class="string">'a'</span>,<span class="string">'B'</span>,<span class="string">'c'</span>},isUpper) <span class="comment">-- =&gt; 2
+</span>
+</pre>
+
+
+<h3>contains (t, value)</h3>
+
+<p>Returns true if the passed-in value was found in a given table.</p>
+
+
+<pre>
+_.contains({<span class="number">6</span>,<span class="number">8</span>,<span class="number">10</span>,<span class="number">16</span>},<span class="number">8</span>) <span class="comment">-- =&gt; true
+</span>_.contains({<span class="keyword">nil</span>,<span class="keyword">true</span>,<span class="number">0</span>,<span class="keyword">true</span>,<span class="keyword">true</span>},<span class="keyword">false</span>) <span class="comment">-- =&gt; false
+</span>
+</pre>
+
+
+<p>It can lookup for objects, and accepts iterator functions aswell:</p>
+
+
+<pre>
+_.contains({<span class="number">6</span>,{<span class="number">18</span>,{<span class="number">2</span>,<span class="number">6</span>}},<span class="number">10</span>,{<span class="number">18</span>,{<span class="number">2</span>,{<span class="number">3</span>}}},<span class="number">29</span>},{<span class="number">18</span>,{<span class="number">2</span>,<span class="number">6</span>}}) <span class="comment">-- =&gt; true
+</span>
+_.contains({<span class="string">'a'</span>,<span class="string">'B'</span>,<span class="string">'c'</span>}, <span class="keyword">function</span>(array_value)
+  <span class="keyword">return</span> (array_value:upper() == array_value)
+<span class="keyword">end</span>) <span class="comment">-- =&gt; true
+</span>
+</pre>
+
+
+<h3>findWhere (t, props)</h3>
+
+<p>Looks through a table and returns the first value that matches all of the key-value pairs listed in properties. </p>
+
+
+<pre>
+<span class="keyword">local</span> a = {a = <span class="number">1</span>, b = <span class="number">2</span>, c = <span class="number">3</span>}
+<span class="keyword">local</span> b = {a = <span class="number">2</span>, b = <span class="number">3</span>, d = <span class="number">4</span>}
+<span class="keyword">local</span> c = {a = <span class="number">3</span>, b = <span class="number">4</span>, e = <span class="number">5</span>}
+_.findWhere({a, b, c}, {a = <span class="number">3</span>, b = <span class="number">4</span>}) == c <span class="comment">-- =&gt; true
+</span>
+</pre>
+
+
+<h3>select (t, f, ...)</h3>
+<p>*Aliases: <code>_.filte</code>*.</p>
+
+<p>Collects values passing a validation test.</p>
+
+
+<pre>
+<span class="comment">-- Even values
+</span>_.<span class="global">select</span>({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>}, <span class="keyword">function</span>(key,value)
+  <span class="keyword">return</span> (value%<span class="number">2</span>==<span class="number">0</span>)
+<span class="keyword">end</span>) <span class="comment">-- =&gt; "{2,4,6}"
+</span>
+<span class="comment">-- Odd values
+</span>_.<span class="global">select</span>({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>}, <span class="keyword">function</span>(key,value)
+  <span class="keyword">return</span> (value%<span class="number">2</span>~=<span class="number">0</span>)
+<span class="keyword">end</span>) <span class="comment">-- =&gt; "{1,3,5,7}"
+</span>
+</pre>
+
+
+<h3>reject (t, f, ...)</h3>
+<p>*Aliases: <code>_.reject</code>*.</p>
+
+<p>Removes all values failing a validation test:</p>
+
+
+<pre>
+_.reject({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>}, <span class="keyword">function</span>(key,value)
+  <span class="keyword">return</span> (value%<span class="number">2</span>==<span class="number">0</span>)
+<span class="keyword">end</span>) <span class="comment">-- =&gt; "{1,3,5,7}"
+</span>
+_.reject({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>}, <span class="keyword">function</span>(key,value)
+  <span class="keyword">return</span> (value%<span class="number">2</span>~=<span class="number">0</span>)
+<span class="keyword">end</span>) <span class="comment">-- =&gt; "{2,4,6}"
+</span>
+</pre>
+
+
+<h3>all (t, f, ...)</h3>
+<p>*Aliases: <code>_.every</code>*.</p>
+
+<p>Checks whether or not all elements pass a validation test.</p>
+
+
+<pre>
+_.all({<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>}, <span class="keyword">function</span>(key,value)
+  <span class="keyword">return</span> (value%<span class="number">2</span>==<span class="number">0</span>)
+<span class="keyword">end</span>) <span class="comment">-- =&gt; true
+</span>
+</pre>
+
+
+<h3>invoke (t, method, ...)</h3>
+
+<p>Invokes a given function on each value in a table</p>
+
+
+<pre>
+_.invoke({<span class="string">'a'</span>,<span class="string">'bea'</span>,<span class="string">'cdhza'</span>},<span class="global">string</span>.len) <span class="comment">-- =&gt; "{1,3,5}"
+</span>
+</pre>
+
+
+<p>Can reference the method of the same name in each value.</p>
+
+
+<pre>
+<span class="keyword">local</span> a = {}
+<span class="keyword">function</span> a:call() <span class="keyword">return</span> <span class="string">'a'</span> <span class="keyword">end</span>
+<span class="keyword">local</span> b, c, d = {}, {}, {}
+b.call, c.call, d.call = a.call, a.call, a.call
+
+_.invoke({a,b,c,d},<span class="string">'call'</span>) <span class="comment">-- =&gt; "{'a','a','a','a'}"
+</span>
+</pre>
+
+
+<h3>pluck (t, property)</h3>
+
+<p>Fetches all values indxed with specific key in a table of objects.</p>
+
+
+<pre>
+<span class="keyword">local</span> peoples = {
+  {name = <span class="string">'John'</span>, age = <span class="number">23</span>},{name = <span class="string">'Peter'</span>, age = <span class="number">17</span>},
+  {name = <span class="string">'Steve'</span>, age = <span class="number">15</span>},{age = <span class="number">33</span>}}
+
+_.pluck(peoples,<span class="string">'age'</span>) <span class="comment">-- =&gt; "{23,17,15,33}"
+</span>_.pluck(peoples,<span class="string">'name'</span>) <span class="comment">-- =&gt; "{'John', 'Peter', 'Steve'}"
+</span>
+</pre>
+
+
+<h3>max (t, transform, ...)</h3>
+
+<p>Returns the maximum value in a collection.</p>
+
+
+<pre>
+_.max {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>} <span class="comment">-- =&gt; 3
+</span>_.max {<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>} <span class="comment">-- =&gt; 'c'
+</span>
+</pre>
+
+
+<p>Can take an iterator function to extract a specific property.</p>
+
+
+<pre>
+<span class="keyword">local</span> peoples = {
+  {name = <span class="string">'John'</span>, age = <span class="number">23</span>},{name = <span class="string">'Peter'</span>, age = <span class="number">17</span>},
+  {name = <span class="string">'Steve'</span>, age = <span class="number">15</span>},{age = <span class="number">33</span>}}
+_.max(peoples,<span class="keyword">function</span>(people) <span class="keyword">return</span> people.age <span class="keyword">end</span>) <span class="comment">-- =&gt; 33
+</span>
+</pre>
+
+
+<h3>min (t, transform, ...)</h3>
+
+<p>Returns the minimum value in a collection.</p>
+
+
+<pre>
+_.min {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>} <span class="comment">-- =&gt; 1
+</span>_.min {<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>} <span class="comment">-- =&gt; 'a'
+</span>
+</pre>
+
+
+<p>Can take an iterator function to extract a specific property.</p>
+
+
+<pre>
+<span class="keyword">local</span> peoples = {
+  {name = <span class="string">'John'</span>, age = <span class="number">23</span>},{name = <span class="string">'Peter'</span>, age = <span class="number">17</span>},
+  {name = <span class="string">'Steve'</span>, age = <span class="number">15</span>},{age = <span class="number">33</span>}}
+_.min(peoples,<span class="keyword">function</span>(people) <span class="keyword">return</span> people.age <span class="keyword">end</span>) <span class="comment">-- =&gt; 15
+</span>
+</pre>
+
+
+<h3>shuffle (t, seed)</h3>
+
+<p>Shuffles a collection.</p>
+
+
+<pre>
+<span class="keyword">local</span> list = _.shuffle {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>} <span class="comment">-- =&gt; "{3,2,6,4,1,5}"
+</span>_.each(list,<span class="global">print</span>)
+</pre>
+
+
+<h3>same (a, b)</h3>
+
+<p>Tests whether or not all values in each of the passed-in tables exists in both tables.</p>
+
+
+<pre>
+<span class="keyword">local</span> a = {<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>}
+<span class="keyword">local</span> b = {<span class="string">'b'</span>,<span class="string">'a'</span>,<span class="string">'d'</span>,<span class="string">'c'</span>}
+_.same(a,b) <span class="comment">-- =&gt; true
+</span>
+b[#b+<span class="number">1</span>] = <span class="string">'e'</span>
+_.same(a,b) <span class="comment">-- =&gt; false
+</span>
+</pre>
+
+
+<h3>sort (t, comp)</h3>
+
+<p>Sorts a collection.</p>
+
+
+<pre>
+_.sort({<span class="string">'b'</span>,<span class="string">'a'</span>,<span class="string">'d'</span>,<span class="string">'c'</span>}) <span class="comment">-- =&gt; "{'a','b','c','d'}"
+</span>
+</pre>
+
+
+<p>Handles custom comparison functions.</p>
+
+
+<pre>
+_.sort({<span class="string">'b'</span>,<span class="string">'a'</span>,<span class="string">'d'</span>,<span class="string">'c'</span>}, <span class="keyword">function</span>(a,b)
+  <span class="keyword">return</span> a:byte() &gt; b:byte()
+<span class="keyword">end</span>) <span class="comment">-- =&gt; "{'d','c','b','a'}"
+</span>
+</pre>
+
+
+<h3>groupBy (t, iter, ...)</h3>
+
+<p>Groups values in a collection depending on their return value when passed to a predicate test.</p>
+
+
+<pre>
+_.groupBy({<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>},<span class="keyword">function</span>(i,value)
+  <span class="keyword">return</span> value%<span class="number">2</span>==<span class="number">0</span> <span class="keyword">and</span> <span class="string">'even'</span> <span class="keyword">or</span> <span class="string">'odd'</span>
+<span class="keyword">end</span>) <span class="comment">-- =&gt; "{odd = {1,3,5}, even = {0,2,4,6}}"
+</span>
+_.groupBy({<span class="number">0</span>,<span class="string">'a'</span>,<span class="keyword">true</span>, <span class="keyword">false</span>,<span class="keyword">nil</span>,b,<span class="number">0.5</span>},<span class="keyword">function</span>(i,value)
+  <span class="keyword">return</span> <span class="global">type</span>(value)
+<span class="keyword">end</span>) <span class="comment">-- =&gt; "{number = {0,0.5}, string = {'a'}, boolean = {true, false}}"
+</span>
+</pre>
+
+
+<h3>countBy (t, iter, ...)</h3>
+
+<p>Splits a table in subsets and provide the count for each subset.</p>
+
+
+<pre>
+_.countBy({<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>},<span class="keyword">function</span>(i,value)
+  <span class="keyword">return</span> value%<span class="number">2</span>==<span class="number">0</span> <span class="keyword">and</span> <span class="string">'even'</span> <span class="keyword">or</span> <span class="string">'odd'</span>
+<span class="keyword">end</span>) <span class="comment">-- =&gt; "{odd = 3, even = 4}"
+</span>
+</pre>
+
+
+<h3>size (...)</h3>
+
+<p>When given a table, provides the count for the very number of values in that table.</p>
+
+
+<pre>
+_.size {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>} <span class="comment">-- =&gt; 3
+</span>_.size {one = <span class="number">1</span>, two = <span class="number">2</span>} <span class="comment">-- =&gt; 2
+</span>
+</pre>
+
+
+<p>When given a vararg list of argument, returns the count of these arguments.</p>
+
+
+<pre>
+_.size(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>) <span class="comment">-- =&gt; 3
+</span>_.size(<span class="string">'a'</span>,<span class="string">'b'</span>,{}, <span class="keyword">function</span>() <span class="keyword">end</span>) <span class="comment">-- =&gt; 4
+</span>
+</pre>
+
+
+<h3>containsKeys (t, other)</h3>
+
+<p>Checks whether a table has all the keys existing in another table.</p>
+
+
+<pre>
+_.contains({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>},{<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>}) <span class="comment">-- =&gt; true
+</span>_.contains({<span class="number">1</span>,<span class="number">2</span>,<span class="string">'d'</span>,<span class="string">'b'</span>},{<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">5</span>}) <span class="comment">-- =&gt; true
+</span>_.contains({x = <span class="number">1</span>, y = <span class="number">2</span>, z = <span class="number">3</span>},{x = <span class="number">1</span>, y = <span class="number">2</span>}) <span class="comment">-- =&gt; true
+</span>
+</pre>
+
+
+<h3>sameKeys (tA, tB)</h3>
+
+<p>Checks whether both tables features the same keys:</p>
+
+
+<pre>
+_.sameKeys({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>},{<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>}) <span class="comment">-- =&gt; false
+</span>_.sameKeys({<span class="number">1</span>,<span class="number">2</span>,<span class="string">'d'</span>,<span class="string">'b'</span>},{<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">5</span>}) <span class="comment">-- =&gt; true
+</span>_.sameKeys({x = <span class="number">1</span>, y = <span class="number">2</span>, z = <span class="number">3</span>},{x = <span class="number">1</span>, y = <span class="number">2</span>}) <span class="comment">-- =&gt; false
+</span>
+</pre>
+
+
+<p><strong><a href="#TOC">[⬆]</a></strong></p>
+
+<p><a name="_a_name__array__Array_functions__a_"></a></p>
+<h2><a name='array'>Array functions</a></h2>
+
+<h3>toArray (...)</h3>
+
+<p>Converts a vararg list of arguments to an array.</p>
+
+
+<pre>
+_.toArray(<span class="number">1</span>,<span class="number">2</span>,<span class="number">8</span>,<span class="string">'d'</span>,<span class="string">'a'</span>,<span class="number">0</span>) <span class="comment">-- =&gt; "{1,2,8,'d','a',0}"
+</span>
+</pre>
+
+
+<h3>find (array, value, from)</h3>
+
+<p>Looks for a value in a given array and returns the position of the first occurence.</p>
+
+
+<pre>
+_.find({{<span class="number">4</span>},{<span class="number">3</span>},{<span class="number">2</span>},{<span class="number">1</span>}},{<span class="number">3</span>}) <span class="comment">-- =&gt; 2
+</span>
+</pre>
+
+
+<p>It can also start the search at a specific position in the array:</p>
+
+
+<pre>
+<span class="comment">-- search value 4 starting from index 3
+</span>_.find({<span class="number">1</span>,<span class="number">4</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>},<span class="number">4</span>,<span class="number">3</span>) <span class="comment">-- =&gt; 5
+</span>
+</pre>
+
+
+<h3>reverse (array)</h3>
+
+<p>Reverses an array.</p>
+
+
+<pre>
+_.reverse({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="string">'d'</span>}) <span class="comment">-- =&gt; "{'d',3,2,1}"
+</span>
+</pre>
+
+
+<h3>selectWhile (array, f, ...</h3>
+<p>*Aliases: <code>_.takeWhile</code>*.</p>
+
+<p>Collects values as long as they pass a given test. Stops on the first non-passing test.</p>
+
+
+<pre>
+_.selectWhile({<span class="number">2</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">8</span>}, <span class="keyword">function</span>(i,v)
+  <span class="keyword">return</span> v%<span class="number">2</span>==<span class="number">0</span>
+<span class="keyword">end</span>) <span class="comment">-- =&gt; "{2,4}"
+</span>
+</pre>
+
+
+<h3>dropWhile (array, f, ...</h3>
+<p>*Aliases: <code>_.rejectWhile</code>*.</p>
+
+<p>Removes values as long as they pass a given test. Stops on the first non-passing test.</p>
+
+
+<pre>
+_.dropWhile({<span class="number">2</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">8</span>}, <span class="keyword">function</span>(i,v)
+  <span class="keyword">return</span> v%<span class="number">2</span>==<span class="number">0</span>
+<span class="keyword">end</span>) <span class="comment">-- =&gt; "{5,8}"
+</span>
+</pre>
+
+
+<h3>sortedIndex (array, value, comp, sort)</h3>
+
+<p>Returns the index at which a value should be inserted to preserve order.</p>
+
+
+<pre>
+_.sortedIndex({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>},<span class="number">4</span>) <span class="comment">-- =&gt; 4
+</span>
+</pre>
+
+
+<p>Can take a custom comparison functions.</p>
+
+
+<pre>
+<span class="keyword">local</span> comp = <span class="keyword">function</span>(a,b) <span class="keyword">return</span> a&lt;b <span class="keyword">end</span>
+_.sortedIndex({-<span class="number">5</span>,<span class="number">0</span>,<span class="number">4</span>,<span class="number">4</span>},<span class="number">3</span>,comp) <span class="comment">-- =&gt; 3
+</span>
+</pre>
+
+
+<h3>indexOf (array, value)</h3>
+
+<p>Returns the index of a value in an array.</p>
+
+
+<pre>
+_.indexOf({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>},<span class="number">2</span>) <span class="comment">-- =&gt; 2
+</span>
+</pre>
+
+
+<h3>lastIndexOf (array, value)</h3>
+
+<p>Returns the index of the last occurence of a given value in an array.</p>
+
+
+<pre>
+_.lastIndexOf({<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>},<span class="number">2</span>) <span class="comment">-- =&gt; 3
+</span>
+</pre>
+
+
+<h3>addTop (array, ...)</h3>
+
+<p>Adds given values at the top of an array. The latter values bubbles at the top.</p>
+
+
+<pre>
+<span class="keyword">local</span> array = {<span class="number">1</span>}
+_.addTop(array,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>) <span class="comment">-- =&gt; "{4,3,2,1,1}"
+</span>
+</pre>
+
+
+<h3>push (array, ...)</h3>
+
+<p>Adds given values at the end of an array.</p>
+
+
+<pre>
+<span class="keyword">local</span> array = {<span class="number">1</span>}
+_.push(array,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>) <span class="comment">-- =&gt; "{1,1,2,3,4}"
+</span>
+</pre>
+
+
+<h3>pop (array, n)</h3>
+<p>*Aliases: <code>_.shift</code>*.</p>
+
+<p>Removes and returns the first value in an array.</p>
+
+
+<pre>
+<span class="keyword">local</span> array = {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>}
+<span class="keyword">local</span> pop = _.pop(array) <span class="comment">-- =&gt; "pop = 1", "array = {2,3}"
+</span>
+</pre>
+
+
+<h3>unshift (array, n)</h3>
+
+<p>Removes and returns the last value in an array.</p>
+
+
+<pre>
+<span class="keyword">local</span> array = {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>}
+<span class="keyword">local</span> value = _.unshift(array) <span class="comment">-- =&gt; "value = 3", "array = {1,2}"
+</span>
+</pre>
+
+
+<h3>pull (array, ...)</h3>
+<p>*Aliases: <code>_.remove</code>*.</p>
+
+<p>Removes all provided values from a given array.</p>
+
+
+<pre>
+_.pull({<span class="number">1</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">3</span>},<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>) <span class="comment">-- =&gt; "{4}"
+</span>
+</pre>
+
+
+<h3>removeRange (array, start, finish)</h3>
+<p>*Aliases: <code>_.rmRange</code>, <code>_.chop</code>*.</p>
+
+<p>Trims out all values index within a range.</p>
+
+
+<pre>
+<span class="keyword">local</span> array = {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>}
+_.removeRange(array, <span class="number">3</span>,<span class="number">8</span>) <span class="comment">-- =&gt; "{1,2,9}"
+</span>
+</pre>
+
+
+<h3>chunk (array, f, ...)</h3>
+
+<p>Iterates over an array aggregating consecutive values in subsets tables, on the basis of the return
+value of <code>f(key,value,...)</code>. Consecutive elements which return the same value are aggregated together.</p>
+
+
+<pre>
+<span class="keyword">local</span> t = {<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>}
+_.chunk(t, <span class="keyword">function</span>(k,v) <span class="keyword">return</span> v%<span class="number">2</span>==<span class="number">0</span> <span class="keyword">end</span>) <span class="comment">-- =&gt; "{{1,1},{2},{3,3},{4}}"
+</span>
+</pre>
+
+
+<h3>slice (array, start, finish)</h3>
+<p>*Aliases: <code>_.sub</code>*.</p>
+
+<p>Slices and returns a part of an array.</p>
+
+
+<pre>
+<span class="keyword">local</span> array = {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>}
+_.slice(array, <span class="number">3</span>,<span class="number">6</span>) <span class="comment">-- =&gt; "{3,4,5,6}"
+</span>
+</pre>
+
+
+<h3>first (array, n)</h3>
+<p>*Aliases: <code>_.head</code>, <code>_.take</code>*.</p>
+
+<p>Returns the first N elements in an array.</p>
+
+
+<pre>
+<span class="keyword">local</span> array = {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>}
+_.first(array,<span class="number">3</span>) <span class="comment">-- =&gt; "{1,2,3}"
+</span>
+</pre>
+
+
+<h3>initial (array, n)</h3>
+
+<p>Excludes the last N elements in an array.</p>
+
+
+<pre>
+<span class="keyword">local</span> array = {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>}
+_.initial(array,<span class="number">5</span>) <span class="comment">-- =&gt; "{1,2,3,4}"
+</span>
+</pre>
+
+
+<h3>last (array, n)</h3>
+<p>*Aliases: <code>_.skip</code>*.</p>
+
+<p>Returns the last N elements in an array.</p>
+
+
+<pre>
+<span class="keyword">local</span> array = {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>}
+_.last(array,<span class="number">3</span>) <span class="comment">-- =&gt; "{7,8,9}"
+</span>
+</pre>
+
+
+<h3>rest (array, index)</h3>
+<p>*Aliases: <code>_.tail</code>*.</p>
+
+<p>Trims out all values indexed before <em>index</em>.</p>
+
+
+<pre>
+<span class="keyword">local</span> array = {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>}
+_.rest(array,<span class="number">6</span>) <span class="comment">-- =&gt; "{6,7,8,9}"
+</span>
+</pre>
+
+
+<h3>compact (array)</h3>
+
+<p>Trims out all falsy values.</p>
+
+
+<pre>
+_.compact {a,<span class="string">'aa'</span>,<span class="keyword">false</span>,<span class="string">'bb'</span>,<span class="keyword">true</span>} <span class="comment">-- =&gt; "{'aa','bb',true}"
+</span>
+</pre>
+
+
+<h3>flatten (array, shallow)</h3>
+
+<p>Flattens a nested array.</p>
+
+
+<pre>
+_.flatten({<span class="number">1</span>,{<span class="number">2</span>,<span class="number">3</span>},{<span class="number">4</span>,<span class="number">5</span>,{<span class="number">6</span>,<span class="number">7</span>}}}) <span class="comment">-- =&gt; "{1,2,3,4,5,6,7}"
+</span>
+</pre>
+
+
+<p>When given arg "shallow", flatten only at the first level.</p>
+
+
+<pre>
+_.flatten({<span class="number">1</span>,{<span class="number">2</span>},{{<span class="number">3</span>}}},<span class="keyword">true</span>) <span class="comment">-- =&gt; "{1,{2},{{3}}}"
+</span>
+</pre>
+
+
+<h3>difference (array, array2)</h3>
+<p>*Aliases: <code>_.without</code>, <code>_.diff</code>*.</p>
+
+<p>Returns values in the given array not present in a second array.</p>
+
+
+<pre>
+<span class="keyword">local</span> array = {<span class="number">1</span>,<span class="number">2</span>,<span class="string">'a'</span>,<span class="number">4</span>,<span class="number">5</span>}
+_.difference(array,{<span class="number">1</span>,<span class="string">'a'</span>}) <span class="comment">-- =&gt; "{2,4,5}"
+</span>
+</pre>
+
+
+<h3>union (...)</h3>
+
+<p>Produces a duplicate-free union of all passed-in arrays.</p>
+
+
+<pre>
+<span class="keyword">local</span> A = {<span class="string">'a'</span>}
+<span class="keyword">local</span> B = {<span class="string">'a'</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>}
+<span class="keyword">local</span> C = {<span class="number">2</span>,<span class="number">10</span>}
+_.union(A,B,C) <span class="comment">-- =&gt; "{'a',1,2,3,10}"
+</span>
+</pre>
+
+
+<h3>intersection (array, ...)</h3>
+
+<p>Returns the intersection (common-part) of all passed-in arrays:</p>
+
+
+<pre>
+<span class="keyword">local</span> A = {<span class="string">'a'</span>}
+<span class="keyword">local</span> B = {<span class="string">'a'</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>}
+<span class="keyword">local</span> C = {<span class="number">2</span>,<span class="number">10</span>,<span class="number">1</span>,<span class="string">'a'</span>}
+_.intersection(A,B,C) <span class="comment">-- =&gt; "{'a',2,1}"
+</span>
+</pre>
+
+
+<h3>symmetricDifference (array, array2)</h3>
+<p>*Aliases: <code>_.symdiff</code>,<code>_.xor</code>*.</p>
+
+<p>Returns values in the first array not present in the second and also values in the second array not present in the first one.</p>
+
+
+<pre>
+<span class="keyword">local</span> array = {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>}
+<span class="keyword">local</span> array2 = {<span class="number">1</span>,<span class="number">4</span>,<span class="number">5</span>}
+_.symmetricDifference(array, array2) <span class="comment">-- =&gt; "{2,3,4,5}"
+</span>
+</pre>
+
+
+<h3>unique (array)</h3>
+<p>*Aliases: <code>_.uniq</code>*.</p>
+
+<p>Makes an array duplicate-free.</p>
+
+
+<pre>
+_.unique {<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>} <span class="comment">-- =&gt; "{1,2,3,4,5}"
+</span>
+</pre>
+
+
+<h3>isunique (array)</h3>
+<p>*Aliases: <code>_.isuniq</code>*.</p>
+
+<p>Checks if a given array contains no duplicate value.</p>
+
+
+<pre>
+_.isunique({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>}) <span class="comment">-- =&gt; true
+</span>_.isunique({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>}) <span class="comment">-- =&gt; false
+</span>
+</pre>
+
+
+<h3>zip (...)</h3>
+
+<p>Zips values from different arrays, on the basis on their common keys.</p>
+
+
+<pre>
+<span class="keyword">local</span> names = {<span class="string">'Bob'</span>,<span class="string">'Alice'</span>,<span class="string">'James'</span>}
+<span class="keyword">local</span> ages = {<span class="number">22</span>, <span class="number">23</span>}
+_.zip(names,ages) <span class="comment">-- =&gt; "{{'Bob',22},{'Alice',23},{'James'}}"
+</span>
+</pre>
+
+
+<h3>append (array, other)</h3>
+
+<p>Appends two arrays.</p>
+
+
+<pre>
+_.append({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>},{<span class="string">'a'</span>,<span class="string">'b'</span>}) <span class="comment">-- =&gt; "{1,2,3,'a','b'}"
+</span>
+</pre>
+
+
+<h3>interleave (...)</h3>
+
+<p>Interleaves values from passed-in arrays.</p>
+
+
+<pre>
+t1 = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>}
+t2 = {<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>}
+_.interleave(t1, t2) <span class="comment">-- =&gt; "{1,'a',2,'b',3,'c'}"
+</span>
+</pre>
+
+
+<h3>interpose (value, array)</h3>
+
+<p>Interposes a value between consecutive values in an arrays.</p>
+
+
+<pre>
+_.interleave(<span class="string">'a'</span>, {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>}) <span class="comment">-- =&gt; "{1,'a',2,'a',3}"
+</span>
+</pre>
+
+
+<h3>range (...)</h3>
+
+<p>Generates an arithmetic sequence.</p>
+
+
+<pre>
+_.range(<span class="number">1</span>,<span class="number">4</span>) <span class="comment">-- =&gt; "{1,2,3,4}"
+</span>
+</pre>
+
+
+<p>In case a single value is provided, it generates a sequence from 0 to that value.</p>
+
+
+<pre>
+_.range(<span class="number">3</span>) <span class="comment">-- =&gt; "{0,1,2,3}"
+</span>
+</pre>
+
+
+<p>The incremental step can also be provided as third argument.</p>
+
+
+<pre>
+_.range(<span class="number">0</span>,<span class="number">2</span>,<span class="number">0.7</span>) <span class="comment">-- =&gt; "{0,0.7,1.4}"
+</span>
+</pre>
+
+
+<h3>rep (value, n)</h3>
+
+<p>Generates a list of n repetitions of a value.</p>
+
+
+<pre>
+_.rep(<span class="number">4</span>,<span class="number">3</span>) <span class="comment">-- =&gt; "{4,4,4}"
+</span>
+</pre>
+
+
+<h3>partition (array, n)</h3>
+<p>*Aliases: <code>_.part</code>*.</p>
+
+<p>Returns an iterator function for partitions of a given array.</p>
+
+
+<pre>
+<span class="keyword">local</span> t = {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>}
+<span class="keyword">for</span> p <span class="keyword">in</span> _.partition(t,<span class="number">2</span>) <span class="keyword">do</span>
+  <span class="global">print</span>(<span class="global">table</span>.concat(p, <span class="string">','</span>))
+<span class="keyword">end</span>
+
+<span class="comment">-- =&gt; 1,2
+</span><span class="comment">-- =&gt; 3,4
+</span><span class="comment">-- =&gt; 5,6
+</span>
+</pre>
+
+
+<h3>permutation (array)</h3>
+<p>*Aliases: <code>_.perm</code>*.</p>
+
+<p>Returns an iterator function for permutations of a given array.</p>
+
+
+<pre>
+t = {<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>}
+<span class="keyword">for</span> p <span class="keyword">in</span> _.permutation(t) <span class="keyword">do</span>
+  <span class="global">print</span>(<span class="global">table</span>.concat(p))
+<span class="keyword">end</span>
+
+<span class="comment">-- =&gt; 'bca'
+</span><span class="comment">-- =&gt; 'cba'
+</span><span class="comment">-- =&gt; 'cab'
+</span><span class="comment">-- =&gt; 'acb'
+</span><span class="comment">-- =&gt; 'bac'
+</span><span class="comment">-- =&gt; 'abc'
+</span>
+</pre>
+
+
+<h3>invert (array)</h3>
+<p>*Aliases: <code>_.mirror</code>*.</p>
+
+<p>Switches <tt>key-value</tt> pairs:</p>
+
+
+<pre>
+_.invert {<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>} <span class="comment">-- =&gt; "{a=1, b=2, c=3}"
+</span>
+</pre>
+
+
+<h3>concat (array, sep, i, j)</h3>
+<p>*Aliases: <code>_.join</code>*.</p>
+
+<p>Concatenates a given array values:</p>
+
+
+<pre>
+_.concat({<span class="string">'a'</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="string">'b'</span>}) <span class="comment">-- =&gt; 'a101b'
+</span>
+</pre>
+
+
+<p><strong><a href="#TOC">[⬆]</a></strong></p>
+
+<p><a name="_a_name__utility__Utility_functions__a_"></a></p>
+<h2><a name='utility'>Utility functions</a></h2>
+
+<h3>identity (value)</h3>
+
+<p>Returns the passed-in value. <br/>
+This function is internally used as a default transformation function.</p>
+
+
+<pre>
+_.identity(<span class="number">1</span>)<span class="comment">-- =&gt; 1
+</span>_.identity(<span class="keyword">false</span>) <span class="comment">-- =&gt; false
+</span>_.identity(<span class="string">'hello!'</span>) <span class="comment">-- =&gt; 'hello!'
+</span>
+</pre>
+
+
+<h3>once (f)</h3>
+
+<p>Produces a function that runs only once. Successive calls to this function will still yield the same input.</p>
+
+
+<pre>
+<span class="keyword">local</span> sq = _.once(<span class="keyword">function</span>(a) <span class="keyword">return</span> a*a <span class="keyword">end</span>)
+sq(<span class="number">1</span>) <span class="comment">-- =&gt; 1
+</span>sq(<span class="number">2</span>) <span class="comment">-- =&gt; 1
+</span>sq(<span class="number">3</span>) <span class="comment">-- =&gt; 1
+</span>sq(<span class="number">4</span>) <span class="comment">-- =&gt; 1
+</span>sq(<span class="number">5</span>) <span class="comment">-- =&gt; 1
+</span>
+</pre>
+
+
+<h3>memoize (f, hash)</h3>
+<p>*Aliases: <code>_.cache</code>*.</p>
+
+<p>Memoizes a slow-running function. It caches the result for a specific input, so that the next time the function is called with the same input, it will lookup the result in its cache, instead of running again the function body.</p>
+
+
+<pre>
+<span class="keyword">local</span> <span class="keyword">function</span> fibonacci(n)
+  <span class="keyword">return</span> n &lt; <span class="number">2</span> <span class="keyword">and</span> n <span class="keyword">or</span> fibonacci(n-<span class="number">1</span>)+fibonacci(n-<span class="number">2</span>)
+<span class="keyword">end</span>
+<span class="keyword">local</span> mem_fibonacci = _.memoize(fibonacci)
+fibonacci(<span class="number">20</span>) <span class="comment">-- =&gt; 6765 (but takes some time)
+</span>mem_fibonacci(<span class="number">20</span>) <span class="comment">-- =&gt; 6765 (takes less time)
+</span>
+</pre>
+
+
+<h3>after (f, count)</h3>
+
+<p>Produces a function that will respond only after a given number of calls.</p>
+
+
+<pre>
+<span class="keyword">local</span> f = _.after(_.identity,<span class="number">3</span>)
+f(<span class="number">1</span>) <span class="comment">-- =&gt; nil
+</span>f(<span class="number">2</span>) <span class="comment">-- =&gt; nil
+</span>f(<span class="number">3</span>) <span class="comment">-- =&gt; 3
+</span>f(<span class="number">4</span>) <span class="comment">-- =&gt; 4
+</span>
+</pre>
+
+
+<h3>compose (...)</h3>
+
+<p>Composes functions. Each function consumes the return value of the one that follows.</p>
+
+
+<pre>
+<span class="keyword">local</span> <span class="keyword">function</span> f(x) <span class="keyword">return</span> x^<span class="number">2</span> <span class="keyword">end</span>
+<span class="keyword">local</span> <span class="keyword">function</span> g(x) <span class="keyword">return</span> x+<span class="number">1</span> <span class="keyword">end</span>
+<span class="keyword">local</span> <span class="keyword">function</span> h(x) <span class="keyword">return</span> x/<span class="number">2</span> <span class="keyword">end</span>
+<span class="keyword">local</span> compositae = _.compose(f,g,h)
+compositae(<span class="number">10</span>) <span class="comment">-- =&gt; 36
+</span>compositae(<span class="number">20</span>) <span class="comment">-- =&gt; 121
+</span>
+</pre>
+
+
+<h3>pipe (value, ...)</h3>
+
+<p>Pipes a value through a series of functions.</p>
+
+
+<pre>
+<span class="keyword">local</span> <span class="keyword">function</span> f(x) <span class="keyword">return</span> x^<span class="number">2</span> <span class="keyword">end</span>
+<span class="keyword">local</span> <span class="keyword">function</span> g(x) <span class="keyword">return</span> x+<span class="number">1</span> <span class="keyword">end</span>
+<span class="keyword">local</span> <span class="keyword">function</span> h(x) <span class="keyword">return</span> x/<span class="number">2</span> <span class="keyword">end</span>
+_.pipe(<span class="number">10</span>,f,g,h) <span class="comment">-- =&gt; 36
+</span>_.pipe(<span class="number">20</span>,f,g,h) <span class="comment">-- =&gt; 121
+</span>
+</pre>
+
+
+<h3>complement (f)</h3>
+
+<p>Returns a function which returns the logical complement of a given function.</p>
+
+
+<pre>
+_.complement(<span class="keyword">function</span>() <span class="keyword">return</span> <span class="keyword">true</span> <span class="keyword">end</span>)() <span class="comment">-- =&gt; false
+</span>
+</pre>
+
+
+<h3>juxtapose (value, ...)</h3>
+<p>*Aliases: <code>_.juxt</code>*.</p>
+
+<p>Calls a sequence of functions with the same input.</p>
+
+
+<pre>
+<span class="keyword">local</span> <span class="keyword">function</span> f(x) <span class="keyword">return</span> x^<span class="number">2</span> <span class="keyword">end</span>
+<span class="keyword">local</span> <span class="keyword">function</span> g(x) <span class="keyword">return</span> x+<span class="number">1</span> <span class="keyword">end</span>
+<span class="keyword">local</span> <span class="keyword">function</span> h(x) <span class="keyword">return</span> x/<span class="number">2</span> <span class="keyword">end</span>
+_.juxtapose(<span class="number">10</span>, f, g, h) <span class="comment">-- =&gt; 100, 11, 5
+</span>
+</pre>
+
+
+<h3>wrap (f, wrapper)</h3>
+
+<p>Wraps a function inside a wrapper. Allows the wrapper to execute code before and after function run.</p>
+
+
+<pre>
+<span class="keyword">local</span> greet = <span class="keyword">function</span>(name) <span class="keyword">return</span> <span class="string">"hi: "</span> .. name <span class="keyword">end</span>
+<span class="keyword">local</span> greet_backwards = _.wrap(greet, <span class="keyword">function</span>(f,arg)
+  <span class="keyword">return</span> f(arg) ..<span class="string">'\nhi: '</span> .. arg:reverse()
+<span class="keyword">end</span>)
+greet_backwards(<span class="string">'John'</span>)
+
+<span class="comment">-- =&gt; hi: John
+</span><span class="comment">-- =&gt; hi: nhoJ
+</span>
+</pre>
+
+
+<h3>times (n, iter, ...)</h3>
+
+<p>Calls a given function <code>n</code> times.</p>
+
+
+<pre>
+<span class="keyword">local</span> f = (<span class="string">'Lua programming'</span>):gmatch(<span class="string">'.'</span>)
+_.times(<span class="number">3</span>,f) <span class="comment">-- =&gt; {'L','u','a'}
+</span>
+</pre>
+
+
+<h3>bind (f, v)</h3>
+
+<p>Binds a value to be the first argument to a function.</p>
+
+
+<pre>
+<span class="keyword">local</span> sqrt2 = _.bind(<span class="global">math</span>.sqrt,<span class="number">2</span>)
+sqrt2() <span class="comment">-- =&gt; 1.4142135623731
+</span>
+</pre>
+
+
+<h3>bindn (f, ...)</h3>
+
+<p>Binds a variable number of values to be the first arguments to a function.</p>
+
+
+<pre>
+<span class="keyword">local</span> <span class="keyword">function</span> out(...) <span class="keyword">return</span> <span class="global">table</span>.concat {...} <span class="keyword">end</span>
+<span class="keyword">local</span> out = _.bindn(out,<span class="string">'OutPut'</span>,<span class="string">':'</span>,<span class="string">' '</span>)
+out(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>) <span class="comment">-- =&gt; OutPut: 123
+</span>out(<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>) <span class="comment">-- =&gt; OutPut: abcd
+</span>
+</pre>
+
+
+<h3>uniqueId (template, ...)</h3>
+<p>*Aliases: <code>_.uid</code>*.</p>
+
+<p>Returns an unique integer ID.</p>
+
+
+<pre>
+_.uniqueId() <span class="comment">-- =&gt; 1
+</span>
+</pre>
+
+
+<p>Can handle string templates for formatted output.</p>
+
+
+<pre>
+_.uniqueId(<span class="string">'ID%s'</span>) <span class="comment">-- =&gt; 'ID2'
+</span>
+</pre>
+
+
+<p>Or a function, for the same purpose.</p>
+
+
+<pre>
+<span class="keyword">local</span> formatter = <span class="keyword">function</span>(ID) <span class="keyword">return</span> <span class="string">'$'</span>..ID..<span class="string">'$'</span> <span class="keyword">end</span>
+_.uniqueId(formatter) <span class="comment">-- =&gt; '$ID1$'
+</span>
+</pre>
+
+
+<p><strong><a href="#TOC">[⬆]</a></strong></p>
+
+<p><a name="_a_name__object__Object_functions__a_"></a></p>
+<h2><a name='object'>Object functions</a></h2>
+
+<h3>keys (obj)</h3>
+
+<p>Collects the names of an object attributes.</p>
+
+
+<pre>
+_.keys({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>}) <span class="comment">-- =&gt; "{1,2,3}"
+</span>_.keys({x = <span class="number">0</span>, y = <span class="number">1</span>}) <span class="comment">-- =&gt; "{'y','x'}"
+</span>
+</pre>
+
+
+<h3>values (obj)</h3>
+
+<p>Collects the values of an object attributes.</p>
+
+
+<pre>
+_.values({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>}) <span class="comment">-- =&gt; "{1,2,3}"
+</span>_.values({x = <span class="number">0</span>, y = <span class="number">1</span>}) <span class="comment">-- =&gt; "{1,0}"
+</span>
+</pre>
+
+
+<h3>toBoolean (value)</h3>
+
+<p>Converts a given value to a boolean.</p>
+
+
+<pre>
+_.toBoolean(<span class="keyword">true</span>) <span class="comment">-- =&gt; true
+</span>_.toBoolean(<span class="keyword">false</span>) <span class="comment">-- =&gt; false
+</span>_.toBoolean(<span class="keyword">nil</span>) <span class="comment">-- =&gt; false
+</span>_.toBoolean({}) <span class="comment">-- =&gt; true
+</span>_.toBoolean(<span class="number">1</span>) <span class="comment">-- =&gt; true
+</span>
+</pre>
+
+
+<h3>extend (destObj, ...)</h3>
+
+<p>Extends a destination object with the properties of some source objects.</p>
+
+
+<pre>
+_.extend({},{a = <span class="string">'b'</span>, c = <span class="string">'d'</span>}) <span class="comment">-- =&gt; "{a = 'b', c = 'd'}"
+</span>
+</pre>
+
+
+<h3>functions (obj, recurseMt)</h3>
+<p>*Aliases: <code>_.methods</code>*.</p>
+
+<p>Returns all functions names within an object.</p>
+
+
+<pre>
+_.functions(<span class="global">coroutine</span>) <span class="comment">-- =&gt; "{'create','resume','running','status','wrap','yield'}"
+</span>
+</pre>
+
+
+<h3>clone (obj, shallow)</h3>
+
+<p>Clones a given object.</p>
+
+
+<pre>
+<span class="keyword">local</span> obj = {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>}
+<span class="keyword">local</span> obj2 = _.clone(obj)
+<span class="global">print</span>(obj2 == obj) <span class="comment">-- =&gt; false
+</span><span class="global">print</span>(_.isEqual(obj2, obj)) <span class="comment">-- =&gt; true
+</span>
+</pre>
+
+
+<h3>tap (obj, f, ...)</h3>
+
+<p>Invokes a given interceptor function on some object, and then returns the object itself. Useful to tap into method chaining to hook intermediate results.
+The pased-interceptor is prototyped as <code>f(obj,...)</code>.</p>
+
+
+<pre>
+<span class="keyword">local</span> v = _.chain({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>)
+  :filter(<span class="keyword">function</span>(k,v) <span class="keyword">return</span> v%<span class="number">2</span>~=<span class="number">0</span> <span class="keyword">end</span>) <span class="comment">-- filters even values
+</span>  :tap(<span class="keyword">function</span>(v) <span class="global">print</span>(<span class="string">'Max is'</span>, _.max(v) <span class="keyword">end</span>) <span class="comment">-- Tap max values
+</span>  :map(<span class="keyword">function</span>(k,v) <span class="keyword">return</span> k^<span class="number">2</span>)
+  :value() <span class="comment">-- =&gt;    Max is 9
+</span>
+</pre>
+
+
+<h3>has (obj, key)</h3>
+
+<p>Checks if an object has a given attribute.</p>
+
+
+<pre>
+_.has(_,<span class="string">'has'</span>) <span class="comment">-- =&gt; true
+</span>_.has(<span class="global">coroutine</span>,<span class="string">'resume'</span>) <span class="comment">-- =&gt; true
+</span>_.has(<span class="global">math</span>,<span class="string">'random'</span>) <span class="comment">-- =&gt; true
+</span>
+</pre>
+
+
+<h3>pick (obj, ...)</h3>
+<p>*Aliases: <code>_.choose</code>*.</p>
+
+<p>Collects whilelisted properties of a given object.</p>
+
+
+<pre>
+<span class="keyword">local</span> object = {a = <span class="number">1</span>, b = <span class="number">2</span>, c = <span class="number">3</span>}
+_.pick(object,<span class="string">'a'</span>,<span class="string">'c'</span>) <span class="comment">-- =&gt; "{a = 1, c = 3}"
+</span>
+</pre>
+
+
+<h3>omit (obj, ...)</h3>
+<p>*Aliases: <code>_.drop</code>*.</p>
+
+<p>Omits blacklisted properties of a given object.</p>
+
+
+<pre>
+<span class="keyword">local</span> object = {a = <span class="number">1</span>, b = <span class="number">2</span>, c = <span class="number">3</span>}
+_.omit(object,<span class="string">'a'</span>,<span class="string">'c'</span>) <span class="comment">-- =&gt; "{b = 2}"
+</span>
+</pre>
+
+
+<h3>template (obj, template)</h3>
+<p>*Aliases: <code>_.defaults</code>*.</p>
+
+<p>Applies a template on an object, preserving existing properties.</p>
+
+
+<pre>
+<span class="keyword">local</span> obj = {a = <span class="number">0</span>}
+_.template(obj,{a = <span class="number">1</span>, b = <span class="number">2</span>, c = <span class="number">3</span>}) <span class="comment">-- =&gt; "{a=0, c=3, b=2}"
+</span>
+</pre>
+
+
+<h3>isEqual (objA, objB, useMt)</h3>
+<p>*Aliases: <code>_.compare</code>*.</p>
+
+<p>Compares objects:</p>
+
+
+<pre>
+_.isEqual(<span class="number">1</span>,<span class="number">1</span>) <span class="comment">-- =&gt; true
+</span>_.isEqual(<span class="keyword">true</span>,<span class="keyword">false</span>) <span class="comment">-- =&gt; false
+</span>_.isEqual(<span class="number">3.14</span>,<span class="global">math</span>.pi) <span class="comment">-- =&gt; false
+</span>_.isEqual({<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>},{<span class="number">3</span>,<span class="number">4</span>,{<span class="number">5</span>}}) <span class="comment">-- =&gt; false
+</span>
+</pre>
+
+
+<h3>result (obj, method, ...)</h3>
+
+<p>Calls an object method, passing it as a first argument the object itself.</p>
+
+
+<pre>
+_.result(<span class="string">'abc'</span>,<span class="string">'len'</span>) <span class="comment">-- =&gt; 3
+</span>_.result({<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>},<span class="global">table</span>.concat) <span class="comment">-- =&gt; 'abc'
+</span>
+</pre>
+
+
+<h3>isTable (t)</h3>
+
+<p>Is the given argument an object (i.e a table) ?</p>
+
+
+<pre>
+_.isTable({}) <span class="comment">-- =&gt; true
+</span>_.isTable(<span class="global">math</span>) <span class="comment">-- =&gt; true
+</span>_.isTable(<span class="global">string</span>) <span class="comment">-- =&gt; true
+</span>
+</pre>
+
+
+<h3>isCallable (obj)</h3>
+
+<p>Is the given argument callable ?</p>
+
+
+<pre>
+_.isCallable(<span class="global">print</span>) <span class="comment">-- =&gt; true
+</span>_.isCallable(<span class="keyword">function</span>() <span class="keyword">end</span>) <span class="comment">-- =&gt; true
+</span>_.isCallable(<span class="global">setmetatable</span>({},{__index = <span class="global">string</span>}).upper) <span class="comment">-- =&gt; true
+</span>_.isCallable(<span class="global">setmetatable</span>({},{__call = <span class="keyword">function</span>() <span class="keyword">return</span> <span class="keyword">end</span>})) <span class="comment">-- =&gt; true
+</span>
+</pre>
+
+
+<h3>isArray (obj)</h3>
+
+<p>Is the given argument an array (i.e. a sequence) ?</p>
+
+
+<pre>
+_.isArray({}) <span class="comment">-- =&gt; true
+</span>_.isArray({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>}) <span class="comment">-- =&gt; true
+</span>_.isArray({<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>}) <span class="comment">-- =&gt; true
+</span>
+</pre>
+
+
+<h3>isIterable (obj)</h3>
+
+<p>Checks if the given object is iterable with <a href="http://www.lua.org/manual/5.2/manual.html#pdf-pairs">pairs</a> .</p>
+
+
+<pre>
+_.isIterable({}) <span class="comment">-- =&gt; true
+</span>_.isIterable(<span class="keyword">function</span>() <span class="keyword">end</span>) <span class="comment">-- =&gt; false
+</span>_.isIterable(<span class="keyword">false</span>) <span class="comment">-- =&gt; false
+</span>_.isIterable(<span class="number">1</span>) <span class="comment">-- =&gt; false
+</span>
+</pre>
+
+
+<h3>isEmpty (obj)</h3>
+
+<p>Is the given argument empty ?</p>
+
+
+<pre>
+_.isEmpty(<span class="string">''</span>) <span class="comment">-- =&gt; true
+</span>_.isEmpty({})  <span class="comment">-- =&gt; true
+</span>_.isEmpty({<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>}) <span class="comment">-- =&gt; false
+</span>
+</pre>
+
+
+<h3>isString (obj)</h3>
+
+<p>Is the given argument a string ?</p>
+
+
+<pre>
+_.isString(<span class="string">''</span>) <span class="comment">-- =&gt; true
+</span>_.isString(<span class="string">'Hello'</span>) <span class="comment">-- =&gt; false
+</span>_.isString({}) <span class="comment">-- =&gt; false
+</span>
+</pre>
+
+
+<h3>isFunction (obj)</h3>
+
+<p>Is the given argument a function ?</p>
+
+
+<pre>
+_.isFunction(<span class="global">print</span>) <span class="comment">-- =&gt; true
+</span>_.isFunction(<span class="keyword">function</span>() <span class="keyword">end</span>) <span class="comment">-- =&gt; true
+</span>_.isFunction({}) <span class="comment">-- =&gt; false
+</span>
+</pre>
+
+
+<h3>isNil (obj)</h3>
+
+<p>Is the given argument nil ?</p>
+
+
+<pre>
+_.isNil(<span class="keyword">nil</span>) <span class="comment">-- =&gt; true
+</span>_.isNil() <span class="comment">-- =&gt; true
+</span>_.isNil({}) <span class="comment">-- =&gt; false
+</span>
+</pre>
+
+
+<h3>isNumber (obj)</h3>
+
+<p>Is the given argument a number ?</p>
+
+
+<pre>
+_.isNumber(<span class="global">math</span>.pi) <span class="comment">-- =&gt; true
+</span>_.isNumber(<span class="global">math</span>.huge) <span class="comment">-- =&gt; true
+</span>_.isNumber(<span class="number">0</span>/<span class="number">0</span>) <span class="comment">-- =&gt; true
+</span>_.isNumber() <span class="comment">-- =&gt; false
+</span>
+</pre>
+
+
+<h3>isNaN (obj)</h3>
+
+<p>Is the given argument NaN ?</p>
+
+
+<pre>
+_.isNaN(<span class="number">1</span>) <span class="comment">-- =&gt; false
+</span>_.isNaN(<span class="number">0</span>/<span class="number">0</span>) <span class="comment">-- =&gt; true
+</span>
+</pre>
+
+
+<h3>isFinite (obj)</h3>
+
+<p>Is the given argument a finite number ?</p>
+
+
+<pre>
+_.isFinite(<span class="number">99e99</span>) <span class="comment">-- =&gt; true
+</span>_.isFinite(<span class="global">math</span>.pi) <span class="comment">-- =&gt; true
+</span>_.isFinite(<span class="global">math</span>.huge) <span class="comment">-- =&gt; false
+</span>_.isFinite(<span class="number">1</span>/<span class="number">0</span>) <span class="comment">-- =&gt; false
+</span>_.isFinite(<span class="number">0</span>/<span class="number">0</span>) <span class="comment">-- =&gt; false
+</span>
+</pre>
+
+
+<h3>isBoolean (obj)</h3>
+
+<p>Is the given argument a boolean ?</p>
+
+
+<pre>
+_.isBoolean(<span class="keyword">true</span>) <span class="comment">-- =&gt; true
+</span>_.isBoolean(<span class="keyword">false</span>) <span class="comment">-- =&gt; true
+</span>_.isBoolean(<span class="number">1</span>==<span class="number">1</span>) <span class="comment">-- =&gt; true
+</span>_.isBoolean(<span class="global">print</span>) <span class="comment">-- =&gt; false
+</span>
+</pre>
+
+
+<h3>isInteger (obj)</h3>
+
+<p>Is the given argument an integer ?</p>
+
+
+<pre>
+_.isInteger(<span class="global">math</span>.pi) <span class="comment">-- =&gt; false
+</span>_.isInteger(<span class="number">1</span>) <span class="comment">-- =&gt; true
+</span>_.isInteger(-<span class="number">1</span>) <span class="comment">-- =&gt; true
+</span>
+</pre>
+
+
+<p><strong><a href="#TOC">[⬆]</a></strong></p>
+
+<p><a name="_a_name__chaining__Chaining__a_"></a></p>
+<h2><a name='chaining'>Chaining</a></h2>
+
+<p><em>Method chaining</em> (also known as <em>name parameter idiom</em>), is a technique for invoking consecutively method calls in object-oriented style.
+Each method returns an object, and methods calls are chained together.
+Moses offers chaining for your perusal. <br/>
+Let's use chaining to get the count of evey single word in some lyrics (case won't matter here).</p>
+
+
+
+<pre>
+<span class="keyword">local</span> lyrics = {
+  <span class="string">"I am a lumberjack and I am okay"</span>,
+  <span class="string">"I sleep all night and I work all day"</span>,
+  <span class="string">"He is a lumberjack and he is okay"</span>,
+  <span class="string">"He sleeps all night and he works all day"</span>
+}
+
+<span class="keyword">local</span> stats = _.chain(lyrics)
+  :map(<span class="keyword">function</span>(k,line)
+    <span class="keyword">local</span> t = {}
+    <span class="keyword">for</span> w <span class="keyword">in</span> line:gmatch(<span class="string">'(%w+)'</span>) <span class="keyword">do</span>
+      t[#t+<span class="number">1</span>] = w
+    <span class="keyword">end</span>
+    <span class="keyword">return</span> t
+  <span class="keyword">end</span>)
+  :flatten()
+  :countBy(<span class="keyword">function</span>(i,v) <span class="keyword">return</span> v:lower() <span class="keyword">end</span>)
+  :value()
+
+<span class="comment">-- =&gt; "{
+</span><span class="comment">-- =&gt;    sleep = 1, night = 2, works = 1, am = 2, is = 2,
+</span><span class="comment">-- =&gt;    he = 2, and = 4, I = 4, he = 2, day = 2, a = 2,
+</span><span class="comment">-- =&gt;    work = 1, all = 4, okay = 2
+</span><span class="comment">-- =&gt;  }"
+</span>
+</pre>
+
+
+<p>For convenience, you can also use <code>_(value)</code> to start chaining methods, instead of <code>_.chain(value)</code>.</p>
+
+<p>Note that one can use <code>:value()</code> to unwrap a chained object.</p>
+
+
+<pre>
+<span class="keyword">local</span> t = {<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>}
+<span class="global">print</span>(_(t):value() == t) <span class="comment">-- =&gt; true
+</span>
+</pre>
+
+
+<p><strong><a href="#TOC">[⬆]</a></strong></p>
+
+<p><a name="_a_name__import__Import__a_"></a></p>
+<h2><a name='import'>Import</a></h2>
+
+<p>All library functions can be imported in a context using <a href="../index.html#import">import</a>  into a specified context.</p>
+
+
+<pre>
+<span class="keyword">local</span> context = {}
+_.import(context)
+
+context.each({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>},<span class="global">print</span>)
+
+<span class="comment">-- =&gt; 1 1
+</span><span class="comment">-- =&gt; 2 2
+</span><span class="comment">-- =&gt; 3 3
+</span>
+</pre>
+
+
+<p>When no <code>context</code> was provided, it defaults to the global environment <code>_G</code>.</p>
+
+
+<pre>
+_.import()
+
+each({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>},<span class="global">print</span>)
+
+<span class="comment">-- =&gt; 1 1
+</span><span class="comment">-- =&gt; 2 2
+</span><span class="comment">-- =&gt; 3 3
+</span>
+</pre>
+
+
+<p>Passing <code>noConflict</code> argument leaves untouched conflicting keys while importing into the context.</p>
+
+
+<pre>
+<span class="keyword">local</span> context = {each = <span class="number">1</span>}
+_.import(context, <span class="keyword">true</span>)
+
+<span class="global">print</span>(context.each) <span class="comment">-- =&gt; 1
+</span>context.eachi({<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>},<span class="global">print</span>)
+
+<span class="comment">-- =&gt; 1 1
+</span><span class="comment">-- =&gt; 2 2
+</span><span class="comment">-- =&gt; 3 3
+</span>
+</pre>
+
+
+<p><strong><a href="#TOC">[⬆]</a></strong>
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.0</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
