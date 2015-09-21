@@ -76,6 +76,7 @@ C header files/libraries/etc. for building C module
 |[LuaJSON](http://github.com/harningt/luajson)|1.2.2| JSON parser/encoder for Lua Parses JSON using LPEG for speed and flexibility. Depending on parser/encoder options, various values are preserved as best as possible.|
 |[SubLua](https://sourceforge.net/projects/subcpp/)|1.8.11|  Subversion binding.|
 |[30Log](https://github.com/Yonaba/30log)|1.0.0|  30 lines library for object orientation in Lua.|
+|[Moses](http://yonaba.github.io/Moses)|1.4.0|  Utility library for functional programming in Lua.|
 
 ## History ##
 
