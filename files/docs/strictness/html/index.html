@@ -1,0 +1,306 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>strictness documentation</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>strictness</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><strong>strictness</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>strictness</code></h1>
+<p><em>strictness, a "strict" mode for Lua</em>.</p>
+<p> Source on <a href="http://github.com/Yonaba/strictness">Github</a></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: 2013-2014</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: Roland Yonaba</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#strict">strict ([t[, ...]])</a></td>
+	<td class="summary">Makes a given table strict.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#is_strict">is_strict (t)</a></td>
+	<td class="summary">Checks if a given table is strict.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unstrict">unstrict (t)</a></td>
+	<td class="summary">Makes a given table non-strict.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#strictf">strictf (f)</a></td>
+	<td class="summary">Creates a strict function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unstrictf">unstrictf (f)</a></td>
+	<td class="summary">Creates a non-strict function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#run_strict">run_strict (f[, ...])</a></td>
+	<td class="summary">Returns the result of a function call in strict mode.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#run_unstrict">run_unstrict (f[, ...])</a></td>
+	<td class="summary">Returns the result of a function call in non-strict mode.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "strict"></a>
+    <strong>strict ([t[, ...]])</strong>
+    </dt>
+    <dd>
+    Makes a given table strict.  It mutates the passed-in table (or creates a
+ new table) and returns it. The returned table is strict, indexing or
+ assigning undefined fields will raise an error.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         a table
+        </li>
+        <li><span class="parameter">...</span>
+         a vararg list of allowed fields in the table.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the passed-in table <code>t</code> or a new table, patched to be strict.
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> t = strictness.strict()
+ <span class="keyword">local</span> t2 = strictness.strict({})
+ <span class="keyword">local</span> t3 = strictness.strict({}, <span class="string">'field1'</span>, <span class="string">'field2'</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "is_strict"></a>
+    <strong>is_strict (t)</strong>
+    </dt>
+    <dd>
+    Checks if a given table is strict.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         a table
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <code>true</code> if the table is strict, <code>false</code> otherwise.
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> is_strict = strictness.is_strict(a_table)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "unstrict"></a>
+    <strong>unstrict (t)</strong>
+    </dt>
+    <dd>
+    Makes a given table non-strict.  It mutates the passed-in table and
+ returns it. The returned table is non-strict.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         a table
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> unstrict_table = strictness.unstrict(trict_table)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "strictf"></a>
+    <strong>strictf (f)</strong>
+    </dt>
+    <dd>
+    Creates a strict function.  Wraps the given function and returns the wrapper.
+ The new function will always run in strict mode in its environment, whether
+ or not this environment is strict.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+         a function, or a callable value.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> strict_f = strictness.strictf(a_function)
+ <span class="keyword">local</span> result = strict_f(...)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "unstrictf"></a>
+    <strong>unstrictf (f)</strong>
+    </dt>
+    <dd>
+    Creates a non-strict function.  Wraps the given function and returns the wrapper.
+ The new function will always run in non-strict mode in its environment, whether
+ or not this environment is strict.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+         a function, or a callable value.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> unstrict_f = strictness.unstrictf(a_function)
+ <span class="keyword">local</span> result = unstrict_f(...)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "run_strict"></a>
+    <strong>run_strict (f[, ...])</strong>
+    </dt>
+    <dd>
+    Returns the result of a function call in strict mode.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+         a function, or a callable value.
+        </li>
+        <li><span class="parameter">...</span>
+         a vararg list of arguments to function <code>f</code>.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> result = strictness.run_strict(a_function, arg1, arg2)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "run_unstrict"></a>
+    <strong>run_unstrict (f[, ...])</strong>
+    </dt>
+    <dd>
+    Returns the result of a function call in non-strict mode.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">f</span>
+         a function, or a callable value.
+        </li>
+        <li><span class="parameter">...</span>
+         a vararg list of arguments to function <code>f</code>.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> result = strictness.run_unstrict(a_function, arg1, arg2)</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
