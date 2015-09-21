@@ -77,6 +77,8 @@ C header files/libraries/etc. for building C module
 |[SubLua](https://sourceforge.net/projects/subcpp/)|1.8.11|  Subversion binding.|
 |[30Log](https://github.com/Yonaba/30log)|1.0.0|  30 lines library for object orientation in Lua.|
 |[Moses](http://yonaba.github.io/Moses)|1.4.0|  Utility library for functional programming in Lua.|
+|[Binary-Heaps](http://yonaba.github.com/Binary-Heaps)|1.5.1|  Implementation of binary heaps data structure in pure Lua.|
+|[strictness](http://yonaba.github.io/strictness)|0.2.0|  Tracks accesses and assignments of undefined variables in Lua.|
 
 ## History ##
 
