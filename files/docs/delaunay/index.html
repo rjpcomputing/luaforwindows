@@ -1,0 +1,801 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Delaunay module documentation</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Delaunay (v0.1)</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Class_Edge">Class Edge </a></li>
+<li><a href="#Class_Point">Class Point </a></li>
+<li><a href="#Class_Triangle">Class Triangle </a></li>
+<li><a href="#Delaunay_module">Delaunay module </a></li>
+</ul>
+
+
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><strong>delaunay</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Script <code>delaunay</code></h1>
+
+<p>
+<h2>Delaunay, Lua module for convex polygon triangulation</h2>
+</p>
+<p>
+
+</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: 2013</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: Roland Yonaba</li>
+    </ul>
+
+
+<h2><a href="#Class_Edge">Class Edge </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Edge:new">Edge:new (p1, p2)</a></td>
+	<td class="summary">Creates a new <a href="index.html#Class_Edge">Edge</a> </td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Edge:same">Edge:same (otherEdge)</a></td>
+	<td class="summary">Test if <code>otherEdge</code> is similar to self.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Edge:length">Edge:length ()</a></td>
+	<td class="summary">Returns the length.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Edge:getMidPoint">Edge:getMidPoint ()</a></td>
+	<td class="summary">Returns the midpoint coordinates.</td>
+	</tr>
+</table>
+<h2><a href="#Class_Point">Class Point </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Point:new">Point:new (x, y)</a></td>
+	<td class="summary">Creates a new <a href="index.html#Class_Point">Point</a> </td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Point:dist2">Point:dist2 (p)</a></td>
+	<td class="summary">Returns the square distance to another <a href="index.html#Class_Point">Point</a> .</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Point:dist">Point:dist (p)</a></td>
+	<td class="summary">Returns the distance to another <a href="index.html#Class_Point">Point</a> .</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Point:isInCircle">Point:isInCircle (cx, cy, r)</a></td>
+	<td class="summary">Checks if self lies into the bounds of a circle</td>
+	</tr>
+</table>
+<h2><a href="#Class_Triangle">Class Triangle </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Triangle:new">Triangle:new (p1, p2, p3)</a></td>
+	<td class="summary">Creates a new <a href="index.html#Class_Triangle">Triangle</a> </td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Triangle:isCW">Triangle:isCW ()</a></td>
+	<td class="summary">Checks if the triangle is defined clockwise (sequence p1-p2-p3)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Triangle:isCCW">Triangle:isCCW ()</a></td>
+	<td class="summary">Checks if the triangle is defined counter-clockwise (sequence p1-p2-p3)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Triangle:getSidesLength">Triangle:getSidesLength ()</a></td>
+	<td class="summary">Returns the length of the edges</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Triangle:getCenter">Triangle:getCenter ()</a></td>
+	<td class="summary">Returns the coordinates of the center</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Triangle:getCircumCircle">Triangle:getCircumCircle ()</a></td>
+	<td class="summary">Returns the coordinates of the circumcircle center and its radius</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Triangle:getCircumCenter">Triangle:getCircumCenter ()</a></td>
+	<td class="summary">Returns the coordinates of the circumcircle center</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Triangle:getCircumRadius">Triangle:getCircumRadius ()</a></td>
+	<td class="summary">Returns the radius of the circumcircle</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Triangle:getArea">Triangle:getArea ()</a></td>
+	<td class="summary">Returns the area</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Triangle:inCircumCircle">Triangle:inCircumCircle (p)</a></td>
+	<td class="summary">Checks if a given point lies into the triangle circumcircle</td>
+	</tr>
+</table>
+<h2><a href="#Delaunay_module">Delaunay module </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Delaunay">Delaunay</a></td>
+	<td class="summary">Delaunay module</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Delaunay.triangulate">Delaunay.triangulate (...)</a></td>
+	<td class="summary">Triangulates a set of given vertices</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Class_Edge"></a>Class Edge </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Edge:new"></a>
+    <strong>Edge:new (p1, p2)</strong>
+    </dt>
+    <dd>
+    Creates a new <a href="index.html#Class_Edge">Edge</a>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">p1</span>
+         a <a href="index.html#Class_Point">Point</a>
+        </li>
+        <li><span class="parameter">p2</span>
+         a <a href="index.html#Class_Point">Point</a>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a new <a href="index.html#Class_Edge">Edge</a>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> Delaunay = <span class="global">require</span> <span class="string">'Delaunay'</span>
+ <span class="keyword">local</span> Edge     = Delaunay.Edge
+ <span class="keyword">local</span> Point    = Delaunay.Point
+ <span class="keyword">local</span> e = Edge:new(Point(<span class="number">1</span>,<span class="number">1</span>), Point(<span class="number">2</span>,<span class="number">5</span>))
+ <span class="keyword">local</span> e = Edge(Point(<span class="number">1</span>,<span class="number">1</span>), Point(<span class="number">2</span>,<span class="number">5</span>)) <span class="comment">-- Alias to Edge.new
+</span> <span class="global">print</span>(e) <span class="comment">-- print the edge members p1 and p2
+</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Edge:same"></a>
+    <strong>Edge:same (otherEdge)</strong>
+    </dt>
+    <dd>
+    Test if <code>otherEdge</code> is similar to self.  It does not take into account the direction.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">otherEdge</span>
+         an <a href="index.html#Class_Edge">Edge</a>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> e1 = Edge(Point(<span class="number">1</span>,<span class="number">1</span>), Point(<span class="number">2</span>,<span class="number">5</span>))
+ <span class="keyword">local</span> e2 = Edge(Point(<span class="number">2</span>,<span class="number">5</span>), Point(<span class="number">1</span>,<span class="number">1</span>))
+ <span class="global">print</span>(e1:same(e2)) <span class="comment">--&gt; true
+</span> <span class="global">print</span>(e1 == e2)) <span class="comment">--&gt; false, == operator considers the direction
+</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Edge:length"></a>
+    <strong>Edge:length ()</strong>
+    </dt>
+    <dd>
+    Returns the length.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the length of self
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> e = Edge(Point(), Point(<span class="number">10</span>,<span class="number">0</span>))
+ <span class="global">print</span>(e:length()) <span class="comment">--&gt; 10
+</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Edge:getMidPoint"></a>
+    <strong>Edge:getMidPoint ()</strong>
+    </dt>
+    <dd>
+    Returns the midpoint coordinates.
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        the x-coordinate of self midpoint</li>
+        <li>
+        the y-coordinate of self midpoint</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> e = Edge(Point(), Point(<span class="number">10</span>,<span class="number">0</span>))
+ <span class="global">print</span>(e:getMidPoint()) <span class="comment">--&gt; 5, 0
+</span></pre>
+    </ul>
+
+</dd>
+</dl>
+    <h2><a name="Class_Point"></a>Class Point </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Point:new"></a>
+    <strong>Point:new (x, y)</strong>
+    </dt>
+    <dd>
+    Creates a new <a href="index.html#Class_Point">Point</a>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+         the x-coordinate
+        </li>
+        <li><span class="parameter">y</span>
+         the y-coordinate
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a new <a href="index.html#Class_Point">Point</a>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> Delaunay = <span class="global">require</span> <span class="string">'Delaunay'</span>
+ <span class="keyword">local</span> Point    = Delaunay.Point
+ <span class="keyword">local</span> p = Point:new(<span class="number">1</span>,<span class="number">1</span>)
+ <span class="keyword">local</span> p = Point(<span class="number">1</span>,<span class="number">1</span>) <span class="comment">-- Alias to Point.new
+</span> <span class="global">print</span>(p) <span class="comment">-- print the point members x and y
+</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Point:dist2"></a>
+    <strong>Point:dist2 (p)</strong>
+    </dt>
+    <dd>
+    Returns the square distance to another <a href="index.html#Class_Point">Point</a> .
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">p</span>
+         a <a href="index.html#Class_Point">Point</a>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the square distance from self to <code>p</code>.
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> p1, p2 = Point(), Point(<span class="number">1</span>,<span class="number">1</span>)
+ <span class="global">print</span>(p1:dist2(p2)) <span class="comment">--&gt; 2
+</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Point:dist"></a>
+    <strong>Point:dist (p)</strong>
+    </dt>
+    <dd>
+    Returns the distance to another <a href="index.html#Class_Point">Point</a> .
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">p</span>
+         a <a href="index.html#Class_Point">Point</a>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the distance from self to <code>p</code>.
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> p1, p2 = Point(), Point(<span class="number">1</span>,<span class="number">1</span>)
+ <span class="global">print</span>(p1:dist2(p2)) <span class="comment">--&gt; 1.4142135623731
+</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Point:isInCircle"></a>
+    <strong>Point:isInCircle (cx, cy, r)</strong>
+    </dt>
+    <dd>
+    Checks if self lies into the bounds of a circle
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cx</span>
+         the x-coordinate of the circle center
+        </li>
+        <li><span class="parameter">cy</span>
+         the y-coordinate of the circle center
+        </li>
+        <li><span class="parameter">r</span>
+         the radius of the circle
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> p = Point()
+ <span class="global">print</span>(p:isInCircle(<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>)) <span class="comment">--&gt; true
+</span></pre>
+    </ul>
+
+</dd>
+</dl>
+    <h2><a name="Class_Triangle"></a>Class Triangle </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Triangle:new"></a>
+    <strong>Triangle:new (p1, p2, p3)</strong>
+    </dt>
+    <dd>
+    Creates a new <a href="index.html#Class_Triangle">Triangle</a>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">p1</span>
+         a <a href="index.html#Class_Point">Point</a>
+        </li>
+        <li><span class="parameter">p2</span>
+         a <a href="index.html#Class_Point">Point</a>
+        </li>
+        <li><span class="parameter">p3</span>
+         a <a href="index.html#Class_Point">Point</a>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a new <a href="index.html#Class_Triangle">Triangle</a>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> Delaunay = <span class="global">require</span> <span class="string">'Delaunay'</span>
+ <span class="keyword">local</span> Triangle = Delaunay.Triangle
+ <span class="keyword">local</span> p1, p2, p3 = Point(), Point(<span class="number">2</span>,<span class="number">0</span>), Point(<span class="number">1</span>,<span class="number">1</span>)
+ <span class="keyword">local</span> t = Triangle:new(p1, p2, p3)
+ <span class="keyword">local</span> t = Triangle(p1, p2, p3) <span class="comment">-- Alias to Triangle.new
+</span> <span class="global">print</span>(t) <span class="comment">-- print the triangle members p1, p2 and p3
+</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Triangle:isCW"></a>
+    <strong>Triangle:isCW ()</strong>
+    </dt>
+    <dd>
+    Checks if the triangle is defined clockwise (sequence p1-p2-p3)
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> p1, p2, p3 = Point(), Point(<span class="number">1</span>,<span class="number">1</span>), Point(<span class="number">2</span>,<span class="number">0</span>)
+ <span class="keyword">local</span> t = Triangle(p1, p2, p3)
+ <span class="global">print</span>(t:isCW()) <span class="comment">--&gt; true
+</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Triangle:isCCW"></a>
+    <strong>Triangle:isCCW ()</strong>
+    </dt>
+    <dd>
+    Checks if the triangle is defined counter-clockwise (sequence p1-p2-p3)
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> p1, p2, p3 = Point(), Point(<span class="number">2</span>,<span class="number">0</span>), Point(<span class="number">1</span>,<span class="number">1</span>)
+ <span class="keyword">local</span> t = Triangle(p1, p2, p3)
+ <span class="global">print</span>(t:isCCW()) <span class="comment">--&gt; true
+</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Triangle:getSidesLength"></a>
+    <strong>Triangle:getSidesLength ()</strong>
+    </dt>
+    <dd>
+    Returns the length of the edges
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        the length of the edge p1-p2</li>
+        <li>
+        the length of the edge p2-p3</li>
+        <li>
+        the length of the edge p3-p1</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> p1, p2, p3 = Point(), Point(<span class="number">2</span>,<span class="number">0</span>), Point(<span class="number">1</span>,<span class="number">1</span>)
+ <span class="keyword">local</span> t = Triangle(p1, p2, p3)
+ <span class="global">print</span>(t:getSidesLength()) <span class="comment">--&gt; 2  1.4142135623731  1.4142135623731
+</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Triangle:getCenter"></a>
+    <strong>Triangle:getCenter ()</strong>
+    </dt>
+    <dd>
+    Returns the coordinates of the center
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        the x-coordinate of the center</li>
+        <li>
+        the y-coordinate of the center</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> p1, p2, p3 = Point(), Point(<span class="number">2</span>,<span class="number">0</span>), Point(<span class="number">1</span>,<span class="number">1</span>)
+ <span class="keyword">local</span> t = Triangle(p1, p2, p3)
+ <span class="global">print</span>(t:getCenter()) <span class="comment">--&gt; 1 0.33333333333333
+</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Triangle:getCircumCircle"></a>
+    <strong>Triangle:getCircumCircle ()</strong>
+    </dt>
+    <dd>
+    Returns the coordinates of the circumcircle center and its radius
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        the x-coordinate of the circumcircle center</li>
+        <li>
+        the y-coordinate of the circumcircle center</li>
+        <li>
+        the radius of the circumcircle</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> p1, p2, p3 = Point(), Point(<span class="number">2</span>,<span class="number">0</span>), Point(<span class="number">1</span>,<span class="number">1</span>)
+ <span class="keyword">local</span> t = Triangle(p1, p2, p3)
+ <span class="global">print</span>(t:getCircumCircle()) <span class="comment">--&gt; 1	0	1
+</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Triangle:getCircumCenter"></a>
+    <strong>Triangle:getCircumCenter ()</strong>
+    </dt>
+    <dd>
+    Returns the coordinates of the circumcircle center
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        the x-coordinate of the circumcircle center</li>
+        <li>
+        the y-coordinate of the circumcircle center</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> p1, p2, p3 = Point(), Point(<span class="number">2</span>,<span class="number">0</span>), Point(<span class="number">1</span>,<span class="number">1</span>)
+ <span class="keyword">local</span> t = Triangle(p1, p2, p3)
+ <span class="global">print</span>(t:getCircumCenter()) <span class="comment">--&gt; 1	0
+</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Triangle:getCircumRadius"></a>
+    <strong>Triangle:getCircumRadius ()</strong>
+    </dt>
+    <dd>
+    Returns the radius of the circumcircle
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the radius of the circumcircle
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> p1, p2, p3 = Point(), Point(<span class="number">2</span>,<span class="number">0</span>), Point(<span class="number">1</span>,<span class="number">1</span>)
+ <span class="keyword">local</span> t = Triangle(p1, p2, p3)
+ <span class="global">print</span>(t:getCircumRadius()) <span class="comment">--&gt; 1
+</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Triangle:getArea"></a>
+    <strong>Triangle:getArea ()</strong>
+    </dt>
+    <dd>
+    Returns the area
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the area
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> p1, p2, p3 = Point(), Point(<span class="number">2</span>,<span class="number">0</span>), Point(<span class="number">1</span>,<span class="number">1</span>)
+ <span class="keyword">local</span> t = Triangle(p1, p2, p3)
+ <span class="global">print</span>(t:getArea()) <span class="comment">--&gt; 1
+</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Triangle:inCircumCircle"></a>
+    <strong>Triangle:inCircumCircle (p)</strong>
+    </dt>
+    <dd>
+    Checks if a given point lies into the triangle circumcircle
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">p</span>
+         a <a href="index.html#Class_Point">Point</a>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <code>true</code> or <code>false</code>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> p1, p2, p3 = Point(), Point(<span class="number">2</span>,<span class="number">0</span>), Point(<span class="number">1</span>,<span class="number">1</span>)
+ <span class="keyword">local</span> t = Triangle(p1, p2, p3)
+ <span class="global">print</span>(t:inCircumCircle(Point(<span class="number">1</span>,-<span class="number">1</span>))) <span class="comment">--&gt; true
+</span></pre>
+    </ul>
+
+</dd>
+</dl>
+    <h2><a name="Delaunay_module"></a>Delaunay module </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Delaunay"></a>
+    <strong>Delaunay</strong>
+    </dt>
+    <dd>
+    Delaunay module
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">Point</span>
+         reference to the <a href="index.html#Class_Point">Point</a>  class
+        </li>
+        <li><span class="parameter">Edge</span>
+         reference to the <a href="index.html#Class_Edge">Edge</a>  class
+        </li>
+        <li><span class="parameter">Triangle</span>
+         reference to the <a href="index.html#Class_Triangle">Triangle</a>  class
+        </li>
+        <li><span class="parameter">_VERSION</span>
+         the version of the current module
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Delaunay.triangulate"></a>
+    <strong>Delaunay.triangulate (...)</strong>
+    </dt>
+    <dd>
+    Triangulates a set of given vertices
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+         a <code>vargarg</code> list of objects of type <a href="index.html#Class_Point">Point</a>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a set of objects of type <a href="index.html#Class_Triangle">Triangle</a>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">local</span> Delaunay = <span class="global">require</span> <span class="string">'Delaunay'</span>
+ <span class="keyword">local</span> Point    = Delaunay.Point
+ <span class="keyword">local</span> p1, p2, p3, p4 = Point(), Point(<span class="number">2</span>,<span class="number">0</span>), Point(<span class="number">1</span>,<span class="number">1</span>), Point(<span class="number">1</span>,-<span class="number">1</span>)
+ <span class="keyword">local</span> triangles = Delaunay.triangulate(p1, p2, p3, p4)
+ <span class="keyword">for</span> i = <span class="number">1</span>, #triangles <span class="keyword">do</span>
+   <span class="global">print</span>(triangles[i])
+ <span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.0</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
