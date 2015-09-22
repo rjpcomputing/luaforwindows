@@ -79,6 +79,7 @@ C header files/libraries/etc. for building C module
 |[Moses](http://yonaba.github.io/Moses)|1.4.0|  Utility library for functional programming in Lua.|
 |[Binary-Heaps](http://yonaba.github.com/Binary-Heaps)|1.5.1|  Implementation of binary heaps data structure in pure Lua.|
 |[strictness](http://yonaba.github.io/strictness)|0.2.0|  Tracks accesses and assignments of undefined variables in Lua.|
+|[delaunay](http://yonaba.github.io/delaunay/)|0.1.0|  Delaunay triangulation for convex polygon.|
 
 ## History ##
 
