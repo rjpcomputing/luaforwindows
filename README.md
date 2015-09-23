@@ -7,7 +7,7 @@ Lua for Windows (LfW) combines Lua binaries, Lua libraries with a Lua-capable ed
 
 ## Download ##
 
-Download Lua\_V5.1.4-47.exe from [GitHub](http://github.com/rjpcomputing/luaforwindows/releases)
+Download Lua For Wondows installer from [GitHub](http://github.com/rjpcomputing/luaforwindows/releases)
 
 ## Install Notes ##
 
