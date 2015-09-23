@@ -288,3 +288,8 @@ C header files/libraries/etc. for building C module
 **5.1.4-48** 16/September/2015 - 34rd release
   * Added 30Log v1.0.0 - 30 lines library for object orientation in Lua
   * Updated SubLua to 1.8.11.
+
+**5.1.4-49** 23/September/2015 - 35th release
+  * Added delaunay Lua module
+  * Added Binary Heaps Lua module
+  * Added Moses Lua module
