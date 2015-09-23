@@ -1,4 +1,10 @@
 =================== Lua For Windows ===================
+09/23/2015  Version 5.1.4-49
++ Added 30Log v1.0.0 - 30 lines library for object orientation in Lua
++ Added delaunay Lua module
++ Added Binary Heaps Lua module
++ Added Moses Lua module
+
 09/16/2015  Version 5.1.4-48
 + Added 30Log v1.0.0 - 30 lines library for object orientation in Lua
 ^ Updated SubLua to 1.8.11.
