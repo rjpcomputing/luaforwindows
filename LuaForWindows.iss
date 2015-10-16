@@ -25,14 +25,14 @@
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ; -- General Installer configuration
-#define MyAppVer "5.1.4.49"
-#define MyAppDisplayVer "5.1.4-49"
+#define MyAppVer "5.1.4.50"
+#define MyAppDisplayVer "5.1.4-50"
 #define MyAppName "Lua"
 #define MyAppDisplayName "Lua for Windows"
 #define MyAppPublisher "The Lua for Windows Project and Lua and Tecgraf, PUC-Rio"
-#define MyAppURL "http://luaforwindows.googlecode.com"
+#define MyAppURL "http://github.com/rjpcomputing/luaforwindows"
 #define MyAppExeName "lua.exe"
-#define AppMinVer "5.1.3.21"
+#define AppMinVer "5.1.3.46"
 
 ; -- Dependancy handling configuration
 ;		Comment out the #define DOWNLOAD_FILES if you want to build the
