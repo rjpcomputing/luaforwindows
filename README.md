@@ -293,3 +293,8 @@ C header files/libraries/etc. for building C module
   * Added delaunay Lua module
   * Added Binary Heaps Lua module
   * Added Moses Lua module
+
+**5.1.4-50** 22/October/2015 - 36th release
+  * Fixes #98 - Lua For Windows Installer - 'h' is an invalid URL.
+  * Changed app URL to point to GitHub.
+  * Changed minimum version to reflect the GitHub version.
