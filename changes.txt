@@ -1,4 +1,8 @@
 =================== Lua For Windows ===================
+03/29/2016  Version 5.1.5-51
+^ Updated Lua to 5.1.5.
+^ Updated SubLua to 1.8.10-35352.
+
 10/22/2015  Version 5.1.4-50
 * Fixes #98 - Lua For Windows Installer - 'h' is an invalid URL.
 * Changed app URL to point to GitHub.
@@ -11,7 +15,7 @@
 
 09/16/2015  Version 5.1.4-48
 + Added 30Log v1.0.0 - 30 lines library for object orientation in Lua
-^ Updated SubLua to 1.8.11.
+^ Updated SubLua to 1.8.10.
 
 03/18/2015  Version 5.1.4-47
 ^ Updated stdlib to release 28.

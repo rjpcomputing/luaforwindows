@@ -74,7 +74,7 @@ C header files/libraries/etc. for building C module
 |[LuaRocks](http://luarocks.org)|2.0.2|  A deployment and management system for Lua modules.|
 |[Oil](http://oil.luaforge.net)|0.4-beta|  It is a simple, efficient and flexible object request broker written in the Lua language.|
 |[LuaJSON](http://github.com/harningt/luajson)|1.2.2| JSON parser/encoder for Lua Parses JSON using LPEG for speed and flexibility. Depending on parser/encoder options, various values are preserved as best as possible.|
-|[SubLua](https://sourceforge.net/projects/subcpp/)|1.8.11|  Subversion binding.|
+|[SubLua](https://sourceforge.net/projects/subcpp/)|1.8.10-35352|  Subversion binding.|
 |[30Log](https://github.com/Yonaba/30log)|1.0.0|  30 lines library for object orientation in Lua.|
 |[Moses](http://yonaba.github.io/Moses)|1.4.0|  Utility library for functional programming in Lua.|
 |[Binary-Heaps](http://yonaba.github.com/Binary-Heaps)|1.5.1|  Implementation of binary heaps data structure in pure Lua.|
@@ -298,3 +298,7 @@ C header files/libraries/etc. for building C module
   * Fixes #98 - Lua For Windows Installer - 'h' is an invalid URL.
   * Changed app URL to point to GitHub.
   * Changed minimum version to reflect the GitHub version.
+
+**5.1.5-51** 29/March/2016 - 37th release
+  * Updated to Lua 5.1.5.
+  * Updated SubLua to 1.8.10-35352
