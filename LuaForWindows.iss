@@ -37,7 +37,7 @@
 ; -- Dependancy handling configuration
 ;		Comment out the #define DOWNLOAD_FILES if you want to build the
 ;		dependencies into the installer.
-#define DOWNLOAD_FILES
+;#define DOWNLOAD_FILES
 #define vcRedistURL "http://github.com/rjpcomputing/luaforwindows/releases/download/vc-runtime/vcredist_x86.4053.exe"
 
 ; -- Pre-Build Step.
