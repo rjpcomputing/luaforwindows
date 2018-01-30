@@ -1,4 +1,7 @@
 =================== Lua For Windows ===================
+08/15/2017
+* Disabling vcredist_x86 download to prevent installation issues.
+
 03/29/2016  Version 5.1.5-51
 ^ Updated Lua to 5.1.5.
 ^ Updated SubLua to 1.8.10-35352.
