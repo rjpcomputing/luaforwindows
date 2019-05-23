@@ -25,14 +25,14 @@
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ; -- General Installer configuration
-#define MyAppVer "5.1.5.52"
-#define MyAppDisplayVer "5.1.5-52"
+#define MyAppVer "5.3.5.1"
+#define MyAppDisplayVer "5.3.5-1"
 #define MyAppName "Lua"
 #define MyAppDisplayName "Lua for Windows"
 #define MyAppPublisher "The Lua for Windows Project and Lua and Tecgraf, PUC-Rio"
 #define MyAppURL "http://github.com/rjpcomputing/luaforwindows"
 #define MyAppExeName "lua.exe"
-#define AppMinVer "5.1.3.46"
+#define AppMinVer "5.3.5.1"
 
 ; -- Dependancy handling configuration
 ;		Comment out the #define DOWNLOAD_FILES if you want to build the
@@ -50,7 +50,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\{#MyAppName}\5.1
+DefaultDirName={pf}\{#MyAppName}\5.3
 DisableDirPage=false
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=false
@@ -85,11 +85,10 @@ Name: blackscheme; Description: Use a black background syntax highlight theme fo
 ; -- Main Lua files.
 Source: files\bin2c5.1.exe; DestDir: {app}; DestName: bin2c.exe; Flags: ignoreversion
 Source: files\LICENSE.txt; DestDir: {app}; Flags: ignoreversion
-Source: files\lua5.1.dll; DestDir: {app}; Flags: ignoreversion
-Source: files\lua5.1.exe; DestDir: {app}; DestName: lua.exe; Flags: ignoreversion
-Source: files\lua51.dll; DestDir: {app}; Flags: ignoreversion
-Source: files\luac5.1.exe; DestDir: {app}; DestName: luac.exe; Flags: ignoreversion
-Source: files\wlua5.1.exe; DestDir: {app}; DestName: wlua.exe; Flags: ignoreversion
+Source: files\lua53.exe; DestDir: {app}; DestName: lua.exe; Flags: ignoreversion
+Source: files\lua53.dll; DestDir: {app}; Flags: ignoreversion
+Source: files\luac53.exe; DestDir: {app}; DestName: luac.exe; Flags: ignoreversion
+Source: files\wlua53.exe; DestDir: {app}; DestName: wlua.exe; Flags: ignoreversion
 Source: files\metalua.bat; DestDir: {app}; Flags: ignoreversion
 Source: files\luadoc_start.bat; DestDir: {app}; Flags: ignoreversion
 Source: files\lExecutor.wlua; DestDir: {app}; Flags: ignoreversion
@@ -154,7 +153,7 @@ Name: {group}\QuickLuaTour; Filename: {app}\Examples\quickluatour.lua; Component
 Name: {group}\{#MyAppName} Examples; Filename: {app}\Examples; Components: examples
 Name: {group}\Documentation\{#MyAppName} Module Documentation; Filename: {app}\docs; Components: docs
 Name: {group}\Documentation\Lua Quick Reference; Filename: {app}\docs\luarefv51.html; Components: docs
-Name: {group}\Documentation\Lua 5.1 Reference Manual; Filename: {app}\docs\lua5_1_4_Docs.chm; Components: docs
+Name: {group}\Documentation\Lua 5.3 Reference Manual; Filename: {app}\docs\lua5_1_4_Docs.chm; Components: docs
 Name: {group}\Documentation\lExecutor Documentation; Filename: {app}\docs\lexecutor\lExecutor.html; Components: docs
 Name: {group}\{cm:UninstallProgram,{#MyAppName}}; Filename: {uninstallexe}
 Name: {commondesktop}\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: desktopicon
