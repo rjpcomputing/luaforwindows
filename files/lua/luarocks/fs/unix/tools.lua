@@ -1,102 +1,73 @@
 
 --- fs operations implemented with third-party tools for Unix platform abstractions.
-module("luarocks.fs.unix.tools", package.seeall)
+local tools = {}
 
 local fs = require("luarocks.fs")
 local dir = require("luarocks.dir")
-local cfg = require("luarocks.cfg")
+local cfg = require("luarocks.core.cfg")
 
-local dir_stack = {}
+local vars = setmetatable({}, { __index = function(_,k) return cfg.variables[k] end })
 
---- Run the given command.
--- The command is executed in the current directory in the dir stack.
--- @param cmd string: No quoting/escaping is applied to the command.
--- @return boolean: true if command succeeds (status code 0), false
--- otherwise.
-function execute_string(cmd)
-   local actual_cmd = "cd " .. fs.Q(fs.current_dir()) .. " && " .. cmd
-   if os.execute(actual_cmd) == 0 then
-      return true
-   else
-      return false
-   end
-end
-
---- Obtain current directory.
--- Uses the module's internal dir stack.
--- @return string: the absolute pathname of the current directory.
-function current_dir()
-   local current = os.getenv("PWD")
-   if not current then
-      local pipe = io.popen("pwd")
-      current = pipe:read("*l")
-      pipe:close()
-   end
-   for _, d in ipairs(dir_stack) do
-      current = fs.absolute_name(d, current)
-   end
-   return current
-end
-
---- Change the current directory.
--- Uses the module's internal dir stack. This does not have exact
--- semantics of chdir, as it does not handle errors the same way,
--- but works well for our purposes for now.
--- @param d string: The directory to switch to.
-function change_dir(d)
-   assert(type(d) == "string")
-   table.insert(dir_stack, d)
-end
-
---- Change directory to root.
--- Allows leaving a directory (e.g. for deleting it) in
--- a crossplatform way.
-function change_dir_to_root()
-   table.insert(dir_stack, "/")
-end
-
---- Change working directory to the previous in the dir stack.
-function pop_dir()
-   local d = table.remove(dir_stack)
-   return d ~= nil
+--- Adds prefix to command to make it run from a directory.
+-- @param directory string: Path to a directory.
+-- @param cmd string: A command-line string.
+-- @return string: The command-line with prefix.
+function tools.command_at(directory, cmd)
+   return "cd " .. fs.Q(fs.absolute_name(directory)) .. " && " .. cmd
 end
 
 --- Create a directory if it does not already exist.
 -- If any of the higher levels in the path name does not exist
 -- too, they are created as well.
--- @param d string: pathname of directory to create.
+-- @param directory string: pathname of directory to create.
 -- @return boolean: true on success, false on failure.
-function make_dir(d)
-   assert(d)
-   return fs.execute("mkdir -p", d)
+function tools.make_dir(directory)
+   assert(directory)
+   local ok, err = fs.execute(vars.MKDIR.." -p", directory)
+   if not ok then
+      err = "failed making directory "..directory
+   end
+   return ok, err
 end
 
 --- Remove a directory if it is empty.
 -- Does not return errors (for example, if directory is not empty or
 -- if already does not exist)
--- @param dir string: pathname of directory to remove.
-function remove_dir_if_empty(d)
-   assert(d)
-   fs.execute_string("rmdir "..fs.Q(d).." 1> /dev/null 2> /dev/null")
+-- @param directory string: pathname of directory to remove.
+function tools.remove_dir_if_empty(directory)
+   assert(directory)
+   fs.execute_quiet(vars.RMDIR, directory)
 end
 
 --- Remove a directory if it is empty.
 -- Does not return errors (for example, if directory is not empty or
 -- if already does not exist)
--- @param dir string: pathname of directory to remove.
-function remove_dir_tree_if_empty(d)
-   assert(d)
-   fs.execute_string("rmdir -p "..fs.Q(d).." 1> /dev/null 2> /dev/null")
+-- @param directory string: pathname of directory to remove.
+function tools.remove_dir_tree_if_empty(directory)
+   assert(directory)
+   fs.execute_quiet(vars.RMDIR, "-p", directory)
 end
 
 --- Copy a file.
 -- @param src string: Pathname of source
 -- @param dest string: Pathname of destination
+-- @param perm string ("read" or "exec") or nil: Permissions for destination 
+-- file or nil to use the source permissions
 -- @return boolean or (boolean, string): true on success, false on failure,
 -- plus an error message.
-function copy(src, dest)
+function tools.copy(src, dest, perm)
    assert(src and dest)
-   if fs.execute("cp", src, dest) then
+   if fs.execute(vars.CP, src, dest) then
+      if perm then
+         if fs.is_dir(dest) then
+            dest = dir.path(dest, dir.base_name(src))
+         end
+         if fs.set_permissions(dest, perm, "all") then
+            return true
+         else
+            return false, "Failed setting permissions of "..dest
+         end
+      end
       return true
    else
       return false, "Failed copying "..src.." to "..dest
@@ -108,9 +79,9 @@ end
 -- @param dest string: Pathname of destination
 -- @return boolean or (boolean, string): true on success, false on failure,
 -- plus an error message.
-function copy_contents(src, dest)
+function tools.copy_contents(src, dest)
    assert(src and dest)
-   if fs.execute_string("cp -pPR "..fs.Q(src).."/* "..fs.Q(dest).." 1> /dev/null 2>/dev/null") then
+   if fs.execute_quiet(vars.CP.." -pPR "..fs.Q(src).."/* "..fs.Q(dest)) then
       return true
    else
       return false, "Failed copying "..src.." to "..dest
@@ -119,41 +90,19 @@ end
 --- Delete a file or a directory and all its contents.
 -- For safety, this only accepts absolute paths.
 -- @param arg string: Pathname of source
--- @return boolean: true on success, false on failure.
-function delete(arg)
+-- @return nil
+function tools.delete(arg)
    assert(arg)
    assert(arg:sub(1,1) == "/")
-   return fs.execute_string("rm -rf " .. fs.Q(arg) .. " 1> /dev/null 2>/dev/null")
+   fs.execute_quiet(vars.RM, "-rf", arg)
 end
 
---- List the contents of a directory. 
--- @param at string or nil: directory to list (will be the current
--- directory if none is given).
--- @return table: an array of strings with the filenames representing
--- the contents of a directory.
-function list_dir(at)
-   assert(type(at) == "string" or not at)
-   if not at then
-      at = fs.current_dir()
-   end
-   if not fs.is_dir(at) then
-      return {}
-   end
-   local result = {}
-   local pipe = io.popen("cd "..fs.Q(at).." && ls")
-   for file in pipe:lines() do
-      table.insert(result, file)
-   end
-   pipe:close()
-   return result
-end
-
---- Recursively scan the contents of a directory. 
+--- Recursively scan the contents of a directory.
 -- @param at string or nil: directory to scan (will be the current
 -- directory if none is given).
 -- @return table: an array of strings with the filenames representing
 -- the contents of a directory.
-function find(at)
+function tools.find(at)
    assert(type(at) == "string" or not at)
    if not at then
       at = fs.current_dir()
@@ -162,7 +111,7 @@ function find(at)
       return {}
    end
    local result = {}
-   local pipe = io.popen("cd "..fs.Q(at).." && find * 2>/dev/null") 
+   local pipe = io.popen(fs.command_at(at, fs.quiet_stderr(vars.FIND.." *")))
    for file in pipe:lines() do
       table.insert(result, file)
    end
@@ -174,172 +123,154 @@ end
 -- @param zipfile string: pathname of .zip archive to be created.
 -- @param ... Filenames to be stored in the archive are given as
 -- additional arguments.
--- @return boolean: true on success, false on failure.
-function zip(zipfile, ...)
-   return fs.execute("zip -r", zipfile, ...)
+-- @return boolean: true on success, nil and error message on failure.
+function tools.zip(zipfile, ...)
+   local ok, err = fs.is_tool_available(vars.ZIP, "zip")
+   if not ok then
+      return nil, err
+   end
+   if fs.execute_quiet(vars.ZIP.." -r", zipfile, ...) then
+      return true
+   else
+      return nil, "failed compressing " .. zipfile
+   end
 end
 
 --- Uncompress files from a .zip archive.
 -- @param zipfile string: pathname of .zip archive to be extracted.
--- @return boolean: true on success, false on failure.
-function unzip(zipfile)
+-- @return boolean: true on success, nil and error message on failure.
+function tools.unzip(zipfile)
    assert(zipfile)
-   return fs.execute("unzip", zipfile)
-end
-
---- Test for existance of a file.
--- @param file string: filename to test
--- @return boolean: true if file exists, false otherwise.
-function exists(file)
-   assert(file)
-   return fs.execute("test -r", file)
-end
-
---- Test is file/dir is writable.
--- @param file string: filename to test
--- @return boolean: true if file exists, false otherwise.
-function is_writable(file)
-   assert(file)
-   return fs.execute("test -w", file)
-end
-
---- Test is pathname is a directory.
--- @param file string: pathname to test
--- @return boolean: true if it is a directory, false otherwise.
-function is_dir(file)
-   assert(file)
-   return fs.execute("test -d", file)
-end
-
---- Test is pathname is a regular file.
--- @param file string: pathname to test
--- @return boolean: true if it is a regular file, false otherwise.
-function is_file(file)
-   assert(file)
-   return fs.execute("test -f", file)
-end
-
---- Download a remote file.
--- @param url string: URL to be fetched.
--- @param filename string or nil: this function attempts to detect the
--- resulting local filename of the remote file as the basename of the URL;
--- if that is not correct (due to a redirection, for example), the local
--- filename can be given explicitly as this second argument.
--- @return boolean: true on success, false on failure.
-function download(url, filename)
-   assert(type(url) == "string")
-   assert(type(filename) == "string" or not filename)
-
-   if cfg.downloader == "wget" then
-      local wget_cmd = "wget --no-cache --user-agent="..cfg.user_agent.." --quiet --continue "
-      if filename then
-         return fs.execute(wget_cmd.." --output-document ", filename, url)
-      else
-         return fs.execute(wget_cmd, url)
-      end
-   elseif cfg.downloader == "curl" then
-      filename = filename or dir.base_name(url)
-      return fs.execute_string("curl --user-agent "..cfg.user_agent.." "..fs.Q(url).." 2> /dev/null 1> "..fs.Q(filename))
+   local ok, err = fs.is_tool_available(vars.UNZIP, "unzip", "-h")
+   if not ok then
+      return nil, err
    end
-end
-
-function chmod(pathname, mode)
-  return fs.execute("chmod "..mode, pathname)
-end
-
---- Apply a patch.
--- @param patchname string: The filename of the patch.
-function apply_patch(patchname)
-   return fs.execute("patch -p1 -f -i ", patchname)
-end
-
---- Unpack an archive.
--- Extract the contents of an archive, detecting its format by
--- filename extension.
--- @param archive string: Filename of archive.
--- @return boolean or (boolean, string): true on success, false and an error message on failure.
-function unpack_archive(archive)
-   assert(type(archive) == "string")
-
-   local ok
-   if archive:match("%.tar%.gz$") or archive:match("%.tgz$") then
-      -- ok = fs.execute("tar zxvpf ", archive)
-         ok = fs.execute_string("gunzip -c "..archive.."|tar -xf -")
-   elseif archive:match("%.tar%.bz2$") then
-      -- ok = fs.execute("tar jxvpf ", archive)
-         ok = fs.execute_string("bunzip2 -c "..archive.."|tar -xf -")
-   elseif archive:match("%.zip$") then
-      ok = fs.execute("unzip ", archive)
-   elseif archive:match("%.lua$") or archive:match("%.c$") then
-      -- Ignore .lua and .c files; they don't need to be extracted.
+   if fs.execute_quiet(vars.UNZIP, zipfile) then
       return true
    else
-      local ext = archive:match(".*(%..*)")
-      return false, "Unrecognized filename extension "..(ext or "")
+      return nil, "failed extracting " .. zipfile
    end
-   if not ok then
-      return false, "Failed extracting "..archive
-   end
-   return true
 end
 
---- Get the MD5 checksum for a file.
--- @param file string: The file to be computed.
--- @return string: The MD5 checksum
-function get_md5(file, md5sum)
-   file = fs.absolute_name(file)
-   local computed
-   if cfg.md5checker == "md5sum" then
-      local pipe = io.popen("md5sum "..file)
-      computed = pipe:read("*l")
-      pipe:close()
-      if computed then
-         computed = computed:gsub("[^%x]+", ""):sub(1,32)
-      end
-   elseif cfg.md5checker == "openssl" then
-      local pipe = io.popen("openssl md5 "..file)
-      computed = pipe:read("*l")
-      pipe:close()
-      if computed then
-         computed = computed:sub(-32)
-      end
-   elseif cfg.md5checker == "md5" then
-      local pipe = io.popen("md5 "..file)
-      computed = pipe:read("*l")
-      pipe:close()
-      if computed then
-         computed = computed:sub(-32)
-      end
+local function uncompress(default_ext, program, infile, outfile)
+   assert(type(infile) == "string")
+   assert(outfile == nil or type(outfile) == "string")
+   if not outfile then
+      outfile = infile:gsub("%."..default_ext.."$", "")
    end
-   return computed
-end
-
---- Unpack an archive.
--- Extract the contents of an archive, detecting its format by
--- filename extension.
--- @param archive string: Filename of archive.
--- @return boolean or (boolean, string): true on success, false and an error message on failure.
-function unpack_archive(archive)
-   assert(type(archive) == "string")
-
-   local ok
-   if archive:match("%.tar%.gz$") or archive:match("%.tgz$") then
-      -- ok = fs.execute("tar zxvpf ", archive)
-      ok = fs.execute_string("gunzip -c "..archive.."|tar -xf -")
-   elseif archive:match("%.tar%.bz2$") then
-      -- ok = fs.execute("tar jxvpf ", archive)
-      ok = fs.execute_string("bunzip2 -c "..archive.."|tar -xf -")
-   elseif archive:match("%.zip$") then
-      ok = fs.execute("unzip ", archive)
-   elseif archive:match("%.lua$") or archive:match("%.c$") then
-      -- Ignore .lua and .c files; they don't need to be extracted.
+   if fs.execute(fs.Q(program).." -c "..fs.Q(infile).." > "..fs.Q(outfile)) then
       return true
    else
-      local ext = archive:match(".*(%..*)")
-      return false, "Unrecognized filename extension "..(ext or "")
+      return nil, "failed extracting " .. infile
    end
-   if not ok then
-      return false, "Failed extracting "..archive
-   end
-   return true
 end
+
+--- Uncompresses a .gz file.
+-- @param infile string: pathname of .gz file to be extracted.
+-- @param outfile string or nil: pathname of output file to be produced.
+-- If not given, name is derived from input file.
+-- @return boolean: true on success; nil and error message on failure.
+function tools.gunzip(infile, outfile)
+   return uncompress("gz", "gunzip", infile, outfile)
+end
+
+--- Uncompresses a .bz2 file.
+-- @param infile string: pathname of .bz2 file to be extracted.
+-- @param outfile string or nil: pathname of output file to be produced.
+-- If not given, name is derived from input file.
+-- @return boolean: true on success; nil and error message on failure.
+function tools.bunzip2(infile, outfile)
+   return uncompress("bz2", "bunzip2", infile, outfile)
+end
+
+do
+   local function rwx_to_octal(rwx)
+      return (rwx:match "r" and 4 or 0)
+         + (rwx:match "w" and 2 or 0)
+         + (rwx:match "x" and 1 or 0)
+   end
+   local umask_cache
+   function tools._unix_umask()
+      if umask_cache then
+         return umask_cache
+      end
+      local fd = assert(io.popen("umask -S"))
+      local umask = assert(fd:read("*a"))
+      fd:close()
+      local u, g, o = umask:match("u=([rwx]*),g=([rwx]*),o=([rwx]*)")
+      if not u then
+         error("invalid umask result")
+      end
+      umask_cache = string.format("%d%d%d",
+         7 - rwx_to_octal(u),
+         7 - rwx_to_octal(g),
+         7 - rwx_to_octal(o))
+      return umask_cache
+   end
+end
+
+--- Set permissions for file or directory
+-- @param filename string: filename whose permissions are to be modified
+-- @param mode string ("read" or "exec"): permissions to set
+-- @param scope string ("user" or "all"): the user(s) to whom the permission applies
+-- @return boolean or (boolean, string): true on success, false on failure,
+-- plus an error message
+function tools.set_permissions(filename, mode, scope)
+   assert(filename and mode and scope)
+
+   local perms
+   if mode == "read" and scope == "user" then
+      perms = fs._unix_moderate_permissions("600")
+   elseif mode == "exec" and scope == "user" then
+      perms = fs._unix_moderate_permissions("700")
+   elseif mode == "read" and scope == "all" then
+      perms = fs._unix_moderate_permissions("644")
+   elseif mode == "exec" and scope == "all" then
+      perms = fs._unix_moderate_permissions("755")
+   else
+      return false, "Invalid permission " .. mode .. " for " .. scope
+   end
+   return fs.execute(vars.CHMOD, perms, filename)
+end
+
+function tools.browser(url)
+   return fs.execute(cfg.web_browser, url)
+end
+
+-- Set access and modification times for a file.
+-- @param filename File to set access and modification times for.
+-- @param time may be a string or number containing the format returned
+-- by os.time, or a table ready to be processed via os.time; if
+-- nil, current time is assumed.
+function tools.set_time(file, time)
+   assert(time == nil or type(time) == "table" or type(time) == "number")
+   file = dir.normalize(file)
+   local flag = ""
+   if type(time) == "number" then
+      time = os.date("*t", time)
+   end
+   if type(time) == "table" then
+      flag = ("-t %04d%02d%02d%02d%02d.%02d"):format(time.year, time.month, time.day, time.hour, time.min, time.sec)
+   end
+   return fs.execute(vars.TOUCH .. " " .. flag, file)
+end
+
+--- Create a temporary directory.
+-- @param name_pattern string: name pattern to use for avoiding conflicts
+-- when creating temporary directory.
+-- @return string or (nil, string): name of temporary directory or (nil, error message) on failure.
+function tools.make_temp_dir(name_pattern)
+   assert(type(name_pattern) == "string")
+   name_pattern = dir.normalize(name_pattern)
+
+   local template = (os.getenv("TMPDIR") or "/tmp") .. "/luarocks_" .. name_pattern:gsub("/", "_") .. "-XXXXXX"
+   local pipe = io.popen(vars.MKTEMP.." -d "..fs.Q(template))
+   local dirname = pipe:read("*l")
+   pipe:close()
+   if dirname and dirname:match("^/") then
+      return dirname
+   end
+   return nil, "Failed to create temporary directory "..tostring(dirname)
+end
+
+return tools

@@ -1,17 +1,17 @@
--- patch.lua - Patch utility to apply unified diffs
+--- Patch utility to apply unified diffs.
 --
 -- http://lua-users.org/wiki/LuaPatch
 --
 -- (c) 2008 David Manura, Licensed under the same terms as Lua (MIT license).
--- Code is heavilly based on the Python-based patch.py version 8.06-1
+-- Code is heavily based on the Python-based patch.py version 8.06-1
 --   Copyright (c) 2008 rainforce.org, MIT License
 --   Project home: http://code.google.com/p/python-patch/ .
+--   Version 0.1
 
-module("luarocks.tools.patch", package.seeall)
+local patch = {}
 
 local fs = require("luarocks.fs")
-
-local version = '0.1'
+local fun = require("luarocks.fun")
 
 local io = io
 local os = os
@@ -21,8 +21,8 @@ local format = string.format
 
 -- logging
 local debugmode = false
-local function debug(s) end
-local function info(s) end
+local function debug(_) end
+local function info(_) end
 local function warning(s) io.stderr:write(s .. '\n') end
 
 -- Returns boolean whether string s2 starts with string s.
@@ -47,12 +47,6 @@ local function table_copy(t)
   return t2
 end
 
--- Returns boolean whether array t contains value v.
-local function array_contains(t, v)
-  for _,v2 in ipairs(t) do if v == v2 then return true end end
-  return false
-end
-
 local function exists(filename)
   local fh = io.open(filename)
   local result = fh ~= nil
@@ -60,32 +54,6 @@ local function exists(filename)
   return result
 end
 local function isfile() return true end --FIX?
-
-local function read_file(filename)
-  local fh, err, oserr = io.open(filename, 'rb')
-  if not fh then return fh, err, oserr end
-  local data, err, oserr = fh:read'*a'
-  fh:close()
-  if not data then return nil, err, oserr end
-  return data
-end
-
-local function write_file(filename, data)
-  local fh, err, oserr = io.open(filename 'wb')
-  if not fh then return fh, err, oserr end
-  local status, err, oserr = fh:write(data)
-  fh:close()
-  if not status then return nil, err, oserr end
-  return true
-end
-
-local function file_copy(src, dest)
-  local data, err, oserr = read_file(src)
-  if not data then return data, err, oserr end
-  local status, err, oserr = write_file(dest)
-  if not status then return status, err, oserr end
-  return true
-end
 
 local function string_as_file(s)
    return {
@@ -95,7 +63,7 @@ local function string_as_file(s)
       eof = false,
       read = function(self, n)
          if self.eof then return nil end
-         local chunk = self.str:sub(self.at, self.at+n)
+         local chunk = self.str:sub(self.at, self.at + n - 1)
          self.at = self.at + n
          if self.at > self.len then
             self.eof = true
@@ -158,7 +126,11 @@ local function match_linerange(line)
   return m1, m2, m3, m4
 end
 
-function read_patch(filename, data)
+local function match_epoch(str)
+  return str:match("[^0-9]1969[^0-9]") or str:match("[^0-9]1970[^0-9]")
+end
+
+function patch.read_patch(filename, data)
   -- define possible file regions that will direct the parser flow
   local state = 'header'
     -- 'header'    - comments before the patch body
@@ -169,7 +141,7 @@ function read_patch(filename, data)
 
   local all_ok = true
   local lineends = {lf=0, crlf=0, cr=0}
-  local files = {source={}, target={}, hunks={}, fileends={}, hunkends={}}
+  local files = {source={}, target={}, epoch={}, hunks={}, fileends={}, hunkends={}}
   local nextfileno = 0
   local nexthunkno = 0    --: even if index starts with 0 user messages
                           --  number hunks from 1
@@ -202,8 +174,13 @@ function read_patch(filename, data)
     if state == 'hunkbody' then
       -- skip hunkskip and hunkbody code until definition of hunkhead read
 
+      if line:match"^[\r\n]*$" then
+          -- prepend space to empty lines to interpret them as context properly
+          line = " " .. line
+      end
+
       -- process line first
-      if line:match"^[- +\\]" or line:match"^[\r\n]*$" then
+      if line:match"^[- +\\]" then
           -- gather stats about line endings
           local he = files.hunkends[nextfileno]
           if endswith(line, "\r\n") then
@@ -259,12 +236,6 @@ function read_patch(filename, data)
             warning(format("inconsistent line ends in patch hunks for %s",
                     files.source[nextfileno]))
           end
-          if debugmode then
-            local debuglines = {crlf=ends.crlf, lf=ends.lf, cr=ends.cr,
-                  file=files.target[nextfileno], hunk=nexthunkno}
-            debug(format("crlf: %(crlf)d  lf: %(lf)d  cr: %(cr)d\t " ..
-                         "- file: %(file)s hunk: %(hunk)d", debuglines))
-          end
       end
       -- state is 'hunkbody' or 'hunkskip'
     end
@@ -284,7 +255,7 @@ function read_patch(filename, data)
     local advance
     if state == 'filenames' then
       if startswith(line, "--- ") then
-        if array_contains(files.source, nextfileno) then
+        if fun.contains(files.source, nextfileno) then
           all_ok = false
           warning(format("skipping invalid patch for %s",
                          files.source[nextfileno+1]))
@@ -295,16 +266,19 @@ function read_patch(filename, data)
         -- Accept a space as a terminator, like GNU patch does.
         -- Breaks patches containing filenames with spaces...
         -- FIXME Figure out what does GNU patch do in those cases.
-        local match = line:match("^--- ([^\t ]+)")
+        local match, rest = line:match("^%-%-%- ([^ \t\r\n]+)(.*)")
         if not match then
           all_ok = false
           warning(format("skipping invalid filename at line %d", lineno+1))
           state = 'header'
         else
+          if match_epoch(rest) then
+            files.epoch[nextfileno + 1] = true
+          end
           table.insert(files.source, match)
         end
       elseif not startswith(line, "+++ ") then
-        if array_contains(files.source, nextfileno) then
+        if fun.contains(files.source, nextfileno) then
           all_ok = false
           warning(format("skipping invalid patch with no target for %s",
                          files.source[nextfileno+1]))
@@ -315,7 +289,7 @@ function read_patch(filename, data)
         end
         state = 'header'
       else
-        if array_contains(files.target, nextfileno) then
+        if fun.contains(files.target, nextfileno) then
           all_ok = false
           warning(format("skipping invalid patch - double target at line %d",
                          lineno+1))
@@ -329,8 +303,8 @@ function read_patch(filename, data)
           -- Accept a space as a terminator, like GNU patch does.
           -- Breaks patches containing filenames with spaces...
           -- FIXME Figure out what does GNU patch do in those cases.
-          local re_filename = "^%+%+%+ ([^ \t]+)"
-          local match = line:match(re_filename)
+          local re_filename = "^%+%+%+ ([^ \t\r\n]+)(.*)$"
+          local match, rest = line:match(re_filename)
           if not match then
             all_ok = false
             warning(format(
@@ -340,6 +314,9 @@ function read_patch(filename, data)
           else
             table.insert(files.target, match)
             nextfileno = nextfileno + 1
+            if match_epoch(rest) then
+              files.epoch[nextfileno] = true
+            end
             nexthunkno = 0
             table.insert(files.hunks, {})
             table.insert(files.hunkends, table_copy(lineends))
@@ -354,7 +331,7 @@ function read_patch(filename, data)
     if not advance and state == 'hunkhead' then
       local m1, m2, m3, m4 = match_linerange(line)
       if not m1 then
-        if not array_contains(files.hunks, nextfileno-1) then
+        if not fun.contains(files.hunks, nextfileno-1) then
           all_ok = false
           warning(format("skipping invalid patch with no hunks for file %s",
                          files.target[nextfileno]))
@@ -401,7 +378,6 @@ local function find_hunk(file, h, hno)
     for i=0,#file do
       local found = true
       local location = lineno
-      local total = #h.text - fuzz
       for l, hline in ipairs(h.text) do
         if l > fuzz then
           -- todo: \ No newline at the end of file
@@ -426,7 +402,7 @@ local function find_hunk(file, h, hno)
         end
         h.startsrc = location
         h.starttgt = h.starttgt + offset
-        for i=1,fuzz do
+        for _=1,fuzz do
            table.remove(h.text, 1)
            table.remove(h.text, #h.text)
         end
@@ -452,26 +428,21 @@ local function load_file(filename)
 end
 
 local function find_hunks(file, hunks)
-  local matched = true
-  local lineno = 1
-  local hno = nil
   for hno, h in ipairs(hunks) do
     find_hunk(file, h, hno)
   end
 end
 
 local function check_patched(file, hunks)
-  local matched = true
   local lineno = 1
-  local hno = nil
   local ok, err = pcall(function()
     if #file == 0 then
-      error 'nomatch'
+      error('nomatch', 0)
     end
     for hno, h in ipairs(hunks) do
       -- skip to line just before hunk starts
       if #file < h.starttgt then
-         error 'nomatch'
+        error('nomatch', 0)
       end
       lineno = h.starttgt
       for _, hline in ipairs(h.text) do
@@ -480,22 +451,18 @@ local function check_patched(file, hunks)
           local line = file[lineno]
           lineno = lineno + 1
           if #line == 0 then
-            error 'nomatch'
+            error('nomatch', 0)
           end
           if endlstrip(line) ~= endlstrip(hline:sub(2)) then
             warning(format("file is not patched - failed hunk: %d", hno))
-            error 'nomatch'
+            error('nomatch', 0)
           end
         end
       end
     end
   end)
-  if err == 'nomatch' then
-    matched = false
-  end
-    -- todo: display failed hunk, i.e. expected/found
-
-  return matched
+  -- todo: display failed hunk, i.e. expected/found
+  return err ~= 'nomatch'
 end
 
 local function patch_hunks(srcname, tgtname, hunks)
@@ -542,7 +509,7 @@ local function patch_hunks(srcname, tgtname, hunks)
         local line2write = hline:sub(2)
         -- detect if line ends are consistent in source file
         local sum = 0
-        for k,v in pairs(lineends) do if v > 0 then sum=sum+1 end end
+        for _,v in pairs(lineends) do if v > 0 then sum=sum+1 end end
         if sum == 1 then
           local newline
           for k,v in pairs(lineends) do if v ~= 0 then newline = k end end
@@ -563,150 +530,186 @@ end
 
 local function strip_dirs(filename, strip)
   if strip == nil then return filename end
-  for i=1,strip do
+  for _=1,strip do
     filename=filename:gsub("^[^/]*/", "")
   end
   return filename
 end
 
-function apply_patch(patch, strip)
-  local all_ok = true
-  local total = #patch.source
-  for fileno, filename in ipairs(patch.source) do
-    filename = strip_dirs(filename, strip)
-    local continue
-    local f2patch = filename
-    if not exists(f2patch) then
-      f2patch = strip_dirs(patch.target[fileno], strip)
-      f2patch = fs.absolute_name(f2patch)
-      if not exists(f2patch) then  --FIX:if f2patch nil
-        warning(format("source/target file does not exist\n--- %s\n+++ %s",
-                filename, f2patch))
-        all_ok = false
-        continue = true
+local function write_new_file(filename, hunk)
+  local fh = io.open(filename, "wb")
+  if not fh then return false end
+  for _, hline in ipairs(hunk.text) do
+    if not hline:sub(1,1) == "+" then
+      return false, "malformed patch"
+    end
+    fh:write(hline:sub(2))
+  end
+  fh:close()
+  return true
+end
+
+local function patch_file(source, target, epoch, hunks, strip, create_delete)
+  local create_file = false
+  if create_delete then
+    local is_src_epoch = epoch and #hunks == 1 and hunks[1].startsrc == 0 and hunks[1].linessrc == 0
+    if is_src_epoch or source == "/dev/null" then
+      info(format("will create %s", target))
+      create_file = true
+    end
+  end
+  if create_file then
+    return write_new_file(fs.absolute_name(strip_dirs(target, strip)), hunks[1])
+  end
+  source = strip_dirs(source, strip)
+  local f2patch = source
+  if not exists(f2patch) then
+    f2patch = strip_dirs(target, strip)
+    f2patch = fs.absolute_name(f2patch)
+    if not exists(f2patch) then  --FIX:if f2patch nil
+      warning(format("source/target file does not exist\n--- %s\n+++ %s",
+              source, f2patch))
+      return false
+    end
+  end
+  if not isfile(f2patch) then
+    warning(format("not a file - %s", f2patch))
+    return false
+  end
+
+  source = f2patch
+
+  -- validate before patching
+  local file = load_file(source)
+  local hunkno = 1
+  local hunk = hunks[hunkno]
+  local hunkfind = {}
+  local validhunks = 0
+  local canpatch = false
+  local hunklineno
+  if not file then
+    return nil, "failed reading file " .. source
+  end
+
+  if create_delete then
+    if epoch and #hunks == 1 and hunks[1].starttgt == 0 and hunks[1].linestgt == 0 then
+      local ok = os.remove(source)
+      if not ok then
+        return false
       end
+      info(format("successfully removed %s", source))
+      return true
     end
-    if not continue and not isfile(f2patch) then
-      warning(format("not a file - %s", f2patch))
-      all_ok = false
-      continue = true
+  end
+
+  find_hunks(file, hunks)
+
+  local function process_line(line, lineno)
+    if not hunk or lineno < hunk.startsrc then
+      return false
     end
-    if not continue then
-
-    filename = f2patch
-
-    info(format("processing %d/%d:\t %s", fileno, total, filename))
-
-    -- validate before patching
-    local hunks = patch.hunks[fileno]
-    local file = load_file(filename)
-    local hunkno = 1
-    local hunk = hunks[hunkno]
-    local hunkfind = {}
-    local hunkreplace = {}
-    local validhunks = 0
-    local canpatch = false
-    local hunklineno
-    local isbreak
-    local lineno = 0
-
-    find_hunks(file, hunks)
-
-    for _, line in ipairs(file) do
-      lineno = lineno + 1
-      local continue
-      if not hunk or lineno < hunk.startsrc then
-        continue = true
-      elseif lineno == hunk.startsrc then
-        hunkfind = {}
-        for _,x in ipairs(hunk.text) do
+    if lineno == hunk.startsrc then
+      hunkfind = {}
+      for _,x in ipairs(hunk.text) do
         if x:sub(1,1) == ' ' or x:sub(1,1) == '-' then
           hunkfind[#hunkfind+1] = endlstrip(x:sub(2))
-        end end
-        hunkreplace = {}
-        for _,x in ipairs(hunk.text) do
-        if x:sub(1,1) == ' ' or x:sub(1,1) == '+' then
-          hunkreplace[#hunkreplace+1] = endlstrip(x:sub(2))
-        end end
-        --pprint(hunkreplace)
-        hunklineno = 1
-
-        -- todo \ No newline at end of file
-      end
-      -- check hunks in source file
-      if not continue and lineno < hunk.startsrc + #hunkfind - 1 then
-        if endlstrip(line) == hunkfind[hunklineno] then
-          hunklineno = hunklineno + 1
-        else
-          debug(format("hunk no.%d doesn't match source file %s",
-                       hunkno, filename))
-          -- file may be already patched, but check other hunks anyway
-          hunkno = hunkno + 1
-          if hunkno <= #hunks then
-            hunk = hunks[hunkno]
-            continue = true
-          else
-            isbreak = true; break
-          end
         end
       end
-      -- check if processed line is the last line
-      if not continue and lineno == hunk.startsrc + #hunkfind - 1 then
-        debug(format("file %s hunk no.%d -- is ready to be patched",
-                     filename, hunkno))
+      hunklineno = 1
+  
+      -- todo \ No newline at end of file
+    end
+    -- check hunks in source file
+    if lineno < hunk.startsrc + #hunkfind - 1 then
+      if endlstrip(line) == hunkfind[hunklineno] then
+        hunklineno = hunklineno + 1
+      else
+        debug(format("hunk no.%d doesn't match source file %s",
+                     hunkno, source))
+        -- file may be already patched, but check other hunks anyway
         hunkno = hunkno + 1
-        validhunks = validhunks + 1
         if hunkno <= #hunks then
           hunk = hunks[hunkno]
+          return false
         else
-          if validhunks == #hunks then
-            -- patch file
-            canpatch = true
-            isbreak = true; break
-          end
+          return true
         end
       end
     end
-    if not isbreak then
+    -- check if processed line is the last line
+    if lineno == hunk.startsrc + #hunkfind - 1 then
+      debug(format("file %s hunk no.%d -- is ready to be patched",
+                   source, hunkno))
+      hunkno = hunkno + 1
+      validhunks = validhunks + 1
       if hunkno <= #hunks then
-        warning(format("premature end of source file %s at hunk %d",
-                       filename, hunkno))
-        all_ok = false
-      end
-    end
-    if validhunks < #hunks then
-      if check_patched(file, hunks) then
-        warning(format("already patched  %s", filename))
+        hunk = hunks[hunkno]
       else
-        warning(format("source file is different - %s", filename))
-        all_ok = false
-      end
-    end
-    if canpatch then
-      local backupname = filename .. ".orig"
-      if exists(backupname) then
-        warning(format("can't backup original file to %s - aborting",
-                       backupname))
-        all_ok = false
-      else
-        assert(os.rename(filename, backupname))
-        if patch_hunks(backupname, filename, hunks) then
-          warning(format("successfully patched %s", filename))
-          assert(os.remove(backupname))
-        else
-          warning(format("error patching file %s", filename))
-          assert(file_copy(filename, filename .. ".invalid"))
-          warning(format("invalid version is saved to %s",
-                         filename .. ".invalid"))
-          -- todo: proper rejects
-          assert(os.rename(backupname, filename))
-          all_ok = false
+        if validhunks == #hunks then
+          -- patch file
+          canpatch = true
+          return true
         end
       end
     end
+    return false
+  end
 
-    end -- if not continue
-  end -- for
+  local done = false
+  for lineno, line in ipairs(file) do
+    done = process_line(line, lineno)
+    if done then
+      break
+    end
+  end
+  if not done then
+    if hunkno <= #hunks and not create_file then
+      warning(format("premature end of source file %s at hunk %d",
+                     source, hunkno))
+      return false
+    end
+  end
+  if validhunks < #hunks then
+    if check_patched(file, hunks) then
+      warning(format("already patched  %s", source))
+    elseif not create_file then
+      warning(format("source file is different - %s", source))
+      return false
+    end
+  end
+  if not canpatch then
+    return true
+  end
+  local backupname = source .. ".orig"
+  if exists(backupname) then
+    warning(format("can't backup original file to %s - aborting",
+                   backupname))
+    return false
+  end
+  local ok = os.rename(source, backupname)
+  if not ok then
+    warning(format("failed backing up %s when patching", source))
+    return false
+  end
+  patch_hunks(backupname, source, hunks)
+  info(format("successfully patched %s", source))
+  os.remove(backupname)
+  return true
+end
+
+function patch.apply_patch(the_patch, strip, create_delete)
+  local all_ok = true
+  local total = #the_patch.source
+  for fileno, source in ipairs(the_patch.source) do
+    local target = the_patch.target[fileno]
+    local hunks = the_patch.hunks[fileno]
+    local epoch = the_patch.epoch[fileno]
+    info(format("processing %d/%d:\t %s", fileno, total, source))
+    local ok = patch_file(source, target, epoch, hunks, strip, create_delete)
+    all_ok = all_ok and ok
+  end
   -- todo: check for premature eof
   return all_ok
 end
+
+return patch

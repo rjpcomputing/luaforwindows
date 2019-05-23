@@ -1,198 +1,182 @@
 
---- Path and filename handling functions.
+--- LuaRocks-specific path handling functions.
 -- All paths are configured in this module, making it a single
 -- point where the layout of the local installation is defined in LuaRocks.
-module("luarocks.path", package.seeall)
+local path = {}
 
+local core = require("luarocks.core.path")
 local dir = require("luarocks.dir")
-local cfg = require("luarocks.cfg")
+local cfg = require("luarocks.core.cfg")
+local util = require("luarocks.util")
+
+path.rocks_dir = core.rocks_dir
+path.versioned_name = core.versioned_name
+path.path_to_module = core.path_to_module
+path.deploy_lua_dir = core.deploy_lua_dir
+path.deploy_lib_dir = core.deploy_lib_dir
 
 --- Infer rockspec filename from a rock filename.
 -- @param rock_name string: Pathname of a rock file.
 -- @return string: Filename of the rockspec, without path.
-function rockspec_name_from_rock(rock_name)
+function path.rockspec_name_from_rock(rock_name)
    assert(type(rock_name) == "string")
    local base_name = dir.base_name(rock_name)
    return base_name:match("(.*)%.[^.]*.rock") .. ".rockspec"
 end
 
-function rocks_dir(repo)
-  if type(repo) == "string" then
-    return dir.path(repo, "lib", "luarocks", "rocks")
-  else
-    assert(type(repo) == "table")
-    return repo.rocks_dir or dir.path(repo.root, "lib", "luarocks", "rocks")
-  end
+function path.root_from_rocks_dir(rocks_dir)
+   assert(type(rocks_dir) == "string")
+   return rocks_dir:match("(.*)" .. util.matchquote(cfg.rocks_subdir) .. ".*$")
 end
 
-function deploy_bin_dir(repo)
-  if type(repo) == "string" then
-    return dir.path(repo, "bin")
-  else
-    assert(type(repo) == "table")
-    return repo.bin_dir or dir.path(repo.root, "bin")
-  end
+function path.root_dir(tree)
+   if type(tree) == "string" then
+      return tree
+   else
+      assert(type(tree) == "table")
+      return tree.root
+   end
 end
 
-function deploy_lua_dir(repo)
-  if type(repo) == "string" then
-    return dir.path(repo, "share", "lua", "5.1")
-  else
-    assert(type(repo) == "table")
-    return repo.lua_dir or dir.path(repo.root, "share", "lua", "5.1")
-  end
+function path.deploy_bin_dir(tree)
+   return dir.path(path.root_dir(tree), "bin")
 end
 
-function deploy_lib_dir(repo)
-  if type(repo) == "string" then
-    return dir.path(repo, "lib", "lua", "5.1")
-  else
-    assert(type(repo) == "table")
-    return repo.lib_dir or dir.path(repo.root, "lib", "lua", "5.1")
-  end
+function path.manifest_file(tree)
+   return dir.path(path.rocks_dir(tree), "manifest")
 end
 
-function manifest_file(repo)
-  if type(repo) == "string" then
-    return dir.path(repo, "lib", "luarocks", "rocks", "manifest")
-  else
-    assert(type(repo) == "table")
-    return (repo.rocks_dir and dir.path(repo.rocks_dir, "manifest")) or dir.path(repo.root, "lib", "luarocks", "rocks", "manifest")
-  end
-end
-
---- Get the repository directory for all versions of a package.
+--- Get the directory for all versions of a package in a tree.
 -- @param name string: The package name. 
 -- @return string: The resulting path -- does not guarantee that
--- @param rocks_dir string or nil: If given, specifies the local repository to use.
+-- @param tree string or nil: If given, specifies the local tree to use.
 -- the package (and by extension, the path) exists.
-function versions_dir(name, repo)
-   assert(type(name) == "string")
-   repo = repo or cfg.root_dir
-   return dir.path(rocks_dir(repo), name)
+function path.versions_dir(name, tree)
+   assert(type(name) == "string" and not name:match("/"))
+   return dir.path(path.rocks_dir(tree), name)
 end
 
 --- Get the local installation directory (prefix) for a package.
 -- @param name string: The package name. 
 -- @param version string: The package version.
--- @param rocks_dir string or nil: If given, specifies the local repository to use.
+-- @param tree string or nil: If given, specifies the local tree to use.
 -- @return string: The resulting path -- does not guarantee that
 -- the package (and by extension, the path) exists.
-function install_dir(name, version, repo)
-   assert(type(name) == "string")
+function path.install_dir(name, version, tree)
+   assert(type(name) == "string" and not name:match("/"))
    assert(type(version) == "string")
-   repo = repo or cfg.root_dir
-   return dir.path(rocks_dir(repo), name, version)
+   return dir.path(path.rocks_dir(tree), name, version)
 end
 
 --- Get the local filename of the rockspec of an installed rock.
 -- @param name string: The package name. 
 -- @param version string: The package version.
--- @param rocks_dir string or nil: If given, specifies the local repository to use.
+-- @param tree string or nil: If given, specifies the local tree to use.
 -- @return string: The resulting path -- does not guarantee that
 -- the package (and by extension, the file) exists.
-function rockspec_file(name, version, repo)
-   assert(type(name) == "string")
+function path.rockspec_file(name, version, tree)
+   assert(type(name) == "string" and not name:match("/"))
    assert(type(version) == "string")
-   repo = repo or cfg.root_dir
-   return dir.path(rocks_dir(repo), name, version, name.."-"..version..".rockspec")
+   return dir.path(path.rocks_dir(tree), name, version, name.."-"..version..".rockspec")
 end
 
 --- Get the local filename of the rock_manifest file of an installed rock.
 -- @param name string: The package name. 
 -- @param version string: The package version.
--- @param rocks_dir string or nil: If given, specifies the local repository to use.
+-- @param tree string or nil: If given, specifies the local tree to use.
 -- @return string: The resulting path -- does not guarantee that
 -- the package (and by extension, the file) exists.
-function rock_manifest_file(name, version, repo)
-   assert(type(name) == "string")
+function path.rock_manifest_file(name, version, tree)
+   assert(type(name) == "string" and not name:match("/"))
    assert(type(version) == "string")
-   repo = repo or cfg.root_dir
-   return dir.path(rocks_dir(repo), name, version, "rock_manifest")
+   return dir.path(path.rocks_dir(tree), name, version, "rock_manifest")
+end
+
+--- Get the local filename of the rock_namespace file of an installed rock.
+-- @param name string: The package name (without a namespace).
+-- @param version string: The package version.
+-- @param tree string or nil: If given, specifies the local tree to use.
+-- @return string: The resulting path -- does not guarantee that
+-- the package (and by extension, the file) exists.
+function path.rock_namespace_file(name, version, tree)
+   assert(type(name) == "string" and not name:match("/"))
+   assert(type(version) == "string")
+   return dir.path(path.rocks_dir(tree), name, version, "rock_namespace")
 end
 
 --- Get the local installation directory for C libraries of a package.
 -- @param name string: The package name. 
 -- @param version string: The package version.
--- @param rocks_dir string or nil: If given, specifies the local repository to use.
+-- @param tree string or nil: If given, specifies the local tree to use.
 -- @return string: The resulting path -- does not guarantee that
 -- the package (and by extension, the path) exists.
-function lib_dir(name, version, repo)
-   assert(type(name) == "string")
+function path.lib_dir(name, version, tree)
+   assert(type(name) == "string" and not name:match("/"))
    assert(type(version) == "string")
-   repo = repo or cfg.root_dir
-   return dir.path(rocks_dir(repo), name, version, "lib")
+   return dir.path(path.rocks_dir(tree), name, version, "lib")
 end
 
 --- Get the local installation directory for Lua modules of a package.
 -- @param name string: The package name. 
 -- @param version string: The package version.
--- @param rocks_dir string or nil: If given, specifies the local repository to use.
+-- @param tree string or nil: If given, specifies the local tree to use.
 -- @return string: The resulting path -- does not guarantee that
 -- the package (and by extension, the path) exists.
-function lua_dir(name, version, repo)
-   assert(type(name) == "string")
+function path.lua_dir(name, version, tree)
+   assert(type(name) == "string" and not name:match("/"))
    assert(type(version) == "string")
-   repo = repo or cfg.root_dir
-   return dir.path(rocks_dir(repo), name, version, "lua")
+   return dir.path(path.rocks_dir(tree), name, version, "lua")
 end
 
 --- Get the local installation directory for documentation of a package.
 -- @param name string: The package name. 
 -- @param version string: The package version.
--- @param rocks_dir string or nil: If given, specifies the local repository to use.
+-- @param tree string or nil: If given, specifies the local tree to use.
 -- @return string: The resulting path -- does not guarantee that
 -- the package (and by extension, the path) exists.
-function doc_dir(name, version, repo)
-   assert(type(name) == "string")
+function path.doc_dir(name, version, tree)
+   assert(type(name) == "string" and not name:match("/"))
    assert(type(version) == "string")
-   repo = repo or cfg.root_dir
-   return dir.path(rocks_dir(repo), name, version, "doc")
+   return dir.path(path.rocks_dir(tree), name, version, "doc")
 end
 
 --- Get the local installation directory for configuration files of a package.
 -- @param name string: The package name. 
 -- @param version string: The package version.
--- @param rocks_dir string or nil: If given, specifies the local repository to use.
+-- @param tree string or nil: If given, specifies the local tree to use.
 -- @return string: The resulting path -- does not guarantee that
 -- the package (and by extension, the path) exists.
-function conf_dir(name, version, repo)
-   assert(type(name) == "string")
+function path.conf_dir(name, version, tree)
+   assert(type(name) == "string" and not name:match("/"))
    assert(type(version) == "string")
-   repo = repo or cfg.root_dir
-   return dir.path(rocks_dir(repo), name, version, "conf")
+   return dir.path(path.rocks_dir(tree), name, version, "conf")
 end
 
 --- Get the local installation directory for command-line scripts
 -- of a package.
 -- @param name string: The package name. 
 -- @param version string: The package version.
--- @param rocks_dir string or nil: If given, specifies the local repository to use.
+-- @param tree string or nil: If given, specifies the local tree to use.
 -- @return string: The resulting path -- does not guarantee that
 -- the package (and by extension, the path) exists.
-function bin_dir(name, version, repo)
-   assert(type(name) == "string")
+function path.bin_dir(name, version, tree)
+   assert(type(name) == "string" and not name:match("/"))
    assert(type(version) == "string")
-   repo = repo or cfg.root_dir
-   return dir.path(rocks_dir(repo), name, version, "bin")
+   return dir.path(path.rocks_dir(tree), name, version, "bin")
 end
 
---- Extract name, version and arch of a rock filename.
--- @param rock_file string: pathname of a rock
+--- Extract name, version and arch of a rock filename,
+-- or name, version and "rockspec" from a rockspec name.
+-- @param file_name string: pathname of a rock or rockspec
 -- @return (string, string, string) or nil: name, version and arch
--- of rock, or nil if name could not be parsed
-function parse_rock_name(rock_file)
-   assert(type(rock_file) == "string")
-   return dir.base_name(rock_file):match("(.*)-([^-]+-%d+)%.([^.]+)%.rock$")
-end
-
---- Extract name and version of a rockspec filename.
--- @param rockspec_file string: pathname of a rockspec
--- @return (string, string) or nil: name and version
--- of rockspec, or nil if name could not be parsed
-function parse_rockspec_name(rockspec_file)
-   assert(type(rockspec_file) == "string")
-   return dir.base_name(rockspec_file):match("(.*)-([^-]+-%d+)%.(rockspec)")
+-- or nil if name could not be parsed
+function path.parse_name(file_name)
+   assert(type(file_name) == "string")
+   if file_name:match("%.rock$") then
+      return dir.base_name(file_name):match("(.*)-([^-]+-%d+)%.([^.]+)%.rock$")
+   else
+      return dir.base_name(file_name):match("(.*)-([^-]+-%d+)%.(rockspec)")
+   end
 end
 
 --- Make a rockspec or rock URL.
@@ -201,9 +185,9 @@ end
 -- @param version string: Package version.
 -- @param arch string: Architecture identifier, or "rockspec" or "installed".
 -- @return string: A URL or pathname following LuaRocks naming conventions.
-function make_url(pathname, name, version, arch)
+function path.make_url(pathname, name, version, arch)
    assert(type(pathname) == "string")
-   assert(type(name) == "string")
+   assert(type(name) == "string" and not name:match("/"))
    assert(type(version) == "string")
    assert(type(arch) == "string")
 
@@ -218,69 +202,96 @@ function make_url(pathname, name, version, arch)
    return dir.path(pathname, filename)
 end
 
---- Convert a pathname to a module identifier.
--- In Unix, for example, a path "foo/bar/baz.lua" is converted to
--- "foo.bar.baz"; "bla/init.lua" returns "bla"; "foo.so" returns "foo".
--- @param file string: Pathname of module
--- @return string: The module identifier, or nil if given path is
--- not a conformant module path (the function does not check if the
--- path actually exists).
-function path_to_module(file)
-   assert(type(file) == "string")
-
-   local name = file:match("(.*)%."..cfg.lua_extension.."$")
-   if name then
-      name = name:gsub(dir.separator, ".")
-      local init = name:match("(.*)%.init$")
-      if init then
-         name = init
-      end
-   else
-      name = file:match("(.*)%."..cfg.lib_extension.."$")
-      if name then
-         name = name:gsub(dir.separator, ".")
-      end
-   end
-   if not name then name = file end
-   name = name:gsub("^%.+", ""):gsub("%.+$", "")
-   return name
-end
-
 --- Obtain the directory name where a module should be stored.
 -- For example, on Unix, "foo.bar.baz" will return "foo/bar".
 -- @param mod string: A module name in Lua dot-separated format.
 -- @return string: A directory name using the platform's separator.
-function module_to_path(mod)
+function path.module_to_path(mod)
    assert(type(mod) == "string")
-   return (mod:gsub("[^.]*$", ""):gsub("%.", dir.separator))
+   return (mod:gsub("[^.]*$", ""):gsub("%.", "/"))
 end
 
---- Set up path-related variables for a given rock.
--- Create a "variables" table in the rockspec table, containing
--- adjusted variables according to the configuration file.
--- @param rockspec table: The rockspec table.
-function configure_paths(rockspec)
-   assert(type(rockspec) == "table")
-   local vars = {}
-   for k,v in pairs(cfg.variables) do
-      vars[k] = v
+function path.use_tree(tree)
+   cfg.root_dir = tree
+   cfg.rocks_dir = path.rocks_dir(tree)
+   cfg.deploy_bin_dir = path.deploy_bin_dir(tree)
+   cfg.deploy_lua_dir = path.deploy_lua_dir(tree)
+   cfg.deploy_lib_dir = path.deploy_lib_dir(tree)
+
+   -- TODO Do we want LuaRocks itself to use whatever tree is in use?
+   -- package.path = dir.path(path.deploy_lua_dir(tree), "?.lua") .. ";"
+   --             .. dir.path(path.deploy_lua_dir(tree), "?/init.lua") .. ";"
+   --             .. package.path
+   -- package.cpath = dir.path(path.deploy_lib_dir(tree), "?." .. cfg.lib_extension) .. ";"
+   --              .. package.cpath
+end
+
+function path.rocks_tree_to_string(tree)
+   if type(tree) == "string" then
+      return tree
+   else
+      assert(type(tree) == "table")
+      return tree.root
    end
-   local name, version = rockspec.name, rockspec.version
-   vars.PREFIX = install_dir(name, version)
-   vars.LUADIR = lua_dir(name, version)
-   vars.LIBDIR = lib_dir(name, version)
-   vars.CONFDIR = conf_dir(name, version)
-   vars.BINDIR = bin_dir(name, version)
-   vars.DOCDIR = doc_dir(name, version)
-   rockspec.variables = vars
 end
 
-function versioned_name(file, prefix, name, version)
-   assert(type(file) == "string")
-   assert(type(name) == "string")
+--- Apply a given function to the active rocks trees based on chosen dependency mode.
+-- @param deps_mode string: Dependency mode: "one" for the current default tree,
+-- "all" for all trees, "order" for all trees with priority >= the current default,
+-- "none" for no trees (this function becomes a nop).
+-- @param fn function: function to be applied, with the tree dir (string) as the first
+-- argument and the remaining varargs of map_trees as the following arguments.
+-- @return a table with all results of invocations of fn collected.
+function path.map_trees(deps_mode, fn, ...)
+   local result = {}
+   if deps_mode == "one" then
+      table.insert(result, (fn(cfg.root_dir, ...)) or 0)
+   elseif deps_mode == "all" or deps_mode == "order" then
+      local use = false
+      if deps_mode == "all" then
+         use = true
+      end
+      for _, tree in ipairs(cfg.rocks_trees) do
+         if dir.normalize(path.rocks_tree_to_string(tree)) == dir.normalize(path.rocks_tree_to_string(cfg.root_dir)) then
+            use = true
+         end
+         if use then
+            table.insert(result, (fn(tree, ...)) or 0)
+         end
+      end
+   end
+   return result
+end
+
+--- Get the namespace of a locally-installed rock, if any.
+-- @param name string: The rock name, without a namespace.
+-- @param version string: The rock version.
+-- @param tree string: The local tree to use.
+-- @return string?: The namespace if it exists, or nil.
+function path.read_namespace(name, version, tree)
+   assert(type(name) == "string" and not name:match("/"))
    assert(type(version) == "string")
+   assert(type(tree) == "string")
 
-   local rest = file:sub(#prefix+1):gsub("^/*", "")
-   local name_version = (name.."_"..version):gsub("%-", "_"):gsub("%.", "_")
-   return dir.path(prefix, name_version.."-"..rest)
+   local namespace
+   local fd = io.open(path.rock_namespace_file(name, version, tree), "r")
+   if fd then
+      namespace = fd:read("*a")
+      fd:close()
+   end
+   return namespace
 end
+
+function path.package_paths(deps_mode)
+   local lpaths = {}
+   local lcpaths = {}
+   path.map_trees(deps_mode, function(tree)
+      local root = path.root_dir(tree)
+      table.insert(lpaths, dir.path(root, cfg.lua_modules_path, "?.lua"))
+      table.insert(lpaths, dir.path(root, cfg.lua_modules_path, "?/init.lua"))
+      table.insert(lcpaths, dir.path(root, cfg.lib_modules_path, "?." .. cfg.lib_extension))
+   end)
+   return table.concat(lpaths, ";"), table.concat(lcpaths, ";")
+end
+
+return path

@@ -1,19 +1,24 @@
 
 --- Build back-end for using Makefile-based packages.
-module("luarocks.build.make", package.seeall)
+local make = {}
+
+local unpack = unpack or table.unpack
 
 local fs = require("luarocks.fs")
 local util = require("luarocks.util")
-local cfg = require("luarocks.cfg")
+local cfg = require("luarocks.core.cfg")
 
 --- Call "make" with given target and variables
+-- @param make_cmd string: the make command to be used (typically
+-- configured through variables.MAKE in the config files, or
+-- the appropriate platform-specific default).
 -- @param pass boolean: If true, run make; if false, do nothing.
 -- @param target string: The make target; an empty string indicates 
 -- the default target.
 -- @param variables table: A table containing string-string key-value
 -- pairs representing variable assignments to be passed to make.
 -- @return boolean: false if any errors occurred, true otherwise.
-local function make_pass(pass, target, variables)
+local function make_pass(make_cmd, pass, target, variables)
    assert(type(pass) == "boolean")
    assert(type(target) == "string")
    assert(type(variables) == "table")
@@ -23,7 +28,7 @@ local function make_pass(pass, target, variables)
       table.insert(assignments, k.."="..v)
    end
    if pass then
-      return fs.execute(cfg.make.." "..target, unpack(assignments))
+      return fs.execute(make_cmd.." "..target, unpack(assignments))
    else
       return true
    end
@@ -31,10 +36,10 @@ end
 
 --- Driver function for the "make" build back-end.
 -- @param rockspec table: the loaded rockspec.
--- @return boolean or (nil, string): true if no errors ocurred,
+-- @return boolean or (nil, string): true if no errors occurred,
 -- nil and an error message otherwise.
-function run(rockspec)
-   assert(type(rockspec) == "table")
+function make.run(rockspec)
+   assert(rockspec:type() == "rockspec")
 
    local build = rockspec.build
    
@@ -74,13 +79,18 @@ function run(rockspec)
       end
    end
 
-   local ok = make_pass(build.build_pass, build.build_target, build.build_variables)
+   -- backwards compatibility 
+   local make_cmd = cfg.make or rockspec.variables.MAKE
+
+   local ok = make_pass(make_cmd, build.build_pass, build.build_target, build.build_variables)
    if not ok then
       return nil, "Failed building."
    end
-   ok = make_pass(build.install_pass, build.install_target, build.install_variables)
+   ok = make_pass(make_cmd, build.install_pass, build.install_target, build.install_variables)
    if not ok then
       return nil, "Failed installing."
    end
    return true
 end
+
+return make

@@ -1,20 +1,36 @@
-#!/usr/local/bin/lua
+#!/usr/bin/env lua
 
-local command_line = require("luarocks.command_line")
+-- Load cfg first so that the loader knows it is running inside LuaRocks
+local cfg = require("luarocks.core.cfg")
 
-program_name = "luarocks"
-program_description = "LuaRocks main command-line interface"
+local loader = require("luarocks.loader")
+local cmd = require("luarocks.cmd")
 
-commands = {}
-commands.help = require("luarocks.help")
-commands.pack = require("luarocks.pack")
-commands.unpack = require("luarocks.unpack")
-commands.build = require("luarocks.build")
-commands.install = require("luarocks.install")
-commands.search = require("luarocks.search")
-commands.list = require("luarocks.list")
-commands.remove = require("luarocks.remove")
-commands.make = require("luarocks.make")
-commands.download = require("luarocks.download")
+local description = "LuaRocks main command-line interface"
 
-command_line.run_command(...)
+local commands = {
+   help = "luarocks.cmd.help",
+   init = "luarocks.cmd.init",
+   pack = "luarocks.cmd.pack",
+   unpack = "luarocks.cmd.unpack",
+   build = "luarocks.cmd.build",
+   install = "luarocks.cmd.install",
+   search = "luarocks.cmd.search",
+   list = "luarocks.cmd.list",
+   remove = "luarocks.cmd.remove",
+   make = "luarocks.cmd.make",
+   download = "luarocks.cmd.download",
+   path = "luarocks.cmd.path",
+   show = "luarocks.cmd.show",
+   new_version = "luarocks.cmd.new_version",
+   lint = "luarocks.cmd.lint",
+   write_rockspec = "luarocks.cmd.write_rockspec",
+   purge = "luarocks.cmd.purge",
+   doc = "luarocks.cmd.doc",
+   upload = "luarocks.cmd.upload",
+   config = "luarocks.cmd.config",
+   which = "luarocks.cmd.which",
+   test = "luarocks.cmd.test",
+}
+
+cmd.run_command(description, commands, "luarocks.cmd.external", ...)

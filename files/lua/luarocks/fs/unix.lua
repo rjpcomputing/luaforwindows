@@ -1,17 +1,36 @@
 
-local assert, type, table, io, package, math, os, ipairs =
-      assert, type, table, io, package, math, os, ipairs
-
 --- Unix implementation of filesystem and platform abstractions.
-module("luarocks.fs.unix", package.seeall)
+local unix = {}
 
 local fs = require("luarocks.fs")
 
-local cfg = require("luarocks.cfg")
+local cfg = require("luarocks.core.cfg")
 local dir = require("luarocks.dir")
-local fs = require("luarocks.fs")
+local path = require("luarocks.path")
+local util = require("luarocks.util")
 
-math.randomseed(os.time())
+--- Annotate command string for quiet execution.
+-- @param cmd string: A command-line string.
+-- @return string: The command-line, with silencing annotation.
+function unix.quiet(cmd)
+   return cmd.." 1> /dev/null 2> /dev/null"
+end
+
+--- Annotate command string for execution with quiet stderr.
+-- @param cmd string: A command-line string.
+-- @return string: The command-line, with stderr silencing annotation.
+function unix.quiet_stderr(cmd)
+   return cmd.." 2> /dev/null"
+end
+
+--- Quote argument for shell processing.
+-- Adds single quotes and escapes.
+-- @param arg string: Unquoted argument.
+-- @return string: Quoted argument.
+function unix.Q(arg)
+   assert(type(arg) == "string")
+   return "'" .. arg:gsub("'", "'\\''") .. "'"
+end
 
 --- Return an absolute pathname from a potentially relative one.
 -- @param pathname string: pathname to convert.
@@ -19,7 +38,7 @@ math.randomseed(os.time())
 -- pathname absolute, or the current dir in the dir stack if
 -- not given.
 -- @return string: The pathname converted to absolute.
-function absolute_name(pathname, relative_to)
+function unix.absolute_name(pathname, relative_to)
    assert(type(pathname) == "string")
    assert(type(relative_to) == "string" or not relative_to)
 
@@ -31,31 +50,68 @@ function absolute_name(pathname, relative_to)
    end
 end
 
+--- Return the root directory for the given path.
+-- In Unix, root is always "/".
+-- @param pathname string: pathname to use.
+-- @return string: The root of the given pathname.
+function unix.root_of(_)
+   return "/"
+end
+
 --- Create a wrapper to make a script executable from the command-line.
--- @param file string: Pathname of script to be made executable.
--- @param dest string: Directory where to put the wrapper.
+-- @param script string: Pathname of script to be made executable.
+-- @param target string: wrapper target pathname (without wrapper suffix).
+-- @param name string: rock name to be used in loader context.
+-- @param version string: rock version to be used in loader context.
 -- @return boolean or (nil, string): True if succeeded, or nil and
 -- an error message.
-function wrap_script(file, dest)
-   assert(type(file) == "string")
-   assert(type(dest) == "string")
+function unix.wrap_script(script, target, deps_mode, name, version, ...)
+   assert(type(script) == "string" or not script)
+   assert(type(target) == "string")
+   assert(type(deps_mode) == "string")
+   assert(type(name) == "string" or not name)
+   assert(type(version) == "string" or not version)
    
-   local base = dir.base_name(file)
-   local wrapname = fs.is_dir(dest) and dest.."/"..base or dest
-   local wrapper = io.open(wrapname, "w")
+   local wrapper = io.open(target, "w")
    if not wrapper then
-      return nil, "Could not open "..wrapname.." for writing."
+      return nil, "Could not open "..target.." for writing."
    end
+
+   local lpath, lcpath = path.package_paths(deps_mode)
+
+   local luainit = {
+      "package.path="..util.LQ(lpath..";").."..package.path",
+      "package.cpath="..util.LQ(lcpath..";").."..package.cpath",
+   }
+   if target == "luarocks" or target == "luarocks-admin" then
+      luainit = {
+         "package.path="..util.LQ(package.path),
+         "package.cpath="..util.LQ(package.cpath),
+      }
+   end
+   if name and version then
+      local addctx = "local k,l,_=pcall(require,"..util.LQ("luarocks.loader")..") _=k " ..
+                     "and l.add_context("..util.LQ(name)..","..util.LQ(version)..")"
+      table.insert(luainit, addctx)
+   end
+
+   local argv = {
+      fs.Q(dir.path(cfg.variables["LUA_BINDIR"], cfg.lua_interpreter)),
+      "-e",
+      fs.Q(table.concat(luainit, ";")),
+      script and fs.Q(script) or "",
+      ...
+   }
+
    wrapper:write("#!/bin/sh\n\n")
-   wrapper:write('LUA_PATH="'..package.path..';$LUA_PATH"\n')
-   wrapper:write('LUA_CPATH="'..package.cpath..';$LUA_CPATH"\n')
-   wrapper:write('export LUA_PATH LUA_CPATH\n')
-   wrapper:write('exec "'..dir.path(cfg.variables["LUA_BINDIR"], cfg.lua_interpreter)..'" -lluarocks.loader "'..file..'" "$@"\n')
+   wrapper:write("LUAROCKS_SYSCONFDIR="..fs.Q(cfg.sysconfdir) .. " ")
+   wrapper:write("exec "..table.concat(argv, " ")..' "$@"\n')
    wrapper:close()
-   if fs.execute("chmod +x",wrapname) then
+
+   if fs.set_permissions(target, "exec", "all") then
       return true
    else
-      return nil, "Could not make "..wrapname.." executable."
+      return nil, "Could not make "..target.." executable."
    end
 end
 
@@ -64,62 +120,137 @@ end
 -- @param filename string: the file name with full path.
 -- @return boolean: returns true if file is an actual binary
 -- (or if it couldn't check) or false if it is a Lua wrapper.
-function is_actual_binary(filename)
+function unix.is_actual_binary(filename)
    if filename:match("%.lua$") then
       return false
    end
    local file = io.open(filename)
-   if file then
-      local found = false
-      local first = file:read()
-      if first:match("#!.*lua") then
-         found = true
-      elseif first:match("#!/bin/sh") then
-         local line = file:read()
-         line = file:read()
-         if not(line and line:match("LUA_PATH")) then
-            found = true
+   if not file then
+      return true
+   end
+   local first = file:read(2)
+   file:close()
+   if not first then
+      util.warning("could not read "..filename)
+      return true
+   end
+   return first ~= "#!"
+end
+
+function unix.copy_binary(filename, dest) 
+   return fs.copy(filename, dest, "exec")
+end
+
+--- Move a file on top of the other.
+-- The new file ceases to exist under its original name,
+-- and takes over the name of the old file.
+-- On Unix this is done through a single rename operation.
+-- @param old_file The name of the original file,
+-- which will be the new name of new_file.
+-- @param new_file The name of the new file,
+-- which will replace old_file.
+-- @return boolean or (nil, string): True if succeeded, or nil and
+-- an error message.
+function unix.replace_file(old_file, new_file)
+   return os.rename(new_file, old_file)
+end
+
+function unix.tmpname()
+   return os.tmpname()
+end
+
+function unix.current_user()
+   return os.getenv("USER")
+end
+
+function unix.export_cmd(var, val)
+   return ("export %s='%s'"):format(var, val)
+end
+
+local octal_to_rwx = {
+   ["0"] = "---",
+   ["1"] = "--x",
+   ["2"] = "-w-",
+   ["3"] = "-wx",
+   ["4"] = "r--",
+   ["5"] = "r-x",
+   ["6"] = "rw-",
+   ["7"] = "rwx",
+}
+local rwx_to_octal = {}
+for octal, rwx in pairs(octal_to_rwx) do
+   rwx_to_octal[rwx] = octal
+end
+--- Moderate the given permissions based on the local umask
+-- @param perms string: permissions to moderate
+-- @return string: the moderated permissions
+function unix._unix_moderate_permissions(perms)
+   local umask = fs._unix_umask()
+
+   local moderated_perms = ""
+   for i = 1, 3 do
+      local p_rwx = octal_to_rwx[perms:sub(i, i)]
+      local u_rwx = octal_to_rwx[umask:sub(i, i)]
+      local new_perm = ""
+      for j = 1, 3 do
+         local p_val = p_rwx:sub(j, j)
+         local u_val = u_rwx:sub(j, j)
+         if p_val == u_val then
+            new_perm = new_perm .. "-"
+         else
+            new_perm = new_perm .. p_val
          end
       end
-      file:close()
-      if found then
-         return false
-      else
-         return true
-      end
-   else
+      moderated_perms = moderated_perms .. rwx_to_octal[new_perm]
+   end
+   return moderated_perms
+end
+
+function unix.is_dir(file)
+   file = fs.absolute_name(file)
+   file = dir.normalize(file) .. "/"
+   local fd, _, code = io.open(file, "r")
+   if code == 2 then -- "No such file or directory"
+      return false
+   end
+   if code == 20 then -- "Not a directory", regardless of permissions
+      return false
+   end
+   if code == 13 then -- "Permission denied", but is a directory
+      return true
+   end
+   if fd then
+      fd:close()
       return true
    end
    return false
 end
 
-function is_actual_binary(filename)
-   if filename:match("%.lua$") then
+function unix.is_file(file)
+   file = fs.absolute_name(file)
+   if fs.is_dir(file) then
       return false
    end
-   local file = io.open(filename)
-   if file then
-      local found = false
-      local first = file:read()
-      if first:match("#!.*lua") then
-         file:close()
-         return true
-      elseif first:match("#!/bin/sh") then
-         local line = file:read()
-         line = file:read()
-         if not(line and line:match("LUA_PATH")) then
-            file:close()
-            return true
-         end
-      end
-      file:close()
-   else
+   file = dir.normalize(file)
+   local fd, _, code = io.open(file, "r")
+   if code == 2 then -- "No such file or directory"
+      return false
+   end
+   if code == 13 then -- "Permission denied", but it exists
+      return true
+   end
+   if fd then
+      fd:close()
       return true
    end
    return false
 end
 
-function copy_binary(filename, dest) 
-   return fs.copy(filename, dest)
+function unix.system_cache_dir()
+   if fs.is_dir("/var/cache") then
+      return "/var/cache"
+   end
+   return dir.path(fs.system_temp_dir(), "cache")
 end
 
+return unix
