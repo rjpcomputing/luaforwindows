@@ -2,6 +2,12 @@
 ; File:			LuaForWindows.iss
 ; Author:		Ryan Pusztai <rpusztai@gmail.com>
 ; Date:			05/13/2008
+; Updated:		07/15/2023
+;                       Chuck Geigner <arcadechuck@gmail.com>
+; UpdateNotes:          Minor updates to enable successful installer exe build 
+;                       using Inno Setup Compiler (v6.2.2 or later)
+;                       See https://jrsoftware.org/isinfo.php
+;
 ; License:
 ;	Copyright (C) 2008-2015 Ryan Pusztai.
 ;
@@ -62,15 +68,22 @@ InternalCompressLevel=ultra
 OutputDir=.
 ShowLanguageDialog=yes
 AppVersion={#MyAppVer}
-WizardImageFile=compiler:WizModernImage-IS.bmp
-WizardSmallImageFile=compiler:WizModernSmallImage-IS.bmp
+; Inno Setup Compiler v. 6.2.2 changed default names of "WizardImage" BMP files.
+; WizardImageFile=compiler:WizModernImage-IS.bmp
+; WizardSmallImageFile=compiler:WizModernSmallImage-IS.bmp
+WizardImageFile=compiler:WizClassicImage-IS.bmp
+WizardSmallImageFile=compiler:WizClassicSmallImage-IS.bmp
 VersionInfoVersion={#MyAppVer}
 VersionInfoDescription={#MyAppName}
 ChangesAssociations=true
 ChangesEnvironment=true
 LicenseFile=files/LICENSE.txt
-MinVersion=0,5.0.2195
-PrivilegesRequired=none
+; Adjusted MinVersion to reflect Vista or after. OS levels 5 or under will cause failure in Inno 6.2.2
+; MinVersion=0,5.0.2195
+MinVersion=0,6.0.6002
+; Vista or later needs privs to install in C:\Program Files (x86)
+;PrivilegesRequired=none
+PrivilgesRequired=admin
 UninstallFilesDir={app}\uninstall
 UninstallDisplayIcon={app}\lua.exe
 
